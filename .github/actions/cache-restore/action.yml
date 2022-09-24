@@ -26,7 +26,7 @@ runs:
       env:
         cache-name: cache-node-modules
       with:
-         path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+         path: ~/.yarn
          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
          restore-keys: |
           ${{ runner.os }}-yarn-
@@ -34,5 +34,4 @@ runs:
     - name: Install Dependencies
       if: steps.node-cache.outputs.cache-hit != 'true'
       shell: bash
-      run: yarn ci
-
+      run: yarn install --frozen-lockfile

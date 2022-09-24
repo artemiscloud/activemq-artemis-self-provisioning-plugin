@@ -8,6 +8,14 @@
     }
   },
   {
+    "type": "console.page/route",
+    "properties": {
+      "exact": true,
+      "path": "/brokers/broker",
+      "component": { "$codeRef": "ExampleTab" }
+    }
+  },
+  {
     "type": "console.navigation/section",
     "properties": {
       "id": "amq-online",

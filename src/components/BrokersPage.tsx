@@ -77,7 +77,7 @@ const BrokersPage = () => {
             {brokers.map((br) => (
               <Tr key={br.name}>
                 <Td dataLabel={columnNames.name}>
-                  <Link to="/brokers">{br.name}</Link>
+                  <Link to="/brokers/broker">{br.name}</Link>
                 </Td>
                 <Td dataLabel={columnNames.status}>{br.status}</Td>
                 <Td dataLabel={columnNames.size}>{br.size}</Td>

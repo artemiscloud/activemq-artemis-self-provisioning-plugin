@@ -11,9 +11,9 @@ export default {
   },
 } as ComponentMeta<typeof BrokersPage>;
 
-const Template: ComponentStory<typeof BrokersPage> = (args) => (
+const Template: ComponentStory<typeof BrokersPage> = () => (
   <MemoryRouter>
-    <BrokersPage {...args} />
+    <BrokersPage />
   </MemoryRouter>
 );
 export const BrokersPageStory = Template.bind({});

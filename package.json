@@ -26,6 +26,7 @@
     "@babel/core": "^7.19.1",
     "@openshift-console/dynamic-plugin-sdk": "0.0.12",
     "@openshift-console/dynamic-plugin-sdk-webpack": "0.0.7",
+    "@patternfly/patternfly": "^4.215.1",
     "@patternfly/react-core": "4.221.3",
     "@patternfly/react-table": "^4.108.0",
     "@storybook/addon-actions": "^6.5.12",

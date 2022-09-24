@@ -1,8 +1,8 @@
 {
-  "name": "console-plugin-template",
+  "name": "amq-self-provisioning-plugin",
   "version": "0.0.1",
   "private": true,
-  "repository": "git@github.com:spadgett/console-plugin-template.git",
+  "repository": "git@github.com:ajaypratap003/amq-self-provisioning-plugin.git",
   "scripts": {
     "clean": "rm -rf dist",
     "build": "yarn clean && NODE_ENV=production yarn ts-node node_modules/.bin/webpack",
@@ -17,6 +17,7 @@
     "@openshift-console/dynamic-plugin-sdk": "0.0.12",
     "@openshift-console/dynamic-plugin-sdk-webpack": "0.0.7",
     "@patternfly/react-core": "4.221.3",
+    "@patternfly/react-table": "^4.108.0",
     "@types/node": "^18.0.0",
     "@types/react": "^17.0.37",
     "@types/react-helmet": "^6.1.4",
@@ -48,12 +49,13 @@
     "webpack-dev-server": "^4.7.4"
   },
   "consolePlugin": {
-    "name": "console-plugin-template",
+    "name": "amq-self-provisioning-plugin",
     "version": "0.0.1",
-    "displayName": "OpenShift Console Plugin Template",
-    "description": "Template project for OpenShift console plugins. Edit package.json to change this message and the plugin name.",
+    "displayName": "AMQ Self Provisioning Plugin",
+    "description": "AMQ Self Provisioning Plugin",
     "exposedModules": {
-      "ExamplePage": "./components/ExamplePage"
+      "BrokersPage": "./components/BrokersPage",
+      "ExampleTab": "./components/ExampleTab"
     },
     "dependencies": {
       "@console/pluginAPI": "*"

@@ -3,18 +3,42 @@
     "type": "console.page/route",
     "properties": {
       "exact": true,
-      "path": "/example",
-      "component": { "$codeRef": "ExamplePage" }
+      "path": "/brokers",
+      "component": { "$codeRef": "BrokersPage" }
+    }
+  },
+  {
+    "type": "console.navigation/section",
+    "properties": {
+      "id": "amq-online",
+      "perspective": "admin",
+      "name": "AMQ Online",
+      "dataAttributes": { "data-quickstart-id": "qs-nav-home" }
     }
   },
   {
     "type": "console.navigation/href",
     "properties": {
-      "id": "example",
-      "name": "Plugin Example",
-      "href": "/example",
+      "id": "brokers",
+      "name": "AMQ Self Provisioning",
+      "href": "/brokers",
       "perspective": "admin",
-      "section": "home"
+      "section": "amq-online"
+    }
+  },
+  {
+    "type": "console.tab/horizontalNav",
+    "properties": {
+      "page": {
+        "name": "Example Tab",
+        "href": "example"
+      },
+      "model": {
+        "group": "core",
+        "version": "v1",
+        "kind": "Pod"
+      },
+      "component": { "$codeRef": "ExampleTab" }
     }
   }
 ]

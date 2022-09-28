@@ -1,10 +1,10 @@
 {
-  "name": "artemis-self-provisioning-plugin",
+  "name": "activemq-activemq-artemis-self-provisioning-plugin",
   "version": "0.0.1",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:artemiscloud/artemis-self-provisioning-plugin.git"
+    "url": "git+ssh://git@github.com:artemiscloud/activemq-activemq-artemis-self-provisioning-plugin.git"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -74,7 +74,7 @@
     "webpack-dev-server": "4.11.1"
   },
   "consolePlugin": {
-    "name": "artemis-self-provisioning-plugin",
+    "name": "activemq-artemis-self-provisioning-plugin",
     "version": "0.0.1",
     "displayName": "Artemis Self Provisioning Plugin",
     "description": "Artemis Self Provisioning Plugin",
@@ -88,9 +88,9 @@
   },
   "dependencies": {},
   "bugs": {
-    "url": "https://github.com/artemiscloud/artemis-self-provisioning-plugin/issues"
+    "url": "https://github.com/artemiscloud/activemq-artemis-self-provisioning-plugin/issues"
   },
   "readme": "ERROR: No README data found!",
-  "homepage": "https://github.com/artemiscloud/artemis-self-provisioning-plugin#readme",
-  "_id": "artemis-self-provisioning-plugin@0.0.1"
+  "homepage": "https://github.com/artemiscloud/activemq-artemis-self-provisioning-plugin#readme",
+  "_id": "activemq-artemis-self-provisioning-plugin@0.0.1"
 }

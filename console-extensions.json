@@ -18,9 +18,9 @@
   {
     "type": "console.navigation/section",
     "properties": {
-      "id": "artemis",
+      "id": "activemq",
       "perspective": "admin",
-      "name": "Artemis",
+      "name": "ActiveMQ Artemis",
       "dataAttributes": { "data-quickstart-id": "qs-nav-home" }
     }
   },
@@ -28,17 +28,17 @@
     "type": "console.navigation/href",
     "properties": {
       "id": "brokers",
-      "name": "Artemis Self Provisioning",
+      "name": "ActiveMQ Artemis Self Provisioning",
       "href": "/brokers",
       "perspective": "admin",
-      "section": "artemis"
+      "section": "activemq"
     }
   },
   {
     "type": "console.tab/horizontalNav",
     "properties": {
       "page": {
-        "name": "Artemis Self Provisioning",
+        "name": "ActiveMQ Artemis",
         "href": "artemis-tab"
       },
       "model": {

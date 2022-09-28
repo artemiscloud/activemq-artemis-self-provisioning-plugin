@@ -1,6 +1,6 @@
-# OpenShift AMQ Self Provisioning Plugin
+# Artemis Self Provisioning Plugin
 
-This project is a simple plugin that adds a AMQ Self Provisioning nav item to the
+This project is a simple plugin that adds a Artemis Self Provisioning nav item to the
 Administrator perspective in OpenShift console. It requires OpenShift 4.10 to
 use.
 
@@ -24,18 +24,18 @@ Navigate to <http://localhost:9000> to see the running plugin.
 
 1. Build the image:
    ```sh
-   docker build -t quay.io/$USER/my-repository/amq-self-provision-plugin:latestt .
+   docker build -t quay.io/$USER/artemis-self-provisioning-plugin:latestt .
    ```
 2. Run the image:
    ```sh
-   docker run -it --rm -d -p 9001:80 quay.io/$USER/my-repository/amq-self-provision-plugin:latest
+   docker run -it --rm -d -p 9001:80 quay.io/$USER/artemis-self-provisioning-plugin:latest
    ```
 3. Push the image to image registry:
    ```sh
-   docker push quay.io/$USER/my-repository/amq-self-provision-plugin:latest
+   docker push quay.io/$USER/artemis-self-provisioning-plugin:latest
    ```
 
-Update and apply `manifest.yaml` to use a amq-self-provision-plugin plugin image.
+Update and apply `manifest.yaml` to use a artemis-self-provisioning-plugin image.
 
 ## Deployment on cluster
 
@@ -50,5 +50,5 @@ Once deployed, patch the
 config to enable the plugin.
 
 ```sh
-oc patch consoles.operator.openshift.io cluster --patch '{ "spec": { "plugins": ["amq-self-provisioning-plugin"] } }' --type=merge
+oc patch consoles.operator.openshift.io cluster --patch '{ "spec": { "plugins": ["artemis-self-provisioning-plugin"] } }' --type=merge
 ```

@@ -18,9 +18,9 @@
   {
     "type": "console.navigation/section",
     "properties": {
-      "id": "amq-online",
+      "id": "artemis",
       "perspective": "admin",
-      "name": "AMQ Online",
+      "name": "Artemis",
       "dataAttributes": { "data-quickstart-id": "qs-nav-home" }
     }
   },
@@ -28,18 +28,18 @@
     "type": "console.navigation/href",
     "properties": {
       "id": "brokers",
-      "name": "AMQ Self Provisioning",
+      "name": "Artemis Self Provisioning",
       "href": "/brokers",
       "perspective": "admin",
-      "section": "amq-online"
+      "section": "artemis"
     }
   },
   {
     "type": "console.tab/horizontalNav",
     "properties": {
       "page": {
-        "name": "Example Tab",
-        "href": "example"
+        "name": "Artemis Self Provisioning",
+        "href": "artemis-tab"
       },
       "model": {
         "group": "core",

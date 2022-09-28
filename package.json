@@ -1,10 +1,10 @@
 {
-  "name": "amq-self-provisioning-plugin",
+  "name": "artemis-self-provisioning-plugin",
   "version": "0.0.1",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/ajaypratap003/amq-self-provisioning-plugin.git"
+    "url": "git+ssh://git@github.com:artemiscloud/artemis-self-provisioning-plugin.git"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -20,7 +20,8 @@
     "chromatic": "chromatic",
     "test-storybook": "test-storybook --maxWorkers=1",
     "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn run build-storybook && npx http-server storybook-static --port 6006 --silent\" \"wait-on tcp:6006 && yarn run test-storybook\"",
-    "test": "TZ=UTC jest --runInBand"
+    "test": "TZ=UTC jest --runInBand",
+    "test:generate-output": "yarn run test -- --json --outputFile=.jest-test-results.json"
   },
   "devDependencies": {
     "@babel/core": "7.19.3",
@@ -73,10 +74,10 @@
     "webpack-dev-server": "4.11.1"
   },
   "consolePlugin": {
-    "name": "amq-self-provisioning-plugin",
+    "name": "artemis-self-provisioning-plugin",
     "version": "0.0.1",
-    "displayName": "AMQ Self Provisioning Plugin",
-    "description": "AMQ Self Provisioning Plugin",
+    "displayName": "Artemis Self Provisioning Plugin",
+    "description": "Artemis Self Provisioning Plugin",
     "exposedModules": {
       "BrokersPage": "./components/BrokersPage",
       "ExampleTab": "./components/ExampleTab"
@@ -87,9 +88,9 @@
   },
   "dependencies": {},
   "bugs": {
-    "url": "https://github.com/ajaypratap003/amq-self-provisioning-plugin/issues"
+    "url": "https://github.com/artemiscloud/artemis-self-provisioning-plugin/issues"
   },
   "readme": "ERROR: No README data found!",
-  "homepage": "https://github.com/ajaypratap003/amq-self-provisioning-plugin#readme",
-  "_id": "amq-self-provisioning-plugin@0.0.1"
+  "homepage": "https://github.com/artemiscloud/artemis-self-provisioning-plugin#readme",
+  "_id": "artemis-self-provisioning-plugin@0.0.1"
 }

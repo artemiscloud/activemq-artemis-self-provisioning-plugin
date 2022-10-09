@@ -1,3 +1,4 @@
+import { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 import {
   TableComposable,
@@ -27,7 +28,7 @@ type Broker = {
   created: string;
 };
 
-const BrokersPage = () => {
+const BrokersPage: FunctionComponent = () => {
   const brokers: Broker[] = [
     { name: 'build-infra', status: 'Active', size: 2, created: '4 hours ago' },
     {

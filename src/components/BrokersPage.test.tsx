@@ -1,5 +1,5 @@
 import { composeStories } from '@storybook/testing-react';
-import { render } from '@testing-library/react';
+import { render } from '../test-utils';
 import * as stories from './BrokersPage.stories';
 
 const { BrokersPageStory } = composeStories(stories);

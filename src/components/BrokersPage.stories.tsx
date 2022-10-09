@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { MemoryRouter } from 'react-router-dom';
 
 import BrokersPage from './BrokersPage';
@@ -6,14 +6,13 @@ import BrokersPage from './BrokersPage';
 export default {
   title: 'Components/BrokersPage',
   component: BrokersPage,
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
+  args: {},
 } as ComponentMeta<typeof BrokersPage>;
 
-const Template: ComponentStory<typeof BrokersPage> = () => (
+const Template: ComponentStory<typeof BrokersPage> = (args) => (
   <MemoryRouter>
-    <BrokersPage />
+    <BrokersPage {...args} />
   </MemoryRouter>
 );
+
 export const BrokersPageStory = Template.bind({});

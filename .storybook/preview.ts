@@ -11,11 +11,12 @@ import '@patternfly/react-core/dist/styles/base.css';
 import { withTests } from "@storybook/addon-jest";
 import { DecoratorFunction } from "@storybook/csf";
 import { Parameters, ReactFramework } from "@storybook/react/types-6-0";
+import { withLayout } from "./withLayout";
 
 let results = {};
 try {
   results = require("../.jest-test-results.json");
-} catch (e) {}
+} catch (e) { }
 
 export const parameters: Parameters = {
   layout: "fullscreen",
@@ -128,5 +129,6 @@ export const decorators: DecoratorFunction<ReactFramework>[] = [
   withTests({
     results,
     filesExt: '.test.tsx',
-  })
+  }),
+  withLayout
 ];

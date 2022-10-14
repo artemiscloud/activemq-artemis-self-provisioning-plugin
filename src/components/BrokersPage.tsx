@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   TableComposable,
@@ -15,7 +16,15 @@ import {
   Button,
   Page,
   PageSection,
+  PageSectionVariants,
 } from '@patternfly/react-core';
+import {
+  K8sResourceCommon,
+  k8sListItems,
+} from '@openshift-console/dynamic-plugin-sdk';
+import { BrokerModel } from '../k8s';
+import { Loading } from '../shared-components';
+import { getFormattedDate } from '../utils';
 import './BrokersPage.css';
 
 type Status = 'Active' | 'Disabled';
@@ -27,22 +36,17 @@ type Broker = {
   created: string;
 };
 
+type K8sResourceBroker = K8sResourceCommon & {
+  spec: {
+    deploymentPlan: {
+      size: number;
+    };
+  };
+};
+
 const BrokersPage = () => {
-  const brokers: Broker[] = [
-    { name: 'build-infra', status: 'Active', size: 2, created: '4 hours ago' },
-    {
-      name: 'order-processing',
-      status: 'Active',
-      size: 3,
-      created: '3 days ago',
-    },
-    {
-      name: 'notifications',
-      status: 'Disabled',
-      size: 1,
-      created: '2 hours ago',
-    },
-  ];
+  const [brokers, setBrokers] = useState<Broker[]>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const columnNames = {
     name: 'Name',
@@ -51,42 +55,81 @@ const BrokersPage = () => {
     created: 'Created',
   };
 
+  const OptionsList = {
+    model: BrokerModel,
+    queryParams: {},
+    requestInit: {},
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    k8sListItems<K8sResourceBroker>(OptionsList)
+      .then((res) => {
+        const brokers = res?.map((br) => ({
+          name: br.metadata.name,
+          status: 'Active' as Status,
+          size: br?.spec?.deploymentPlan?.size,
+          created: br.metadata.creationTimestamp,
+        }));
+
+        setBrokers(brokers);
+      })
+      .catch(() => {
+        console.error('Brokers not found');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <Loading />;
+
   return (
     <Page>
-      <PageSection variant="light">
+      <PageSection variant={PageSectionVariants.light}>
         <Level hasGutter>
           <LevelItem>Brokers</LevelItem>
           <LevelItem>
             <Button>Create broker</Button>
           </LevelItem>
         </Level>
-        <TableComposable
-          aria-label="Brokers table"
-          variant={TableVariant.compact}
-          borders={false}
-        >
-          <Thead>
-            <Tr>
-              <Th>{columnNames.name}</Th>
-              <Th>{columnNames.status}</Th>
-              <Th>{columnNames.size}</Th>
-              <Th>{columnNames.created}</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {brokers.map((br) => (
-              <Tr key={br.name}>
-                <Td dataLabel={columnNames.name}>
-                  <Link to="/brokers/broker">{br.name}</Link>
-                </Td>
-                <Td dataLabel={columnNames.status}>{br.status}</Td>
-                <Td dataLabel={columnNames.size}>{br.size}</Td>
-                <Td dataLabel={columnNames.created}>{br.created}</Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </TableComposable>
-        <Divider />
+        {brokers?.length > 0 ? (
+          <>
+            <TableComposable
+              aria-label="Brokers table"
+              variant={TableVariant.compact}
+              borders={false}
+            >
+              <Thead>
+                <Tr>
+                  <Th>{columnNames.name}</Th>
+                  <Th>{columnNames.status}</Th>
+                  <Th>{columnNames.size}</Th>
+                  <Th>{columnNames.created}</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {brokers?.map((br) => (
+                  <Tr key={br.name}>
+                    <Td dataLabel={columnNames.name}>
+                      <Link to={`brokers/${br.name}`}>
+                        {br.name}
+                      </Link>
+                    </Td>
+                    <Td dataLabel={columnNames.status}>{br.status}</Td>
+                    <Td dataLabel={columnNames.size}>{br.size}</Td>
+                    <Td dataLabel={columnNames.created}>
+                      {getFormattedDate(br.created, 'ago')}
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </TableComposable>
+            <Divider />
+          </>
+        ) : (
+          <>Brokers not found</>
+        )}
       </PageSection>
     </Page>
   );

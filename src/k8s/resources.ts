@@ -1,5 +1,4 @@
 import { K8sResourceCommon, K8sModel } from '@openshift-console/dynamic-plugin-sdk';
-import { chart_color_red_300 as Color } from '@patternfly/react-tokens/dist/js/chart_color_red_300';
 
 export const BrokerModel: K8sModel = {
     apiGroup: 'broker.amq.io',
@@ -14,7 +13,6 @@ export const BrokerModel: K8sModel = {
     abbr: 'B',
     namespaced: false,
     crd: true,
-    color: Color.value,
 };
 
 export const referenceFor = (group: string, version: string, kind: string) =>

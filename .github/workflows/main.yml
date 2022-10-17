@@ -22,13 +22,13 @@ jobs:
         with:
           node-version: 16.6.2
 
-      - name: Build storybook
-        run: |
-          # yarn run test:generate-output
-          yarn run build-storybook -- --quiet --loglevel silent
+      # - name: Build storybook
+      #   run: |
+      #     # yarn run test:generate-output
+      #     yarn run build-storybook -- --quiet --loglevel silent
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.4.0
-        with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: storybook-static # The folder the action should deploy.
+      # - name: Deploy 🚀
+      #   uses: JamesIves/github-pages-deploy-action@v4.4.0
+      #   with:
+      #     branch: gh-pages # The branch the action should deploy to.
+      #     folder: storybook-static # The folder the action should deploy.

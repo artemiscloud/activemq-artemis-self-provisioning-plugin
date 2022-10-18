@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import {
   TableComposable,
@@ -18,71 +18,28 @@ import {
   PageSection,
   PageSectionVariants,
 } from '@patternfly/react-core';
-import {
-  K8sResourceCommon,
-  k8sListItems,
-} from '@openshift-console/dynamic-plugin-sdk';
-import { BrokerModel } from '../k8s';
-import { Loading } from '../shared-components';
-import { getFormattedDate } from '../utils';
-import './BrokersPage.css';
+import { getFormattedDate } from '../../utils';
 
-type Status = 'Active' | 'Disabled';
+export type Status = 'Active' | 'Disabled';
 
-type Broker = {
+export type Broker = {
   name: string;
   status: Status;
   size: number;
   created: string;
 };
 
-type K8sResourceBroker = K8sResourceCommon & {
-  spec: {
-    deploymentPlan: {
-      size: number;
-    };
-  };
+export type BrokersProps = {
+  brokers: Broker[];
 };
 
-const BrokersPage = () => {
-  const [brokers, setBrokers] = useState<Broker[]>();
-  const [loading, setLoading] = useState<boolean>(false);
-
+const Brokers: FC<BrokersProps> = ({ brokers }) => {
   const columnNames = {
     name: 'Name',
     status: 'Status',
     size: 'Size',
     created: 'Created',
   };
-
-  const OptionsList = {
-    model: BrokerModel,
-    queryParams: {},
-    requestInit: {},
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    k8sListItems<K8sResourceBroker>(OptionsList)
-      .then((res) => {
-        const brokers = res?.map((br) => ({
-          name: br.metadata.name,
-          status: 'Active' as Status,
-          size: br?.spec?.deploymentPlan?.size,
-          created: br.metadata.creationTimestamp,
-        }));
-
-        setBrokers(brokers);
-      })
-      .catch(() => {
-        console.error('Brokers not found');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) return <Loading />;
 
   return (
     <Page>
@@ -112,9 +69,7 @@ const BrokersPage = () => {
                 {brokers?.map((br) => (
                   <Tr key={br.name}>
                     <Td dataLabel={columnNames.name}>
-                      <Link to={`brokers/${br.name}`}>
-                        {br.name}
-                      </Link>
+                      <Link to={`brokers/${br.name}`}>{br.name}</Link>
                     </Td>
                     <Td dataLabel={columnNames.status}>{br.status}</Td>
                     <Td dataLabel={columnNames.size}>{br.size}</Td>
@@ -135,4 +90,4 @@ const BrokersPage = () => {
   );
 };
 
-export default BrokersPage;
+export { Brokers };

@@ -72,27 +72,27 @@ jobs:
       - name: Check for uncommited changes
         run: git diff --quiet --exit-code
 
-  # chromatic:
-  #   needs:
-  #     - build
-  #   # Operating System
-  #   runs-on: ubuntu-latest
-  #   # Job steps
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
+  chromatic:
+    needs:
+      - build
+    # Operating System
+    runs-on: ubuntu-latest
+    # Job steps
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-  #     - uses: ./.github/actions/cache-restore
-  #       id: cache-node-modules
-  #       with:
-  #         node-version: 16.6.2
+      - uses: ./.github/actions/cache-restore
+        id: cache-node-modules
+        with:
+          node-version: 16.6.2
 
-  #       #👇 Adds Chromatic as a step in the workflow
-  #     - uses: chromaui/action@v1
-  #       # Options required for Chromatic's GitHub Action
-  #       with:
-  #         #👇 Chromatic projectToken, see https://storybook.js.org/tutorials/intro-to-storybook/react/en/deploy/ to obtain it
-  #         projectToken: 945549cfa7c1
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         exitOnceUploaded: true
+        #👇 Adds Chromatic as a step in the workflow
+      - uses: chromaui/action@v1
+        # Options required for Chromatic's GitHub Action
+        with:
+          #👇 Chromatic projectToken, see https://storybook.js.org/tutorials/intro-to-storybook/react/en/deploy/ to obtain it
+          projectToken: 945549cfa7c1
+          token: ${{ secrets.GITHUB_TOKEN }}
+          exitOnceUploaded: true

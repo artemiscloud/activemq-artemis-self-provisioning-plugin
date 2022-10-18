@@ -3,7 +3,7 @@
     "type": "console.page/route",
     "properties": {
       "exact": true,
-      "path": "/brokers",
+      "path": ["/k8s/ns/:ns/brokers", "/k8s/all-namespaces/brokers"],
       "component": { "$codeRef": "BrokersPage" }
     }
   },
@@ -11,7 +11,7 @@
     "type": "console.page/route",
     "properties": {
       "exact": true,
-      "path": "/brokers/broker",
+      "path": ["/k8s/ns/:ns/brokers/:broker","k8s/all-namespaces/brokers/:broker"],
       "component": { "$codeRef": "ExampleTab" }
     }
   },
@@ -29,7 +29,7 @@
     "properties": {
       "id": "brokers",
       "name": "ActiveMQ Artemis Self Provisioning",
-      "href": "/brokers",
+      "href": "/k8s/all-namespaces/brokers",
       "perspective": "admin",
       "section": "activemq"
     }

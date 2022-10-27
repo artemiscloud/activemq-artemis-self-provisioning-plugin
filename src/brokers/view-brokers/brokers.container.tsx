@@ -1,33 +1,21 @@
 import { useEffect, useState, FC } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
-  K8sResourceCommon,
   k8sListItems,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { BrokerModel } from '../../k8s';
+import { AMQBrokerModel, K8sResourceKind } from '../../utils';
 import { Loading } from '../../shared-components';
 import { Brokers, Broker, Status } from './brokers.component';
 
-export type K8sResourceBroker = K8sResourceCommon & {
-  spec: {
-    deploymentPlan: {
-      size: number;
-    };
-  };
-};
-
 const BrokersContainer: FC = () => {
+  const history = useHistory();
+
   const [brokers, setBrokers] = useState<Broker[]>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const OptionsList = {
-    model: BrokerModel,
-    queryParams: {},
-    requestInit: {},
-  };
-
   useEffect(() => {
     setLoading(true);
-    k8sListItems<K8sResourceBroker>(OptionsList)
+    k8sListItems<K8sResourceKind>({model: AMQBrokerModel, queryParams:{}})
       .then((res) => {
         const brokers = res?.map((br) => ({
           name: br.metadata.name,
@@ -46,9 +34,15 @@ const BrokersContainer: FC = () => {
       });
   }, []);
 
+  const onClickCreateBorker = () => {
+    history.push(`add-broker`);
+  };
+
   if (loading) return <Loading />;
 
-  return <Brokers brokers={brokers} />;
+  return (
+    <Brokers brokers={brokers} onClickCreateBorker={onClickCreateBorker} />
+  );
 };
 
 export default BrokersContainer;

@@ -31,9 +31,10 @@ export type Broker = {
 
 export type BrokersProps = {
   brokers: Broker[];
+  onClickCreateBorker: () => void;
 };
 
-const Brokers: FC<BrokersProps> = ({ brokers }) => {
+const Brokers: FC<BrokersProps> = ({ brokers, onClickCreateBorker }) => {
   const columnNames = {
     name: 'Name',
     status: 'Status',
@@ -47,7 +48,7 @@ const Brokers: FC<BrokersProps> = ({ brokers }) => {
         <Level hasGutter>
           <LevelItem>Brokers</LevelItem>
           <LevelItem>
-            <Button>Create broker</Button>
+            <Button onClick={onClickCreateBorker}>Create broker</Button>
           </LevelItem>
         </Level>
         {brokers?.length > 0 ? (

@@ -1,54 +1,69 @@
 import { useEffect, useState, FC } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
+import { k8sListItems, k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import {
+  AMQBrokerModel,
+  K8sResourceKind,
   K8sResourceCommon,
-  k8sListItems,
-} from '@openshift-console/dynamic-plugin-sdk';
-import { BrokerModel } from '../../k8s';
-import { Loading } from '../../shared-components';
-import { Brokers, Broker, Status } from './brokers.component';
+} from '../../utils';
+import { BrokersPage } from './brokers.component';
 
-export type K8sResourceBroker = K8sResourceCommon & {
-  spec: {
-    deploymentPlan: {
-      size: number;
-    };
-  };
-};
+export type BrokersContainerProps = RouteComponentProps<{ ns?: string }>;
 
-const BrokersContainer: FC = () => {
-  const [brokers, setBrokers] = useState<Broker[]>();
-  const [loading, setLoading] = useState<boolean>(false);
+const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
+  const namespace = match.params.ns;
+  //states
+  const [brokers, setBrokers] = useState<K8sResourceKind[]>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [loadError, setLoadError] = useState<any>();
 
-  const OptionsList = {
-    model: BrokerModel,
-    queryParams: {},
-    requestInit: {},
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    k8sListItems<K8sResourceBroker>(OptionsList)
-      .then((res) => {
-        const brokers = res?.map((br) => ({
-          name: br.metadata.name,
-          status: 'Active' as Status,
-          size: br?.spec?.deploymentPlan?.size,
-          created: br.metadata.creationTimestamp,
-        }));
-
+  const fetchk8sListItems = () => {
+    setLoading(false);
+    k8sListItems<K8sResourceKind>({
+      model: AMQBrokerModel,
+      queryParams: { ns: namespace },
+    })
+      .then((brokers) => {
         setBrokers(brokers);
       })
-      .catch(() => {
+      .catch((e) => {
+        setLoadError(e.message);
         console.error('Brokers not found');
       })
       .finally(() => {
-        setLoading(false);
+        setLoading(true);
       });
-  }, []);
+  };
 
-  if (loading) return <Loading />;
+  useEffect(() => {
+    fetchk8sListItems();
+  }, [namespace]);
 
-  return <Brokers brokers={brokers} />;
+  const onEditBroker = (broker: K8sResourceCommon) => {};
+
+  const onDeleteBroker = (broker: K8sResourceCommon) => {
+    k8sDelete({
+      model: AMQBrokerModel,
+      resource: { ...broker },
+    })
+      .then((res) => {
+        fetchk8sListItems();
+        console.log(res);
+      })
+      .catch((e) => {
+        setLoadError(e.message);
+      });
+  };
+
+  return (
+    <BrokersPage
+      brokers={brokers}
+      loadError={loadError}
+      loaded={loading}
+      onDeleteBroker={onDeleteBroker}
+      onEditBroker={onEditBroker}
+    />
+  );
 };
 
 export default BrokersContainer;

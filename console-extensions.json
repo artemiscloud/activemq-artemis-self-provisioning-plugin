@@ -11,7 +11,15 @@
     "type": "console.page/route",
     "properties": {
       "exact": true,
-      "path": ["/k8s/ns/:ns/brokers/:broker","k8s/all-namespaces/brokers/:broker"],
+      "path": ["/k8s/ns/:ns/add-broker", "/k8s/all-namespaces/add-broker"],
+      "component": { "$codeRef": "AddBroker" }
+    }
+  },
+  {
+    "type": "console.page/route",
+    "properties": {
+      "exact": false,
+      "path": ["/k8s/ns/:ns/brokers/:broker","/k8s/all-namespaces/brokers/:broker"],
       "component": { "$codeRef": "ExampleTab" }
     }
   },

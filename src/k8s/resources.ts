@@ -1,19 +1,4 @@
-import { K8sResourceCommon, K8sModel } from '@openshift-console/dynamic-plugin-sdk';
-
-export const BrokerModel: K8sModel = {
-    apiGroup: 'broker.amq.io',
-    apiVersion: 'v1beta1',
-    kind: 'ActiveMQArtemisList',
-    label: 'Broker',
-    labelKey: 'Brokers',
-    labelPlural: 'Brokers',
-    labelPluralKey: 'activemqartemises',
-    plural: 'activemqartemises',
-    id: 'broker',
-    abbr: 'B',
-    namespaced: false,
-    crd: true,
-};
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 
 export const referenceFor = (group: string, version: string, kind: string) =>
     `${group}~${version}~${kind}`;

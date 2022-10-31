@@ -6,7 +6,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { Alert, AlertGroup, Page, PageSection } from '@patternfly/react-core';
 import { AMQBrokerModel } from '../../utils';
-import { EditorPage } from './add-broker-form.component';
+import { AddBrokerForm } from './components';
 
 type AddBrokerProps = RouteComponentProps<{ ns?: string }>;
 
@@ -44,7 +44,7 @@ const AddBroker: FC<AddBrokerProps> = ({ match }) => {
             />
           </AlertGroup>
         )}
-        <EditorPage onCreateBroker={k8sCreateBroker} namespace={namespace} />
+        <AddBrokerForm onCreateBroker={k8sCreateBroker} namespace={namespace} />
       </PageSection>
     </Page>
   );

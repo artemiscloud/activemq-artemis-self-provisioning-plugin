@@ -5,15 +5,18 @@ import {
   ResourceYAMLEditor,
   useAccessReview,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { AMQBrokerModel } from '../../utils';
-import { Loading } from '../../shared-components';
+import { AMQBrokerModel } from '../../../../utils';
+import { Loading } from '../../../../shared-components';
 
-export type EditorPageProps = {
+export type AddBrokerFormProps = {
   onCreateBroker: (content: any) => void;
   namespace: string;
 };
 
-const EditorPage: FC<EditorPageProps> = ({ onCreateBroker, namespace }) => {
+const AddBrokerForm: FC<AddBrokerFormProps> = ({
+  onCreateBroker,
+  namespace,
+}) => {
   const initialResourceYAML = {
     apiVersion: 'broker.amq.io/v1beta1',
     kind: 'ActiveMQArtemis',
@@ -23,6 +26,8 @@ const EditorPage: FC<EditorPageProps> = ({ onCreateBroker, namespace }) => {
     },
     spec: {
       deploymentPlan: {
+        image: 'placeholder',
+        requireLogin: false,
         size: 1,
       },
     },
@@ -68,4 +73,4 @@ const EditorPage: FC<EditorPageProps> = ({ onCreateBroker, namespace }) => {
   );
 };
 
-export { EditorPage };
+export { AddBrokerForm };

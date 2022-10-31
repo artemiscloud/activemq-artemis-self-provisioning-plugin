@@ -1,6 +1,6 @@
 import { getAPIVersionForModel } from "@openshift-console/dynamic-plugin-sdk";
 import { AddBrokerFormYamlValues, BrokerFormData } from "./import-types";
-import { K8sResourceKind, safeJSToYAML, AMQBrokerModel, UNASSIGNED_APPLICATIONS_KEY, LABEL_PART_OF } from "../../utils";
+import { K8sResourceKind, AMQBrokerModel, UNASSIGNED_APPLICATIONS_KEY, LABEL_PART_OF } from "../../utils";
 import { EditorType } from "../synced-editor";
 
 export const convertFormToBrokerYaml = (formData: BrokerFormData): K8sResourceKind => {
@@ -46,17 +46,17 @@ export const addBrokerInitialValues = (
         //     selectedKey: selectedApplication,
         // },
     };
-    const initialYamlData: string = safeJSToYAML(
-        convertFormToBrokerYaml(initialFormData),
-        'yamlData',
-        {
-            skipInvalid: true,
-        },
-    );
+    // const initialYamlData: string = safeJSToYAML(
+    //     convertFormToBrokerYaml(initialFormData),
+    //     'yamlData',
+    //     {
+    //         skipInvalid: true,
+    //     },
+    // );
     return {
         showCanUseYAMLMessage: true,
         editorType: EditorType.Form,
-        yamlData: initialYamlData,
+        yamlData: "",//initialYamlData,
         formData: initialFormData,
     };
 };

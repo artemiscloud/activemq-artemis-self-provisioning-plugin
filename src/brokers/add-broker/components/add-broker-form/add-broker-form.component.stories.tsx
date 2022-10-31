@@ -1,16 +1,16 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { EditorPage } from './add-broker-form.component';
+import { AddBrokerForm } from './add-broker-form.component';
 
 export default {
-  title: 'Components/EditorPage',
-  component: EditorPage,
+  title: 'Components/AddBrokerForm',
+  component: AddBrokerForm,
   argTypes: {
     backgroundColor: { control: 'color' },
   },
-} as ComponentMeta<typeof EditorPage>;
+} as ComponentMeta<typeof AddBrokerForm>;
 
-const Template: ComponentStory<typeof EditorPage> = (args) => {
-  return <EditorPage {...args}/>;
+const Template: ComponentStory<typeof AddBrokerForm> = (args) => {
+  return <AddBrokerForm {...args} />;
 };
 
-export const EditorPageStory = Template.bind({});
+export const AddBrokerFormStory = Template.bind({});

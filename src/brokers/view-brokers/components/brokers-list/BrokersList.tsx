@@ -17,8 +17,12 @@ const columns: TableColumn<K8sResourceCommon>[] = [
     id: 'name',
   },
   {
-    title: 'Status',
-    id: 'status',
+    title: 'Ready',
+    id: 'ready',
+  },
+  {
+    title: 'Conditions',
+    id: 'conditions',
   },
   {
     title: 'Size',

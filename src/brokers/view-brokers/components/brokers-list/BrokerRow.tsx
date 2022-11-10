@@ -7,7 +7,12 @@ import {
   Timestamp,
 } from '@openshift-console/dynamic-plugin-sdk';
 import { ActionsColumn, IAction } from '@patternfly/react-table';
-import { K8sResourceCommon } from '../../../../utils';
+import {
+  K8sResourceCommon,
+  BrokerConditionTypes,
+  getCondition,
+  getConditionString,
+} from '../../../../utils';
 
 export type BrokerRowProps = RowProps<K8sResourceCommon> & {
   columns: TableColumn<K8sResourceCommon>[];
@@ -27,7 +32,12 @@ export const BrokerRow: FC<BrokerRowProps> = ({
     spec: {
       deploymentPlan: { size },
     },
+    status,
   } = obj;
+
+  const readyCondition = status
+    ? getCondition(obj.status.conditions, BrokerConditionTypes.Ready)
+    : null;
 
   const rowActions: IAction[] = [
     {
@@ -46,15 +56,20 @@ export const BrokerRow: FC<BrokerRowProps> = ({
         <Link to={`brokers/${name}`}>{name}</Link>
       </TableData>
       <TableData id={columns[1].id} activeColumnIDs={activeColumnIDs}>
-        {'Active'}
+        {(readyCondition && readyCondition.status) || '-'}
       </TableData>
       <TableData id={columns[2].id} activeColumnIDs={activeColumnIDs}>
-        {size}
+        {status ? getConditionString(status?.conditions) : '-'}
       </TableData>
       <TableData id={columns[3].id} activeColumnIDs={activeColumnIDs}>
+        {size}
+      </TableData>
+      <TableData id={columns[4].id} activeColumnIDs={activeColumnIDs}>
         <Timestamp timestamp={creationTimestamp} />
       </TableData>
-      <ActionsColumn items={rowActions} />
+      <TableData id={columns[5].id} activeColumnIDs={activeColumnIDs}>
+        <ActionsColumn items={rowActions} />
+      </TableData>
     </>
   );
 };

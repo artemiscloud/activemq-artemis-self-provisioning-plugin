@@ -10,3 +10,11 @@ export type K8sResourceCommon = K8sResource & {
 export type K8sResourceKind = K8sResourceCommon & {
     data?: { [key: string]: any };
 };
+
+export enum BrokerConditionTypes {
+    Ready = 'Ready',
+    Addressable = 'Addressable',
+    FilterReady = 'FilterReady',
+    IngressReady = 'IngressReady',
+    TriggerChannelReady = 'TriggerChannelReady',
+}

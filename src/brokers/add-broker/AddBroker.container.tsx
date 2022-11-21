@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
-import { AddBroker } from './add-broker.component';
+import { AddBroker } from './AddBroker.component';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
 
 type AddBrokerPageProps = RouteComponentProps<{ ns?: string }>;

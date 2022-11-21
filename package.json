@@ -90,7 +90,7 @@
       "BrokersPage": "./brokers/view-brokers",
       "AddBrokerPage": "./brokers/add-broker",
       "UpdateBrokerPage":"./brokers/update-broker",
-      "ExampleTab": "./brokers/ExampleTab"
+      "BrokerDetailsPage": "./brokers/broker-details"
     },
     "dependencies": {
       "@console/pluginAPI": "*"

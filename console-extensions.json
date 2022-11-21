@@ -28,7 +28,7 @@
     "properties": {
       "exact": false,
       "path": ["/k8s/ns/:ns/brokers/:broker","/k8s/all-namespaces/brokers/:broker"],
-      "component": { "$codeRef": "ExampleTab" }
+      "component": { "$codeRef": "BrokerDetailsPage" }
     }
   },
   {
@@ -48,21 +48,6 @@
       "href": "/k8s/all-namespaces/brokers",
       "perspective": "admin",
       "section": "activemq"
-    }
-  },
-  {
-    "type": "console.tab/horizontalNav",
-    "properties": {
-      "page": {
-        "name": "ActiveMQ Artemis",
-        "href": "artemis-tab"
-      },
-      "model": {
-        "group": "core",
-        "version": "v1",
-        "kind": "Pod"
-      },
-      "component": { "$codeRef": "ExampleTab" }
     }
   }
 ]

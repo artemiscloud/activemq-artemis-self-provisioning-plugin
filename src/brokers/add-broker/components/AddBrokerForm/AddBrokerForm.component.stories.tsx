@@ -1,5 +1,5 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { AddBrokerForm } from './add-broker-form.component';
+import { AddBrokerForm } from './AddBrokerForm.component';
 
 export default {
   title: 'Components/AddBrokerForm',

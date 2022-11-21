@@ -6,7 +6,7 @@ import {
   K8sResourceKind,
   K8sResourceCommon,
 } from '../../utils';
-import { BrokersPage } from './brokers.component';
+import { BrokersList } from './components/BrokersList';
 
 export type BrokersContainerProps = RouteComponentProps<{ ns?: string }>;
 
@@ -61,7 +61,7 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
   };
 
   return (
-    <BrokersPage
+    <BrokersList
       brokers={brokers}
       loadError={loadError}
       loaded={loading}

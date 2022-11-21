@@ -5,9 +5,9 @@ import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from './add-broker.component';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
 
-type AddBrokerContainerProps = RouteComponentProps<{ ns?: string }>;
+type AddBrokerPageProps = RouteComponentProps<{ ns?: string }>;
 
-const AddBrokerContainer: FC<AddBrokerContainerProps> = ({ match }) => {
+const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
   const history = useHistory();
   const namespace = match.params.ns || 'default';
   const defaultNotification = { title: '', variant: AlertVariant.default };
@@ -57,4 +57,4 @@ const AddBrokerContainer: FC<AddBrokerContainerProps> = ({ match }) => {
   );
 };
 
-export default AddBrokerContainer;
+export default AddBrokerPage;

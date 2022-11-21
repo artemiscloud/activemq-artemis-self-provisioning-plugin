@@ -12,7 +12,7 @@
     "properties": {
       "exact": true,
       "path": ["/k8s/ns/:ns/add-broker", "/k8s/all-namespaces/add-broker"],
-      "component": { "$codeRef": "AddBroker" }
+      "component": { "$codeRef": "AddBrokerPage" }
     }
   },
   {

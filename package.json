@@ -89,6 +89,7 @@
     "exposedModules": {
       "BrokersPage": "./brokers/view-brokers",
       "AddBroker": "./brokers/add-broker",
+      "UpdateBrokerPage":"./brokers/update-broker",
       "ExampleTab": "./brokers/ExampleTab"
     },
     "dependencies": {

@@ -1,53 +1,53 @@
-import { FC, useState } from 'react';
-import { useHistory, RouteComponentProps } from 'react-router-dom';
+import { FC } from 'react';
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import {
-  k8sCreate,
-  K8sResourceCommon,
-} from '@openshift-console/dynamic-plugin-sdk';
-import { Alert, AlertGroup, Page, PageSection } from '@patternfly/react-core';
-import { AMQBrokerModel } from '../../utils';
+  Alert,
+  AlertVariant,
+  AlertGroup,
+  Page,
+  PageSection,
+} from '@patternfly/react-core';
 import { AddBrokerForm } from './components';
+import { K8sResourceCommon as K8sResourceCommonWithSpec } from '../../utils';
 
-type AddBrokerProps = RouteComponentProps<{ ns?: string }>;
-
-const AddBroker: FC<AddBrokerProps> = ({ match }) => {
-  const namespace = match.params.ns || 'default';
-  const history = useHistory();
-  const [errorMessage, setErrorMessage] = useState<string>();
-
-  const handleRedirect = () => {
-    history.push(`brokers`);
+type AddBrokerProps = {
+  onCreateBroker: (data: K8sResourceCommon) => void;
+  namespace: string;
+  initialResourceYAML: K8sResourceCommonWithSpec;
+  notification: {
+    title: string;
+    variant: AlertVariant;
   };
+};
 
-  const k8sCreateBroker = (content: K8sResourceCommon) => {
-    k8sCreate({ model: AMQBrokerModel, data: content })
-      .then(() => {
-        setErrorMessage('');
-        handleRedirect();
-      })
-      .catch((e) => {
-        setErrorMessage(e.message);
-        console.error(e);
-      });
-  };
-
+const AddBroker: FC<AddBrokerProps> = ({
+  onCreateBroker,
+  notification,
+  namespace,
+  initialResourceYAML,
+}) => {
   return (
     <Page>
       <PageSection>
-        {errorMessage && (
+        {notification.title && (
           <AlertGroup>
             <Alert
-              data-test="add-broker-error-alert"
-              title={errorMessage}
-              variant="warning"
+              data-test="add-broker-notification"
+              title={notification.title}
+              variant={notification.variant}
               isInline
+              actionClose
             />
           </AlertGroup>
         )}
-        <AddBrokerForm onCreateBroker={k8sCreateBroker} namespace={namespace} />
+        <AddBrokerForm
+          onCreateBroker={onCreateBroker}
+          namespace={namespace}
+          initialResourceYAML={initialResourceYAML}
+        />
       </PageSection>
     </Page>
   );
 };
 
-export default AddBroker;
+export { AddBroker };

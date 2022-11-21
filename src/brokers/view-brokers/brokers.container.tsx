@@ -1,5 +1,5 @@
 import { useEffect, useState, FC } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 import { k8sListItems, k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import {
   AMQBrokerModel,
@@ -11,6 +11,7 @@ import { BrokersPage } from './brokers.component';
 export type BrokersContainerProps = RouteComponentProps<{ ns?: string }>;
 
 const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
+  const history = useHistory();
   const namespace = match.params.ns;
   //states
   const [brokers, setBrokers] = useState<K8sResourceKind[]>();
@@ -39,7 +40,11 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
     fetchk8sListItems();
   }, [namespace]);
 
-  const onEditBroker = (broker: K8sResourceCommon) => {};
+  const onEditBroker = (broker: K8sResourceCommon) => {
+    const namespace = broker.metadata.namespace;
+    const name = broker.metadata.name;
+    history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
+  };
 
   const onDeleteBroker = (broker: K8sResourceCommon) => {
     k8sDelete({

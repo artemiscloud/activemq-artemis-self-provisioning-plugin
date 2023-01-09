@@ -88,8 +88,9 @@
     "description": "Artemis Self Provisioning Plugin",
     "exposedModules": {
       "BrokersPage": "./brokers/view-brokers",
-      "AddBroker": "./brokers/add-broker",
-      "ExampleTab": "./brokers/ExampleTab"
+      "AddBrokerPage": "./brokers/add-broker",
+      "UpdateBrokerPage":"./brokers/update-broker",
+      "BrokerDetailsPage": "./brokers/broker-details"
     },
     "dependencies": {
       "@console/pluginAPI": "*"

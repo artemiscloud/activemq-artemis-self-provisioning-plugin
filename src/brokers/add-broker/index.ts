@@ -1,1 +1,1 @@
-export { default } from "./add-broker.component"; 
+export { default } from "./AddBroker.container";

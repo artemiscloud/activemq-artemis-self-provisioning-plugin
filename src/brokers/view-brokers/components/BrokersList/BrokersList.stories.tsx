@@ -1,15 +1,15 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { MemoryRouter } from 'react-router-dom';
-import { BrokersPage } from './brokers.component';
-import { K8sResourceCommon } from '../../utils';
+import { BrokersList } from './BrokersList';
+import { K8sResourceCommon } from '../../../../utils';
 
 export default {
   title: 'Components/Brokers',
-  component: BrokersPage,
+  component: BrokersList,
   argTypes: {
     backgroundColor: { control: 'color' },
   },
-} as ComponentMeta<typeof BrokersPage>;
+} as ComponentMeta<typeof BrokersList>;
 
 const brokers: K8sResourceCommon[] = [
   {
@@ -231,9 +231,9 @@ const brokers: K8sResourceCommon[] = [
   },
 ];
 
-const Template: ComponentStory<typeof BrokersPage> = (args) => (
+const Template: ComponentStory<typeof BrokersList> = (args) => (
   <MemoryRouter>
-    <BrokersPage {...args} />
+    <BrokersList {...args} />
   </MemoryRouter>
 );
 

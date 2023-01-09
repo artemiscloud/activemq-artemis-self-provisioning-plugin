@@ -1,1 +1,1 @@
-export * from "./add-broker-form";
+export * from "./AddBrokerForm";

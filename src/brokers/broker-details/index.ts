@@ -1,1 +1,1 @@
-export { default } from "./BrokerDetails.component";
+export { default } from './BrokerDetails.component';

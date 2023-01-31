@@ -53,7 +53,7 @@ export const BrokerRow: FC<BrokerRowProps> = ({
   return (
     <>
       <TableData id={columns[0].id} activeColumnIDs={activeColumnIDs}>
-        <Link to={`brokers/${name}`}>{name}</Link>
+        <Link to={`/k8s/ns/${obj.metadata.namespace}/brokers/${name}`}>{name}</Link>
       </TableData>
       <TableData id={columns[1].id} activeColumnIDs={activeColumnIDs}>
         {(readyCondition && readyCondition.status) || '-'}

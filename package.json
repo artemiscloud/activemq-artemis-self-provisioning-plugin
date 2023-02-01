@@ -21,7 +21,8 @@
     "test-storybook": "test-storybook --maxWorkers=1",
     "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn run build-storybook && npx http-server storybook-static --port 6006 --silent\" \"wait-on tcp:6006 && yarn run test-storybook\"",
     "test": "TZ=UTC jest --runInBand",
-    "test:generate-output": "yarn run test -- --json --outputFile=.jest-test-results.json"
+    "test:generate-output": "yarn run test -- --json --outputFile=.jest-test-results.json",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@babel/core": "7.19.3",
@@ -61,6 +62,7 @@
     "history": "^5.3.0",
     "http-server": "14.1.1",
     "js-yaml": "^4.1.0",
+    "lint-staged": "13.1.0",
     "lodash": "^4.17.21",
     "prettier": "2.7.1",
     "prettier-stylelint": "0.4.2",
@@ -79,7 +81,8 @@
     "typescript": "4.8.4",
     "webpack": "5.74.0",
     "webpack-cli": "4.10.0",
-    "webpack-dev-server": "4.11.1"
+    "webpack-dev-server": "4.11.1",
+    "husky": "^8.0.0"
   },
   "consolePlugin": {
     "name": "activemq-artemis-self-provisioning-plugin",
@@ -89,7 +92,7 @@
     "exposedModules": {
       "BrokersPage": "./brokers/view-brokers",
       "AddBrokerPage": "./brokers/add-broker",
-      "UpdateBrokerPage":"./brokers/update-broker",
+      "UpdateBrokerPage": "./brokers/update-broker",
       "BrokerDetailsPage": "./brokers/broker-details"
     },
     "dependencies": {
@@ -97,6 +100,12 @@
     }
   },
   "dependencies": {},
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "yarn run lint",
+      "prettier --write"
+    ]
+  },
   "bugs": {
     "url": "https://github.com/artemiscloud/activemq-artemis-self-provisioning-plugin/issues"
   },

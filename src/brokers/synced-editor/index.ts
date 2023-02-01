@@ -1,1 +1,1 @@
-export * from "./editor-toggle";
+export * from './editor-toggle';

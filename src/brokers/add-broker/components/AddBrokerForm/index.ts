@@ -1,1 +1,1 @@
-export * from "./AddBrokerForm.component";
+export * from './AddBrokerForm.component';

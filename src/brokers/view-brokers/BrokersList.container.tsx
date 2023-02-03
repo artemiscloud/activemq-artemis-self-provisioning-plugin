@@ -18,7 +18,7 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [loadError, setLoadError] = useState<any>();
 
-  const fetchk8sListItems = () => {
+  const fetchK8sListItems = () => {
     setLoading(false);
     k8sListItems<K8sResourceKind>({
       model: AMQBrokerModel,
@@ -37,7 +37,7 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
   };
 
   useEffect(() => {
-    fetchk8sListItems();
+    fetchK8sListItems();
   }, [namespace]);
 
   const onEditBroker = (broker: K8sResourceCommon) => {
@@ -52,7 +52,7 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
       resource: { ...broker },
     })
       .then((res) => {
-        fetchk8sListItems();
+        fetchK8sListItems();
         console.log(res);
       })
       .catch((e) => {

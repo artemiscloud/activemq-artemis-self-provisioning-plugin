@@ -9,34 +9,8 @@ import {
   ListPageCreateLink,
 } from '@openshift-console/dynamic-plugin-sdk';
 import { BrokerRow, BrokerRowProps } from './BrokerRow';
+import { useTranslation } from '../../../../i18n';
 import { K8sResourceCommon } from '../../../../utils';
-
-const columns: TableColumn<K8sResourceCommon>[] = [
-  {
-    title: 'Name',
-    id: 'name',
-  },
-  {
-    title: 'Ready',
-    id: 'ready',
-  },
-  {
-    title: 'Conditions',
-    id: 'conditions',
-  },
-  {
-    title: 'Size',
-    id: 'Size',
-  },
-  {
-    title: 'Create',
-    id: 'created',
-  },
-  {
-    title: '',
-    id: 'action',
-  },
-];
 
 type BrokersTableProps = Pick<
   BrokerRowProps,
@@ -56,6 +30,35 @@ const BrokersTable: FC<BrokersTableProps> = ({
   onDeleteBroker,
   onEditBroker,
 }) => {
+  const { t } = useTranslation();
+
+  const columns: TableColumn<K8sResourceCommon>[] = [
+    {
+      title: t('name'),
+      id: 'name',
+    },
+    {
+      title: t('ready'),
+      id: 'ready',
+    },
+    {
+      title: t('conditions'),
+      id: 'conditions',
+    },
+    {
+      title: t('size'),
+      id: 'Size',
+    },
+    {
+      title: t('create'),
+      id: 'created',
+    },
+    {
+      title: '',
+      id: 'action',
+    },
+  ];
+
   return (
     <VirtualizedTable<K8sResourceCommon>
       data={data}
@@ -94,11 +97,14 @@ const BrokersList: FC<BrokersListProps> = ({
   onEditBroker,
 }) => {
   const [data, filteredData, onFilterChange] = useListPageFilter(brokers);
+  const { t } = useTranslation();
 
   return (
     <>
-      <ListPageHeader title="Brokers">
-        <ListPageCreateLink to={'add-broker'}>Create Broker</ListPageCreateLink>
+      <ListPageHeader title={t('brokers')}>
+        <ListPageCreateLink to={'add-broker'}>
+          {t('create_broker')}
+        </ListPageCreateLink>
       </ListPageHeader>
       <ListPageBody>
         <ListPageFilter

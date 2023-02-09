@@ -13,6 +13,7 @@ import {
   getCondition,
   getConditionString,
 } from '../../../../utils';
+import { useTranslation } from '../../../../i18n';
 
 export type BrokerRowProps = RowProps<K8sResourceCommon> & {
   columns: TableColumn<K8sResourceCommon>[];
@@ -27,6 +28,7 @@ export const BrokerRow: FC<BrokerRowProps> = ({
   onEditBroker,
   onDeleteBroker,
 }) => {
+  const { t } = useTranslation();
   const {
     metadata: { name, creationTimestamp },
     spec: {
@@ -41,11 +43,11 @@ export const BrokerRow: FC<BrokerRowProps> = ({
 
   const rowActions: IAction[] = [
     {
-      title: 'Edit Broker',
+      title: t('edit_broker'),
       onClick: () => onEditBroker(obj),
     },
     {
-      title: 'Delete Broker',
+      title: t('delete_broker'),
       onClick: () => onDeleteBroker(obj),
     },
   ];

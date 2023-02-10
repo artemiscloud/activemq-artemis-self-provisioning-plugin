@@ -32,14 +32,14 @@ spec:
               protocol: TCP
           imagePullPolicy: Always
           securityContext:
-                allowPrivilegeEscalation: false
-                capabilities:
-                  drop:
-                  - ALL
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           resources:
-              requests:
-                cpu: 10m
-                memory: 50Mi
+            requests:
+              cpu: 10m
+              memory: 50Mi
           volumeMounts:
             - name: plugin-serving-cert
               readOnly: true
@@ -119,6 +119,8 @@ metadata:
   name: activemq-artemis-self-provisioning-plugin
 spec:
   displayName: 'OpenShift Console ActiveMQ Artemis Self Provisioning Plugin'
+  # i18n:
+  #   loadType: Preload
   service:
     name: activemq-artemis-self-provisioning-plugin
     namespace: activemq-artemis-self-provisioning-plugin

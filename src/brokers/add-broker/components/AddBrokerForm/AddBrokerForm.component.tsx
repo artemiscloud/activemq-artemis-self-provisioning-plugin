@@ -7,6 +7,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { AMQBrokerModel, K8sResourceCommon } from '../../../../utils';
 import { Loading } from '../../../../shared-components';
+import { useTranslation } from '../../../../i18n';
 
 export type AddBrokerFormProps = {
   onCreateBroker: (content: any) => void;
@@ -19,6 +20,7 @@ const AddBrokerForm: FC<AddBrokerFormProps> = ({
   namespace,
   initialResourceYAML,
 }) => {
+  const { t } = useTranslation();
   const [data, setData] = useState<K8sResourceCommon>();
   const [canCreateBroker, loadingAccessReview] = useAccessReview({
     group: AMQBrokerModel.apiGroup,
@@ -45,7 +47,7 @@ const AddBrokerForm: FC<AddBrokerFormProps> = ({
           <Suspense fallback={<Loading />}>
             <ResourceYAMLEditor
               initialResource={data}
-              header="Create resource"
+              header={t('create_resource')}
               onSave={onSave}
             />
           </Suspense>
@@ -53,10 +55,10 @@ const AddBrokerForm: FC<AddBrokerFormProps> = ({
       ) : (
         <Alert
           variant={AlertVariant.default}
-          title={'Broker cannot be created'}
+          title={t('broker_can_not_be_created')}
           isInline
         >
-          {'You do not have write access in this project.'}
+          {t('you_do_not_have_write_access')}
         </Alert>
       )}
     </>

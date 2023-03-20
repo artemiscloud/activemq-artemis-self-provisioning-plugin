@@ -14,7 +14,7 @@ import { K8sResourceCommon } from '../../../../utils';
 
 type BrokersTableProps = Pick<
   BrokerRowProps,
-  'onDeleteBroker' | 'onEditBroker'
+  'handleModalToggle' | 'onEditBroker'
 > & {
   data: K8sResourceCommon[];
   unfilteredData: K8sResourceCommon[];
@@ -27,7 +27,7 @@ const BrokersTable: FC<BrokersTableProps> = ({
   unfilteredData,
   loaded,
   loadError,
-  onDeleteBroker,
+  handleModalToggle,
   onEditBroker,
 }) => {
   const { t } = useTranslation();
@@ -72,7 +72,7 @@ const BrokersTable: FC<BrokersTableProps> = ({
           rowData={rowData}
           activeColumnIDs={activeColumnIDs}
           columns={columns}
-          onDeleteBroker={onDeleteBroker}
+          handleModalToggle={handleModalToggle}
           onEditBroker={onEditBroker}
         />
       )}
@@ -82,7 +82,7 @@ const BrokersTable: FC<BrokersTableProps> = ({
 
 export type BrokersListProps = Pick<
   BrokerRowProps,
-  'onDeleteBroker' | 'onEditBroker'
+  'handleModalToggle' | 'onEditBroker'
 > & {
   brokers: K8sResourceCommon[];
   loaded: boolean;
@@ -93,7 +93,7 @@ const BrokersList: FC<BrokersListProps> = ({
   brokers,
   loaded,
   loadError,
-  onDeleteBroker,
+  handleModalToggle,
   onEditBroker,
 }) => {
   const [data, filteredData, onFilterChange] = useListPageFilter(brokers);
@@ -118,7 +118,7 @@ const BrokersList: FC<BrokersListProps> = ({
           loaded={loaded}
           loadError={loadError}
           onEditBroker={onEditBroker}
-          onDeleteBroker={onDeleteBroker}
+          handleModalToggle={handleModalToggle}
         />
       </ListPageBody>
     </>

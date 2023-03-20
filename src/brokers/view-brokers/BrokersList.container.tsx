@@ -7,6 +7,7 @@ import {
   K8sResourceCommon,
 } from '../../utils';
 import { BrokersList } from './components/BrokersList';
+import { PreConfirmDeleteModal } from './components/PreConfirmDeleteModal';
 
 export type BrokersContainerProps = RouteComponentProps<{ ns?: string }>;
 
@@ -17,6 +18,8 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
   const [brokers, setBrokers] = useState<K8sResourceKind[]>();
   const [loading, setLoading] = useState<boolean>(true);
   const [loadError, setLoadError] = useState<any>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [onDeleteClick, setOnDeleteClick] = useState(null);
 
   const fetchK8sListItems = () => {
     setLoading(false);
@@ -46,10 +49,10 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
     history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
   };
 
-  const onDeleteBroker = (broker: K8sResourceCommon) => {
+  const onDeleteBroker = () => {
     k8sDelete({
       model: AMQBrokerModel,
-      resource: { ...broker },
+      resource: { ...onDeleteClick },
     })
       .then((res) => {
         fetchK8sListItems();
@@ -57,17 +60,32 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
       })
       .catch((e) => {
         setLoadError(e.message);
+      })
+      .finally(() => {
+        setIsModalOpen(false);
       });
   };
 
+  const handleModalToggle = (broker: K8sResourceCommon) => {
+    setOnDeleteClick(broker);
+    setIsModalOpen(!isModalOpen);
+  };
+
   return (
-    <BrokersList
-      brokers={brokers}
-      loadError={loadError}
-      loaded={loading}
-      onDeleteBroker={onDeleteBroker}
-      onEditBroker={onEditBroker}
-    />
+    <>
+      <PreConfirmDeleteModal
+        onDeleteButtonClick={onDeleteBroker}
+        isModalOpen={isModalOpen}
+        handleModalToggle={handleModalToggle}
+      />
+      <BrokersList
+        brokers={brokers}
+        loadError={loadError}
+        loaded={loading}
+        handleModalToggle={handleModalToggle}
+        onEditBroker={onEditBroker}
+      />
+    </>
   );
 };
 

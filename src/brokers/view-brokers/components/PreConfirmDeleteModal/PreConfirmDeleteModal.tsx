@@ -1,6 +1,7 @@
 import { FC, Fragment } from 'react';
 import { Modal, ModalVariant, Button } from '@patternfly/react-core';
 import { useTranslation } from '../../../../i18n';
+import { Trans } from 'react-i18next';
 
 interface OnDeleteClickProps {
   isModalOpen: boolean;
@@ -32,7 +33,7 @@ const PreConfirmDeleteModal: FC<OnDeleteClickProps> = ({
           </Button>,
         ]}
       >
-        {t('preconfirm_delete_broker_message')}
+        <Trans i18nKey={t('preconfirm_delete_broker_message')}></Trans>
       </Modal>
     </Fragment>
   );

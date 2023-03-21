@@ -33,5 +33,5 @@
   "delete_instance_?": "Delete instance ?",
   "delete_broker_instance": "Delete",
   "cancel_broker_instance": "Cancel",
-  "preconfirm_delete_broker_message": "The 'test-2' instance will be deleted. Applications will no longer have access in this instance."
+  "preconfirm_delete_broker_message": "The <strong>'test-2'</strong> instance will be deleted. Applications will no longer have access in this instance."
 }

@@ -17,23 +17,23 @@ const Queues: React.FC<QueuesProps> = ({ queueData, isLoaded, loadError }) => {
 
   const columns: TableColumn<Queue>[] = [
     {
-      title: t('Name'),
+      title: t('name'),
       id: 'name',
     },
     {
-      title: t('Routing type'),
+      title: t('routing_type'),
       id: 'routing_type',
     },
     {
-      title: t('Auto-create queues'),
+      title: t('auto_create_queues'),
       id: 'auto_create_queues',
     },
     {
-      title: t('Auto-delete queues'),
+      title: t('auto_delete_queues'),
       id: 'auto_delete_queues',
     },
     {
-      title: t('Created'),
+      title: t('created'),
       id: 'created',
     },
   ];

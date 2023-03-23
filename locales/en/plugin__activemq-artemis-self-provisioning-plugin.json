@@ -26,5 +26,8 @@
   "yes": "Yes",
   "no": "No",
   "active": "Active",
-  "inactive": "Inactive"
+  "inactive": "Inactive",
+  "routing_type": "Routing type",
+  "auto_create_queues": "Auto create queues",
+  "auto_delete_queues": "Auto delete queues"
 }

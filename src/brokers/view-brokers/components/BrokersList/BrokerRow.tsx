@@ -18,7 +18,7 @@ import { useTranslation } from '../../../../i18n';
 export type BrokerRowProps = RowProps<K8sResourceCommon> & {
   columns: TableColumn<K8sResourceCommon>[];
   onEditBroker: (broker: K8sResourceCommon) => void;
-  handleModalToggle: (broker: K8sResourceCommon) => void;
+  onOpenModal: (broker: K8sResourceCommon) => void;
 };
 
 export const BrokerRow: FC<BrokerRowProps> = ({
@@ -26,7 +26,7 @@ export const BrokerRow: FC<BrokerRowProps> = ({
   activeColumnIDs,
   columns,
   onEditBroker,
-  handleModalToggle,
+  onOpenModal,
 }) => {
   const { t } = useTranslation();
   const {
@@ -48,7 +48,7 @@ export const BrokerRow: FC<BrokerRowProps> = ({
     },
     {
       title: t('delete_broker'),
-      onClick: () => handleModalToggle(obj),
+      onClick: () => onOpenModal(obj),
     },
   ];
 

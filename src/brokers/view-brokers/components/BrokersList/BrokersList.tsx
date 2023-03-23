@@ -14,7 +14,7 @@ import { K8sResourceCommon } from '../../../../utils';
 
 type BrokersTableProps = Pick<
   BrokerRowProps,
-  'handleModalToggle' | 'onEditBroker'
+  'onOpenModal' | 'onEditBroker'
 > & {
   data: K8sResourceCommon[];
   unfilteredData: K8sResourceCommon[];
@@ -27,7 +27,7 @@ const BrokersTable: FC<BrokersTableProps> = ({
   unfilteredData,
   loaded,
   loadError,
-  handleModalToggle,
+  onOpenModal,
   onEditBroker,
 }) => {
   const { t } = useTranslation();
@@ -72,7 +72,7 @@ const BrokersTable: FC<BrokersTableProps> = ({
           rowData={rowData}
           activeColumnIDs={activeColumnIDs}
           columns={columns}
-          handleModalToggle={handleModalToggle}
+          onOpenModal={onOpenModal}
           onEditBroker={onEditBroker}
         />
       )}
@@ -82,7 +82,7 @@ const BrokersTable: FC<BrokersTableProps> = ({
 
 export type BrokersListProps = Pick<
   BrokerRowProps,
-  'handleModalToggle' | 'onEditBroker'
+  'onOpenModal' | 'onEditBroker'
 > & {
   brokers: K8sResourceCommon[];
   loaded: boolean;
@@ -93,7 +93,7 @@ const BrokersList: FC<BrokersListProps> = ({
   brokers,
   loaded,
   loadError,
-  handleModalToggle,
+  onOpenModal,
   onEditBroker,
 }) => {
   const [data, filteredData, onFilterChange] = useListPageFilter(brokers);
@@ -118,7 +118,7 @@ const BrokersList: FC<BrokersListProps> = ({
           loaded={loaded}
           loadError={loadError}
           onEditBroker={onEditBroker}
-          handleModalToggle={handleModalToggle}
+          onOpenModal={onOpenModal}
         />
       </ListPageBody>
     </>

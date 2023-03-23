@@ -19,7 +19,7 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [loadError, setLoadError] = useState<any>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [onDeleteClick, setOnDeleteClick] = useState(null);
+  const [selectedBroker, setSelectedBroker] = useState<K8sResourceKind>();
 
   const fetchK8sListItems = () => {
     setLoading(false);
@@ -52,7 +52,7 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
   const onDeleteBroker = () => {
     k8sDelete({
       model: AMQBrokerModel,
-      resource: { ...onDeleteClick },
+      resource: { ...selectedBroker },
     })
       .then((res) => {
         fetchK8sListItems();
@@ -66,8 +66,8 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
       });
   };
 
-  const handleModalToggle = (broker: K8sResourceCommon) => {
-    setOnDeleteClick(broker);
+  const onOpenModal = (broker?: K8sResourceCommon) => {
+    setSelectedBroker(broker);
     setIsModalOpen(!isModalOpen);
   };
 
@@ -76,13 +76,13 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
       <PreConfirmDeleteModal
         onDeleteButtonClick={onDeleteBroker}
         isModalOpen={isModalOpen}
-        handleModalToggle={handleModalToggle}
+        onOpenModal={onOpenModal}
       />
       <BrokersList
         brokers={brokers}
         loadError={loadError}
         loaded={loading}
-        handleModalToggle={handleModalToggle}
+        onOpenModal={onOpenModal}
         onEditBroker={onEditBroker}
       />
     </>

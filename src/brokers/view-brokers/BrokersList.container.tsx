@@ -77,6 +77,7 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
         onDeleteButtonClick={onDeleteBroker}
         isModalOpen={isModalOpen}
         onOpenModal={onOpenModal}
+        name={selectedBroker?.metadata?.name}
       />
       <BrokersList
         brokers={brokers}

@@ -34,16 +34,15 @@ const PreConfirmDeleteModal: FC<PreConfirmDeleteModalProps> = ({
       onClose={onOpenModal}
       actions={[
         <Button key="delete" variant="primary" onClick={onDeleteButtonClick}>
-          <Trans>{t('delete')}</Trans>
+          {t('delete')}
         </Button>,
         <Button key="cancel" variant="link" onClick={onOpenModal}>
-          <Trans>{t('cancel')}</Trans>
+          {t('cancel')}
         </Button>,
       ]}
     >
       <TextContent>
         <Text component={TextVariants.h6}>
-          {' '}
           <Trans
             i18nKey={t('preconfirm_delete_broker_message', { name })}
           ></Trans>

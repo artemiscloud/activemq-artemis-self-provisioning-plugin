@@ -31,7 +31,7 @@
   "auto_create_queues": "Auto create queues",
   "auto_delete_queues": "Auto delete queues",
   "delete_modal_instance_title": "Delete instance ?",
-  "delete": "<strong>Delete</strong>",
-  "cancel": "<strong>Cancel</strong>",
+  "delete": "Delete",
+  "cancel": "Cancel",
   "preconfirm_delete_broker_message": "The <strong>{{name}}</strong> instance will be deleted. Applications will no longer have access in this instance."
 }

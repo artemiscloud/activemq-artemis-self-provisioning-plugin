@@ -8,9 +8,11 @@
     "jsx": "react-jsx",
     "allowJs": true,
     "strict": false,
+    "esModuleInterop": true,
     "noUnusedLocals": true,
     "paths": {
-      "@app/*": ["src/*"]
+      "@app/*": ["src/*"],
+      "react": ["./node_modules/@types/react"]
     }
   },
   "include": ["./src/*", "./src/**/*"],

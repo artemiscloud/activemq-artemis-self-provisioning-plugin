@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Tabs, Tab, TabTitleText } from '@patternfly/react-core';
 import { ConfigurationContainer } from './components/Configuration';
 import { useTranslation } from '../../i18n';
-import { ClientsContainer, QueuesContainer } from './components';
+import { ClientsContainer, QueuesContainer, TopicsContainer} from './components';
 
 export type BrokerDetailsProps = RouteComponentProps<{
   ns?: string;
@@ -33,7 +33,7 @@ const BrokerDetailsPage: FC<BrokerDetailsProps> = ({ match }) => {
         <QueuesContainer />
       </Tab>
       <Tab eventKey={4} title={<TabTitleText>{t('topics')}</TabTitleText>}>
-        Topics
+        <TopicsContainer />
       </Tab>
     </Tabs>
   );

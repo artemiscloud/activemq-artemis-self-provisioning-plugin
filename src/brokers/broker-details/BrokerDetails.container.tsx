@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Tabs, Tab, TabTitleText } from '@patternfly/react-core';
 import { ConfigurationContainer } from './components/Configuration';
 import { useTranslation } from '../../i18n';
-import { QueuesContainer } from './components';
+import { ClientsContainer, QueuesContainer } from './components';
 
 export type BrokerDetailsProps = RouteComponentProps<{
   ns?: string;
@@ -27,7 +27,7 @@ const BrokerDetailsPage: FC<BrokerDetailsProps> = ({ match }) => {
         <ConfigurationContainer name={name} namespace={namespace} />
       </Tab>
       <Tab eventKey={2} title={<TabTitleText>{t('clients')}</TabTitleText>}>
-        Clients
+        <ClientsContainer />
       </Tab>
       <Tab eventKey={3} title={<TabTitleText>{t('queues')}</TabTitleText>}>
         <QueuesContainer />

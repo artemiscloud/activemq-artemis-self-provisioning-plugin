@@ -33,5 +33,7 @@
   "delete_modal_instance_title": "Delete instance ?",
   "delete": "Delete",
   "cancel": "Cancel",
-  "preconfirm_delete_broker_message": "The <strong>{{name}}</strong> instance will be deleted. Applications will no longer have access in this instance."
+  "preconfirm_delete_broker_message": "The <strong>{{name}}</strong> instance will be deleted. Applications will no longer have access in this instance.",
+  "connections": "Connections",
+  "expires": "Expires"
 }

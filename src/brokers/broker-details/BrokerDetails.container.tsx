@@ -29,8 +29,10 @@ const BrokerDetailsPage: FC<BrokerDetailsProps> = ({ match }) => {
   return (
     <>
       <PageSection>
-        <BrokerContainerBreadcrumb currentName={t('broker_name')} />
-        <Title headingLevel="h2">{t('broker_name')}</Title>
+        <BrokerContainerBreadcrumb name={name} namespace={namespace} />
+        <Title headingLevel="h2">
+          {t('broker')} {name}
+        </Title>
       </PageSection>
 
       <Tabs defaultActiveKey={0}>

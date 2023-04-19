@@ -5,6 +5,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { Queue } from './Queues.container';
 import { QueueRow } from './QueueRow';
+import { Title, PageSection } from '@patternfly/react-core';
 
 export type QueuesProps = {
   queueData: Queue[];
@@ -38,21 +39,26 @@ const Queues: React.FC<QueuesProps> = ({ queueData, isLoaded, loadError }) => {
     },
   ];
   return (
-    <VirtualizedTable<Queue>
-      data={queueData}
-      unfilteredData={queueData}
-      loaded={isLoaded}
-      loadError={loadError}
-      columns={columns}
-      Row={({ obj, activeColumnIDs, rowData }) => (
-        <QueueRow
-          obj={obj}
-          rowData={rowData}
-          activeColumnIDs={activeColumnIDs}
-          columns={columns}
-        />
-      )}
-    />
+    <>
+      <PageSection>
+        <Title headingLevel="h1">{t('queues')}</Title>
+      </PageSection>
+      <VirtualizedTable<Queue>
+        data={queueData}
+        unfilteredData={queueData}
+        loaded={isLoaded}
+        loadError={loadError}
+        columns={columns}
+        Row={({ obj, activeColumnIDs, rowData }) => (
+          <QueueRow
+            obj={obj}
+            rowData={rowData}
+            activeColumnIDs={activeColumnIDs}
+            columns={columns}
+          />
+        )}
+      />
+    </>
   );
 };
 

@@ -9,6 +9,7 @@
     "allowJs": true,
     "strict": false,
     "noUnusedLocals": true,
+    "resolveJsonModule": true,
     "paths": {
       "@app/*": ["src/*"]
     }

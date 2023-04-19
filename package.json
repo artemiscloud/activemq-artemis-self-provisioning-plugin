@@ -32,6 +32,7 @@
     "@openshift-console/dynamic-plugin-sdk-webpack": "0.0.8",
     "@openshift-console/plugin-shared": "^0.0.1",
     "@patternfly/patternfly": "4.215.1",
+    "@patternfly/react-charts": "^6.94.18",
     "@patternfly/react-core": "4.239.0",
     "@patternfly/react-table": "4.108.0",
     "@storybook/addon-actions": "6.5.12",
@@ -43,6 +44,7 @@
     "@storybook/manager-webpack5": "6.5.12",
     "@storybook/react": "6.5.12",
     "@storybook/testing-library": "0.0.13",
+    "@types/byte-size": "^8.1.0",
     "@types/js-yaml": "^4.0.5",
     "@types/node": "18.0.0",
     "@types/react": "17.0.50",
@@ -51,11 +53,13 @@
     "@typescript-eslint/eslint-plugin": "5.38.1",
     "@typescript-eslint/parser": "5.38.1",
     "babel-loader": "8.2.5",
+    "byte-size": "^8.1.0",
     "chromatic": "6.10.1",
     "concurrently": "7.4.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "6.7.1",
     "date-fns": "^2.29.3",
+    "date-fns-tz": "^2.0.0",
     "eslint": "8.24.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
@@ -103,7 +107,6 @@
       "@console/pluginAPI": "*"
     }
   },
-  "dependencies": {},
   "lint-staged": {
     "*.{js,ts,tsx}": [
       "yarn run pretty-quick --staged",

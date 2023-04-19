@@ -1,8 +1,21 @@
 import { FC } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Tabs, Tab, TabTitleText, PageSection } from '@patternfly/react-core';
-import { ConfigurationContainer, OverviewContainer } from './components';
+import {
+  Tabs,
+  Tab,
+  TabTitleText,
+  Title,
+  PageSection,
+} from '@patternfly/react-core';
+import { ConfigurationContainer } from './components/Configuration';
 import { useTranslation } from '../../i18n';
+import {
+  ClientsContainer,
+  QueuesContainer,
+  TopicsContainer,
+  OverviewContainer,
+} from './components';
+import { BrokerDetailsBreadcrumb } from '../../common/BrokerDetailsBreadcrumb';
 
 export type BrokerDetailsProps = RouteComponentProps<{
   ns?: string;
@@ -16,9 +29,13 @@ const BrokerDetailsPage: FC<BrokerDetailsProps> = ({ match }) => {
 
   return (
     <PageSection>
+      <BrokerDetailsBreadcrumb name={name} namespace={namespace} />
+      <Title headingLevel="h2">
+        {t('broker')} {name}
+      </Title>
       <Tabs defaultActiveKey={0}>
         <Tab eventKey={0} title={<TabTitleText>{t('overview')}</TabTitleText>}>
-          <OverviewContainer namespace={namespace} name={name} />
+          <OverviewContainer name={name} namespace={namespace} />
         </Tab>
         <Tab
           eventKey={1}
@@ -27,13 +44,13 @@ const BrokerDetailsPage: FC<BrokerDetailsProps> = ({ match }) => {
           <ConfigurationContainer name={name} namespace={namespace} />
         </Tab>
         <Tab eventKey={2} title={<TabTitleText>{t('clients')}</TabTitleText>}>
-          Clients
+          <ClientsContainer />
         </Tab>
         <Tab eventKey={3} title={<TabTitleText>{t('queues')}</TabTitleText>}>
-          Queues
+          <QueuesContainer />
         </Tab>
         <Tab eventKey={4} title={<TabTitleText>{t('topics')}</TabTitleText>}>
-          Topics
+          <TopicsContainer />
         </Tab>
       </Tabs>
     </PageSection>

@@ -14,7 +14,7 @@ import {
   QueuesContainer,
   TopicsContainer,
 } from './components';
-import { BrokerContainerBreadcrumb } from '../../common/BrokerDetailsBreadcrumb';
+import { BrokerDetailsBreadcrumb } from '../../common/BrokerDetailsBreadcrumb';
 
 export type BrokerDetailsProps = RouteComponentProps<{
   ns?: string;
@@ -29,7 +29,7 @@ const BrokerDetailsPage: FC<BrokerDetailsProps> = ({ match }) => {
   return (
     <>
       <PageSection>
-        <BrokerContainerBreadcrumb name={name} namespace={namespace} />
+        <BrokerDetailsBreadcrumb name={name} namespace={namespace} />
         <Title headingLevel="h2">
           {t('broker')} {name}
         </Title>

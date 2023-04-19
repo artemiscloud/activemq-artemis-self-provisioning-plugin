@@ -7,7 +7,7 @@ export type BrokerDetailsBreadcrumbProps = {
   namespace: string;
 };
 
-const BrokerContainerBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
+const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   name,
   namespace,
 }) => {
@@ -30,4 +30,4 @@ const BrokerContainerBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   );
 };
 
-export { BrokerContainerBreadcrumb };
+export { BrokerDetailsBreadcrumb };

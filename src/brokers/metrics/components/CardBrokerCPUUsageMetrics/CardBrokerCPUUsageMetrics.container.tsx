@@ -14,7 +14,7 @@ export type CardBrokerCPUUsageMetricsContainerProps = {
 export const CardBrokerCPUUsageMetricsContainer: FC<
   CardBrokerCPUUsageMetricsContainerProps
 > = ({ name, namespace }) => {
-  const [result, loaded, error] = usePrometheusPoll({
+  const [result, loaded] = usePrometheusPoll({
     endpoint: PrometheusEndpoint.QUERY_RANGE,
     query: `sum(container_memory_working_set_bytes{pod='${
       name + '-ss-0'
@@ -22,10 +22,8 @@ export const CardBrokerCPUUsageMetricsContainer: FC<
     namespace,
   });
 
-  console.log(result, loaded, error);
-
-  const data = [json];
-  const bytesPerPod: any = {};
+  const data = result && result.data.result.length > 0 ? [result] : [json];
+  const bytesPerPod = {};
 
   data.forEach((metrics) => {
     metrics.data.result.forEach(({ metric, values }) => {

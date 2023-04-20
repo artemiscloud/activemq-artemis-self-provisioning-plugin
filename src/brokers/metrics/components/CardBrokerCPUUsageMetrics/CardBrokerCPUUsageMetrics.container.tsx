@@ -4,7 +4,7 @@ import {
   usePrometheusPoll,
   PrometheusEndpoint,
 } from '@openshift-console/dynamic-plugin-sdk';
-import * as json from '../../dummy-data/metrics-data.json';
+import * as json from '../../dummy-data/cpu-usage.json';
 
 export type CardBrokerCPUUsageMetricsContainerProps = {
   name: string;

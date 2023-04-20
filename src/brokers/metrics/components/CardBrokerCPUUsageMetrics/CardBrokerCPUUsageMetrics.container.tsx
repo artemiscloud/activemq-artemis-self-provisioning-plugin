@@ -16,10 +16,11 @@ export const CardBrokerCPUUsageMetricsContainer: FC<
 > = ({ name, namespace }) => {
   const [result, loaded] = usePrometheusPoll({
     endpoint: PrometheusEndpoint.QUERY_RANGE,
-    query: `pod:container_cpu_usage:sum{pod=${
+    query: `pod:container_cpu_usage:sum{pod='${
       name + '-ss-0'
-    },namespace=${namespace}}`,
+    }',namespace='${namespace}'}`,
     namespace,
+    timespan: 5 * 60 * 1000,
   });
 
   const data = result && result.data.result.length > 0 ? [result] : [json];

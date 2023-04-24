@@ -1,12 +1,16 @@
 import * as React from 'react';
 import { Flex, Radio } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
-import './styles.scss';
 
 export enum EditorType {
   Form = 'form',
   YAML = 'yaml',
 }
+
+type EditorToggleProps = {
+  value: EditorType;
+  onChange?: (newValue: EditorType) => void;
+};
 
 export const EditorToggle: React.FC<EditorToggleProps> = ({
   value,
@@ -53,9 +57,4 @@ export const EditorToggle: React.FC<EditorToggleProps> = ({
       </Flex>
     </div>
   );
-};
-
-type EditorToggleProps = {
-  value: EditorType;
-  onChange?: (newValue: EditorType) => void;
 };

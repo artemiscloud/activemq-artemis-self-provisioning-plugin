@@ -3,6 +3,10 @@ import { useHistory, RouteComponentProps } from 'react-router-dom';
 import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from './AddBroker.component';
+import {
+  EditorToggle,
+  EditorType,
+} from '../add-broker/components/EditorToggle/EditorToggle.component';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
 
 type AddBrokerPageProps = RouteComponentProps<{ ns?: string }>;
@@ -30,9 +34,14 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
 
   //states
   const [notification, setNotification] = useState(defaultNotification);
+  const [check, setCheck] = useState<EditorType>();
 
   const handleRedirect = () => {
     history.push(`brokers`);
+  };
+
+  const handleChange = (newValue) => {
+    setCheck(newValue as EditorType);
   };
 
   const k8sCreateBroker = (content: K8sResourceCommon) => {
@@ -48,12 +57,15 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
   };
 
   return (
-    <AddBroker
-      namespace={namespace}
-      notification={notification}
-      onCreateBroker={k8sCreateBroker}
-      initialResourceYAML={initialResourceYAML}
-    />
+    <>
+      <EditorToggle value={check} onChange={handleChange} />
+      <AddBroker
+        namespace={namespace}
+        notification={notification}
+        onCreateBroker={k8sCreateBroker}
+        initialResourceYAML={initialResourceYAML}
+      />
+    </>
   );
 };
 

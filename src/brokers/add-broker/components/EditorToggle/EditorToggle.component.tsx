@@ -1,6 +1,6 @@
-import * as React from 'react';
+import React from 'react';
 import { Flex, Radio } from '@patternfly/react-core';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../../../i18n';
 
 export enum EditorType {
   Form = 'form',
@@ -9,7 +9,7 @@ export enum EditorType {
 
 type EditorToggleProps = {
   value: EditorType;
-  onChange?: (newValue: EditorType) => void;
+  onChange?: (editorType: EditorType) => void;
 };
 
 export const EditorToggle: React.FC<EditorToggleProps> = ({
@@ -24,24 +24,19 @@ export const EditorToggle: React.FC<EditorToggleProps> = ({
     onChange(event?.currentTarget?.value as EditorType);
   };
   return (
-    <div className="co-synced-editor__editor-toggle">
+    <div className="pf-u-mx-md pf-u-my-sm">
       <Flex
         spaceItems={{ default: 'spaceItemsMd' }}
         alignItems={{ default: 'alignItemsCenter' }}
         role="radiogroup"
         aria-labelledby="radio-group-title-editor-toggle"
       >
-        <label
-          className="co-synced-editor__editor-toggle-label"
-          id="radio-group-title-editor-toggle"
-        >
-          {t('console-shared~Configure via:')}
-        </label>
+        <label id="radio-group-title-editor-toggle">{t('configure_via')}</label>
         <Radio
           isChecked={value === EditorType.Form}
           name={EditorType.Form}
           onChange={handleChange}
-          label={t('console-shared~Form view')}
+          label={t('form_view')}
           id={EditorType.Form}
           value={EditorType.Form}
         />
@@ -49,7 +44,7 @@ export const EditorToggle: React.FC<EditorToggleProps> = ({
           isChecked={value === EditorType.YAML}
           name={EditorType.YAML}
           onChange={handleChange}
-          label={t('console-shared~YAML view')}
+          label={t('yaml_view')}
           id={EditorType.YAML}
           value={EditorType.YAML}
           data-test={`${EditorType.YAML}-view-input`}

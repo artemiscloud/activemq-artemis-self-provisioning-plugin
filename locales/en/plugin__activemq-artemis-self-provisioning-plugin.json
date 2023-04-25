@@ -37,7 +37,7 @@
   "connections": "Connections",
   "expires": "Expires",
   "broker": "Broker",
-  "console-shared~Configure via:": "Configure via:",
-  "console-shared~Form view": "Form view",
-  "console-shared~YAML view": "YAML view"
+  "configure_via": "Configure via:",
+  "form_view": "Form view",
+  "yaml_view": "YAML view"
 }

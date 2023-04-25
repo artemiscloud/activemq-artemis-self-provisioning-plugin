@@ -34,14 +34,14 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
 
   //states
   const [notification, setNotification] = useState(defaultNotification);
-  const [check, setCheck] = useState<EditorType>();
+  const [editorType, setEditorType] = useState<EditorType>();
 
   const handleRedirect = () => {
     history.push(`brokers`);
   };
 
-  const handleChange = (newValue) => {
-    setCheck(newValue as EditorType);
+  const handleChange = (editorType: EditorType) => {
+    setEditorType(editorType);
   };
 
   const k8sCreateBroker = (content: K8sResourceCommon) => {
@@ -58,7 +58,7 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
 
   return (
     <>
-      <EditorToggle value={check} onChange={handleChange} />
+      <EditorToggle value={editorType} onChange={handleChange} />
       <AddBroker
         namespace={namespace}
         notification={notification}

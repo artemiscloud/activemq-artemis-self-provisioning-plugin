@@ -6,7 +6,7 @@ import {
   UNASSIGNED_APPLICATIONS_KEY,
   LABEL_PART_OF,
 } from '../../utils';
-import { EditorType } from '../synced-editor';
+import { EditorType } from '../add-broker/components/EditorToggle/EditorToggle.component';
 
 export const convertFormToBrokerYaml = (
   formData: BrokerFormData,

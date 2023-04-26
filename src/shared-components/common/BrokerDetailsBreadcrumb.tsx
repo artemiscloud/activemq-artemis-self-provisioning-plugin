@@ -1,5 +1,5 @@
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
-import { useTranslation } from '../i18n';
+import { useTranslation } from '../../i18n';
 import { FC } from 'react';
 
 export type BrokerDetailsBreadcrumbProps = {

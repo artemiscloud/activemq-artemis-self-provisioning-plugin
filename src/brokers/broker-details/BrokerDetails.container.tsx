@@ -14,7 +14,7 @@ import {
   QueuesContainer,
   TopicsContainer,
 } from './components';
-import { BrokerDetailsBreadcrumb } from '../../common/BrokerDetailsBreadcrumb';
+import { BrokerDetailsBreadcrumb } from '../../shared-components/common/BrokerDetailsBreadcrumb';
 
 export type BrokerDetailsProps = RouteComponentProps<{
   ns?: string;

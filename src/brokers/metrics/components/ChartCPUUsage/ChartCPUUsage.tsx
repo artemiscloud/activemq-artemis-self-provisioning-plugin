@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import _ from 'lodash';
 import {
   Chart,
@@ -17,12 +17,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { ChartSkeletonLoader } from '../ChartSkeletonLoader/ChartSkeletonLoader';
 import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData/EmptyStateNoMetricsData';
-import {
-  chartHeight,
-  chartPadding,
-  dateToChartValue,
-  shouldShowDate,
-} from '../../../../utils';
+import { chartHeight, chartPadding } from '../../../../utils';
 import { useChartWidth } from '../../hooks/useChartWidth';
 import { useTranslation } from '../../../../i18n';
 import {
@@ -35,6 +30,7 @@ import {
   // getXDomain,
   Series,
   formatSeriesValues,
+  xAxisTickFormat,
 } from '../../utils';
 
 const colors = chartTheme.line.colorScale;
@@ -67,8 +63,15 @@ export const ChartCPUUsage: FC<ChartCPUUsageProps> = ({
   const legendData: { name: string }[] = [];
   const domain = { x: fixedXDomain, y: undefined };
   const xAxisTickCount = Math.round(width / 100);
-  const showDate = shouldShowDate(span);
   const yTickFormat = valueFormatter('');
+
+  const xTickFormat = useCallback(
+    (tick) => {
+      const tickFormat = xAxisTickFormat(span);
+      return tickFormat(tick);
+    },
+    [xAxisTickFormat],
+  );
 
   const newResult = _.map(allMetricsSeries, 'data.result');
   const hasMetrics = _.some(newResult, (r) => (r && r.length) > 0);
@@ -125,9 +128,7 @@ export const ChartCPUUsage: FC<ChartCPUUsageProps> = ({
             const labels: ChartVoronoiContainerProps['labels'] = ({
               datum,
             }) => {
-              const time = dateToChartValue(datum.x, {
-                showDate,
-              });
+              const time = xTickFormat(datum.x);
 
               return `${datum?.style?.labels?.name}: ${yTickFormat(
                 datum.y,
@@ -158,11 +159,7 @@ export const ChartCPUUsage: FC<ChartCPUUsageProps> = ({
                 <ChartAxis
                   label={'\n' + t('axis_label_time')}
                   tickCount={xAxisTickCount}
-                  tickFormat={(d: number) =>
-                    dateToChartValue(d, {
-                      showDate,
-                    })
-                  }
+                  tickFormat={xTickFormat}
                 />
                 <ChartAxis
                   crossAxis={false}

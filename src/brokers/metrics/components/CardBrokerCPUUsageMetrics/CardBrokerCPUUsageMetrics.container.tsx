@@ -25,7 +25,7 @@ export const CardBrokerCPUUsageMetricsContainer: FC<
   const [xDomain] = useState<AxisDomain>();
   // For the default time span, use the first of the suggested span options that is at least as long
   // as defaultTimespan
-  const defaultSpanText = '30m'; //spans.find((s) => parsePrometheusDuration(s) >= defaultTimespan);
+  const defaultSpanText = '30m';
   const [span, setSpan] = useState(parsePrometheusDuration(defaultSpanText));
   // If we have both `timespan` and `defaultTimespan`, `timespan` takes precedence
   // Limit the number of samples so that the step size doesn't fall below minStep

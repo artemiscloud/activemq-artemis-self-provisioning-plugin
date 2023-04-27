@@ -5,3 +5,4 @@ export * from './units';
 export * from './types';
 export * from './data-utils';
 export * from './consts';
+export * from './datatime';

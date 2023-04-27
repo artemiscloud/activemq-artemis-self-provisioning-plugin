@@ -11,6 +11,8 @@ import {
 } from './units';
 import { minSamples, minStep, maxSamples } from './consts';
 import { AxisDomain, GraphDataPoint } from './types';
+import { parsePrometheusDuration } from './prometheus';
+import { timeFormatter, dateFormatterNoYear } from './datatime';
 
 // Use exponential notation for small or very large numbers to avoid labels with too many characters
 const formatPositiveValue = (v: number): string =>
@@ -96,4 +98,16 @@ export const formatSeriesValues = (
   });
 
   return newValues;
+};
+
+export const xAxisTickFormat = (span: number): ((tick: any) => string) => {
+  return (tick) => {
+    if (span > parsePrometheusDuration('1d')) {
+      // Add a newline between the date and time so tick labels don't overlap.
+      return `${dateFormatterNoYear.format(tick)}\n${timeFormatter.format(
+        tick,
+      )}`;
+    }
+    return timeFormatter.format(tick);
+  };
 };

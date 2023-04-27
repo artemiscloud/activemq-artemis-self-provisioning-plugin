@@ -17,12 +17,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { ChartSkeletonLoader } from '../ChartSkeletonLoader/ChartSkeletonLoader';
 import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData/EmptyStateNoMetricsData';
-import {
-  chartHeight,
-  chartPadding,
-  dateToChartValue,
-  shouldShowDate,
-} from '../../../../utils';
+import { chartHeight, chartPadding } from '../../../../utils';
 import { useChartWidth } from '../../hooks/useChartWidth';
 import { useTranslation } from '../../../../i18n';
 import {
@@ -37,6 +32,7 @@ import {
   // getXDomain,
   Series,
   formatSeriesValues,
+  xAxisTickFormat,
 } from '../../utils';
 
 const colors = chartTheme.line.colorScale;
@@ -69,7 +65,6 @@ export const ChartMemoryUsage: FC<ChartMemoryUsageProps> = ({
   const legendData: { name: string }[] = [];
   const domain = { x: fixedXDomain, y: undefined };
   const xAxisTickCount = Math.round(width / 100);
-  const showDate = shouldShowDate(span);
 
   const newResult = _.map(allMetricsSeries, 'data.result');
   const hasMetrics = _.some(newResult, (r) => (r && r.length) > 0);
@@ -102,6 +97,14 @@ export const ChartMemoryUsage: FC<ChartMemoryUsageProps> = ({
     const nonEmptyDataSets = data.filter((dataSet) => dataSet?.length);
     return processFrame(nonEmptyDataSets, ByteDataTypes.BinaryBytes);
   }, [data]);
+
+  const xTickFormat = useCallback(
+    (tick) => {
+      const tickFormat = xAxisTickFormat(span);
+      return tickFormat(tick);
+    },
+    [xAxisTickFormat],
+  );
 
   const yTickFormat = useCallback(
     (tick) => `${humanizeBinaryBytes(tick, unit, unit).string}`,
@@ -136,13 +139,9 @@ export const ChartMemoryUsage: FC<ChartMemoryUsageProps> = ({
             const labels: ChartVoronoiContainerProps['labels'] = ({
               datum,
             }) => {
-              const time = dateToChartValue(datum.x, {
-                showDate,
-              });
-
               return `${datum?.style?.labels?.name}: ${yTickFormat(
                 datum.y,
-              )} at ${time}`;
+              )} at ${xTickFormat(datum.x)}`;
             };
 
             return (
@@ -169,11 +168,7 @@ export const ChartMemoryUsage: FC<ChartMemoryUsageProps> = ({
                 <ChartAxis
                   label={'\n' + t('axis_label_time')}
                   tickCount={xAxisTickCount}
-                  tickFormat={(d: number) =>
-                    dateToChartValue(d, {
-                      showDate,
-                    })
-                  }
+                  tickFormat={xTickFormat}
                 />
                 <ChartAxis
                   label={'\n\n\n\n' + t('axis_label_bytes')}

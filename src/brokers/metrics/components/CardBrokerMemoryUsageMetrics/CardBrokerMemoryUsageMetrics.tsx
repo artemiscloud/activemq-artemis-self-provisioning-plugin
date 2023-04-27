@@ -19,9 +19,12 @@ export const CardBrokerMemoryUsageMetrics: FC<
 > = ({
   isInitialLoading,
   backendUnavailable,
-  memoryUsageData,
-  duration,
+  allMetricsSeries,
+  span,
+  samples,
+  fixedXDomain,
   isLoading,
+  formatSeriesTitle,
 }) => {
   const { t } = useTranslation();
 
@@ -46,9 +49,12 @@ export const CardBrokerMemoryUsageMetrics: FC<
                 />
                 <CardBody>
                   <ChartMemoryUsage
-                    memoryUsageData={memoryUsageData}
-                    duration={duration}
+                    allMetricsSeries={allMetricsSeries}
+                    span={span}
                     isLoading={isLoading}
+                    samples={samples}
+                    fixedXDomain={fixedXDomain}
+                    formatSeriesTitle={formatSeriesTitle}
                   />
                 </CardBody>
               </>

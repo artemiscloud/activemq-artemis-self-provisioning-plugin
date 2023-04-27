@@ -2285,6 +2285,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@openshift/dynamic-plugin-sdk-utils@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@openshift/dynamic-plugin-sdk-utils@npm:2.1.0"
+  dependencies:
+    immutable: ^3.8.2
+    lodash: ^4.17.21
+    pluralize: ^8.0.0
+    typesafe-actions: ^4.4.2
+    uuid: ^8.3.2
+  peerDependencies:
+    "@openshift/dynamic-plugin-sdk": ^4.0.0
+    "@openshift/dynamic-plugin-sdk-extensions": ^1.3.0
+    "@patternfly/react-core": ^4.202.16
+    "@patternfly/react-icons": ^4.53.16
+    "@patternfly/react-styles": ^4.52.16
+    "@patternfly/react-table": ^4.71.16
+    "@patternfly/react-virtualized-extension": ^4.53.2
+    react: ^17 || ^18
+    react-redux: ^7.2.2
+    react-router: ^5.2.1
+    react-router-dom: ^6.3.0
+    react-virtualized: ^9.22.3
+    redux: ^4.1.2
+    redux-thunk: ^2.4.1
+  checksum: 19fa16f1b809778508f279a469f1f57aea9fb2d462e92e1022e14a657d57623c632c500302ec6e377ab572bb1ae5cdf9fd0de5622d9893fdaa7791dc1613db33
+  languageName: node
+  linkType: hard
+
 "@patternfly/patternfly@npm:4.122.2":
   version: 4.122.2
   resolution: "@patternfly/patternfly@npm:4.122.2"
@@ -5487,6 +5515,7 @@ __metadata:
     "@openshift-console/dynamic-plugin-sdk-internal": ^0.0.11
     "@openshift-console/dynamic-plugin-sdk-webpack": 0.0.8
     "@openshift-console/plugin-shared": ^0.0.1
+    "@openshift/dynamic-plugin-sdk-utils": ^2.1.0
     "@patternfly/patternfly": 4.215.1
     "@patternfly/react-charts": ^6.94.18
     "@patternfly/react-core": 4.239.0
@@ -5545,6 +5574,7 @@ __metadata:
     ts-loader: 9.4.1
     ts-node: 10.9.1
     typescript: 4.8.4
+    victory-core: ^36.6.8
     webpack: ^5.73.0
     webpack-cli: 4.10.0
     webpack-dev-server: 4.11.1
@@ -11823,7 +11853,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immutable@npm:3.x":
+"immutable@npm:3.x, immutable@npm:^3.8.2":
   version: 3.8.2
   resolution: "immutable@npm:3.8.2"
   checksum: 41909b386950ff84ca3cfca77c74cfc87d225a914e98e6c57996fa81a328da61a7c32216d6d5abad40f54747ffdc5c4b02b102e6ad1a504c1752efde8041f964
@@ -15640,6 +15670,13 @@ __metadata:
   dependencies:
     find-up: ^5.0.0
   checksum: b167bb8dac7bbf22b1d5e30ec223e6b064b84b63010c9d49384619a36734caf95ed23ad23d4f9bd975e8e8082b60a83395f43a89bb192df53a7c25a38ecb57d9
+  languageName: node
+  linkType: hard
+
+"pluralize@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "pluralize@npm:8.0.0"
+  checksum: 08931d4a6a4a5561a7f94f67a31c17e6632cb21e459ab3ff4f6f629d9a822984cf8afef2311d2005fbea5d7ef26016ebb090db008e2d8bce39d0a9a9d218736e
   languageName: node
   linkType: hard
 
@@ -19670,7 +19707,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typesafe-actions@npm:^4.2.1":
+"typesafe-actions@npm:^4.2.1, typesafe-actions@npm:^4.4.2":
   version: 4.4.2
   resolution: "typesafe-actions@npm:4.4.2"
   checksum: 43b3a91af74172b42e27098150d84eaa9f02f74a8f9c81225e560d48872f6a3174482651d6e6278f380ed25870edb2b949b4776382cf0393b8299a3723c56d9b

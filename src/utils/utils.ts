@@ -2,6 +2,7 @@ import { formatDistance } from 'date-fns';
 import byteSize from 'byte-size';
 import { fromUnixTime, sub } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
+import { parsePrometheusDuration } from './prometheus';
 
 export enum DurationOptions {
   Last5minutes = 5,
@@ -78,7 +79,7 @@ export const timeIntervalsMapping = {
 } as const;
 
 export const shouldShowDate = (timeDuration: DurationOptions): boolean => {
-  return timeIntervalsMapping[timeDuration].showDate;
+  return timeDuration > parsePrometheusDuration('1d');
 };
 
 export const dateToChartValue = (

@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import _ from 'lodash';
 import {
   Chart,
   ChartAxis,
@@ -9,43 +10,108 @@ import {
   ChartVoronoiContainer,
   ChartVoronoiContainerProps,
 } from '@patternfly/react-charts';
+import {
+  PrometheusLabels,
+  PrometheusResponse,
+  PrometheusResult,
+} from '@openshift-console/dynamic-plugin-sdk';
 import { ChartSkeletonLoader } from '../ChartSkeletonLoader/ChartSkeletonLoader';
 import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData/EmptyStateNoMetricsData';
 import {
   chartHeight,
   chartPadding,
-  timeIntervalsMapping,
   dateToChartValue,
-  formatBytes,
   shouldShowDate,
-  timestampsToTicks,
 } from '../../../../utils';
 import { useChartWidth } from '../../hooks/useChartWidth';
 import { useTranslation } from '../../../../i18n';
-import { chartTheme } from '../../utils';
+import {
+  chartTheme,
+  valueFormatter,
+  AxisDomain,
+  FormatSeriesTitle,
+  GraphSeries,
+  GraphDataPoint,
+  // getXDomain,
+  Series,
+  formatSeriesValues,
+} from '../../utils';
 
-export type TimeSeriesMetrics = { [timestamp: string]: number };
+const colors = chartTheme.line.colorScale;
 
 export type ChartCPUUsageProps = {
-  memoryUsageData: PodBytesMetric;
-  duration: number;
+  allMetricsSeries: PrometheusResponse[];
+  span: number;
   isLoading: boolean;
+  defaultSamples?: number;
+  fixedXDomain: AxisDomain;
+  samples: number;
+  formatSeriesTitle?: FormatSeriesTitle;
 };
 
 export const ChartCPUUsage: FC<ChartCPUUsageProps> = ({
-  memoryUsageData,
-  duration,
+  allMetricsSeries,
+  span,
   isLoading,
+  fixedXDomain,
+  samples,
+  formatSeriesTitle,
 }) => {
   const { t } = useTranslation();
   const [containerRef, width] = useChartWidth();
-  const hasMetrics = Object.keys(memoryUsageData).length > 0;
-  const showDate = shouldShowDate(duration);
+  // const [xDomain, setXDomain] = useState(fixedXDomain || getXDomain(Date.now(), span));
 
-  const { chartData, legendData, tickValues } = getBytesChartData(
-    memoryUsageData,
-    duration,
-  );
+  const data: GraphSeries[] = [];
+  const tooltipSeriesNames: string[] = [];
+  const tooltipSeriesLabels: PrometheusLabels[] = [];
+  const legendData: { name: string }[] = [];
+  const domain = { x: fixedXDomain, y: undefined };
+  const xAxisTickCount = Math.round(width / 100);
+  const showDate = shouldShowDate(span);
+  const yTickFormat = valueFormatter('');
+
+  const newResult = _.map(allMetricsSeries, 'data.result');
+  const hasMetrics = _.some(newResult, (r) => (r && r.length) > 0);
+
+  // Only update X-axis if the time range (fixedXDomain or span) or graph data (allSeries) change
+  // useEffect(() => {
+  //   setXDomain(fixedXDomain || getXDomain(Date.now(), span));
+  // }, [allMetricsSeries, span, fixedXDomain]);
+
+  const newGraphData = _.map(newResult, (result: PrometheusResult[]) => {
+    return _.map(result, ({ metric, values }): Series => {
+      return [metric, formatSeriesValues(values, samples, span)];
+    });
+  });
+
+  _.each(newGraphData, (series, i) => {
+    _.each(series, ([metric, values]) => {
+      data.push(values);
+      if (formatSeriesTitle) {
+        const name = formatSeriesTitle(metric, i);
+        legendData.push({ name });
+        tooltipSeriesNames.push(name);
+      } else {
+        tooltipSeriesLabels.push(metric);
+      }
+    });
+  });
+
+  // Set a reasonable Y-axis range based on the min and max values in the data
+  const findMin = (series: GraphSeries): GraphDataPoint => _.minBy(series, 'y');
+  const findMax = (series: GraphSeries): GraphDataPoint => _.maxBy(series, 'y');
+  let minY: number = findMin(data.map(findMin))?.y ?? 0;
+  let maxY: number = findMax(data.map(findMax))?.y ?? 0;
+  if (minY === 0 && maxY === 0) {
+    minY = 0;
+    maxY = 1;
+  } else if (minY > 0 && maxY > 0) {
+    minY = 0;
+  } else if (minY < 0 && maxY < 0) {
+    maxY = 0;
+  }
+
+  domain.y = [minY, maxY];
 
   return (
     <div ref={containerRef} style={{ height: '500px' }}>
@@ -56,52 +122,82 @@ export const ChartCPUUsage: FC<ChartCPUUsageProps> = ({
           case !hasMetrics:
             return <EmptyStateNoMetricsData />;
           default: {
-            const labels: ChartVoronoiContainerProps['labels'] = ({ datum }) =>
-              `${datum.name}: ${formatBytes(datum.y)}`;
+            const labels: ChartVoronoiContainerProps['labels'] = ({
+              datum,
+            }) => {
+              const time = dateToChartValue(datum.x, {
+                showDate,
+              });
+
+              return `${datum?.style?.labels?.name}: ${yTickFormat(
+                datum.y,
+              )} at ${time}`;
+            };
 
             return (
-              <>
-                <Chart
-                  ariaTitle={t('cpu_usage')}
-                  containerComponent={
-                    <ChartVoronoiContainer
-                      labels={labels}
-                      constrainToVisibleArea
-                    />
+              <Chart
+                ariaTitle={t('memory_usage')}
+                // containerComponent={graphContainer}
+                containerComponent={
+                  <ChartVoronoiContainer
+                    labels={labels}
+                    constrainToVisibleArea
+                  />
+                }
+                legendComponent={<ChartLegend data={legendData} />}
+                legendAllowWrap={true}
+                legendPosition="bottom-left"
+                scale={{ x: 'time', y: 'linear' }}
+                domain={domain}
+                height={chartHeight}
+                padding={chartPadding}
+                domainPadding={{ y: 20 }}
+                width={width}
+                themeColor={ChartThemeColor.multiUnordered}
+              >
+                <ChartAxis
+                  label={'\n' + t('axis_label_time')}
+                  tickCount={xAxisTickCount}
+                  tickFormat={(d: number) =>
+                    dateToChartValue(d, {
+                      showDate,
+                    })
                   }
-                  legendAllowWrap={true}
-                  legendPosition="bottom-left"
-                  legendComponent={<ChartLegend data={legendData} />}
-                  height={chartHeight}
-                  padding={chartPadding}
-                  themeColor={ChartThemeColor.multiUnordered}
-                  width={width}
-                >
-                  <ChartAxis
-                    label={'\n' + t('axis_label_time')}
-                    tickValues={tickValues}
-                    tickCount={timeIntervalsMapping[duration].ticks}
-                    tickFormat={(d: number) =>
-                      dateToChartValue(d, {
-                        showDate,
-                      })
+                />
+                <ChartAxis
+                  crossAxis={false}
+                  tickCount={6}
+                  dependentAxis
+                  tickFormat={yTickFormat}
+                />
+                <ChartGroup>
+                  {data.map((values, index) => {
+                    if (values === null) {
+                      return null;
                     }
-                  />
-                  <ChartAxis
-                    label={'\n\n\n\n\n' + t('axis_label_bytes')}
-                    dependentAxis
-                    tickFormat={formatBytes}
-                  />
-                  <ChartGroup>
-                    {chartData.map((value, index) => (
+
+                    const color = colors[index % colors.length];
+                    const style = {
+                      data: { stroke: color },
+                      labels: {
+                        fill: color,
+                        labels: tooltipSeriesLabels[index],
+                        name: tooltipSeriesNames[index],
+                      },
+                    };
+
+                    return (
                       <ChartLine
                         key={`chart-line-${index}`}
-                        data={value.area}
+                        data={values}
+                        groupComponent={<g />}
+                        name={`series-${index}`}
+                        style={style}
                       />
-                    ))}
-                  </ChartGroup>
-                </Chart>
-              </>
+                    );
+                  })}
+                </ChartGroup>
+              </Chart>
             );
           }
         }
@@ -109,62 +205,3 @@ export const ChartCPUUsage: FC<ChartCPUUsageProps> = ({
     </div>
   );
 };
-
-type ChartData = {
-  color: string;
-  area: BrokerChartData[];
-};
-
-type LegendData = {
-  name: string;
-};
-
-export const colors = chartTheme.line.colorScale;
-
-export type PodBytesMetric = {
-  [pod: string]: TimeSeriesMetrics;
-};
-
-type BrokerChartData = {
-  name: string;
-  x: number;
-  y: number;
-};
-
-export function getBytesChartData(
-  metrics: PodBytesMetric,
-  duration: number,
-): {
-  legendData: Array<LegendData>;
-  chartData: Array<ChartData>;
-  tickValues: number[];
-} {
-  const legendData: Array<LegendData> = [];
-  const chartData: Array<ChartData> = [];
-
-  Object.entries(metrics).map(([pod, dataMap], index) => {
-    const name = `${pod}`;
-    const color = colors[index];
-    legendData.push({ name });
-
-    const area: Array<BrokerChartData> = [];
-
-    Object.entries(dataMap).map(([timestamp, value]) => {
-      area.push({ name, x: parseInt(timestamp, 10), y: value });
-    });
-
-    chartData.push({ color, area });
-  });
-
-  const allTimestamps = Array.from(
-    new Set(Object.values(metrics).flatMap((m) => Object.keys(m))),
-  );
-
-  const tickValues = timestampsToTicks(allTimestamps, duration);
-
-  return {
-    legendData,
-    chartData,
-    tickValues,
-  };
-}

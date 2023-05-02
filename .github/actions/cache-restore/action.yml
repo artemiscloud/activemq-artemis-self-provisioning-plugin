@@ -1,15 +1,15 @@
 name: "Cache restoration"
 description: "Setup a NodeJS environment and restore cache if any, given a node version"
 
-# inputs:
-#   node-version:
-#     description: "Node version to use, default to LTS Fermium (14.x)"
-#     required: true
-#     default: lts/fermium
-# outputs:
-#   cache-hit:
-#     description: "Forward actions/cache cache-hit output"
-#     value: ${{ steps.yarn-cache.outputs.cache-hit }}
+inputs:
+  node-version:
+    description: "Node version to use, default to LTS Fermium (14.x)"
+    required: true
+    default: lts/fermium
+outputs:
+  cache-hit:
+    description: "Forward actions/cache cache-hit output"
+    value: ${{ steps.yarn-cache.outputs.cache-hit }}
 
 runs:
   using: "composite" # Mandatory parameter

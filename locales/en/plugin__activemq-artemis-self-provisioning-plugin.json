@@ -31,7 +31,7 @@
   "memory_usage_help_text": "Memory usage",
   "cpu_usage": "CPU Usage",
   "cpu_usage_help_text": "CPU Usage",
-  "axis_label_time": "Time (UTC)",
+  "axis_label_time": "Time",
   "axis_label_bytes": "Bytes",
   "chart_popover_icon_screenreader_text": "Information about {{title}}",
   "skeleton_loader_screenreader_text": "Metrics data is loading",

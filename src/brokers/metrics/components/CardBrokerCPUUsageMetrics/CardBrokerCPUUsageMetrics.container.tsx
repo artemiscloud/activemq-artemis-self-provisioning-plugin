@@ -1,12 +1,8 @@
 import { FC, useEffect, useState } from 'react';
 import { CardBrokerCPUUsageMetrics } from './CardBrokerCPUUsageMetrics';
-import {
-  usePrometheusPoll,
-  PrometheusEndpoint,
-  PrometheusResponse,
-} from '@openshift-console/dynamic-plugin-sdk';
 import { parsePrometheusDuration } from '../../../../utils';
-import { getMaxSamplesForSpan, cpuUsageQuery } from '../../utils';
+import { getMaxSamplesForSpan } from '../../utils';
+import { useFetchCpuUsageMetrics } from '../../hooks';
 
 export type CardBrokerCPUUsageMetricsContainerProps = {
   name: string;
@@ -14,13 +10,15 @@ export type CardBrokerCPUUsageMetricsContainerProps = {
   defaultSamples?: number;
   timespan?: number;
   fixedEndTime?: number;
+  size: number;
 };
 
 type AxisDomain = [number, number];
 
 export const CardBrokerCPUUsageMetricsContainer: FC<
   CardBrokerCPUUsageMetricsContainerProps
-> = ({ name, namespace, defaultSamples = 300, timespan }) => {
+> = ({ name, namespace, defaultSamples = 300, timespan, size }) => {
+  const fetchCpuUsageMetrics = useFetchCpuUsageMetrics(size);
   //states
   const [xDomain] = useState<AxisDomain>();
   // For the default time span, use the first of the suggested span options that is at least as long
@@ -33,7 +31,6 @@ export const CardBrokerCPUUsageMetricsContainer: FC<
   const [samples, setSamples] = useState(maxSamplesForSpan);
 
   // Define this once for all queries so that they have exactly the same time range and X values
-  const now = Date.now();
   const endTime = xDomain?.[1];
 
   // If provided, `timespan` overrides any existing span setting
@@ -44,24 +41,19 @@ export const CardBrokerCPUUsageMetricsContainer: FC<
     }
   }, [defaultSamples, timespan]);
 
-  const [result, loaded] = usePrometheusPoll({
-    endpoint: PrometheusEndpoint.QUERY_RANGE,
-    query: cpuUsageQuery(name, namespace, 0),
+  const [result, loaded] = fetchCpuUsageMetrics({
+    name,
     namespace,
-    endTime: endTime || now,
-    timeout: '60s',
-    timespan: span,
+    span,
     samples,
-    // delay: 5000
+    endTime,
   });
-
-  const metricsData: PrometheusResponse[] = [result];
 
   return (
     <CardBrokerCPUUsageMetrics
       isInitialLoading={false}
       backendUnavailable={false}
-      allMetricsSeries={metricsData}
+      allMetricsSeries={result}
       span={span}
       isLoading={!loaded}
       fixedXDomain={xDomain}

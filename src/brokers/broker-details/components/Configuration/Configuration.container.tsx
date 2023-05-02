@@ -1,8 +1,6 @@
-import { FC, useState, useEffect } from 'react';
-import { k8sGet } from '@openshift-console/dynamic-plugin-sdk';
+import { FC } from 'react';
 import { Configuration } from './Configuration.component';
 import {
-  AMQBrokerModel,
   K8sResourceCommon,
   getCondition,
   BrokerConditionTypes,
@@ -11,36 +9,15 @@ import { Loading } from '../../../../shared-components';
 import { useTranslation } from '../../../../i18n';
 
 export type ConfigurationContainerProps = {
-  namespace?: string;
-  name?: string;
+  configurationSettings: K8sResourceCommon;
+  loading: boolean;
 };
 
 const ConfigurationContainer: FC<ConfigurationContainerProps> = ({
-  name,
-  namespace = 'all-namespaces',
+  configurationSettings,
+  loading,
 }) => {
   const { t } = useTranslation();
-  const [configurationSettings, setConfigurationSettings] =
-    useState<K8sResourceCommon>();
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const k8sGetBroker = () => {
-    setLoading(true);
-    k8sGet({ model: AMQBrokerModel, name, ns: namespace })
-      .then((broker: K8sResourceCommon) => {
-        setConfigurationSettings(broker);
-      })
-      .catch((e) => {
-        console.error(e);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    k8sGetBroker();
-  }, []);
 
   if (loading) return <Loading />;
 

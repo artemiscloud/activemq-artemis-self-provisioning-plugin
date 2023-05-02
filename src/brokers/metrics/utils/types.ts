@@ -33,3 +33,13 @@ export type FormatSeriesTitle = (
 export type GraphSeries = GraphDataPoint[];
 export type AxisDomain = [number, number];
 export type Series = [PrometheusLabels, GraphDataPoint[]] | [];
+
+export type QueryInput = {
+  name: string;
+  namespace: string;
+  span: number;
+  samples: number;
+  endTime?: number;
+  timeout?: string;
+  delay?: number;
+};

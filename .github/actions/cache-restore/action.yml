@@ -9,7 +9,7 @@ inputs:
 outputs:
   cache-hit:
     description: "Forward actions/cache cache-hit output"
-    value: ${{ steps.yarn-cache.outputs.cache-hit }}
+    value: ${{ steps.node-cache.outputs.cache-hit }}
 
 runs:
   using: "composite" # Mandatory parameter
@@ -30,8 +30,7 @@ runs:
          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
          restore-keys: |
           ${{ runner.os }}-yarn-
-
     - name: Install Dependencies
-      if: steps.yarn-cache.outputs.cache-hit != 'true'
+      if: steps.node-cache.outputs.cache-hit != 'true'
       shell: bash
       run: yarn install --frozen-lockfile

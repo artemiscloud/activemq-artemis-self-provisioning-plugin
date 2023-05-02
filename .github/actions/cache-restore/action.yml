@@ -33,5 +33,4 @@ runs:
     - name: Install Dependencies
       if: steps.node-cache.outputs.cache-hit != 'true'
       shell: bash
-      run: yarn install
-      # run: yarn install --frozen-lockfile
+      run: yarn install --frozen-lockfile

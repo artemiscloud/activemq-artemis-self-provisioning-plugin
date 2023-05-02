@@ -26,10 +26,10 @@ runs:
       env:
         cache-name: cache-node-modules
       with:
-         path: '**/.yarn'
+         path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
          restore-keys: |
-          ${{ runner.os }}-yarn-
+           ${{ runner.os }}-yarn-
 
     - name: Install Dependencies
       if: steps.yarn-cache.outputs.cache-hit != 'true'

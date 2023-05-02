@@ -10,7 +10,7 @@ export const ChartSkeletonLoader: VoidFunctionComponent = () => {
       <FlexItem>
         <Skeleton
           height={`${chartHeight - chartPadding.bottom}px`}
-          screenreaderText={t('common:skeleton_loader_screenreader_text')}
+          screenreaderText={t('skeleton_loader_screenreader_text')}
         />
       </FlexItem>
       <FlexItem>

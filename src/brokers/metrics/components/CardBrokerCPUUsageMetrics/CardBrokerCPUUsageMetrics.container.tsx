@@ -6,7 +6,7 @@ import {
   PrometheusResponse,
 } from '@openshift-console/dynamic-plugin-sdk';
 import { parsePrometheusDuration } from '../../../../utils';
-import { getMaxSamplesForSpan } from '../../utils';
+import { getMaxSamplesForSpan, cpuUsageQuery } from '../../utils';
 
 export type CardBrokerCPUUsageMetricsContainerProps = {
   name: string;
@@ -20,7 +20,7 @@ type AxisDomain = [number, number];
 
 export const CardBrokerCPUUsageMetricsContainer: FC<
   CardBrokerCPUUsageMetricsContainerProps
-> = ({ name, namespace = 'deafult', defaultSamples = 300, timespan }) => {
+> = ({ name, namespace, defaultSamples = 300, timespan }) => {
   //states
   const [xDomain] = useState<AxisDomain>();
   // For the default time span, use the first of the suggested span options that is at least as long
@@ -46,9 +46,7 @@ export const CardBrokerCPUUsageMetricsContainer: FC<
 
   const [result, loaded] = usePrometheusPoll({
     endpoint: PrometheusEndpoint.QUERY_RANGE,
-    query: `pod:container_cpu_usage:sum{pod='${
-      name + '-ss-0'
-    }',namespace='${namespace}'}`,
+    query: cpuUsageQuery(name, namespace, 0),
     namespace,
     endTime: endTime || now,
     timeout: '60s',

@@ -17,7 +17,7 @@ export type ConfigurationContainerProps = {
 
 const ConfigurationContainer: FC<ConfigurationContainerProps> = ({
   name,
-  namespace = 'default',
+  namespace = 'all-namespaces',
 }) => {
   const { t } = useTranslation();
   const [configurationSettings, setConfigurationSettings] =

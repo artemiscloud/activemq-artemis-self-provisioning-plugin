@@ -9,7 +9,7 @@ inputs:
 outputs:
   cache-hit:
     description: "Forward actions/cache cache-hit output"
-    value: ${{ steps.node-cache.outputs.cache-hit }}
+    value: ${{ steps.yarn-cache.outputs.cache-hit }}
 
 runs:
   using: "composite" # Mandatory parameter

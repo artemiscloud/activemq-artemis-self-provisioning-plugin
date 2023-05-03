@@ -8,6 +8,7 @@ import {
   EditorType,
 } from '../add-broker/components/EditorToggle/EditorToggle.component';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
+import { FormPage } from './components/AddBrokerForm/FormPage.component';
 
 type AddBrokerPageProps = RouteComponentProps<{ ns?: string }>;
 
@@ -34,7 +35,7 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
 
   //states
   const [notification, setNotification] = useState(defaultNotification);
-  const [editorType, setEditorType] = useState<EditorType>();
+  const [editorType, setEditorType] = useState<EditorType>(EditorType.Form);
 
   const handleRedirect = () => {
     history.push(`brokers`);
@@ -59,12 +60,15 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
   return (
     <>
       <EditorToggle value={editorType} onChange={handleChange} />
-      <AddBroker
-        namespace={namespace}
-        notification={notification}
-        onCreateBroker={k8sCreateBroker}
-        initialResourceYAML={initialResourceYAML}
-      />
+      {editorType === EditorType.Form && <FormPage />}
+      {editorType === EditorType.YAML && (
+        <AddBroker
+          namespace={namespace}
+          notification={notification}
+          onCreateBroker={k8sCreateBroker}
+          initialResourceYAML={initialResourceYAML}
+        />
+      )}
     </>
   );
 };

@@ -10,6 +10,7 @@
     "strict": false,
     "esModuleInterop": true,
     "noUnusedLocals": true,
+    "resolveJsonModule": true,
     "paths": {
       "@app/*": ["src/*"],
       "react": ["./node_modules/@types/react"]

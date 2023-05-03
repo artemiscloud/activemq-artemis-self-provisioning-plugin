@@ -2,3 +2,4 @@ node_modules/
 dist/
 .devcontainer/dev.env
 storybook-static
+.yarn

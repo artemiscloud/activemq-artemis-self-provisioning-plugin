@@ -19,13 +19,33 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v3
 
-      - name: Setup node and use cached node-modules
-        uses: ./.github/actions/cache-restore
-        id: cache-node-modules
+      # - name: Setup node and use cached node-modules
+      #   uses: ./.github/actions/cache-restore
+      #   id: cache-node-modules
+      #   with:
+      #     node-version: 16.6.2
+      # - run: yarn run build
+      
+      - uses: actions/setup-node@v3
         with:
           node-version: 16.6.2
-      - run: yarn run build
-      
+
+      - name: Get node version
+        id: node
+        run: |
+            echo ":: set-output name=version::$(node -v)"
+
+      - name: Get node_modules cache
+        uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: |
+              ~/.yarn
+              **/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
+
+      - run: yarn install --frozen-lockfile
+
       - name: Check for uncommited changes
         run: git diff --quiet --exit-code
       

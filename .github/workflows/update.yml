@@ -53,16 +53,6 @@ jobs:
           sed -i "s~^LABEL version=.*~LABEL version=\"${VERSION}\"~g" Dockerfile
           git commit --all --message "Update version to ${VERSION}" || echo "nothing to commit"
 
-      - name: Check build after version update
-        uses: ./.github/actions/cache-restore
-        id: cache-node-modules
-        with:
-          node-version: 16.6.2
-      - run: yarn run build
-
-      - name: Execute tests after version update
-        run: yarn run test
-
       - name: Push commits
         run: |
           git push

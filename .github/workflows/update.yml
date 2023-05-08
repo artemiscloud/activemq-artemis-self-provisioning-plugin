@@ -1,0 +1,82 @@
+name: Update
+
+env:
+  IMAGE_NAME: activemq-artemis-self-provisioning-plugin
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version, i.e. 1.0.0'
+        required: false
+        default: '*.*.+'
+        type: string
+      update_version:
+        description: 'Update version'
+        required: true
+        default: true
+        type: boolean
+      trigger_release:
+        description: 'Trigger release'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+
+      - name: Set up the repo
+        run: |
+          git config user.name 'artemiscloud-bot'
+          git config user.email 'bot@artemiscloud.io'
+          git push
+
+      - name: Update version
+        if: ${{ inputs.update_version }}
+        run: |
+          CURRENT_VERSION=$(cat package.json | jq -r '.version')
+          IFS=. read CURRENT_VERSION_MAJOR CURRENT_VERSION_MINOR CURRENT_VERSION_PATCH <<< ${CURRENT_VERSION}
+          IFS=. read VERSION_MAJOR VERSION_MINOR VERSION_PATCH <<< ${{ inputs.version }}
+          VERSION_MAJOR=${VERSION_MAJOR/\*/${CURRENT_VERSION_MAJOR}} && VERSION_MAJOR=${VERSION_MAJOR/+/$((CURRENT_VERSION_MAJOR+1))}
+          VERSION_MINOR=${VERSION_MINOR/\*/${CURRENT_VERSION_MINOR}} && VERSION_MINOR=${VERSION_MINOR/+/$((CURRENT_VERSION_MINOR+1))}
+          VERSION_PATCH=${VERSION_PATCH/\*/${CURRENT_VERSION_PATCH}} && VERSION_PATCH=${VERSION_PATCH/+/$((CURRENT_VERSION_PATCH+1))}
+          VERSION="${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
+          PACKAGE_JSON_CONTENTS=$(jq '.version="'"$VERSION"'" \
+          | .consolePlugin.version="'"$VERSION"'" \
+          | ._id="activemq-artemis-self-provisioning-plugin@'$VERSION'"' package.json) \
+          && echo -E "${PACKAGE_JSON_CONTENTS}" > package.json && unset PACKAGE_JSON_CONTENTS
+          sed -i "s~^LABEL version=.*~LABEL version=\"${VERSION}\"~g" Dockerfile
+          git commit --all --message "Update version to ${VERSION}" || echo "nothing to commit"
+
+      - name: Check build after version update
+        uses: ./.github/actions/cache-restore
+        id: cache-node-modules
+        with:
+          node-version: 16.6.2
+      - run: yarn install --frozen-lockfile
+      - run: yarn run build
+
+      - name: Execute tests after version update
+        run: yarn run test
+
+      - name: Push commits
+        run: |
+          git push
+
+      - name: Trigger release
+        if: ${{ inputs.trigger_release }}
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'release.yml',
+              ref: context.ref,
+            });

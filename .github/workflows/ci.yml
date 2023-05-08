@@ -19,13 +19,6 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v3
 
-      # - name: Setup node and use cached node-modules
-      #   uses: ./.github/actions/cache-restore
-      #   id: cache-node-modules
-      #   with:
-      #     node-version: 16.6.2
-      # - run: yarn run build
-      
       - uses: actions/setup-node@v3
         with:
           node-version: 16.6.2

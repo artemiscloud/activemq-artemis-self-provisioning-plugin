@@ -8,7 +8,7 @@ import {
   EditorType,
 } from '../add-broker/components/EditorToggle/EditorToggle.component';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
-import { FormPage } from './components/AddBrokerForm/FormPage.component';
+import { FormView } from './components/AddBrokerForm/FormView.component';
 
 type AddBrokerPageProps = RouteComponentProps<{ ns?: string }>;
 
@@ -60,7 +60,7 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
   return (
     <>
       <EditorToggle value={editorType} onChange={handleChange} />
-      {editorType === EditorType.Form && <FormPage />}
+      {editorType === EditorType.Form && <FormView />}
       {editorType === EditorType.YAML && (
         <AddBroker
           namespace={namespace}

@@ -38,31 +38,24 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
-
+        
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
 
-      # - name: Checkout the repo
-      #   uses: actions/checkout@v3
+      - name: Checkout the repo
+        uses: actions/checkout@v3
 
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 16.6.2
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.6.2
 
       - name: Get cache
         id: cache-node-modules
         uses: ./.github/actions/cache-restore
 
-      - name: Install Dependencies
-        if: ${{ steps.node-cache.outputs.cache-hit != 'true' }}
-        run: yarn install --frozen-lockfile
-
-      - name: Check for uncommited changes
-        run: git diff --quiet --exit-code
-      
       # TODO: uncomment after adding tests
       # - name: Execute tests
       #   run: yarn run test

@@ -1,6 +1,11 @@
-name: "Setup Node and  Cache restoration"
+name: "Cache restoration and install node_modules"
 description: "Install node_modules and restore cache if any, given a node version"
-      
+
+outputs:
+  cache-hit:
+    description: "Forward actions/cache cache-hit output"
+    value: ${{ steps.yarn-cache.outputs.cache-hit }}   
+     
 runs:
   using: "composite" # Mandatory parameter
   steps:
@@ -11,14 +16,6 @@ runs:
       run: |
           echo ":: set-output name=version::$(node -v)"
           echo "::set-output name=dir::$(yarn cache dir)"
-
-    - name: Checkout the repo
-      uses: actions/checkout@v3
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16.6.2
         
     - name: Get node_modules cache
       uses: actions/cache@v3
@@ -31,6 +28,10 @@ runs:
         restore-keys: |
             ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
 
+    - name: Install Dependencies
+      if: steps.yarn-cache.cache-hit != 'true'
+      shell: bash
+      run: yarn install --frozen-lockfile
       
 
     

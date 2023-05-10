@@ -38,19 +38,21 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
-        
+  
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/cache-restore
-        id: cache-node-modules
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 16.6.2
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+      - name: Get cache and install dependencies
+        uses: ./.github/actions/cache-restore
 
       - name : Build project
         run: yarn run build

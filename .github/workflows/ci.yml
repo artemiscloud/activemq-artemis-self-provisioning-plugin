@@ -43,22 +43,24 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-
-      - name: Checkout the repo
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/cache-restore
+        id: cache-node-modules
         with:
           node-version: 16.6.2
 
-      - name: Get cache
-        id: cache-node-modules
-        uses: ./.github/actions/cache-restore
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name : Build project
+        run: yarn run build
 
       # TODO: uncomment after adding tests
       # - name: Execute tests
       #   run: yarn run test
+
+      - name: Check for uncommited changes
+        run: git diff --quiet --exit-code
 
       # TODO: uncomment after fixing storybook issue: https://github.com/openshift/dynamic-plugin-sdk/issues/216
       # - name: Build storybook

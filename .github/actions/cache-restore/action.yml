@@ -7,7 +7,7 @@ outputs:
     value: ${{ steps.yarn-cache.outputs.cache-hit }}   
      
 runs:
-  using: "composite" # Mandatory parameter
+  using: "composite"
   steps:
 
     - name: Get yarn cache directory path and node version

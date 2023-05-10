@@ -35,7 +35,7 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
-          
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
 
@@ -44,28 +44,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Checkout the repo
-        uses: actions/checkout@v3
+      # - name: Checkout the repo
+      #   uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16.6.2
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 16.6.2
 
-      - name: Get node version
-        id: node
-        run: |
-            echo ":: set-output name=version::$(node -v)"
+      - name: Get cache
+        id: cache-node-modules
+        uses: ./.github/actions/cache-restore
 
-      - name: Get node_modules cache
-        uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: |
-              ~/.yarn
-              **/node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
-
-      - run: yarn install --frozen-lockfile
+      - name: Install Dependencies
+        if: ${{ steps.node-cache.outputs.cache-hit != 'true' }}
+        run: yarn install --frozen-lockfile
 
       - name: Check for uncommited changes
         run: git diff --quiet --exit-code
@@ -86,7 +79,6 @@ jobs:
       #     folder: storybook-static # The folder the action should deploy.
 
       - name: Build the docker image
-        if: ${{ github.event_name == 'push' }}
         run: docker build --label quay.expires-after=90d --label git-sha=$GITHUB_SHA --tag $IMAGE_NAME:dev.latest .
 
       - name: Push the image

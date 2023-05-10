@@ -1,0 +1,31 @@
+name: "Cache restoration"
+description: "Restore cache if any, given a node version"
+      
+runs:
+  using: "composite" # Mandatory parameter
+  steps:
+    - name: Checkout the repo
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.6.2
+
+    - name: Get yarn cache directory path and node version
+      id: yarn-cache-dir-path
+      shell: bash
+      run: |
+          echo ":: set-output name=version::$(node -v)"
+          echo "::set-output name=dir::$(yarn cache dir)"
+
+    - name: Get node_modules cache
+      uses: actions/cache@v3
+      id: yarn-cache
+      with:
+        path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            **/node_modules
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
+        restore-keys: |
+            ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}

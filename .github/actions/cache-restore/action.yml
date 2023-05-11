@@ -1,10 +1,5 @@
 name: "Cache restoration and install node_modules"
 description: "Install node_modules and restore cache if any, given a node version"
-
-outputs:
-  cache-hit:
-    description: "Forward actions/cache cache-hit output"
-    value: ${{ steps.yarn-cache.outputs.cache-hit }}   
      
 runs:
   using: "composite"

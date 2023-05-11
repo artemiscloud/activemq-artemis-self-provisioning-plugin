@@ -29,7 +29,7 @@ runs:
             ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
 
     - name: Install Dependencies
-      if: steps.yarn-cache.cache-hit != 'true'
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
       shell: bash
       run: yarn install --frozen-lockfile
       

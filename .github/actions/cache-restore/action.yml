@@ -6,7 +6,7 @@ runs:
   steps:
 
     - name: Get yarn cache directory path and node version
-      id: yarn-cache-dir-path
+      id: yarn-cache-dir-path-node-version
       shell: bash
       run: |
           echo "version=$(node -v)" >>$GITHUB_OUTPUT
@@ -19,9 +19,9 @@ runs:
         path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             **/node_modules
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.yarn-cache-dir-path-node-version.outputs.version }}
         restore-keys: |
-            ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
+            ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.yarn-cache-dir-path-node-version.outputs.version }}
 
     - name: Install Dependencies
       if: steps.yarn-cache.cache-hit != 'true'

@@ -1,36 +1,38 @@
-name: "Cache restoration"
-description: "Setup a NodeJS environment and restore cache if any, given a node version"
-
-inputs:
-  node-version:
-    description: "Node version to use, default to LTS Fermium (14.x)"
-    required: true
-    default: lts/fermium
-outputs:
-  cache-hit:
-    description: "Forward actions/cache cache-hit output"
-    value: ${{ steps.node-cache.outputs.cache-hit }}
-
+name: "Cache restoration and install node_modules"
+description: "Install node_modules and restore cache if any"
+     
 runs:
-  using: "composite" # Mandatory parameter
+  using: "composite"
   steps:
-    # Setup a Node environment given a node version
-    - name: Use Node.js ${{ inputs.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ inputs.node-version }}
 
-    - name: Cache Node Modules
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      shell: bash
+      run: |
+          echo "dir=$(yarn cache dir)" >>$GITHUB_OUTPUT
+
+    - name: Get node version
+      id: node
+      shell: bash
+      run: |
+          echo "version=$(node -v)" >>$GITHUB_OUTPUT
+        
+    - name: Get node_modules cache
       uses: actions/cache@v3
       id: yarn-cache
-      env:
-        cache-name: cache-node-modules
       with:
-         path: ~/.yarn
-         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-         restore-keys: |
-          ${{ runner.os }}-yarn-
+        path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            **/node_modules
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
+        restore-keys: |
+            ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
+
     - name: Install Dependencies
-      if: steps.node-cache.outputs.cache-hit != 'true'
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
       shell: bash
       run: yarn install --frozen-lockfile
+      
+
+    
+    

@@ -1,0 +1,97 @@
+name: CI
+
+env: 
+  IMAGE_NAME: activemq-artemis-self-provisioning-plugin
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+# cancels the old active workflow if new workflow is triggered
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["javascript"]
+        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Initializes the CodeQL tools for scanning.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+  
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.6.2
+
+      - name: Get cache and install dependencies
+        uses: ./.github/actions/cache-restore
+
+      - name : Build project
+        run: yarn run build
+
+      # TODO: uncomment after adding tests
+      # - name: Execute tests
+      #   run: yarn run test
+
+      - name: Check for uncommited changes
+        run: git diff --quiet --exit-code
+
+      # TODO: uncomment after fixing storybook issue: https://github.com/openshift/dynamic-plugin-sdk/issues/216
+      # - name: Build storybook
+      #   run: |
+      #     yarn run build-storybook -- --quiet --loglevel silent
+
+      # - name: Deploy story book to github pages 🚀
+      #   uses: JamesIves/github-pages-deploy-action@v4.4.0
+      #   with:
+      #     branch: gh-pages # The branch the action should deploy to.
+      #     folder: storybook-static # The folder the action should deploy.
+
+      - name: Build the docker image
+        run: docker build --label quay.expires-after=90d --label git-sha=$GITHUB_SHA --tag $IMAGE_NAME:dev.latest .
+
+      - name: Push the image
+        if: ${{ github.event_name == 'push' }}
+        run: >
+          export IMAGE_TAG=dev.$(date +%Y%m%d).$(git rev-parse --short "$GITHUB_SHA") &&
+          docker login quay.io --username=${{ secrets.QUAY_USERNAME }} --password-stdin <<< ${{ secrets.QUAY_PASSWORD }} &&
+          docker tag $IMAGE_NAME:dev.latest quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG &&
+          docker push quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG &&
+          docker tag $IMAGE_NAME:dev.latest quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.latest &&
+          docker push quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.latest
+
+
+

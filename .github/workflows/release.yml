@@ -1,0 +1,43 @@
+name: Release
+
+env:
+  IMAGE_NAME: activemq-artemis-self-provisioning-plugin
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+
+      - name: Create release tag
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          git fetch --tags
+          HEAD_COMMIT="$(git rev-parse HEAD)"
+          RELEASE_TAG="$(cat package.json | jq -r '.version')"
+          RELEASE_TAG_COMMIT="$(git rev-list -n 1 ${RELEASE_TAG} || true)"
+          if [ "$RELEASE_TAG_COMMIT" != "$HEAD_COMMIT" ]; then
+            git config user.name 'artemiscloud-bot'
+            git config user.email 'bot@artemiscloud.io'
+            git tag -a ${RELEASE_TAG} -m ${RELEASE_TAG} --force
+            git push origin $RELEASE_TAG --force
+          fi
+
+      - name: Build the image
+        run: docker build --tag $IMAGE_NAME:latest .
+        
+      - name: Push the image
+        run: >
+          RELEASE_TAG="$(git describe --exact-match --tags)" && IMAGE_TAG=${RELEASE_TAG#v} &&
+          docker login --username=${{ secrets.QUAY_USERNAME }} --password=${{ secrets.QUAY_PASSWORD }} quay.io &&
+          docker tag $IMAGE_NAME:latest quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG &&
+          docker push quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG &&
+          docker tag $IMAGE_NAME:latest quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:latest &&
+          docker push quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:latest

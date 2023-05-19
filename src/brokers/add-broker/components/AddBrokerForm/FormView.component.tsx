@@ -10,31 +10,24 @@ import {
   GridItem,
   ActionListItem,
   ActionList,
+  // AlertActionCloseButton
 } from '@patternfly/react-core';
 import { useTranslation } from '../../../../i18n';
 import { Link } from 'react-router-dom';
-type validate = 'success' | 'warning' | 'error' | 'default';
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 
-export const FormView: FC = () => {
+type FormViewProps = {
+  data: K8sResourceCommon;
+  handleNameChange: (fieldName: string, value: string) => void;
+};
+
+export const FormView: FC<FormViewProps> = ({ data, handleNameChange }) => {
   const { t } = useTranslation();
-  const [name, setName] = useState('');
   const [showAlert, setShowAlert] = useState<boolean>(false);
-  const [validated, setValidated] = useState<validate>('error');
-
-  const handleNameChange = (name: string) => {
-    setName(name);
-    if (name === ' ') {
-      setValidated('default');
-    } else if (!isNaN(+name)) {
-      setValidated('success');
-    } else {
-      setValidated('error');
-    }
-  };
 
   const onSubmitHandler = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (name) {
+    if (data.metadata.name) {
       setShowAlert(true);
     }
   };
@@ -49,24 +42,24 @@ export const FormView: FC = () => {
           }}
         >
           <FormGroup
+            className="pf-u-min-height"
             label={t('name')}
             isRequired
             fieldId="name"
-            validated={validated}
           >
             <TextInput
               isRequired
               type="text"
               id="name"
               name="name"
-              value={name}
-              onChange={handleNameChange}
+              value={data.metadata.name}
+              onChange={(value) => handleNameChange('name', value)}
             />
           </FormGroup>
           <ActionList>
             <ActionListItem>
               <Button variant="primary" type="submit" onClick={onSubmitHandler}>
-                Submit
+                {t('create')}
               </Button>
               <AlertGroup>{showAlert}</AlertGroup>
             </ActionListItem>

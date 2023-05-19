@@ -34,8 +34,11 @@ const AddBrokerForm: FC<AddBrokerFormProps> = ({
   }, [initialResourceYAML]);
 
   const onSave = (content: string) => {
-    setData(load(content));
-    onCreateBroker(load(content));
+    const yamlData: K8sResourceCommon = load(content);
+    setData(yamlData);
+    // const name = yamlData.metadata?.name;
+    // handleNameChange('name', name)
+    onCreateBroker(yamlData);
   };
 
   if (loadingAccessReview) return <Loading />;
@@ -64,5 +67,4 @@ const AddBrokerForm: FC<AddBrokerFormProps> = ({
     </>
   );
 };
-
 export { AddBrokerForm };

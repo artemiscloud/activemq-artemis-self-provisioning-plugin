@@ -21,7 +21,7 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
     apiVersion: 'broker.amq.io/v1beta1',
     kind: 'ActiveMQArtemis',
     metadata: {
-      name: 'default',
+      name: '',
       namespace,
     },
     spec: {
@@ -33,7 +33,19 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
     },
   };
 
+  const handleNameChange = (fieldName: string, value: string) => {
+    setBrokerData((prevState) => ({
+      ...prevState,
+      metadata: {
+        ...prevState.metadata,
+        [fieldName]: value,
+      },
+    }));
+  };
+
   //states
+  const [brokerData, setBrokerData] =
+    useState<K8sResourceCommon>(initialResourceYAML);
   const [notification, setNotification] = useState(defaultNotification);
   const [editorType, setEditorType] = useState<EditorType>(EditorType.Form);
 
@@ -46,6 +58,9 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
   };
 
   const k8sCreateBroker = (content: K8sResourceCommon) => {
+    const name = content.metadata?.name || '';
+    handleNameChange('name', name);
+
     k8sCreate({ model: AMQBrokerModel, data: content })
       .then(() => {
         setNotification(defaultNotification);
@@ -60,13 +75,15 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
   return (
     <>
       <EditorToggle value={editorType} onChange={handleChange} />
-      {editorType === EditorType.Form && <FormView />}
+      {editorType === EditorType.Form && (
+        <FormView data={brokerData} handleNameChange={handleNameChange} />
+      )}
       {editorType === EditorType.YAML && (
         <AddBroker
           namespace={namespace}
           notification={notification}
           onCreateBroker={k8sCreateBroker}
-          initialResourceYAML={initialResourceYAML}
+          initialResourceYAML={brokerData}
         />
       )}
     </>

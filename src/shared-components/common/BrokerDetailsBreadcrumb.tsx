@@ -1,6 +1,7 @@
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
 import { FC } from 'react';
+import { PollingTimeDropdown } from './PollingTimeDropdown';
 
 export type BrokerDetailsBreadcrumbProps = {
   name: string;
@@ -21,12 +22,17 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   const { t } = useTranslation();
 
   return (
-    <Breadcrumb className="pf-u-mb-md">
-      <BreadcrumbItem to={redirectPath}>{t('brokers')}</BreadcrumbItem>
-      <BreadcrumbItem isActive>
-        {t('broker')} {name}
-      </BreadcrumbItem>
-    </Breadcrumb>
+    <>
+      <Breadcrumb className="pf-u-mb-md">
+        <BreadcrumbItem to={redirectPath}>{t('brokers')}</BreadcrumbItem>
+        <BreadcrumbItem isActive>
+          {t('broker')} {name}
+        </BreadcrumbItem>
+      </Breadcrumb>
+      <div className="pf-u-float-right">
+        <PollingTimeDropdown />
+      </div>
+    </>
   );
 };
 

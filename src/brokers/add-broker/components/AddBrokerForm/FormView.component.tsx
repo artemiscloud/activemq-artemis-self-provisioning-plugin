@@ -1,11 +1,10 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import {
   Form,
   FormGroup,
   TextInput,
   Alert,
   Button,
-  AlertGroup,
   Grid,
   GridItem,
   ActionListItem,
@@ -18,24 +17,32 @@ import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 
 type FormViewProps = {
   data: K8sResourceCommon;
-  handleNameChange: (fieldName: string, value: string) => void;
+  onChangeField: (fieldName: string, value: string) => void;
+  onCreateBroker: (content: any) => void;
 };
 
-export const FormView: FC<FormViewProps> = ({ data, handleNameChange }) => {
+export const FormView: FC<FormViewProps> = ({
+  data,
+  onChangeField,
+  onCreateBroker,
+}) => {
   const { t } = useTranslation();
-  const [showAlert, setShowAlert] = useState<boolean>(false);
 
   const onSubmitHandler = (e: React.FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (data.metadata.name) {
-      setShowAlert(true);
-    }
+    //e.preventDefault();
+    onCreateBroker(data);
   };
 
   return (
     <Grid className="pf-u-mx-md">
       <GridItem span={6}>
-        {showAlert && <Alert variant="info" isInline title={t('info_alert')} />}
+        <div className="pf-u-pb-md">
+          <Alert
+            variant="info"
+            isInline
+            title={t('create_broker_form_info_alert')}
+          />
+        </div>
         <Form
           onSubmit={(e: React.FormEvent<HTMLFormElement>): void => {
             e.preventDefault();
@@ -53,7 +60,7 @@ export const FormView: FC<FormViewProps> = ({ data, handleNameChange }) => {
               id="name"
               name="name"
               value={data.metadata.name}
-              onChange={(value) => handleNameChange('name', value)}
+              onChange={(value) => onChangeField('name', value)}
             />
           </FormGroup>
           <ActionList>
@@ -61,7 +68,7 @@ export const FormView: FC<FormViewProps> = ({ data, handleNameChange }) => {
               <Button variant="primary" type="submit" onClick={onSubmitHandler}>
                 {t('create')}
               </Button>
-              <AlertGroup>{showAlert}</AlertGroup>
+              {/* //<AlertGroup>{showAlert}</AlertGroup> */}
             </ActionListItem>
             <Button variant="link">
               <Link to="/k8s/all-namespaces/brokers">Cancel</Link>

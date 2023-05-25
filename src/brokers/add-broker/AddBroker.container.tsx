@@ -21,7 +21,7 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
     apiVersion: 'broker.amq.io/v1beta1',
     kind: 'ActiveMQArtemis',
     metadata: {
-      name: '',
+      name: 'default',
       namespace,
     },
     spec: {
@@ -33,7 +33,7 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
     },
   };
 
-  const handleNameChange = (fieldName: string, value: string) => {
+  const onChangeField = (fieldName: string, value: string) => {
     setBrokerData((prevState) => ({
       ...prevState,
       metadata: {
@@ -59,7 +59,7 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
 
   const k8sCreateBroker = (content: K8sResourceCommon) => {
     const name = content.metadata?.name || '';
-    handleNameChange('name', name);
+    onChangeField('name', name);
 
     k8sCreate({ model: AMQBrokerModel, data: content })
       .then(() => {
@@ -76,7 +76,11 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
     <>
       <EditorToggle value={editorType} onChange={handleChange} />
       {editorType === EditorType.Form && (
-        <FormView data={brokerData} handleNameChange={handleNameChange} />
+        <FormView
+          data={brokerData}
+          onChangeField={onChangeField}
+          onCreateBroker={k8sCreateBroker}
+        />
       )}
       {editorType === EditorType.YAML && (
         <AddBroker

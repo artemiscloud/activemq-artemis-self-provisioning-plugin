@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import {
   Form,
   FormGroup,
@@ -9,11 +9,13 @@ import {
   GridItem,
   ActionListItem,
   ActionList,
-  // AlertActionCloseButton
+  FormHelperText,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../../../i18n';
 import { Link } from 'react-router-dom';
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
+//import "../../components/styles.css"
 
 type FormViewProps = {
   data: K8sResourceCommon;
@@ -27,12 +29,29 @@ export const FormView: FC<FormViewProps> = ({
   onCreateBroker,
 }) => {
   const { t } = useTranslation();
+  type validate = 'success' | 'warning' | 'error' | 'default';
+  const [validated, setValidated] = useState<validate>('error');
+
+  const validateName = (value: string) => {
+    const regex =
+      /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/i;
+    if (value === '') {
+      setValidated('default');
+    } else if (regex.test(value)) {
+      setValidated('success');
+    } else {
+      setValidated('error');
+    }
+  };
 
   const onSubmitHandler = (e: React.FormEvent<HTMLButtonElement>) => {
-    //e.preventDefault();
+    e.preventDefault();
     onCreateBroker(data);
   };
 
+  // const divStyle = {
+  //   '--pf-u-min-height--MinHeight': '50ch',
+  // } as React.CSSProperties;
   return (
     <Grid className="pf-u-mx-md">
       <GridItem span={6}>
@@ -43,16 +62,32 @@ export const FormView: FC<FormViewProps> = ({
             title={t('create_broker_form_info_alert')}
           />
         </div>
+        {/* <div
+          className="pf-u-min-height"
+          style={divStyle}
+        > */}
         <Form
           onSubmit={(e: React.FormEvent<HTMLFormElement>): void => {
             e.preventDefault();
           }}
+          className="pf-u-h-75vh"
+          //  style={{"height":"100%"}}
         >
           <FormGroup
-            className="pf-u-min-height"
             label={t('name')}
             isRequired
             fieldId="name"
+            helperText={
+              <FormHelperText
+                icon={<ExclamationCircleIcon />}
+                isHidden={validated !== 'default'}
+              >
+                {t('form_helper_text')}
+              </FormHelperText>
+            }
+            helperTextInvalid={t('helper_text_invalid')}
+            helperTextInvalidIcon={<ExclamationCircleIcon />}
+            validated={validated}
           >
             <TextInput
               isRequired
@@ -60,20 +95,27 @@ export const FormView: FC<FormViewProps> = ({
               id="name"
               name="name"
               value={data.metadata.name}
-              onChange={(value) => onChangeField('name', value)}
+              validated={validated}
+              onChange={(value) => {
+                onChangeField('name', value);
+                validateName(value);
+              }}
             />
           </FormGroup>
+          {/* //<div className="button-container pf-c-sticky-footer"> */}
+          {/* <footer> */}
           <ActionList>
             <ActionListItem>
               <Button variant="primary" type="submit" onClick={onSubmitHandler}>
                 {t('create')}
               </Button>
-              {/* //<AlertGroup>{showAlert}</AlertGroup> */}
             </ActionListItem>
             <Button variant="link">
               <Link to="/k8s/all-namespaces/brokers">Cancel</Link>
             </Button>
           </ActionList>
+          {/* </footer> */}
+          {/* </div> */}
         </Form>
       </GridItem>
     </Grid>

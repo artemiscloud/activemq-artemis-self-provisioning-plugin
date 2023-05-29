@@ -49,5 +49,7 @@
   "configure_via": "Configure via:",
   "form_view": "Form view",
   "yaml_view": "YAML view",
-  "create_broker_form_info_alert": "Note: Some fields may not be represented in this form view. Please select 'YAML view' for full control."
+  "create_broker_form_info_alert": "Note: Some fields may not be represented in this form view. Please select 'YAML view' for full control.",
+  "form_helper_text": "Please enter your name",
+  "helper_text_invalid": "Please enter a valid name"
 }

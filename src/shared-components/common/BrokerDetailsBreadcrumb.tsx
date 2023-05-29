@@ -1,7 +1,7 @@
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
 import { FC } from 'react';
-import { PollingTimeDropdown } from './PollingTimeDropdown';
+import { DropdownWithToggle } from './DropdownWithToggle';
 
 export type BrokerDetailsBreadcrumbProps = {
   name: string;
@@ -30,7 +30,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
         </BreadcrumbItem>
       </Breadcrumb>
       <div className="pf-u-float-right">
-        <PollingTimeDropdown />
+        <DropdownWithToggle />
       </div>
     </>
   );

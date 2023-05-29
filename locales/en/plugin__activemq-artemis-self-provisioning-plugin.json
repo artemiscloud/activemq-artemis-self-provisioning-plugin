@@ -50,5 +50,19 @@
   "form_view": "Form view",
   "yaml_view": "YAML view",
   "info_alert": "Note: Some fields may not be represented in this form view. Please select 'YAML view' for full control.",
-  "refresh_off": "Refresh Off"
+  "refresh_off": "Refresh Off",
+  "15_seconds": "15 Seconds",
+  "30_seconds": "30 Seconds",
+  "1_minutes": "1 minutes",
+  "5_minute": "5 minute",
+  "15_minute": "15 minute",
+  "30_minute": "30 minute",
+  "1_hour": "1 hour",
+  "2_hour": "2 hour",
+  "6_hour": "6 hour",
+  "12_hour": "12 hour",
+  "1_day": "1 day",
+  "2_day": "2 day",
+  "1_week": "1 week",
+  "2_week": "2 week"
 }

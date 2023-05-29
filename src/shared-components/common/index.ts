@@ -1,2 +1,2 @@
 export * from './BrokerDetailsBreadcrumb';
-export * from './PollingTimeDropdown';
+export * from './DropdownWithToggle';

@@ -88,13 +88,6 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   ];
 
   const [selectedValue, setSelectedValue] = useState<string>('');
-  // const onSelectOption = (value: string) => {
-  //   setTopicData({ ...topicData, cleanupPolicy: value });
-  // };
-
-  // const onSelectOption = (value: string) => {
-  //   setSelectedValue(value);
-  // };
 
   return (
     <>

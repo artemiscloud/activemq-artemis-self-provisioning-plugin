@@ -4,10 +4,8 @@ import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core';
 import type { DropdownProps } from '@patternfly/react-core/dist/js';
 
 export interface IDropdownWithToggleProps {
-  name: string;
   toggleId: string;
   items: IDropdownOption[];
-  onSelectOption?: (value: string, name: string) => void;
   isLabelAndValueNotSame?: boolean;
 }
 export interface IDropdownOption {
@@ -18,7 +16,6 @@ export interface IDropdownOption {
 }
 
 export const DropdownWithToggle: React.FC<IDropdownWithToggleProps> = ({
-  name,
   toggleId,
   items,
   isLabelAndValueNotSame,
@@ -28,7 +25,7 @@ export const DropdownWithToggle: React.FC<IDropdownWithToggleProps> = ({
   const onToggle = (isOpen: boolean) => {
     setIsOpen(isOpen);
   };
-  console.log('selval', selectedValue);
+
   const onSelect: DropdownProps['onSelect'] = (e) => {
     if (e && e.currentTarget.textContent) {
       const label: string = e.currentTarget.textContent;
@@ -73,7 +70,6 @@ export const DropdownWithToggle: React.FC<IDropdownWithToggleProps> = ({
 
   return (
     <Dropdown
-      name={name}
       onSelect={onSelect}
       toggle={dropdownToggle}
       isOpen={isOpen}

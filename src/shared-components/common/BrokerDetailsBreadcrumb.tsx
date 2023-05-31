@@ -115,7 +115,6 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
       </Breadcrumb>
       <div className="pf-u-float-right pf-u-mr-lg">
         <DropdownWithToggle
-          name="cleanup-policy"
           toggleId="type-dropdowntoggle"
           items={dropdownItems}
           isLabelAndValueNotSame={true}

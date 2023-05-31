@@ -1,6 +1,6 @@
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import {
   DropdownWithToggle,
   IDropdownOption,
@@ -27,7 +27,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   const dropdownItems: IDropdownOption[] = [
     {
       key: 'Refresh Off',
-      value: 'Refresh Off',
+      value: '0',
       label: t('refresh_off'),
       isDisabled: false,
     },
@@ -46,7 +46,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
     {
       key: '1m',
       value: '1m',
-      label: t('1_minutes'),
+      label: t('1_minute'),
       isDisabled: false,
     },
     {
@@ -58,13 +58,13 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
     {
       key: '15m',
       value: '15m',
-      label: t('15_minute'),
+      label: t('15_minutes'),
       isDisabled: false,
     },
     {
       key: '30m',
       value: '30m',
-      label: t('30_minute'),
+      label: t('30_minutes'),
       isDisabled: false,
     },
     {
@@ -74,9 +74,9 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
       isDisabled: false,
     },
     {
-      key: '2h',
-      value: '2h',
-      label: t('2_hour'),
+      key: '6h',
+      value: '6h',
+      label: t('6_hours'),
       isDisabled: false,
     },
     {
@@ -85,9 +85,25 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
       label: t('1_day'),
       isDisabled: false,
     },
+    {
+      key: '2d',
+      value: '2d',
+      label: t('2_days'),
+      isDisabled: false,
+    },
+    {
+      key: '1w',
+      value: '1w',
+      label: t('1_week'),
+      isDisabled: false,
+    },
+    {
+      key: '2w',
+      value: '2w',
+      label: t('2_weeks'),
+      isDisabled: false,
+    },
   ];
-
-  const [selectedValue, setSelectedValue] = useState<string>('');
 
   return (
     <>
@@ -99,10 +115,10 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
       </Breadcrumb>
       <div className="pf-u-float-right pf-u-mr-lg">
         <DropdownWithToggle
+          name="cleanup-policy"
           toggleId="type-dropdowntoggle"
           items={dropdownItems}
-          selectedValue={selectedValue}
-          setSelectedValue={setSelectedValue}
+          isLabelAndValueNotSame={true}
         />
       </div>
     </>

@@ -1,52 +1,82 @@
-import { FC } from 'react';
+import { FC, FormEvent } from 'react';
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
-import {
-  Alert,
-  AlertVariant,
-  AlertGroup,
-  Page,
-  PageSection,
-} from '@patternfly/react-core';
-import { AddBrokerForm } from './components';
-import { K8sResourceCommon as K8sResourceCommonWithSpec } from '../../utils';
+import { AlertVariant, Divider } from '@patternfly/react-core';
+import { YamlEditorView, EditorToggle, FormView } from './components';
+import { AddBrokerFormYamlValues } from '../utils/import-types';
+import { EditorType } from '../utils/add-broker';
 
 type AddBrokerProps = {
-  onCreateBroker: (data: K8sResourceCommon) => void;
+  onCreateBroker: (data?: K8sResourceCommon) => void;
+  onChangeValue?: (values: AddBrokerFormYamlValues) => void;
   namespace: string;
-  initialResourceYAML: K8sResourceCommonWithSpec;
+  formValues: AddBrokerFormYamlValues;
   notification: {
     title: string;
     variant: AlertVariant;
   };
+  isEditWorkFlow?: boolean;
 };
 
 const AddBroker: FC<AddBrokerProps> = ({
   onCreateBroker,
   notification,
   namespace,
-  initialResourceYAML,
+  formValues,
+  onChangeValue,
+  isEditWorkFlow,
 }) => {
+  const { editorType } = formValues;
+
+  // useEffect(() => {
+  //   if (editorType === EditorType.Form) {
+  //     const formData = convertYamlToForm(formValues.yamlData);
+  //     onChangeValue({ ...formValues, formData });
+  //   } else {
+  //     const yamlData = convertFormToBrokerYaml(formValues.formData);
+  //     onChangeValue({ ...formValues, yamlData });
+  //   }
+  // }, [editorType]);
+
+  const onSelectEditorType = (editorType: EditorType) => {
+    onChangeValue({ ...formValues, editorType });
+  };
+
+  const onChangeFieldValue = (
+    value: string,
+    evt: FormEvent<HTMLInputElement>,
+  ) => {
+    const fieldName = evt.currentTarget.name;
+    onChangeValue({
+      ...formValues,
+      formData: { metadata: { [fieldName]: value } },
+    });
+  };
+
   return (
-    <Page>
-      <PageSection>
-        {notification.title && (
-          <AlertGroup>
-            <Alert
-              data-test="add-broker-notification"
-              title={notification.title}
-              variant={notification.variant}
-              isInline
-              actionClose
+    <>
+      {!isEditWorkFlow && (
+        <>
+          <Divider />
+          <EditorToggle value={editorType} onChange={onSelectEditorType} />
+          <Divider />
+          {editorType === EditorType.Form && (
+            <FormView
+              formValues={formValues.formData}
+              onChangeFieldValue={onChangeFieldValue}
+              onCreateBroker={onCreateBroker}
             />
-          </AlertGroup>
-        )}
-        <AddBrokerForm
+          )}
+        </>
+      )}
+      {editorType === EditorType.YAML && (
+        <YamlEditorView
           onCreateBroker={onCreateBroker}
           namespace={namespace}
-          initialResourceYAML={initialResourceYAML}
+          initialResourceYAML={formValues.yamlData}
+          notification={notification}
         />
-      </PageSection>
-    </Page>
+      )}
+    </>
   );
 };
 

@@ -1,1 +1,1 @@
-export * from './EditorToggle.component';
+export * from './EditorToggle';

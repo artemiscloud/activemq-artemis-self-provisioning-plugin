@@ -1,6 +1,6 @@
 import { FC, Suspense, useState, useEffect } from 'react';
 import { load } from 'js-yaml';
-import { Alert, AlertVariant, Page } from '@patternfly/react-core';
+import { Alert, AlertVariant, AlertGroup } from '@patternfly/react-core';
 import {
   ResourceYAMLEditor,
   useAccessReview,
@@ -9,16 +9,21 @@ import { AMQBrokerModel, K8sResourceCommon } from '../../../../utils';
 import { Loading } from '../../../../shared-components';
 import { useTranslation } from '../../../../i18n';
 
-export type AddBrokerFormProps = {
+export type YamlEditorViewProps = {
   onCreateBroker: (content: any) => void;
   namespace: string;
   initialResourceYAML: K8sResourceCommon;
+  notification: {
+    title: string;
+    variant: AlertVariant;
+  };
 };
 
-const AddBrokerForm: FC<AddBrokerFormProps> = ({
+const YamlEditorView: FC<YamlEditorViewProps> = ({
   onCreateBroker,
   namespace,
   initialResourceYAML,
+  notification,
 }) => {
   const { t } = useTranslation();
   const [data, setData] = useState<K8sResourceCommon>();
@@ -36,8 +41,6 @@ const AddBrokerForm: FC<AddBrokerFormProps> = ({
   const onSave = (content: string) => {
     const yamlData: K8sResourceCommon = load(content);
     setData(yamlData);
-    // const name = yamlData.metadata?.name;
-    // handleNameChange('name', name)
     onCreateBroker(yamlData);
   };
 
@@ -46,7 +49,18 @@ const AddBrokerForm: FC<AddBrokerFormProps> = ({
   return (
     <>
       {canCreateBroker ? (
-        <Page>
+        <>
+          {notification.title && (
+            <AlertGroup>
+              <Alert
+                data-test="add-broker-notification"
+                title={notification.title}
+                variant={notification.variant}
+                isInline
+                actionClose
+              />
+            </AlertGroup>
+          )}
           <Suspense fallback={<Loading />}>
             <ResourceYAMLEditor
               initialResource={data}
@@ -54,7 +68,7 @@ const AddBrokerForm: FC<AddBrokerFormProps> = ({
               onSave={onSave}
             />
           </Suspense>
-        </Page>
+        </>
       ) : (
         <Alert
           variant={AlertVariant.default}
@@ -67,4 +81,4 @@ const AddBrokerForm: FC<AddBrokerFormProps> = ({
     </>
   );
 };
-export { AddBrokerForm };
+export { YamlEditorView };

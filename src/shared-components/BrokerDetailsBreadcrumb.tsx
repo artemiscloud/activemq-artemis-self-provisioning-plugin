@@ -1,10 +1,7 @@
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
-import { useTranslation } from '../../i18n';
+import { useTranslation } from '../i18n';
 import { FC } from 'react';
-import {
-  DropdownWithToggle,
-  IDropdownOption,
-} from '../../generic/common/DropdownWithToggle';
+import { DropdownWithToggle, IDropdownOption } from './DropdownWithToggle';
 
 export type BrokerDetailsBreadcrumbProps = {
   name: string;
@@ -52,7 +49,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
     {
       key: '5m',
       value: '5m',
-      label: t('5_minute'),
+      label: t('5_minutes'),
       isDisabled: false,
     },
     {

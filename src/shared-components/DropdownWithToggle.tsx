@@ -57,14 +57,14 @@ export const DropdownWithToggle: React.FC<IDropdownWithToggleProps> = ({
       const filteredOption = items?.filter(
         (item) => item.value === selectedValue,
       )[0];
-      return filteredOption;
+      return filteredOption?.value;
     }
     return selectedValue;
   };
 
   const dropdownToggle = (
     <DropdownToggle id={toggleId} onToggle={onToggle}>
-      {selectedValue || getSelectedValue()}
+      {getSelectedValue()}
     </DropdownToggle>
   );
 

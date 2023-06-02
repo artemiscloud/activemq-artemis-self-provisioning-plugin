@@ -2,8 +2,7 @@ import { FC, FormEvent } from 'react';
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant, Divider } from '@patternfly/react-core';
 import { YamlEditorView, EditorToggle, FormView } from './components';
-import { AddBrokerFormYamlValues } from '../utils/import-types';
-import { EditorType } from '../utils/add-broker';
+import { AddBrokerFormYamlValues, EditorType } from '../utils';
 
 type AddBrokerProps = {
   onCreateBroker: (data?: K8sResourceCommon) => void;
@@ -27,16 +26,6 @@ const AddBroker: FC<AddBrokerProps> = ({
 }) => {
   const { editorType } = formValues;
 
-  // useEffect(() => {
-  //   if (editorType === EditorType.Form) {
-  //     const formData = convertYamlToForm(formValues.yamlData);
-  //     onChangeValue({ ...formValues, formData });
-  //   } else {
-  //     const yamlData = convertFormToBrokerYaml(formValues.formData);
-  //     onChangeValue({ ...formValues, yamlData });
-  //   }
-  // }, [editorType]);
-
   const onSelectEditorType = (editorType: EditorType) => {
     onChangeValue({ ...formValues, editorType });
   };
@@ -46,9 +35,9 @@ const AddBroker: FC<AddBrokerProps> = ({
     evt: FormEvent<HTMLInputElement>,
   ) => {
     const fieldName = evt.currentTarget.name;
+    formValues.formData.metadata[fieldName] = value;
     onChangeValue({
       ...formValues,
-      formData: { metadata: { [fieldName]: value } },
     });
   };
 
@@ -64,6 +53,7 @@ const AddBroker: FC<AddBrokerProps> = ({
               formValues={formValues.formData}
               onChangeFieldValue={onChangeFieldValue}
               onCreateBroker={onCreateBroker}
+              notification={notification}
             />
           )}
         </>

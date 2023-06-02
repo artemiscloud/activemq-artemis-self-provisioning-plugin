@@ -53,11 +53,12 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
           {notification.title && (
             <AlertGroup>
               <Alert
-                data-test="add-broker-notification"
+                data-test="add-broker-notification-yaml-view"
                 title={notification.title}
                 variant={notification.variant}
                 isInline
                 actionClose
+                className="pf-u-mt-md pf-u-mx-md"
               />
             </AlertGroup>
           )}

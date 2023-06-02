@@ -121,5 +121,6 @@
   },
   "readme": "ERROR: No README data found!",
   "homepage": "https://github.com/artemiscloud/activemq-artemis-self-provisioning-plugin#readme",
-  "_id": "activemq-artemis-self-provisioning-plugin@0.0.1"
+  "_id": "activemq-artemis-self-provisioning-plugin@0.0.1",
+  "packageManager": "yarn@1.22.19"
 }

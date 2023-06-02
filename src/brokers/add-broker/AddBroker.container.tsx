@@ -4,8 +4,7 @@ import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from './AddBroker.component';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
-import { addBrokerInitialValues } from '../utils/add-broker';
-import { AddBrokerFormYamlValues } from '../utils/import-types';
+import { addBrokerInitialValues, AddBrokerFormYamlValues } from '../utils';
 
 type AddBrokerPageProps = RouteComponentProps<{ ns?: string }>;
 

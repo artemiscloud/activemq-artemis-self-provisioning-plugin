@@ -3,7 +3,7 @@ import { EditorType } from './add-broker';
 
 export interface AddBrokerFormYamlValues {
   editorType?: EditorType;
-  showCanUseYAMLMessage?: boolean;
+  shouldShowYAMLMessage?: boolean;
   formData?: K8sResourceCommon;
   yamlData?: K8sResourceCommon;
 }

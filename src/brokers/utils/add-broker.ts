@@ -10,11 +10,11 @@ import {
 export const convertFormToBrokerYaml = (
   formData: K8sResourceCommon,
 ): K8sResourceKind => {
-  const { metadata, spec = {} } = formData;
+  const { metadata, spec = {}, kind } = formData;
 
   return {
     apiVersion: getAPIVersionForModel(AMQBrokerModel),
-    kind: 'ActiveMQArtemis',
+    kind,
     metadata,
     spec,
   };
@@ -48,7 +48,7 @@ export const addBrokerInitialValues = (
   // );
 
   return {
-    showCanUseYAMLMessage: true,
+    shouldShowYAMLMessage: true,
     editorType: EditorType.YAML,
     yamlData: convertFormToBrokerYaml(initialFormData),
     formData: initialFormData,

@@ -7,6 +7,7 @@ import {
   TabTitleText,
   Title,
   PageSection,
+  PageSectionVariants,
 } from '@patternfly/react-core';
 import { ConfigurationContainer } from './components/Configuration';
 import { useTranslation } from '../../i18n';
@@ -58,7 +59,11 @@ const BrokerDetailsPage: FC<BrokerDetailsProps> = ({ match }) => {
           {t('broker')} {name}
         </Title>
       </PageSection>
-      <PageSection>
+      <PageSection
+        variant={PageSectionVariants.light}
+        padding={{ default: 'noPadding' }}
+        className="pf-c-page__main-tabs"
+      >
         <Tabs defaultActiveKey={0}>
           <Tab
             eventKey={0}

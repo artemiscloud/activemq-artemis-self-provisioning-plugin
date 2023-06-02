@@ -4,11 +4,13 @@ import { Grid, GridItem, PageSection } from '@patternfly/react-core';
 export type MetricsLayoutProps = {
   metricsMemoryUsage: ReactElement;
   metricsCPUUsage: ReactElement;
+  metricsActions: ReactElement;
 };
 
 export const MetricsLayout: FC<MetricsLayoutProps> = ({
   metricsMemoryUsage,
   metricsCPUUsage,
+  metricsActions,
 }) => {
   return (
     <PageSection
@@ -20,6 +22,7 @@ export const MetricsLayout: FC<MetricsLayoutProps> = ({
       }
     >
       <Grid hasGutter>
+        <GridItem>{metricsActions}</GridItem>
         <GridItem sm={6}>{metricsMemoryUsage}</GridItem>
         <GridItem sm={6}>{metricsCPUUsage} </GridItem>
         {/* <GridItem sm={6}>{metricsMemoryUsage} </GridItem>

@@ -12,20 +12,25 @@ export type CardBrokerMemoryUsageMetricsContainerProps = {
   timespan?: number;
   fixedEndTime?: number;
   size: number;
+  pollTime?: string;
+  span?: string;
 };
 
 type AxisDomain = [number, number];
 
 export const CardBrokerMemoryUsageMetricsContainer: FC<
   CardBrokerMemoryUsageMetricsContainerProps
-> = ({ name, namespace, defaultSamples = 300, timespan, size }) => {
+> = ({
+  name,
+  namespace,
+  defaultSamples = 300,
+  timespan: span,
+  size,
+  pollTime,
+}) => {
   const fetchMemoryUsageMetrics = useFetchMemoryUsageMetrics(size);
   //states
   const [xDomain] = useState<AxisDomain>();
-  // For the default time span, use the first of the suggested span options that is at least as long
-  // as defaultTimespan
-  const defaultSpanText = '30m';
-  const [span, setSpan] = useState(parsePrometheusDuration(defaultSpanText));
   // If we have both `timespan` and `defaultTimespan`, `timespan` takes precedence
   // Limit the number of samples so that the step size doesn't fall below minStep
   const maxSamplesForSpan = defaultSamples || getMaxSamplesForSpan(span);
@@ -38,11 +43,11 @@ export const CardBrokerMemoryUsageMetricsContainer: FC<
 
   // If provided, `timespan` overrides any existing span setting
   useEffect(() => {
-    if (timespan) {
-      setSpan(timespan);
-      setSamples(defaultSamples || getMaxSamplesForSpan(timespan));
+    if (span) {
+      //setSpan(timespan);
+      setSamples(defaultSamples || getMaxSamplesForSpan(span));
     }
-  }, [defaultSamples, timespan]);
+  }, [defaultSamples, span]);
 
   const [metricsResult, loaded] = fetchMemoryUsageMetrics({
     name,
@@ -50,6 +55,7 @@ export const CardBrokerMemoryUsageMetricsContainer: FC<
     span,
     samples,
     endTime,
+    delay: parsePrometheusDuration(pollTime),
   });
 
   return (

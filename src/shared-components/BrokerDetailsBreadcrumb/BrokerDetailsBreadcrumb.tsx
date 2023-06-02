@@ -1,7 +1,10 @@
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
-import { useTranslation } from '../i18n';
+import { useTranslation } from '../../i18n';
 import { FC, useState } from 'react';
-import { DropdownWithToggle, IDropdownOption } from './DropdownWithToggle';
+import {
+  DropdownWithToggle,
+  IDropdownOption,
+} from '../DropdownWithToggle/DropdownWithToggle';
 
 export type BrokerDetailsBreadcrumbProps = {
   name: string;

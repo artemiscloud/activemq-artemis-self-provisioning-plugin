@@ -1,3 +1,3 @@
 export * from './Loading';
 export * from './BrokerDetailsBreadcrumb';
-export * from './DropdownWithToggle';
+export * from './DropdownWithToggle/DropdownWithToggle';

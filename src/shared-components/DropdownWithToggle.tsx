@@ -4,10 +4,15 @@ import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core';
 import type { DropdownProps } from '@patternfly/react-core/dist/js';
 
 export interface IDropdownWithToggleProps {
+  id: string;
   toggleId: string;
+  value: string;
+  name?: string;
   items: IDropdownOption[];
+  onSelectOption?: (value: string, name: string) => void;
   isLabelAndValueNotSame?: boolean;
 }
+
 export interface IDropdownOption {
   value?: string;
   label?: string;
@@ -16,24 +21,27 @@ export interface IDropdownOption {
 }
 
 export const DropdownWithToggle: React.FC<IDropdownWithToggleProps> = ({
+  id,
   toggleId,
   items,
+  value,
+  onSelectOption,
+  name,
   isLabelAndValueNotSame,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>();
-  const [selectedValue, setSelectedValue] = useState<string>('');
+
   const onToggle = (isOpen: boolean) => {
     setIsOpen(isOpen);
   };
 
   const onSelect: DropdownProps['onSelect'] = (e) => {
     if (e && e.currentTarget.textContent) {
-      const label: string = e.currentTarget.textContent;
-      items?.map((item) => {
-        if (item.label === label) {
-          setSelectedValue(item.value);
-        }
-      });
+      const value: string = e.currentTarget.textContent;
+      const filteredOption = items?.filter((item) => item.label === value)[0];
+      if (onSelectOption && filteredOption) {
+        onSelectOption(filteredOption.value.toLowerCase(), name);
+      }
       setIsOpen((isOpen) => !isOpen);
     }
   };
@@ -54,12 +62,10 @@ export const DropdownWithToggle: React.FC<IDropdownWithToggleProps> = ({
 
   const getSelectedValue = () => {
     if (isLabelAndValueNotSame) {
-      const filteredOption = items?.filter(
-        (item) => item.value === selectedValue,
-      )[0];
-      return filteredOption?.value;
+      const filteredOption = items?.filter((item) => item.value === value)[0];
+      return filteredOption?.label;
     }
-    return selectedValue;
+    return value;
   };
 
   const dropdownToggle = (
@@ -70,6 +76,8 @@ export const DropdownWithToggle: React.FC<IDropdownWithToggleProps> = ({
 
   return (
     <Dropdown
+      name={name}
+      id={id}
       onSelect={onSelect}
       toggle={dropdownToggle}
       isOpen={isOpen}

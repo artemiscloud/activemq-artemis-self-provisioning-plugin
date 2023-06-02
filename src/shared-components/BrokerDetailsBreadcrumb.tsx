@@ -1,6 +1,6 @@
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
 import { useTranslation } from '../i18n';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { DropdownWithToggle, IDropdownOption } from './DropdownWithToggle';
 
 export type BrokerDetailsBreadcrumbProps = {
@@ -20,6 +20,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   }
 
   const { t } = useTranslation();
+  const [selectedValue, setSelectedValue] = useState<string>('0');
 
   const dropdownItems: IDropdownOption[] = [
     {
@@ -102,6 +103,10 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
     },
   ];
 
+  const onSelectOption = (value: string) => {
+    setSelectedValue(value);
+  };
+
   return (
     <>
       <Breadcrumb className="pf-u-mb-md">
@@ -110,10 +115,13 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
           {t('broker')} {name}
         </BreadcrumbItem>
       </Breadcrumb>
-      <div className="pf-u-float-right pf-u-mr-lg">
+      <div className="pf-u-float-right">
         <DropdownWithToggle
-          toggleId="type-dropdowntoggle"
+          id="polling-dropdown"
+          toggleId="polling-dropdowntoggle"
           items={dropdownItems}
+          value={selectedValue}
+          onSelectOption={onSelectOption}
           isLabelAndValueNotSame={true}
         />
       </div>

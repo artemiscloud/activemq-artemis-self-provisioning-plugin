@@ -17,7 +17,7 @@ import {
   OverviewContainer,
 } from './components';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
-import { BrokerDetailsBreadcrumb } from '../../shared-components/common/BrokerDetailsBreadcrumb';
+import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBreadcrumb';
 
 export type BrokerDetailsProps = RouteComponentProps<{
   ns?: string;

@@ -1,11 +1,7 @@
 import React from 'react';
 import { Flex, Radio } from '@patternfly/react-core';
 import { useTranslation } from '../../../../i18n';
-
-export enum EditorType {
-  Form = 'form',
-  YAML = 'yaml',
-}
+import { EditorType } from '../../../utils/add-broker';
 
 type EditorToggleProps = {
   value: EditorType;

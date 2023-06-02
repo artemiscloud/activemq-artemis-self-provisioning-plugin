@@ -5,6 +5,7 @@ import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from '../add-broker/AddBroker.component';
 import { Loading } from '../../shared-components';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
+import { EditorType } from '../utils/add-broker';
 
 type UpdateBrokerPageProps = RouteComponentProps<{
   ns?: string;
@@ -64,7 +65,8 @@ const UpdateBrokerPage: FC<UpdateBrokerPageProps> = ({ match }) => {
       namespace={namespace}
       notification={notification}
       onCreateBroker={k8sUpdateBroker}
-      initialResourceYAML={initialBrokerValue}
+      formValues={{ yamlData: initialBrokerValue, editorType: EditorType.YAML }}
+      isEditWorkFlow={true}
     />
   );
 };

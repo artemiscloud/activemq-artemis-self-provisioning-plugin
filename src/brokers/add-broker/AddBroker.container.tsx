@@ -3,11 +3,8 @@ import { useHistory, RouteComponentProps } from 'react-router-dom';
 import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from './AddBroker.component';
-import {
-  EditorToggle,
-  EditorType,
-} from '../add-broker/components/EditorToggle/EditorToggle.component';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
+import { addBrokerInitialValues, AddBrokerFormYamlValues } from '../utils';
 
 type AddBrokerPageProps = RouteComponentProps<{ ns?: string }>;
 
@@ -15,33 +12,16 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
   const history = useHistory();
   const namespace = match.params.ns || 'default';
   const defaultNotification = { title: '', variant: AlertVariant.default };
-
-  const initialResourceYAML: K8sResourceCommon = {
-    apiVersion: 'broker.amq.io/v1beta1',
-    kind: 'ActiveMQArtemis',
-    metadata: {
-      name: 'default',
-      namespace,
-    },
-    spec: {
-      deploymentPlan: {
-        image: 'placeholder',
-        requireLogin: false,
-        size: 1,
-      },
-    },
-  };
+  const initialValues: AddBrokerFormYamlValues =
+    addBrokerInitialValues(namespace);
 
   //states
+  const [formValues, setFormValues] =
+    useState<AddBrokerFormYamlValues>(initialValues);
   const [notification, setNotification] = useState(defaultNotification);
-  const [editorType, setEditorType] = useState<EditorType>();
 
   const handleRedirect = () => {
     history.push(`brokers`);
-  };
-
-  const handleChange = (editorType: EditorType) => {
-    setEditorType(editorType);
   };
 
   const k8sCreateBroker = (content: K8sResourceCommon) => {
@@ -57,15 +37,13 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
   };
 
   return (
-    <>
-      <EditorToggle value={editorType} onChange={handleChange} />
-      <AddBroker
-        namespace={namespace}
-        notification={notification}
-        onCreateBroker={k8sCreateBroker}
-        initialResourceYAML={initialResourceYAML}
-      />
-    </>
+    <AddBroker
+      namespace={namespace}
+      notification={notification}
+      onCreateBroker={k8sCreateBroker}
+      formValues={formValues}
+      onChangeValue={setFormValues}
+    />
   );
 };
 

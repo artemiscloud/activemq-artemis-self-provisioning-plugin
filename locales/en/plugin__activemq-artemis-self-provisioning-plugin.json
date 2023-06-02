@@ -63,5 +63,15 @@
   "1_day": "1 day",
   "2_days": "2 days",
   "1_week": "1 week",
-  "2_weeks": "2 weeks"
+  "2_weeks": "2 weeks",
+  "last_5_minutes": "Last 5 minutes",
+  "last_15_minutes": "Last 15 minutes",
+  "last_30_minutes": "Last 30 minutes",
+  "last_1_hour": "Last 1 hour",
+  "last_6_hours": "Last 6 hours",
+  "last_12_hours": "Last 12 hours",
+  "last_1_day": "Last 1 day",
+  "last_2_days": "Last 2 days",
+  "last_1_week": "Last 1 week",
+  "last_2_weeks": "Last 2 weeks"
 }

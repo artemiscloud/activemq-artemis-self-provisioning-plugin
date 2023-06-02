@@ -103,7 +103,7 @@ export const ChartMemoryUsage: FC<ChartMemoryUsageProps> = ({
       const tickFormat = xAxisTickFormat(span);
       return tickFormat(tick);
     },
-    [xAxisTickFormat],
+    [xAxisTickFormat, span],
   );
 
   const yTickFormat = useCallback(

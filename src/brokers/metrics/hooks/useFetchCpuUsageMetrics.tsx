@@ -23,7 +23,7 @@ export const useFetchCpuUsageMetrics = (
         timeout: timeout || '60s',
         timespan: span,
         samples,
-        delay: delay || 50000, //default delay time 5 minutes
+        delay,
       });
 
       isLoading = loaded;

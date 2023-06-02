@@ -70,7 +70,7 @@ export const ChartCPUUsage: FC<ChartCPUUsageProps> = ({
       const tickFormat = xAxisTickFormat(span);
       return tickFormat(tick);
     },
-    [xAxisTickFormat],
+    [xAxisTickFormat, span],
   );
 
   const newResult = _.map(allMetricsSeries, 'data.result');

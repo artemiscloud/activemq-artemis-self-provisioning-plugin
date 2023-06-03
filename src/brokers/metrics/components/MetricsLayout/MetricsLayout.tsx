@@ -1,16 +1,19 @@
 import { FC, ReactElement } from 'react';
 import { Grid, GridItem, PageSection } from '@patternfly/react-core';
+import { MetricsType } from '../../utils';
 
 export type MetricsLayoutProps = {
-  metricsMemoryUsage: ReactElement;
-  metricsCPUUsage: ReactElement;
+  metricsMemoryUsage?: ReactElement;
+  metricsCPUUsage?: ReactElement;
   metricsActions: ReactElement;
+  metricsType: MetricsType;
 };
 
 export const MetricsLayout: FC<MetricsLayoutProps> = ({
   metricsMemoryUsage,
   metricsCPUUsage,
   metricsActions,
+  metricsType,
 }) => {
   return (
     <PageSection
@@ -23,10 +26,25 @@ export const MetricsLayout: FC<MetricsLayoutProps> = ({
     >
       <Grid hasGutter>
         <GridItem>{metricsActions}</GridItem>
-        <GridItem sm={6}>{metricsMemoryUsage}</GridItem>
-        <GridItem sm={6}>{metricsCPUUsage} </GridItem>
-        {/* <GridItem sm={6}>{metricsMemoryUsage} </GridItem>
+        {(() => {
+          switch (true) {
+            case metricsType === MetricsType.AllMetrics:
+              return (
+                <>
+                  <GridItem sm={6}>{metricsMemoryUsage}</GridItem>
+                  <GridItem sm={6}>{metricsCPUUsage}</GridItem>
+                  {/* <GridItem sm={6}>{metricsMemoryUsage} </GridItem>
                 <GridItem sm={6}>{metricsMemoryUsage} </GridItem> */}
+                </>
+              );
+            case metricsType === MetricsType.MemoryUsage:
+              return <GridItem>{metricsMemoryUsage}</GridItem>;
+            case metricsType === MetricsType.CPUUsage:
+              return <GridItem>{metricsCPUUsage}</GridItem>;
+            default:
+              return <></>;
+          }
+        })()}
       </Grid>
     </PageSection>
   );

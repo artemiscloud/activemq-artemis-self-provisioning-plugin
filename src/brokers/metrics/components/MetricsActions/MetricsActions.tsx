@@ -5,19 +5,24 @@ import {
   IDropdownOption,
 } from '../../../../shared-components';
 import { useTranslation } from '../../../../i18n';
+import { MetricsType } from '../../utils';
 
 export type MetricsActionsProps = {
   pollingTime: string;
   span: string;
   onSelectOptionPolling: (value: string) => void;
   onSelectOptionSpan: (value: string) => void;
+  metricsType: string;
+  onSelectOptionChart: (value: MetricsType) => void;
 };
 
 export const MetricsActions: FC<MetricsActionsProps> = ({
   pollingTime,
   span,
+  metricsType,
   onSelectOptionPolling,
   onSelectOptionSpan,
+  onSelectOptionChart,
 }) => {
   const { t } = useTranslation();
 
@@ -165,10 +170,39 @@ export const MetricsActions: FC<MetricsActionsProps> = ({
     },
   ];
 
+  const chartsDropdownItems: IDropdownOption[] = [
+    {
+      key: 'all-charts',
+      value: MetricsType.AllMetrics,
+      label: t('all_metrics'),
+      isDisabled: false,
+    },
+    {
+      key: 'memory-usage',
+      value: MetricsType.MemoryUsage,
+      label: t('memory_usage_metrics'),
+      isDisabled: false,
+    },
+    {
+      key: 'cpu-usage',
+      value: MetricsType.CPUUsage,
+      label: t('cpu_usage_metrics'),
+      isDisabled: false,
+    },
+  ];
+
   return (
     <Card isFullHeight>
       <CardHeader>
         <CardActions>
+          <DropdownWithToggle
+            id="metrics-list-dropdown"
+            toggleId="metrics-list-dropdowntoggle"
+            items={chartsDropdownItems}
+            value={metricsType}
+            onSelectOption={onSelectOptionChart}
+            isLabelAndValueNotSame={true}
+          />
           <DropdownWithToggle
             id="span-dropdown"
             toggleId="span-dropdowntoggle"

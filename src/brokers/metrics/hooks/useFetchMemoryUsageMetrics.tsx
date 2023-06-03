@@ -3,7 +3,23 @@ import {
   usePrometheusPoll,
   PrometheusEndpoint,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { memoryUsageQuery, QueryInput } from '../utils';
+import { QueryInput } from '../utils';
+
+export const memoryUsageQuery = (
+  name: string,
+  namespace: string,
+  replica = 0,
+): string => {
+  if (!namespace) {
+    return `sum(container_memory_working_set_bytes{pod='${
+      name + '-ss-' + replica
+    }', container='',}) BY (pod, namspace)`;
+  }
+
+  return `sum(container_memory_working_set_bytes{pod='${
+    name + '-ss-' + replica
+  }', namespace='${namespace}', container='',}) BY (pod, namspace)`;
+};
 
 export const useFetchMemoryUsageMetrics = (
   n: number,

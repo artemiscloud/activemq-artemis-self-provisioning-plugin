@@ -111,33 +111,3 @@ export const xAxisTickFormat = (span: number): ((tick: any) => string) => {
     return timeFormatter.format(tick);
   };
 };
-
-export const memoryUsageQuery = (
-  name: string,
-  namespace: string,
-  replica = 0,
-): string => {
-  if (!namespace) {
-    return `sum(container_memory_working_set_bytes{pod='${
-      name + '-ss-' + replica
-    }', container='',}) BY (pod, namspace)`;
-  }
-
-  return `sum(container_memory_working_set_bytes{pod='${
-    name + '-ss-' + replica
-  }', namespace='${namespace}', container='',}) BY (pod, namspace)`;
-};
-
-export const cpuUsageQuery = (
-  name: string,
-  namespace: string,
-  replica = 0,
-): string => {
-  if (!namespace) {
-    return `pod:container_cpu_usage:sum{pod='${name + '-ss-' + replica}'}`;
-  }
-
-  return `pod:container_cpu_usage:sum{pod='${
-    name + '-ss-' + replica
-  }',namespace='${namespace}'}`;
-};

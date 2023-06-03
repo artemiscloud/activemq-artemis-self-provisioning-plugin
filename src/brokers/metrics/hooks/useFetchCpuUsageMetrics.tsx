@@ -3,7 +3,21 @@ import {
   usePrometheusPoll,
   PrometheusEndpoint,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { cpuUsageQuery, QueryInput } from '../utils';
+import { QueryInput } from '../utils';
+
+export const cpuUsageQuery = (
+  name: string,
+  namespace: string,
+  replica = 0,
+): string => {
+  if (!namespace) {
+    return `pod:container_cpu_usage:sum{pod='${name + '-ss-' + replica}'}`;
+  }
+
+  return `pod:container_cpu_usage:sum{pod='${
+    name + '-ss-' + replica
+  }',namespace='${namespace}'}`;
+};
 
 export const useFetchCpuUsageMetrics = (
   n: number,

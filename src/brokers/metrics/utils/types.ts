@@ -43,3 +43,9 @@ export type QueryInput = {
   timeout?: string;
   delay?: number;
 };
+
+export enum MetricsType {
+  AllMetrics = 'all',
+  MemoryUsage = 'memory',
+  CPUUsage = 'cpu',
+}

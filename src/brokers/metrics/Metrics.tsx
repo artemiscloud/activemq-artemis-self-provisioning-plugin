@@ -6,6 +6,7 @@ import {
   MetricsActions,
 } from './components';
 import { parsePrometheusDuration } from '../../utils';
+import { MetricsType } from './utils';
 import { MetricsLayout } from './components/MetricsLayout/MetricsLayout';
 
 export type MetricsProps = CardBrokerMemoryUsageMetricsContainerProps;
@@ -13,6 +14,9 @@ export type MetricsProps = CardBrokerMemoryUsageMetricsContainerProps;
 export const Metrics: FC<MetricsProps> = ({ name, namespace, size }) => {
   const [pollTime, setPollTime] = useState<string>('0');
   const [span, setSpan] = useState<string>('30m');
+  const [metricsType, setMetricsType] = useState<MetricsType>(
+    MetricsType.AllMetrics,
+  );
 
   const onSelectOptionPolling = useCallback((value: string) => {
     setPollTime(value);
@@ -22,8 +26,13 @@ export const Metrics: FC<MetricsProps> = ({ name, namespace, size }) => {
     setSpan(value);
   }, []);
 
+  const onSelectOptionChart = useCallback((value: MetricsType) => {
+    setMetricsType(value);
+  }, []);
+
   return (
     <MetricsLayout
+      metricsType={metricsType}
       metricsMemoryUsage={
         <CardBrokerMemoryUsageMetricsContainer
           name={name}
@@ -46,8 +55,10 @@ export const Metrics: FC<MetricsProps> = ({ name, namespace, size }) => {
         <MetricsActions
           pollingTime={pollTime}
           span={span}
+          metricsType={metricsType}
           onSelectOptionPolling={onSelectOptionPolling}
           onSelectOptionSpan={onSelectOptionSpan}
+          onSelectOptionChart={onSelectOptionChart}
         />
       }
     />

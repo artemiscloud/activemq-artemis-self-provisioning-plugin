@@ -73,5 +73,8 @@
   "last_1_day": "Last 1 day",
   "last_2_days": "Last 2 days",
   "last_1_week": "Last 1 week",
-  "last_2_weeks": "Last 2 weeks"
+  "last_2_weeks": "Last 2 weeks",
+  "all_metrics": "All Metrics",
+  "memory_usage_metrics": "Memory Usage Metrics",
+  "cpu_usage_metrics": "CPU Usage Metrics"
 }

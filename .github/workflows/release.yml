@@ -29,15 +29,19 @@ jobs:
             git tag -a ${RELEASE_TAG} -m ${RELEASE_TAG} --force
             git push origin $RELEASE_TAG --force
           fi
+     
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
 
       - name: Build the image
-        run: docker build --tag $IMAGE_NAME:latest .
+        run: |
+          podman build --no-cache --platform linux/amd64 --platform linux/arm64 --manifest $IMAGE_NAME:latest .
         
       - name: Push the image
-        run: >
-          RELEASE_TAG="$(git describe --exact-match --tags)" && IMAGE_TAG=${RELEASE_TAG#v} &&
-          docker login --username=${{ secrets.QUAY_USERNAME }} --password=${{ secrets.QUAY_PASSWORD }} quay.io &&
-          docker tag $IMAGE_NAME:latest quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG &&
-          docker push quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG &&
-          docker tag $IMAGE_NAME:latest quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:latest &&
-          docker push quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:latest
+        run: |
+          IMAGE_TAG="$(git describe --exact-match --tags | sed 's/v//')"
+          ARTEMIS_TAG="artemis.$(podman image inspect $IMAGE_NAME:latest | grep -Po -m 1 '(?<=APACHE_ARTEMIS_VERSION=)[^"]*')"
+          podman login --username=${{ secrets.QUAY_USERNAME }} --password=${{ secrets.QUAY_PASSWORD }} quay.io
+          podman manifest push $IMAGE_NAME:latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:latest
+          podman manifest push $IMAGE_NAME:latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG
+          podman manifest push $IMAGE_NAME:latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$ARTEMIS_TAG

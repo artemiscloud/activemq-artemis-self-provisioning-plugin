@@ -1,13 +1,13 @@
 name: CI
 
-env: 
+env:
   IMAGE_NAME: activemq-artemis-self-provisioning-plugin
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 # cancels the old active workflow if new workflow is triggered
@@ -43,7 +43,7 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
-  
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -59,7 +59,7 @@ jobs:
       - name: Get cache and install dependencies
         uses: ./.github/actions/cache-restore
 
-      - name : Build project
+      - name: Build project
         run: yarn run build
 
       # TODO: uncomment after adding tests
@@ -79,12 +79,12 @@ jobs:
       #   with:
       #     branch: gh-pages # The branch the action should deploy to.
       #     folder: storybook-static # The folder the action should deploy.
-     
+
       - name: Update the image
         if: ${{inputs.snapshot}}
         run: |
-         PLUGIN_IMAGE="quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin@$(skopeo inspect docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin:snapshot | jq -r '.Digest')"
-         sed -i "s~FROM.*~FROM ${PLUGIN_IMAGE}~g" Dockerfile
+          PLUGIN_IMAGE="quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin@$(skopeo inspect docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin:snapshot | jq -r '.Digest')"
+          sed -i "s~FROM.*~FROM ${PLUGIN_IMAGE}~g" Dockerfile
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -103,10 +103,7 @@ jobs:
           podman manifest push $IMAGE_NAME:dev.latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.latest
           podman manifest push $IMAGE_NAME:dev.latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG
 
-     - name: Push the snapshot image
-       run: |
+      - name: Push the snapshot image
+        run: |
           podman login --username=${{ secrets.QUAY_USERNAME }} --password=${{ secrets.QUAY_PASSWORD }} quay.io
           podman manifest push $IMAGE_NAME:dev.latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:snapshot
-
-
-

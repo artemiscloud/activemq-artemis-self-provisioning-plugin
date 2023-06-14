@@ -40,8 +40,6 @@ jobs:
       - name: Push the image
         run: |
           IMAGE_TAG="$(git describe --exact-match --tags | sed 's/v//')"
-          ARTEMIS_TAG="artemis.$(podman image inspect $IMAGE_NAME:latest | grep -Po -m 1 '(?<=APACHE_ARTEMIS_VERSION=)[^"]*')"
           podman login --username=${{ secrets.QUAY_USERNAME }} --password=${{ secrets.QUAY_PASSWORD }} quay.io
           podman manifest push $IMAGE_NAME:latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:latest
           podman manifest push $IMAGE_NAME:latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG
-          podman manifest push $IMAGE_NAME:latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$ARTEMIS_TAG

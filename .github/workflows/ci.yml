@@ -80,30 +80,41 @@ jobs:
       #     branch: gh-pages # The branch the action should deploy to.
       #     folder: storybook-static # The folder the action should deploy.
 
-      - name: Update the image
-        if: ${{inputs.snapshot}}
-        run: |
-          PLUGIN_IMAGE="quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin@$(skopeo inspect docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin:snapshot | jq -r '.Digest')"
-          sed -i "s~FROM.*~FROM ${PLUGIN_IMAGE}~g" Dockerfile
+      # - name: Update the image
+      #   if: ${{inputs.snapshot}}
+      #   run: |
+      #     PLUGIN_IMAGE="quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin@$(skopeo inspect docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin:snapshot | jq -r '.Digest')"
+      #     sed -i "s~FROM.*~FROM ${PLUGIN_IMAGE}~g" Dockerfile
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
-      - name: Build the image
-        run: podman build --label quay.expires-after=90d --label git-sha=$GITHUB_SHA --no-cache --platform linux/amd64 --platform linux/arm64 --manifest $IMAGE_NAME:dev.latest .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      # - name: Check the image
-      #   run: podman run $IMAGE_NAME:dev.latest yacfg --profile artemis/2.15.0/default_with_user_address_settings.yaml.jinja2
+      - name: Login to image repository quay.io
+        uses: docker/login-action@v2
+        with:
+         registry: quay.io
+         username: ${{ secrets.QUAY_USERNAME }}
+         password: ${{ secrets.QUAY_PASSWORD }}
 
-      - name: Push the dev image
-        if: ${{ github.event_name == 'push' }}
-        run: |
+      - name: Build and Push the dev image
+        uses: docker/build-push-action@v4
+        with: 
+         context: .
+         file: ./Dockerfile
+         platforms: linux/amd64,linux/arm64
+         push: ${{ github.event_name == 'push' }}
+         tag: |
           IMAGE_TAG=dev.$(date +%Y%m%d).$(git rev-parse --short "$GITHUB_SHA")
-          podman login --username=${{ secrets.QUAY_USERNAME }} --password=${{ secrets.QUAY_PASSWORD }} quay.io
-          podman manifest push $IMAGE_NAME:dev.latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.latest
-          podman manifest push $IMAGE_NAME:dev.latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG
+          quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:IMAGE_TAG
+          quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.latest
+         labels: |
+          quay.expires-after=90d
+          git-sha=$GITHUB_SHA
 
-      - name: Push the snapshot image
-        run: |
-          podman login --username=${{ secrets.QUAY_USERNAME }} --password=${{ secrets.QUAY_PASSWORD }} quay.io
-          podman manifest push $IMAGE_NAME:dev.latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:snapshot
+      # - name: Push the snapshot image
+      #   run: |
+      #     podman login --username=${{ secrets.QUAY_USERNAME }} --password=${{ secrets.QUAY_PASSWORD }} quay.io
+      #     podman manifest push $IMAGE_NAME:dev.latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:snapshot

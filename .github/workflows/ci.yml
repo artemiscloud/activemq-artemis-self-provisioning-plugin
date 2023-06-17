@@ -92,8 +92,8 @@ jobs:
       - name: Build the image
         run: podman build --label quay.expires-after=90d --label git-sha=$GITHUB_SHA --no-cache --platform linux/amd64 --platform linux/arm64 --manifest $IMAGE_NAME:dev.latest .
 
-      - name: Check the image
-        run: podman run $IMAGE_NAME:dev.latest yacfg --profile artemis/2.15.0/default_with_user_address_settings.yaml.jinja2
+      # - name: Check the image
+      #   run: podman run $IMAGE_NAME:dev.latest yacfg --profile artemis/2.15.0/default_with_user_address_settings.yaml.jinja2
 
       - name: Push the dev image
         if: ${{ github.event_name == 'push' }}

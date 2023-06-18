@@ -106,7 +106,6 @@ jobs:
          file: ./Dockerfile
          platforms: linux/amd64,linux/arm64
          push: ${{ github.event_name == 'push' }}
-         no-cache: true
          tags: |
           quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.$(date +%Y%m%d).$(git rev-parse --short "$GITHUB_SHA")
           quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.latest

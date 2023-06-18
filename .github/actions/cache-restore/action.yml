@@ -31,7 +31,7 @@ runs:
     - name: Install Dependencies
       if: steps.yarn-cache.outputs.cache-hit != 'true'
       shell: bash
-      run: yarn install --frozen-lockfile --network-timeout 1000000
+      run: yarn install --frozen-lockfile
       
 
     

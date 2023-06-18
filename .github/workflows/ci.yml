@@ -80,11 +80,11 @@ jobs:
       #     branch: gh-pages # The branch the action should deploy to.
       #     folder: storybook-static # The folder the action should deploy.
 
-      # - name: Update the image
-      #   if: ${{inputs.snapshot}}
-      #   run: |
-      #     PLUGIN_IMAGE="quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin@$(skopeo inspect docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin:snapshot | jq -r '.Digest')"
-      #     sed -i "s~FROM.*~FROM ${PLUGIN_IMAGE}~g" Dockerfile
+      - name: Update the image
+        if: ${{inputs.snapshot}}
+        run: |
+          PLUGIN_IMAGE="quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin@$(skopeo inspect docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin:snapshot | jq -r '.Digest')"
+          sed -i "s~FROM.*~FROM ${PLUGIN_IMAGE}~g" Dockerfile
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -106,7 +106,8 @@ jobs:
          file: ./Dockerfile
          platforms: linux/amd64,linux/arm64
          push: ${{ github.event_name == 'push' }}
-         tag: |
+         no-cache: true
+         tags: |
           IMAGE_TAG=dev.$(date +%Y%m%d).$(git rev-parse --short "$GITHUB_SHA")
           quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:IMAGE_TAG
           quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.latest
@@ -114,7 +115,9 @@ jobs:
           quay.expires-after=90d
           git-sha=$GITHUB_SHA
 
-      # - name: Push the snapshot image
-      #   run: |
-      #     podman login --username=${{ secrets.QUAY_USERNAME }} --password=${{ secrets.QUAY_PASSWORD }} quay.io
-      #     podman manifest push $IMAGE_NAME:dev.latest docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:snapshot
+      - name: Push the snapshot image
+        if: ${{ github.event_name == 'schedule' || inputs.snapshot }}
+        run: >
+          docker login --username=${{ secrets.QUAY_USERNAME }} --password=${{ secrets.QUAY_PASSWORD }} quay.io &&
+          docker tag $IMAGE_NAME:latest quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:snapshot &&
+          docker push quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:snapshot

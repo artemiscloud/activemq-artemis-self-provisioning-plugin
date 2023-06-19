@@ -5,7 +5,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { Topic } from './Topics.container';
 import { TopicsRow } from './TopicsRow';
-import { Title, PageSection } from '@patternfly/react-core';
+import { Title } from '@patternfly/react-core';
 
 export type TopicsProps = {
   topicData: Topic[];
@@ -28,24 +28,26 @@ const Topics: React.FC<TopicsProps> = ({ topicData, isLoaded, loadError }) => {
   ];
   return (
     <>
-      <PageSection>
+      <div className="pf-u-mt-md pf-u-ml-md pf-u-mb-sm">
         <Title headingLevel="h1">{t('topics')}</Title>
-      </PageSection>
-      <VirtualizedTable<Topic>
-        data={topicData}
-        unfilteredData={topicData}
-        loaded={isLoaded}
-        loadError={loadError}
-        columns={columns}
-        Row={({ obj, activeColumnIDs, rowData }) => (
-          <TopicsRow
-            obj={obj}
-            rowData={rowData}
-            activeColumnIDs={activeColumnIDs}
-            columns={columns}
-          />
-        )}
-      />
+      </div>
+      <div>
+        <VirtualizedTable<Topic>
+          data={topicData}
+          unfilteredData={topicData}
+          loaded={isLoaded}
+          loadError={loadError}
+          columns={columns}
+          Row={({ obj, activeColumnIDs, rowData }) => (
+            <TopicsRow
+              obj={obj}
+              rowData={rowData}
+              activeColumnIDs={activeColumnIDs}
+              columns={columns}
+            />
+          )}
+        />
+      </div>
     </>
   );
 };

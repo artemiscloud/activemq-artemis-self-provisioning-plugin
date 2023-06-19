@@ -5,7 +5,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { Client } from './Clients.container';
 import { ClientsRow } from './ClientsRow';
-import { Title, PageSection } from '@patternfly/react-core';
+import { Title } from '@patternfly/react-core';
 
 export type ClientProps = {
   clientData: Client[];
@@ -40,24 +40,26 @@ const Clients: React.FC<ClientProps> = ({
   ];
   return (
     <>
-      <PageSection>
+      <div className="pf-u-mt-md pf-u-ml-md pf-u-mb-sm">
         <Title headingLevel="h1">{t('clients')}</Title>
-      </PageSection>
-      <VirtualizedTable<Client>
-        data={clientData}
-        unfilteredData={clientData}
-        loaded={isLoaded}
-        loadError={loadError}
-        columns={columns}
-        Row={({ obj, activeColumnIDs, rowData }) => (
-          <ClientsRow
-            obj={obj}
-            rowData={rowData}
-            activeColumnIDs={activeColumnIDs}
-            columns={columns}
-          />
-        )}
-      />
+      </div>
+      <div>
+        <VirtualizedTable<Client>
+          data={clientData}
+          unfilteredData={clientData}
+          loaded={isLoaded}
+          loadError={loadError}
+          columns={columns}
+          Row={({ obj, activeColumnIDs, rowData }) => (
+            <ClientsRow
+              obj={obj}
+              rowData={rowData}
+              activeColumnIDs={activeColumnIDs}
+              columns={columns}
+            />
+          )}
+        />
+      </div>
     </>
   );
 };

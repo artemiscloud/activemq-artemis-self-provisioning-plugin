@@ -53,7 +53,7 @@ export const MetricsActions: FC<MetricsActionsProps> = ({
     },
     {
       key: '6h',
-      value: 'gh',
+      value: '6h',
       label: t('last_6_hours'),
       isDisabled: false,
     },

@@ -107,7 +107,7 @@ jobs:
          platforms: linux/amd64,linux/arm64
          no-cache: true
          push: ${{ github.event_name == 'push' }}
-         tags: ${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.latest
+         tags: ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.latest
           # ${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.$(date +%Y%m%d).$(git rev-parse --short "$GITHUB_SHA"),
           # quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.$(date +%Y%m%d).$(git rev-parse --short "$GITHUB_SHA")
           # quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.latest

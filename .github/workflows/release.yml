@@ -51,7 +51,8 @@ jobs:
          platforms: linux/amd64,linux/arm64
          no-cache: true
          push: true
-         tags: ${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$(git describe --exact-match --tags | sed 's/v//'), ${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:latest
+         tags: ${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:latest
+          # ${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$(git describe --exact-match --tags | sed 's/v//'),
           # quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$(git describe --exact-match --tags | sed 's/v//')
           # quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:latest
 

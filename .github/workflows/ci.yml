@@ -8,7 +8,15 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: '6 0 * * *'
   workflow_dispatch:
+   inputs:
+     snapshot:
+       description: 'Snapshot'
+       required: false
+       default: false
+       type: boolean
 
 # cancels the old active workflow if new workflow is triggered
 concurrency:

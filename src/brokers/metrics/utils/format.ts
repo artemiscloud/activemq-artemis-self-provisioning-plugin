@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash-es';
 import { PrometheusValue } from '@openshift-console/dynamic-plugin-sdk';
 import {
   humanizeNumberSI,

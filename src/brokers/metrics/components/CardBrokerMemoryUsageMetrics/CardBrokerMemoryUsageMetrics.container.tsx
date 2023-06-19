@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from 'react';
-import _ from 'lodash';
+import _ from 'lodash-es';
 import { CardBrokerMemoryUsageMetrics } from './CardBrokerMemoryUsageMetrics';
 import { parsePrometheusDuration } from '../../../../utils';
 import { getMaxSamplesForSpan } from '../../utils';

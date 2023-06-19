@@ -1,38 +1,33 @@
-name: "Cache restoration and install node_modules"
-description: "Install node_modules and restore cache if any"
-     
-runs:
-  using: "composite"
-  steps:
+name: 'Cache restoration and install node_modules'
+description: 'Install node_modules and restore cache if any'
 
+runs:
+  using: 'composite'
+  steps:
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
       shell: bash
       run: |
-          echo "dir=$(yarn cache dir)" >>$GITHUB_OUTPUT
+        echo "dir=$(yarn cache dir)" >>$GITHUB_OUTPUT
 
     - name: Get node version
       id: node
       shell: bash
       run: |
-          echo "version=$(node -v)" >>$GITHUB_OUTPUT
-        
+        echo "version=$(node -v)" >>$GITHUB_OUTPUT
+
     - name: Get node_modules cache
       uses: actions/cache@v3
       id: yarn-cache
       with:
         path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            **/node_modules
+          ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          **/node_modules
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
         restore-keys: |
-            ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
+          ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.node.outputs.version }}
 
     - name: Install Dependencies
       if: steps.yarn-cache.outputs.cache-hit != 'true'
       shell: bash
-      run: yarn install --frozen-lockfile
-      
-
-    
-    
+      run: yarn install --frozen-lockfile --network-timeout 500000

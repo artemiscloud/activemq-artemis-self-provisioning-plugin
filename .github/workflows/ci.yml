@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ["javascript"]
+        language: ['javascript']
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
@@ -95,25 +95,22 @@ jobs:
       - name: Login to image repository quay.io
         uses: docker/login-action@v2
         with:
-         registry: quay.io
-         username: ${{ secrets.QUAY_USERNAME }}
-         password: ${{ secrets.QUAY_PASSWORD }}
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
 
       - name: Build and Push the dev image
         uses: docker/build-push-action@v4
-        with: 
-         context: .
-         file: ./Dockerfile
-         platforms: linux/amd64,linux/arm64
-         no-cache: true
-         push: ${{ github.event_name == 'push' }}
-         tags: ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.latest
-          # ${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.$(date +%Y%m%d).$(git rev-parse --short "$GITHUB_SHA"),
-          # quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.$(date +%Y%m%d).$(git rev-parse --short "$GITHUB_SHA")
-          # quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.latest
-         labels: |
-          quay.expires-after=90d
-          git-sha=$GITHUB_SHA
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          no-cache: true
+          push: ${{ github.event_name == 'push' }}
+          tags: ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.latest, ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.$(date +%Y%m%d).$(git rev-parse --short ${{ github.event.pull_request.head.sha }})
+          labels: |
+            quay.expires-after=90d
+            git-sha=$GITHUB_SHA
 
       - name: Push the snapshot image
         if: ${{ github.event_name == 'schedule' || inputs.snapshot }}

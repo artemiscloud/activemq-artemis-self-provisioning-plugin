@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash-es';
 
 // Conversions between units and milliseconds
 const s = 1000;

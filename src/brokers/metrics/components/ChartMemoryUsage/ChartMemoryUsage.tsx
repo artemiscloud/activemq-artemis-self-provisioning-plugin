@@ -1,5 +1,5 @@
 import { FC, useMemo, useCallback } from 'react';
-import _ from 'lodash';
+import _ from 'lodash-es';
 import {
   Chart,
   ChartAxis,

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash-es';
 import { getType } from './units';
 // Types
 export type DataPoint<X = Date | number | string> = {

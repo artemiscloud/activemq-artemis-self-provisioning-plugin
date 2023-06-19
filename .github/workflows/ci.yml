@@ -88,9 +88,14 @@ jobs:
 
       - name: Set outputs
         id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: | 
+         echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+         echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+
       - name: Check outputs
-        run: echo ${{ steps.vars.outputs.sha_short }}
+        run: | 
+         echo ${{ steps.vars.outputs.sha_short }}
+         echo ${{ steps.vars.outputs.date }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -113,7 +118,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           no-cache: true
           push: ${{ github.event_name == 'push' }}
-          tags: ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.latest, ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:"dev.$(date +%Y%m%d).${{ steps.vars.outputs.sha_short }}"
+          tags: ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.latest, ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.${{ steps.vars.outputs.date }}.${{ steps.vars.outputs.sha_short }}
           labels: |
             quay.expires-after=90d
             git-sha=$GITHUB_SHA

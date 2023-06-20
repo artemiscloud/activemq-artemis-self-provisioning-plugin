@@ -43,23 +43,21 @@ const Clients: React.FC<ClientProps> = ({
       <div className="pf-u-mt-md pf-u-ml-md pf-u-mb-sm">
         <Title headingLevel="h1">{t('clients')}</Title>
       </div>
-      <div>
-        <VirtualizedTable<Client>
-          data={clientData}
-          unfilteredData={clientData}
-          loaded={isLoaded}
-          loadError={loadError}
-          columns={columns}
-          Row={({ obj, activeColumnIDs, rowData }) => (
-            <ClientsRow
-              obj={obj}
-              rowData={rowData}
-              activeColumnIDs={activeColumnIDs}
-              columns={columns}
-            />
-          )}
-        />
-      </div>
+      <VirtualizedTable<Client>
+        data={clientData}
+        unfilteredData={clientData}
+        loaded={isLoaded}
+        loadError={loadError}
+        columns={columns}
+        Row={({ obj, activeColumnIDs, rowData }) => (
+          <ClientsRow
+            obj={obj}
+            rowData={rowData}
+            activeColumnIDs={activeColumnIDs}
+            columns={columns}
+          />
+        )}
+      />
     </>
   );
 };

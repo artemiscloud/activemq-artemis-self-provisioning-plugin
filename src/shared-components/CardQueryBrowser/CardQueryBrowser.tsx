@@ -27,7 +27,6 @@ export const CardQueryBrowser: FC<CardQueryBrowserProps> = ({
   dataTestId,
   yTickFormat,
   processedData,
-  //data,
   label,
   metricsType,
   ariaTitle,
@@ -57,7 +56,6 @@ export const CardQueryBrowser: FC<CardQueryBrowserProps> = ({
                     fixedXDomain={fixedXDomain}
                     formatSeriesTitle={formatSeriesTitle}
                     processedData={processedData}
-                    // data={data}
                     yTickFormat={yTickFormat}
                     metricsType={metricsType}
                     label={label}

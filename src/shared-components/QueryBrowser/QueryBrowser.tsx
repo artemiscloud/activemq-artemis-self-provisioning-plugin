@@ -127,6 +127,8 @@ export const QueryBrowser: FC<QueryBrowserProps> = ({
 
   domain.y = [minY, maxY];
 
+  const metricsDataPoints = metricsType === 'memory' ? processedData : data;
+
   return (
     <div ref={containerRef} style={{ height: '500px' }}>
       {(() => {
@@ -188,57 +190,31 @@ export const QueryBrowser: FC<QueryBrowserProps> = ({
                   tickFormat={yTickFormat}
                 />
                 <ChartGroup>
-                  {metricsType === 'memory'
-                    ? processedData.map((values, index) => {
-                        if (values === null) {
-                          return null;
-                        }
+                  {metricsDataPoints.map((values, index) => {
+                    if (values === null) {
+                      return null;
+                    }
 
-                        const color = colors[index % colors.length];
-                        const style = {
-                          data: { stroke: color },
-                          labels: {
-                            fill: color,
-                            labels: tooltipSeriesLabels[index],
-                            name: tooltipSeriesNames[index],
-                          },
-                        };
+                    const color = colors[index % colors.length];
+                    const style = {
+                      data: { stroke: color },
+                      labels: {
+                        fill: color,
+                        labels: tooltipSeriesLabels[index],
+                        name: tooltipSeriesNames[index],
+                      },
+                    };
 
-                        return (
-                          <ChartLine
-                            key={`chart-line-${index}`}
-                            data={values}
-                            groupComponent={<g />}
-                            name={`series-${index}`}
-                            style={style}
-                          />
-                        );
-                      })
-                    : data.map((values, index) => {
-                        if (values === null) {
-                          return null;
-                        }
-
-                        const color = colors[index % colors.length];
-                        const style = {
-                          data: { stroke: color },
-                          labels: {
-                            fill: color,
-                            labels: tooltipSeriesLabels[index],
-                            name: tooltipSeriesNames[index],
-                          },
-                        };
-
-                        return (
-                          <ChartLine
-                            key={`chart-line-${index}`}
-                            data={values}
-                            groupComponent={<g />}
-                            name={`series-${index}`}
-                            style={style}
-                          />
-                        );
-                      })}
+                    return (
+                      <ChartLine
+                        key={`chart-line-${index}`}
+                        data={values}
+                        groupComponent={<g />}
+                        name={`series-${index}`}
+                        style={style}
+                      />
+                    );
+                  })}
                 </ChartGroup>
               </Chart>
             );

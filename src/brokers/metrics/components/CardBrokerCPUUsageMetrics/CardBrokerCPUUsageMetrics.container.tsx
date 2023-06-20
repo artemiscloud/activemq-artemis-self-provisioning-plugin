@@ -60,7 +60,6 @@ export const CardBrokerCPUUsageMetricsContainer: FC<
 
   // const data: GraphSeries[] = [];
   const yTickFormat = valueFormatter('');
-  const ariaTitle = t('cpu_usage');
 
   return (
     <CardQueryBrowser
@@ -76,7 +75,7 @@ export const CardBrokerCPUUsageMetricsContainer: FC<
       helperText={t('cpu_usage_help_text')}
       dataTestId={'metrics-broker-cpu-usage'}
       yTickFormat={yTickFormat}
-      ariaTitle={ariaTitle}
+      ariaTitle={t('cpu_usage')}
       // data={data}
     />
   );

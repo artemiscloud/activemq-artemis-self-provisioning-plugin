@@ -67,9 +67,7 @@ export const CardBrokerMemoryUsageMetricsContainer: FC<
     delay: parsePrometheusDuration(pollTime),
   });
 
-  const label = '\n\n\n\n' + t('axis_label_bytes');
   const data: GraphSeries[] = [];
-
   const { processedData, unit } = useMemo(() => {
     const nonEmptyDataSets = data.filter((dataSet) => dataSet?.length);
     return processFrame(nonEmptyDataSets, ByteDataTypes.BinaryBytes);
@@ -80,7 +78,6 @@ export const CardBrokerMemoryUsageMetricsContainer: FC<
     [unit],
   );
 
-  const ariaTitle = t('memory_usage');
   return (
     <CardQueryBrowser
       isInitialLoading={false}
@@ -96,9 +93,8 @@ export const CardBrokerMemoryUsageMetricsContainer: FC<
       dataTestId={'metrics-broker-memory-usage'}
       yTickFormat={yTickFormat}
       processedData={processedData}
-      // data={data}
-      label={label}
-      ariaTitle={ariaTitle}
+      label={'\n\n\n\n' + t('axis_label_bytes')}
+      ariaTitle={t('memory_usage')}
     />
   );
 };

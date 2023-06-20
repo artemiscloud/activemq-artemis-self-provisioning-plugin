@@ -31,23 +31,21 @@ const Topics: React.FC<TopicsProps> = ({ topicData, isLoaded, loadError }) => {
       <div className="pf-u-mt-md pf-u-ml-md pf-u-mb-sm">
         <Title headingLevel="h1">{t('topics')}</Title>
       </div>
-      <div>
-        <VirtualizedTable<Topic>
-          data={topicData}
-          unfilteredData={topicData}
-          loaded={isLoaded}
-          loadError={loadError}
-          columns={columns}
-          Row={({ obj, activeColumnIDs, rowData }) => (
-            <TopicsRow
-              obj={obj}
-              rowData={rowData}
-              activeColumnIDs={activeColumnIDs}
-              columns={columns}
-            />
-          )}
-        />
-      </div>
+      <VirtualizedTable<Topic>
+        data={topicData}
+        unfilteredData={topicData}
+        loaded={isLoaded}
+        loadError={loadError}
+        columns={columns}
+        Row={({ obj, activeColumnIDs, rowData }) => (
+          <TopicsRow
+            obj={obj}
+            rowData={rowData}
+            activeColumnIDs={activeColumnIDs}
+            columns={columns}
+          />
+        )}
+      />
     </>
   );
 };

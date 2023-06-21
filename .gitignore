@@ -2,4 +2,10 @@ node_modules/
 dist/
 .devcontainer/dev.env
 storybook-static
-.yarn
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

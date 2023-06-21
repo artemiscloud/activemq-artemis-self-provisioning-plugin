@@ -29,6 +29,14 @@ jobs:
             git tag -a ${RELEASE_TAG} -m ${RELEASE_TAG} --force
             git push origin $RELEASE_TAG --force
           fi
+          
+      - name: Set outputs
+        id: vars
+        run: | 
+         echo "image_tag=$(git describe --exact-match --tags | sed 's/v//')" >> $GITHUB_OUTPUT
+      - name: Check outputs
+        run: | 
+         echo ${{ steps.vars.outputs.image_tag }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -51,4 +59,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           no-cache: true
           push: true
-          tags: ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.latest, $(git describe --exact-match --tags | sed 's/v//')
+          tags: ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.latest, ${{ steps.vars.outputs.image_tag }}

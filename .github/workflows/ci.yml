@@ -56,8 +56,8 @@ jobs:
         with:
           node-version: 16.6.2
 
-#       - name: Get cache and install dependencies
-#         uses: ./.github/actions/cache-restore
+      - name: Get cache and install dependencies
+        uses: ./.github/actions/cache-restore
 
       - name : Build project
         run: yarn run build

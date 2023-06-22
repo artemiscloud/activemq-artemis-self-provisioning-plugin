@@ -8,3 +8,7 @@ storybook-static
 *.md
 .cache
 logs/
+*/temp*
+*/*/temp*
+*/tmp*
+*/*/tmp

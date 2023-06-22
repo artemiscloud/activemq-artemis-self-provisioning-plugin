@@ -29,7 +29,7 @@ jobs:
             git tag -a ${RELEASE_TAG} -m ${RELEASE_TAG} --force
             git push origin $RELEASE_TAG --force
           fi
-          
+
       - name: Set outputs
         id: vars
         run: | 
@@ -57,6 +57,5 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
-          no-cache: true
           push: true
           tags: ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.latest, ${{ steps.vars.outputs.image_tag }}

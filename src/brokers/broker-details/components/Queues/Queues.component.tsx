@@ -5,7 +5,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { Queue } from './Queues.container';
 import { QueueRow } from './QueueRow';
-import { Title } from '@patternfly/react-core';
+import { PageSection, Title } from '@patternfly/react-core';
 
 export type QueuesProps = {
   queueData: Queue[];
@@ -40,9 +40,9 @@ const Queues: React.FC<QueuesProps> = ({ queueData, isLoaded, loadError }) => {
   ];
   return (
     <>
-      <div className="pf-u-mt-md pf-u-ml-md pf-u-mb-sm">
+      <PageSection>
         <Title headingLevel="h1">{t('queues')}</Title>
-      </div>
+      </PageSection>
       <VirtualizedTable<Queue>
         data={queueData}
         unfilteredData={queueData}

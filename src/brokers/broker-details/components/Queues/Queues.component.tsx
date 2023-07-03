@@ -5,7 +5,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { Queue } from './Queues.container';
 import { QueueRow } from './QueueRow';
-import { Title, PageSection } from '@patternfly/react-core';
+import { PageSection, Title } from '@patternfly/react-core';
 
 export type QueuesProps = {
   queueData: Queue[];

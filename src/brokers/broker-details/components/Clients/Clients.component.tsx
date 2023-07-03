@@ -5,7 +5,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { Client } from './Clients.container';
 import { ClientsRow } from './ClientsRow';
-import { Title, PageSection } from '@patternfly/react-core';
+import { PageSection, Title } from '@patternfly/react-core';
 
 export type ClientProps = {
   clientData: Client[];

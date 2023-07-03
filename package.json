@@ -94,10 +94,10 @@
     "webpack-cli": "4.10.0",
     "webpack-dev-server": "4.11.1"
   },
-  "peerDependencies":{
-    "showdown": "1.8.6",
+  "peerDependencies": {
     "i18nex": "19.0.0",
-    "require-from-string": "^2.0.2"
+    "require-from-string": "^2.0.2",
+    "showdown": "1.8.6"
   },
   "consolePlugin": {
     "name": "activemq-artemis-self-provisioning-plugin",

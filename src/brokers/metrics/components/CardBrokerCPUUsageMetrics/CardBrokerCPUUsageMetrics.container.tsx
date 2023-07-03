@@ -1,8 +1,11 @@
 import { FC, useEffect, useState } from 'react';
-import { CardBrokerCPUUsageMetrics } from './CardBrokerCPUUsageMetrics';
+import { CardQueryBrowser } from '../../../../shared-components/CardQueryBrowser/CardQueryBrowser';
+//import { CardBrokerCPUUsageMetrics } from './CardBrokerCPUUsageMetrics';
 import { parsePrometheusDuration } from '../../../../utils';
-import { getMaxSamplesForSpan } from '../../utils';
+import { getMaxSamplesForSpan, valueFormatter } from '../../utils';
 import { useFetchCpuUsageMetrics } from '../../hooks';
+import { useTranslation } from '../../../../i18n';
+//import { MetricsType } from '../../utils';
 
 export type CardBrokerCPUUsageMetricsContainerProps = {
   name: string;
@@ -26,6 +29,8 @@ export const CardBrokerCPUUsageMetricsContainer: FC<
   size,
   pollTime,
 }) => {
+  const { t } = useTranslation();
+
   const fetchCpuUsageMetrics = useFetchCpuUsageMetrics(size);
   //states
   const [xDomain] = useState<AxisDomain>();
@@ -53,8 +58,11 @@ export const CardBrokerCPUUsageMetricsContainer: FC<
     delay: parsePrometheusDuration(pollTime),
   });
 
+  // const data: GraphSeries[] = [];
+  const yTickFormat = valueFormatter('');
+
   return (
-    <CardBrokerCPUUsageMetrics
+    <CardQueryBrowser
       isInitialLoading={false}
       backendUnavailable={false}
       allMetricsSeries={result}
@@ -63,6 +71,12 @@ export const CardBrokerCPUUsageMetricsContainer: FC<
       fixedXDomain={xDomain}
       samples={samples}
       formatSeriesTitle={(labels) => labels.pod}
+      title={t('cpu_usage')}
+      helperText={t('cpu_usage_help_text')}
+      dataTestId={'metrics-broker-cpu-usage'}
+      yTickFormat={yTickFormat}
+      ariaTitle={t('cpu_usage')}
+      // data={data}
     />
   );
 };

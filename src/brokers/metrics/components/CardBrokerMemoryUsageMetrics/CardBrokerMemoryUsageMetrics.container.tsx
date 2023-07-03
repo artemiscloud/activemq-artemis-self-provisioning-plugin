@@ -1,9 +1,16 @@
-import { FC, useState, useEffect } from 'react';
-import _ from 'lodash-es';
-import { CardBrokerMemoryUsageMetrics } from './CardBrokerMemoryUsageMetrics';
+import { FC, useState, useEffect, useMemo, useCallback } from 'react';
+import _ from 'lodash';
+import { CardQueryBrowser } from '../../../../shared-components/CardQueryBrowser/CardQueryBrowser';
 import { parsePrometheusDuration } from '../../../../utils';
-import { getMaxSamplesForSpan } from '../../utils';
+import {
+  ByteDataTypes,
+  GraphSeries,
+  getMaxSamplesForSpan,
+  humanizeBinaryBytes,
+  processFrame,
+} from '../../utils';
 import { useFetchMemoryUsageMetrics } from '../../hooks';
+import { useTranslation } from '../../../../i18n';
 
 export type CardBrokerMemoryUsageMetricsContainerProps = {
   name: string;
@@ -28,6 +35,8 @@ export const CardBrokerMemoryUsageMetricsContainer: FC<
   size,
   pollTime,
 }) => {
+  const { t } = useTranslation();
+
   const fetchMemoryUsageMetrics = useFetchMemoryUsageMetrics(size);
   //states
   const [xDomain] = useState<AxisDomain>();
@@ -58,8 +67,19 @@ export const CardBrokerMemoryUsageMetricsContainer: FC<
     delay: parsePrometheusDuration(pollTime),
   });
 
+  const data: GraphSeries[] = [];
+  const { processedData, unit } = useMemo(() => {
+    const nonEmptyDataSets = data.filter((dataSet) => dataSet?.length);
+    return processFrame(nonEmptyDataSets, ByteDataTypes.BinaryBytes);
+  }, [data]);
+
+  const yTickFormat = useCallback(
+    (tick) => `${humanizeBinaryBytes(tick, unit, unit).string}`,
+    [unit],
+  );
+
   return (
-    <CardBrokerMemoryUsageMetrics
+    <CardQueryBrowser
       isInitialLoading={false}
       backendUnavailable={false}
       allMetricsSeries={metricsResult}
@@ -68,6 +88,13 @@ export const CardBrokerMemoryUsageMetricsContainer: FC<
       fixedXDomain={xDomain}
       samples={samples}
       formatSeriesTitle={(labels) => labels.pod}
+      title={t('memory_usage')}
+      helperText={t('memory_usage_help_text')}
+      dataTestId={'metrics-broker-memory-usage'}
+      yTickFormat={yTickFormat}
+      processedData={processedData}
+      label={'\n\n\n\n' + t('axis_label_bytes')}
+      ariaTitle={t('memory_usage')}
     />
   );
 };

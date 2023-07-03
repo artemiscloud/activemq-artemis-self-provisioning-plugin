@@ -5,7 +5,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { Topic } from './Topics.container';
 import { TopicsRow } from './TopicsRow';
-import { Title, PageSection } from '@patternfly/react-core';
+import { PageSection, Title } from '@patternfly/react-core';
 
 export type TopicsProps = {
   topicData: Topic[];

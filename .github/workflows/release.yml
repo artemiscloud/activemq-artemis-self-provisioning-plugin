@@ -30,14 +30,32 @@ jobs:
             git push origin $RELEASE_TAG --force
           fi
 
-      - name: Build the image
-        run: docker build --tag $IMAGE_NAME:latest .
-        
-      - name: Push the image
-        run: >
-          RELEASE_TAG="$(git describe --exact-match --tags)" && IMAGE_TAG=${RELEASE_TAG#v} &&
-          docker login --username=${{ secrets.QUAY_USERNAME }} --password=${{ secrets.QUAY_PASSWORD }} quay.io &&
-          docker tag $IMAGE_NAME:latest quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG &&
-          docker push quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG &&
-          docker tag $IMAGE_NAME:latest quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:latest &&
-          docker push quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:latest
+      - name: Set outputs
+        id: vars
+        run: | 
+         echo "image_tag=$(git describe --exact-match --tags | sed 's/v//')" >> $GITHUB_OUTPUT
+      - name: Check outputs
+        run: | 
+         echo ${{ steps.vars.outputs.image_tag }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to image repository quay.io
+        uses: docker/login-action@v2
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+
+      - name: Build and Push the image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.latest, ${{ steps.vars.outputs.image_tag }}

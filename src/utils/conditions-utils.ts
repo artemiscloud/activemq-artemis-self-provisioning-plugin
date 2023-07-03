@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import { K8sResourceCondition, K8sResourceConditionStatus } from '../k8s';
 
 export const getConditionOKCount = (

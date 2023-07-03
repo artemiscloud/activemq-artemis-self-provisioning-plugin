@@ -1,14 +1,22 @@
 name: CI
 
-env: 
+env:
   IMAGE_NAME: activemq-artemis-self-provisioning-plugin
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
+  schedule:
+    - cron: '6 0 * * *'
   workflow_dispatch:
+   inputs:
+     snapshot:
+       description: 'Snapshot'
+       required: false
+       default: false
+       type: boolean
 
 # cancels the old active workflow if new workflow is triggered
 concurrency:
@@ -27,7 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ["javascript"]
+        language: ['javascript']
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
@@ -43,7 +51,7 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
-  
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -59,7 +67,7 @@ jobs:
       - name: Get cache and install dependencies
         uses: ./.github/actions/cache-restore
 
-      - name : Build project
+      - name: Build project
         run: yarn run build
 
       # TODO: uncomment after adding tests
@@ -80,18 +88,56 @@ jobs:
       #     branch: gh-pages # The branch the action should deploy to.
       #     folder: storybook-static # The folder the action should deploy.
 
-      - name: Build the docker image
-        run: docker build --label quay.expires-after=90d --label git-sha=$GITHUB_SHA --tag $IMAGE_NAME:dev.latest .
+      - name: Update the image
+        if: ${{inputs.snapshot}}
+        run: |
+          PLUGIN_IMAGE="quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin@$(skopeo inspect docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin:snapshot | jq -r '.Digest')"
+          sed -i "s~FROM.*~FROM ${PLUGIN_IMAGE}~g" Dockerfile
 
-      - name: Push the image
-        if: ${{ github.event_name == 'push' }}
+      - name: Set outputs
+        id: vars
+        run: | 
+         echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+         echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+
+      - name: Check outputs
+        run: | 
+         echo ${{ steps.vars.outputs.sha_short }}
+         echo ${{ steps.vars.outputs.date }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to image repository quay.io
+        # Only login if not a PR, as PRs only trigger a Docker build and not a push
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: docker/login-action@v2
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+
+      - name: Build and Push the dev image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          # If this is a PR, we only build for AMD64. For PRs we only do a sanity check test to ensure Docker builds  work.
+          # If this is not a PR (e.g. a tag or merge commit), also build for ARM64
+          platforms: linux/amd64${{github.event_name!='pull_request' && ',linux/arm64' || ''}}
+          push: ${{ github.event_name == 'push' }}
+          tags: ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.latest, ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.${{ steps.vars.outputs.date }}.${{ steps.vars.outputs.sha_short }}
+          labels: |
+            quay.expires-after=90d
+            git-sha=$GITHUB_SHA
+
+      - name: Push the snapshot image
+        if: ${{ github.event_name == 'schedule' || inputs.snapshot }}
         run: >
-          export IMAGE_TAG=dev.$(date +%Y%m%d).$(git rev-parse --short "$GITHUB_SHA") &&
-          docker login quay.io --username=${{ secrets.QUAY_USERNAME }} --password-stdin <<< ${{ secrets.QUAY_PASSWORD }} &&
-          docker tag $IMAGE_NAME:dev.latest quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG &&
-          docker push quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:$IMAGE_TAG &&
-          docker tag $IMAGE_NAME:dev.latest quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.latest &&
-          docker push quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:dev.latest
-
-
+          docker login --username=${{ secrets.QUAY_USERNAME }} --password=${{ secrets.QUAY_PASSWORD }} quay.io &&
+          docker tag $IMAGE_NAME:latest quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:snapshot &&
+          docker push quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:snapshot
 

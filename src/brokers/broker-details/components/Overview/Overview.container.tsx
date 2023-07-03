@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import { Page } from '@patternfly/react-core';
 import { Metrics } from '../../../metrics';
 import { Loading } from '../../../../shared-components';

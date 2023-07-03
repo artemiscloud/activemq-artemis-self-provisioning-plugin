@@ -1,0 +1,14 @@
+.git/
+.gitignore
+node_modules/
+dist/
+.devcontainer/dev.env
+storybook-static
+.yarn
+*.md
+.cache
+logs/
+*/temp*
+*/*/temp*
+*/tmp*
+*/*/tmp

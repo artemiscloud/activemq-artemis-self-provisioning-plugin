@@ -6,7 +6,7 @@ const m = s * 60;
 const h = m * 60;
 const d = h * 24;
 const w = d * 7;
-const units = { w, d, h, m, s };
+const units: { [key: string]: number } = { w, d, h, m, s };
 
 /**
  * Converts a duration in milliseconds to a Prometheus time duration string like "1h 10m"

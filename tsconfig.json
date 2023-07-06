@@ -13,7 +13,7 @@
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
-    "emitDeclarationOnly": true,
+    // "emitDeclarationOnly": true,
     "declaration": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,

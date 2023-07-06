@@ -23,7 +23,10 @@ const log = (x: number, y: number) => {
 };
 
 // Get the larget unit seen in the dataframe within the supported range
-const bestUnit = (dataPoints: DataPoint[][], type) => {
+const bestUnit = (
+  dataPoints: DataPoint[][],
+  type: { divisor: number; units: string[] },
+) => {
   const flattenDataPoints = dataPoints.reduce(
     (acc, arr) => acc.concat(arr),
     [],

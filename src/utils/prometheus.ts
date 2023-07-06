@@ -6,7 +6,7 @@ const m = s * 60;
 const h = m * 60;
 const d = h * 24;
 const w = d * 7;
-const units = { w, d, h, m, s };
+const units: { [key: string]: number } = { w, d, h, m, s };
 
 /**
  * Converts a duration in milliseconds to a Prometheus time duration string like "1h 10m"
@@ -23,7 +23,7 @@ export const formatPrometheusDuration = (ms: number) => {
   }
   let remaining = ms;
   let str = '';
-  _.each(units, (factor, unit) => {
+  _.each(units, (factor: number, unit: string) => {
     const n = Math.floor(remaining / factor);
     if (n > 0) {
       str += `${n}${unit} `;
@@ -48,7 +48,10 @@ export const parsePrometheusDuration = (duration: string): number => {
       .trim()
       .split(/\s+/)
       .map((p) => p.match(/^(\d+)([wdhms])$/));
-    return _.sumBy(parts, (p) => parseInt(p[1], 10) * units[p[2]]);
+    return _.sumBy(
+      parts,
+      (p: RegExpMatchArray | null) => parseInt(p[1], 10) * units[p[2]],
+    );
   } catch (ignored) {
     // Invalid duration format
     return 0;

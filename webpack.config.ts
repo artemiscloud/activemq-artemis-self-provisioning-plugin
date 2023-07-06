@@ -26,7 +26,7 @@ const config: Configuration = {
   module: {
     rules: [
       {
-        test: /\.(jsx?|tsx?)$/,
+        test: /\.(jsx?|tsx?|ts?)$/,
         exclude: /node_modules/,
         use: [
           {
@@ -86,10 +86,10 @@ const config: Configuration = {
 
 if (process.env.NODE_ENV === 'production') {
   config.mode = 'production';
-  config.output.filename = '[name]-bundle-[hash].min.js';
-  config.output.chunkFilename = '[name]-chunk-[chunkhash].min.js';
-  config.optimization.chunkIds = 'deterministic';
-  config.optimization.minimize = true;
+  config!.output!.filename = '[name]-bundle-[hash].min.js';
+  config!.output!.chunkFilename = '[name]-chunk-[chunkhash].min.js';
+  config!.optimization!.chunkIds = 'deterministic';
+  config!.optimization!.minimize = true;
 }
 
 export default config;

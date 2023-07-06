@@ -11,11 +11,11 @@ export default {
   },
 } as ComponentMeta<typeof Page>;
 
+type Story = ComponentStory<typeof Page>;
 const Template: ComponentStory<typeof Page> = (args) => <Page {...args} />;
+export const LoggedOut: Story = Template.bind({});
 
-export const LoggedOut = Template.bind({});
-
-export const LoggedIn = Template.bind({});
+export const LoggedIn: Story = Template.bind({});
 
 // More on interaction testing: https://storybook.js.org/docs/react/writing-tests/interaction-testing
 LoggedIn.play = async ({ canvasElement }) => {

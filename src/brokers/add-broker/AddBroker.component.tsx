@@ -35,10 +35,22 @@ const AddBroker: FC<AddBrokerProps> = ({
     evt: FormEvent<HTMLInputElement>,
   ) => {
     const fieldName = evt.currentTarget.name;
-    formValues.formData.metadata[fieldName] = value;
-    onChangeValue({
+    // formValues.formData.metadata[fieldName] = value;
+    // onChangeValue({
+    //   ...formValues,
+    // });
+    const updatedMetadata = {
+      ...formValues.formData.metadata,
+      [fieldName]: value,
+    };
+    const updatedFormValues = {
       ...formValues,
-    });
+      formData: {
+        ...formValues.formData,
+        metadata: updatedMetadata,
+      },
+    };
+    onChangeValue(updatedFormValues);
   };
 
   return (

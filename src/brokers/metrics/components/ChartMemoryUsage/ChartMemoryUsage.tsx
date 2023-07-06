@@ -63,7 +63,7 @@ export const ChartMemoryUsage: FC<ChartMemoryUsageProps> = ({
   const tooltipSeriesNames: string[] = [];
   const tooltipSeriesLabels: PrometheusLabels[] = [];
   const legendData: { name: string }[] = [];
-  const domain = { x: fixedXDomain, y: undefined };
+  const domain = { x: fixedXDomain, y: fixedXDomain };
   const xAxisTickCount = Math.round(width / 100);
 
   const newResult = _.map(allMetricsSeries, 'data.result');

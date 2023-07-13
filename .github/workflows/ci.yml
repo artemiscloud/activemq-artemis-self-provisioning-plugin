@@ -104,40 +104,46 @@ jobs:
         run: | 
          echo ${{ steps.vars.outputs.sha_short }}
          echo ${{ steps.vars.outputs.date }}
-
+      
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to image repository quay.io
-        # Only login if not a PR, as PRs only trigger a Docker build and not a push
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: docker/login-action@v2
+      - name: Build the image 
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
         with:
-          registry: quay.io
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
-
-      - name: Build and Push the dev image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
+          image: quay.io/${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}
+          tags: dev.latest dev.${{ steps.vars.outputs.date }}.${{ steps.vars.outputs.sha_short }}
           # If this is a PR, we only build for AMD64. For PRs we only do a sanity check test to ensure Docker builds  work.
           # If this is not a PR (e.g. a tag or merge commit), also build for ARM64
           platforms: linux/amd64${{github.event_name!='pull_request' && ',linux/arm64' || ''}}
-          push: ${{ github.event_name == 'push' }}
-          tags: ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.latest, ${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}:dev.${{ steps.vars.outputs.date }}.${{ steps.vars.outputs.sha_short }}
+          context: .
+          dockerfiles: |
+            ./Dockerfile
           labels: |
             quay.expires-after=90d
             git-sha=$GITHUB_SHA
 
-      - name: Push the snapshot image
-        if: ${{ github.event_name == 'schedule' || inputs.snapshot }}
-        run: >
-          docker login --username=${{ secrets.QUAY_USERNAME }} --password=${{ secrets.QUAY_PASSWORD }} quay.io &&
-          docker tag $IMAGE_NAME:latest quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:snapshot &&
-          docker push quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME:snapshot
+      - name: Push the dev image to quay.io
+        # Only login if not a PR, as PRs only trigger a Docker build and not a push
+        if: ${{ github.event_name != 'pull_request' }}
+        id: push-to-quay
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: quay.io/${{ secrets.QUAY_NAMESPACE }}
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
 
+      - name: Push the snapshot image
+        # Only login if not a PR, as PRs only trigger a Docker build and not a push
+        if: ${{ github.event_name == 'schedule' || inputs.snapshot }}
+        id: push-snapshot-to-quay
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME
+          tags: snapshot
+          registry: quay.io/${{ secrets.QUAY_NAMESPACE }}
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}

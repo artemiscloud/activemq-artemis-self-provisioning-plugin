@@ -112,7 +112,7 @@ jobs:
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: quay.io/${{ secrets.QUAY_NAMESPACE }}/${{ env.IMAGE_NAME }}
+          image: quay.io${{ secrets.QUAY_NAMESPACE }}/${{ env.IMAGE_NAME }}
           tags: dev.latest dev.${{ steps.vars.outputs.date }}.${{ steps.vars.outputs.sha_short }}
           # If this is a PR, we only build for AMD64. For PRs we only do a sanity check test to ensure Docker builds  work.
           # If this is not a PR (e.g. a tag or merge commit), also build for ARM64

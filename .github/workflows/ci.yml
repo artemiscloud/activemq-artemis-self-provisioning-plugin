@@ -116,8 +116,7 @@ jobs:
           tags: dev.latest dev.${{ steps.vars.outputs.date }}.${{ steps.vars.outputs.sha_short }}
           # If this is a PR, we only build for AMD64. For PRs we only do a sanity check test to ensure Docker builds  work.
           # If this is not a PR (e.g. a tag or merge commit), also build for ARM64
-          # platforms: linux/amd64${{github.event_name!='pull_request' && ',linux/arm64' || ''}}
-          platforms: linux/amd64
+          platforms: linux/amd64${{github.event_name!='pull_request' && ',linux/arm64' || ''}}
           context: .
           dockerfiles: |
             ./Dockerfile

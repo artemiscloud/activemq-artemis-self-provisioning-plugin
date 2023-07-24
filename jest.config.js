@@ -9,6 +9,7 @@ module.exports = {
     '^.+\\.(css|sass|scss)$': '<rootDir>/styleMock.js',
   },
   setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
+
   coveragePathIgnorePatterns: [
     'node_modules',
     '__mocks__',

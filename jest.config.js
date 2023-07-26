@@ -1,19 +1,21 @@
 module.exports = {
   testEnvironment: 'jest-environment-jsdom',
-  transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
-  },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?|ts?)$',
-  transformIgnorePatterns: ['/node_modules/(?!@patternfly/react-styles)'],
+  testMatch: ['<rootDir>/src/**/*.test.ts', '<rootDir>/src/**/*.test.tsx'],
+  transformIgnorePatterns: [
+    'node_modules/(?!@patternfly/react-icons|@patternfly/react-tokens|@novnc|@popperjs|lodash|monaco-editor|react-monaco-editor|byte-size)',
+  ],
   moduleNameMapper: {
     '^.+\\.(css|sass|scss)$': '<rootDir>/styleMock.js',
   },
-  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
+  setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
   coveragePathIgnorePatterns: [
     'node_modules',
+    '__mocks__',
     'setupJest.ts',
+    '<rootDir>/src/ProofOfConcepts',
     '<rootDir>/src/test-utils.tsx',
+    'storiesHelpers.ts',
     '.*.stories.tsx',
   ],
 };

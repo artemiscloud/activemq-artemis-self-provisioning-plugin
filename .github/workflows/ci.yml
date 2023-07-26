@@ -70,8 +70,11 @@ jobs:
       - name: Build project
         run: yarn run build
 
-      - name: Execute tests
-        run: yarn run test --coverage
+      - name: Run the test suite
+        run: yarn test:coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 #v3
 
       - name: Check for uncommited changes
         run: git diff --quiet --exit-code

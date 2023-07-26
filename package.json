@@ -23,7 +23,8 @@
     "test": "TZ=UTC jest --runInBand",
     "test:generate-output": "yarn run test -- --json --outputFile=.jest-test-results.json",
     "prepare": "husky install",
-    "format:all": "prettier --config ./.prettierrc.yml --write './src/**/*'"
+    "format:all": "prettier --config ./.prettierrc.yml --write './src/**/*'",
+    "http-server": "./http-server.sh ./dist"
   },
   "devDependencies": {
     "@babel/core": "7.19.3",

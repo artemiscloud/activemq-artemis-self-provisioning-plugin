@@ -74,7 +74,9 @@ jobs:
         run: yarn test:coverage
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 #v3
+        uses: codecov/codecov-action@v3
+        env:
+         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Check for uncommited changes
         run: git diff --quiet --exit-code

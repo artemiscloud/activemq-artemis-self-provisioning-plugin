@@ -21,7 +21,7 @@
     "test-storybook": "test-storybook --maxWorkers=1",
     "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn run build-storybook && npx http-server storybook-static --port 6006 --silent\" \"wait-on tcp:6006 && yarn run test-storybook\"",
     "test": "TZ=UTC jest --runInBand",
-    "test:coverage":"yarn run test --watch=false --coverage",
+    "test:coverage": "yarn run test --watch=false --coverage",
     "test:generate-output": "yarn test -- --json --outputFile=.jest-test-results.json",
     "prepare": "husky install",
     "format:all": "prettier --config ./.prettierrc.yml --write './src/**/*'"

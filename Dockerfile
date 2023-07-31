@@ -4,9 +4,9 @@ ADD . /usr/src/app
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 
-USER root
+USER 0
 RUN npm i -g yarn
-RUN yarn install --network-timeout 1000000
+RUN yarn install
 RUN yarn build
 
 FROM registry.access.redhat.com/ubi8/nodejs-16-minimal:1
@@ -14,7 +14,7 @@ FROM registry.access.redhat.com/ubi8/nodejs-16-minimal:1
 USER 65532:65532
 WORKDIR /app
 COPY --from=BUILD_IMAGE /usr/src/app/dist ./dist
-COPY --from=BUILD_IMAGE /opt/app-root/src/app/node_modules ./node_modules
+COPY --from=BUILD_IMAGE /usr/src/app/node_modules ./node_modules
 COPY --from=BUILD_IMAGE /usr/src/app/http-server.sh ./http-server.sh
 
 EXPOSE 9001

@@ -24,6 +24,6 @@
       "react": ["./node_modules/@types/react"]
     }
   },
-  "include": ["./src/*", "./src/**/*"],
+  "include": ["./src/*", "./src/**/*", "setupTests.ts", "__mocks__"],
   "exclude": ["node_modules", "dist"]
 }

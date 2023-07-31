@@ -3,3 +3,4 @@ dist/
 .devcontainer/dev.env
 storybook-static
 .yarn
+coverage

@@ -11,12 +11,12 @@ on:
   schedule:
     - cron: '6 0 * * *'
   workflow_dispatch:
-   inputs:
-     snapshot:
-       description: 'Snapshot'
-       required: false
-       default: false
-       type: boolean
+    inputs:
+      snapshot:
+        description: 'Snapshot'
+        required: false
+        default: false
+        type: boolean
 
 # cancels the old active workflow if new workflow is triggered
 concurrency:
@@ -62,7 +62,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16.6.2
+          node-version: 16.x
 
       - name: Get cache and install dependencies
         uses: ./.github/actions/cache-restore
@@ -70,9 +70,11 @@ jobs:
       - name: Build project
         run: yarn run build
 
-      # TODO: uncomment after adding tests
-      # - name: Execute tests
-      #   run: yarn run test
+      - name: Run the test suite
+        run: yarn test:coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 #v3
 
       - name: Check for uncommited changes
         run: git diff --quiet --exit-code
@@ -96,19 +98,19 @@ jobs:
 
       - name: Set outputs
         id: vars
-        run: | 
-         echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-         echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+        run: |
+          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
 
       - name: Check outputs
-        run: | 
-         echo ${{ steps.vars.outputs.sha_short }}
-         echo ${{ steps.vars.outputs.date }}
-      
+        run: |
+          echo ${{ steps.vars.outputs.sha_short }}
+          echo ${{ steps.vars.outputs.date }}
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
-      - name: Build the image 
+      - name: Build the image
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:

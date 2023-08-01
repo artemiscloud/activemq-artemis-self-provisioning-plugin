@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/nodejs-16:1 AS BUILD_IMAGE
+FROM registry.access.redhat.com/ubi8/nodejs-16 AS BUILD_IMAGE
 
 ADD . /usr/src/app
 WORKDIR /usr/src/app
@@ -6,10 +6,10 @@ COPY . /usr/src/app
 
 USER 0
 RUN npm i -g yarn
-RUN yarn install
+RUN yarn install --network-timeout 1000000
 RUN yarn build
 
-FROM registry.access.redhat.com/ubi8/nodejs-16-minimal:1
+FROM registry.access.redhat.com/ubi8/nodejs-16-minimal
 
 USER 65532:65532
 WORKDIR /app

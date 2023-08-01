@@ -74,7 +74,9 @@ jobs:
         run: yarn test:coverage
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 #v3
+        uses: codecov/codecov-action@v3
+        env:
+         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Check for uncommited changes
         run: git diff --quiet --exit-code
@@ -89,12 +91,6 @@ jobs:
       #   with:
       #     branch: gh-pages # The branch the action should deploy to.
       #     folder: storybook-static # The folder the action should deploy.
-
-      - name: Update the image
-        if: ${{inputs.snapshot}}
-        run: |
-          PLUGIN_IMAGE="quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin@$(skopeo inspect docker://quay.io/${{ secrets.QUAY_NAMESPACE }}/activemq-artemis-self-provisioning-plugin:snapshot | jq -r '.Digest')"
-          sed -i "s~FROM.*~FROM ${PLUGIN_IMAGE}~g" Dockerfile
 
       - name: Set outputs
         id: vars
@@ -134,18 +130,6 @@ jobs:
         with:
           image: ${{ steps.build-image.outputs.image }}
           tags: ${{ steps.build-image.outputs.tags }}
-          registry: quay.io/${{ secrets.QUAY_NAMESPACE }}
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
-
-      - name: Push the snapshot image
-        # Only login if not a PR, as PRs only trigger a Docker build and not a push
-        if: ${{ github.event_name == 'schedule' || inputs.snapshot }}
-        id: push-snapshot-to-quay
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: quay.io/${{ secrets.QUAY_NAMESPACE }}/$IMAGE_NAME
-          tags: snapshot
           registry: quay.io/${{ secrets.QUAY_NAMESPACE }}
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_PASSWORD }}

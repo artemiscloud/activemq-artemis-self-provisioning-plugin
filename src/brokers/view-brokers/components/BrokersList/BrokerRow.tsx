@@ -59,7 +59,9 @@ const ConditionModal: FC<ConditionModalProps> = ({ status }) => {
         <DescriptionList>
           {conditions.map((condition, index) => {
             return (
-              <DescriptionListGroup key={condition.lastTransitionTime}>
+              <DescriptionListGroup
+                key={`${condition.type}-${condition.lastTransitionTime}`}
+              >
                 {index > 0 && <Divider />}
                 <DescriptionListTerm>
                   Condition at {condition.lastTransitionTime}

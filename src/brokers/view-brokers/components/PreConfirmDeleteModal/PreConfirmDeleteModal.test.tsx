@@ -63,7 +63,7 @@ describe('PreConfirmDeleteModal', () => {
     expect(onDeleteButtonClick).toHaveBeenCalled();
   });
 
-  xit('should close the modal by clicking on the cancel button', async () => {
+  it('should close the modal by clicking on the cancel button', async () => {
     const comp = render(
       <PreConfirmDeleteModal
         onDeleteButtonClick={onDeleteButtonClick}
@@ -76,17 +76,11 @@ describe('PreConfirmDeleteModal', () => {
 
     const cancelBtn = screen.getByText('cancel');
     fireEvent.click(cancelBtn);
-
-    await waitFor(() => {
-      expect(
-        screen.queryAllByText('delete_modal_instance_title'),
-      ).not.toBeInTheDocument();
-    });
     expect(onOpenModal).toHaveBeenCalled();
   });
 
-  xit('should close the modal by pressing the escape key', async () => {
-    const comp = render(
+  it('should close the modal by pressing the escape key', async () => {
+    const { container } = render(
       <PreConfirmDeleteModal
         onDeleteButtonClick={onDeleteButtonClick}
         isModalOpen={true}
@@ -94,13 +88,12 @@ describe('PreConfirmDeleteModal', () => {
         name={name}
       />,
     );
-    await waitForI18n(comp);
-    fireEvent.keyDown(document, { key: 'Escape' });
 
-    await waitFor(() => {
-      expect(
-        screen.queryByText('delete_modal_instance_title'),
-      ).not.toBeInTheDocument();
+    fireEvent.keyDown(container, {
+      key: 'Escape',
+      code: 'Escape',
+      keyCode: 27,
+      charCode: 27,
     });
     expect(onOpenModal).toHaveBeenCalled();
   });

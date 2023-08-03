@@ -1,5 +1,5 @@
-import { FC, useCallback } from 'react';
-import _ from 'lodash';
+import { FC, useMemo, useCallback } from 'react';
+import _ from 'lodash-es';
 import {
   Chart,
   ChartAxis,
@@ -15,13 +15,16 @@ import {
   PrometheusResponse,
   PrometheusResult,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { ChartSkeletonLoader } from '../../metrics/components/ChartSkeletonLoader/ChartSkeletonLoader';
-import { EmptyStateNoMetricsData } from '../../metrics/components/EmptyStateNoMetricsData/EmptyStateNoMetricsData';
-import { chartHeight, chartPadding } from '../../utils';
-import { useChartWidth } from '../../metrics/hooks/useChartWidth';
-import { useTranslation } from '../../i18n';
+import { ChartSkeletonLoader } from '../ChartSkeletonLoader/ChartSkeletonLoader';
+import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData/EmptyStateNoMetricsData';
+import { chartHeight, chartPadding } from '../../../utils';
+import { useChartWidth } from '../../hooks/useChartWidth';
+import { useTranslation } from '../../../i18n';
 import {
   chartTheme,
+  ByteDataTypes,
+  processFrame,
+  humanizeBinaryBytes,
   AxisDomain,
   FormatSeriesTitle,
   GraphSeries,
@@ -30,12 +33,11 @@ import {
   Series,
   formatSeriesValues,
   xAxisTickFormat,
-  DataPoint,
-} from '../../metrics/utils';
+} from '../../utils';
 
 const colors = chartTheme.line.colorScale;
 
-export type QueryBrowserProps = {
+export type ChartMemoryUsageProps = {
   allMetricsSeries: PrometheusResponse[];
   span: number;
   isLoading: boolean;
@@ -43,27 +45,15 @@ export type QueryBrowserProps = {
   fixedXDomain: AxisDomain;
   samples: number;
   formatSeriesTitle?: FormatSeriesTitle;
-  yTickFormat: (v: number) => string;
-  processedData?: DataPoint<string | number | Date>[][];
-  // data: GraphSeries[]
-  metricsType?: 'memory' | 'cpu';
-  label?: any;
-  ariaTitle: string;
 };
 
-export const QueryBrowser: FC<QueryBrowserProps> = ({
+export const ChartMemoryUsage: FC<ChartMemoryUsageProps> = ({
   allMetricsSeries,
   span,
   isLoading,
   fixedXDomain,
   samples,
   formatSeriesTitle,
-  yTickFormat,
-  processedData,
-  // data,
-  metricsType,
-  label,
-  ariaTitle,
 }) => {
   const { t } = useTranslation();
   const [containerRef, width] = useChartWidth();
@@ -103,12 +93,22 @@ export const QueryBrowser: FC<QueryBrowserProps> = ({
     });
   });
 
+  const { processedData, unit } = useMemo(() => {
+    const nonEmptyDataSets = data.filter((dataSet) => dataSet?.length);
+    return processFrame(nonEmptyDataSets, ByteDataTypes.BinaryBytes);
+  }, [data]);
+
   const xTickFormat = useCallback(
     (tick) => {
       const tickFormat = xAxisTickFormat(span);
       return tickFormat(tick);
     },
     [xAxisTickFormat, span],
+  );
+
+  const yTickFormat = useCallback(
+    (tick) => `${humanizeBinaryBytes(tick, unit, unit).string}`,
+    [unit],
   );
 
   // Set a reasonable Y-axis range based on the min and max values in the data
@@ -127,8 +127,6 @@ export const QueryBrowser: FC<QueryBrowserProps> = ({
 
   domain.y = [minY, maxY];
 
-  const metricsDataPoints = metricsType === 'memory' ? processedData : data;
-
   return (
     <div ref={containerRef} style={{ height: '500px' }}>
       {(() => {
@@ -141,24 +139,14 @@ export const QueryBrowser: FC<QueryBrowserProps> = ({
             const labels: ChartVoronoiContainerProps['labels'] = ({
               datum,
             }) => {
-              const time = xTickFormat(datum.x);
-              let label = '';
-
-              if (metricsType === 'memory') {
-                label = `${datum?.style?.labels?.name}: ${yTickFormat(
-                  datum.y,
-                )} at ${xTickFormat(datum.x)}`;
-              } else if (metricsType === 'cpu') {
-                label = `${datum?.style?.labels?.name}: ${yTickFormat(
-                  datum.y,
-                )} at ${time}`;
-              }
-              return label;
+              return `${datum?.style?.labels?.name}: ${yTickFormat(
+                datum.y,
+              )} at ${xTickFormat(datum.x)}`;
             };
 
             return (
               <Chart
-                ariaTitle={ariaTitle}
+                ariaTitle={t('memory_usage')}
                 // containerComponent={graphContainer}
                 containerComponent={
                   <ChartVoronoiContainer
@@ -183,14 +171,14 @@ export const QueryBrowser: FC<QueryBrowserProps> = ({
                   tickFormat={xTickFormat}
                 />
                 <ChartAxis
-                  label={label}
+                  label={'\n\n\n\n' + t('axis_label_bytes')}
                   crossAxis={false}
                   tickCount={6}
                   dependentAxis
                   tickFormat={yTickFormat}
                 />
                 <ChartGroup>
-                  {metricsDataPoints.map((values, index) => {
+                  {processedData.map((values, index) => {
                     if (values === null) {
                       return null;
                     }

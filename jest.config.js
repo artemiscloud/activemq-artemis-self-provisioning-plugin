@@ -7,6 +7,8 @@ module.exports = {
   ],
   moduleNameMapper: {
     '^.+\\.(css|sass|scss)$': '<rootDir>/styleMock.js',
+    '^@openshift-console/dynamic-plugin-sdk$':
+      '<rootDir>/__mocks__/dynamic-plugin-sdk.ts',
   },
   setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
 

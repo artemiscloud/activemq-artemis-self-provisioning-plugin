@@ -9,10 +9,10 @@ import {
   PageSection,
   PageSectionVariants,
 } from '@patternfly/react-core';
-import { ConfigurationContainer } from './components/Configuration';
 import { useTranslation } from '../../i18n';
 import {
   ClientsContainer,
+  ConfigurationContainer,
   QueuesContainer,
   TopicsContainer,
   OverviewContainer,

@@ -1,19 +1,22 @@
 import { FC } from 'react';
 import { Card, CardBody } from '@patternfly/react-core';
-import { QueryBrowser, QueryBrowserProps } from '../QueryBrowser/QueryBrowser';
-import { CardBodyLoading } from '../../metrics/components/CardBodyLoading/CardBodyLoading';
-import { EmptyStateNoMetricsData } from '../../metrics/components/EmptyStateNoMetricsData/EmptyStateNoMetricsData';
-import { ChartTitle } from '../../metrics/components/ChartTitle/ChartTitle';
+import {
+  ChartMemoryUsage,
+  ChartMemoryUsageProps,
+} from '../ChartMemoryUsage/ChartMemoryUsage';
+import { useTranslation } from '../../../i18n';
+import { CardBodyLoading } from '../CardBodyLoading/CardBodyLoading';
+import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData/EmptyStateNoMetricsData';
+import { ChartTitle } from '../ChartTitle';
 
-export type CardQueryBrowserProps = QueryBrowserProps & {
+export type CardBrokerMemoryUsageMetricsProps = ChartMemoryUsageProps & {
   isInitialLoading: boolean;
   backendUnavailable: boolean;
-  title: string;
-  helperText: string;
-  dataTestId: string;
 };
 
-export const CardQueryBrowser: FC<CardQueryBrowserProps> = ({
+export const CardBrokerMemoryUsageMetrics: FC<
+  CardBrokerMemoryUsageMetricsProps
+> = ({
   isInitialLoading,
   backendUnavailable,
   allMetricsSeries,
@@ -22,17 +25,11 @@ export const CardQueryBrowser: FC<CardQueryBrowserProps> = ({
   fixedXDomain,
   isLoading,
   formatSeriesTitle,
-  title,
-  helperText,
-  dataTestId,
-  yTickFormat,
-  processedData,
-  label,
-  metricsType,
-  ariaTitle,
 }) => {
+  const { t } = useTranslation();
+
   return (
-    <Card data-test-id={dataTestId}>
+    <Card data-test-id={'metrics-broker-memory-usage'}>
       {(() => {
         switch (true) {
           case isInitialLoading:
@@ -46,20 +43,18 @@ export const CardQueryBrowser: FC<CardQueryBrowserProps> = ({
           default:
             return (
               <>
-                <ChartTitle title={title} helperText={helperText} />
+                <ChartTitle
+                  title={t('memory_usage')}
+                  helperText={t('memory_usage_help_text')}
+                />
                 <CardBody>
-                  <QueryBrowser
+                  <ChartMemoryUsage
                     allMetricsSeries={allMetricsSeries}
                     span={span}
                     isLoading={isLoading}
                     samples={samples}
                     fixedXDomain={fixedXDomain}
                     formatSeriesTitle={formatSeriesTitle}
-                    processedData={processedData}
-                    yTickFormat={yTickFormat}
-                    metricsType={metricsType}
-                    label={label}
-                    ariaTitle={ariaTitle}
                   />
                 </CardBody>
               </>

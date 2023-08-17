@@ -1,5 +1,8 @@
 import { consoleFetchJSON } from '@openshift-console/dynamic-plugin-sdk';
 import { SortByDirection } from '@patternfly/react-table';
+import _ from 'lodash-es';
+import { useGetApiBasePath, APiBasePathProps } from '../../hooks';
+import { encode } from 'base-64';
 
 // const BROKER_SEARCH_PATTERN = "org.apache.activemq.artemis:broker=*";
 // const LIST_NETWORK_TOPOLOGY_SIG = "listNetworkTopology";
@@ -39,6 +42,15 @@ export const useGetQueues = () => {
     activeSort: ActiveSort,
     filter: Filter,
   ) => {
+    const basePathOptions: APiBasePathProps = {
+      protocol: 'http',
+      hostName:
+        'test-1-ss-0.test-1-hdls-svc.activemq-artemis-self-provisioning-plugin.svc.cluster.local',
+      port: '8161',
+      jolokiaEndPoint: 'console/jolokia',
+    };
+
+    const basePath = useGetApiBasePath(basePathOptions);
     const { column, operation, input } = filter;
     const { id, order } = activeSort;
 
@@ -50,7 +62,24 @@ export const useGetQueues = () => {
       sortColumn: id,
     });
 
-    const url = `http://localhost:8161/console/jolokia/exec/org.apache.activemq.artemis:broker="0.0.0.0"/${LIST_QUEUES_SIG}/${filterQuery}/${page}/${perPage}`;
-    return await consoleFetchJSON(url);
+    // currently the broker name is always 0.0.0.0 as of 08/11/23
+    // however this should be fixed
+    const defaultBrokerName = '0.0.0.0';
+
+    //const url = `http://localhost:8161/console/jolokia/exec/org.apache.activemq.artemis:broker="0.0.0.0"/${LIST_QUEUES_SIG}/${filterQuery}/${page}/${perPage}`;
+    //const url = `http://test-1-ss-0.test-1-hdls-svc.activemq-artemis-self-provisioning-plugin.svc.cluster.local:8161/console/jolokia/exec/org.apache.activemq.artemis:broker="${defaultBrokerName}"/${LIST_QUEUES_SIG}/${filterQuery}/${page}/${perPage}`;
+    const url = `${basePath}/exec/org.apache.activemq.artemis:broker="${defaultBrokerName}"/${LIST_QUEUES_SIG}/${filterQuery}/${page}/${perPage}`;
+
+    const username = '';
+    const password = '';
+    const allOptions: Record<string, any> = {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: 'Basic ' + encode(username + ':' + password),
+      },
+    };
+
+    return await consoleFetchJSON(url, 'POST', allOptions);
   };
 };

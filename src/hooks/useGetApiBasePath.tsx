@@ -29,14 +29,14 @@ const defaultPort = '8161';
 // if the agent is enabled it'll be just jolokia i.e. localhost:8161/jolokia
 const defaultJolokiaEndpoint = 'console/jolokia';
 
-export type APiBasePathProps = {
+export type ApiBasePathProps = {
   protocol?: string;
   hostName?: string;
   port?: string;
   jolokiaEndPoint?: string;
 };
 
-export const useGetApiBasePath = (options: APiBasePathProps) => {
+export const useGetApiBasePath = (options: ApiBasePathProps) => {
   const {
     protocol = defaultProtocol,
     hostName = defaultHostname,

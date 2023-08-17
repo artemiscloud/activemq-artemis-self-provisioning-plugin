@@ -1,7 +1,7 @@
 import { consoleFetchJSON } from '@openshift-console/dynamic-plugin-sdk';
 import { SortByDirection } from '@patternfly/react-table';
 import _ from 'lodash-es';
-import { useGetApiBasePath, APiBasePathProps } from '../../hooks';
+import { useGetApiBasePath, ApiBasePathProps } from '../../hooks';
 import { encode } from 'base-64';
 
 // const BROKER_SEARCH_PATTERN = "org.apache.activemq.artemis:broker=*";
@@ -42,7 +42,7 @@ export const useGetQueues = () => {
     activeSort: ActiveSort,
     filter: Filter,
   ) => {
-    const basePathOptions: APiBasePathProps = {
+    const basePathOptions: ApiBasePathProps = {
       protocol: 'http',
       hostName:
         'test-1-ss-0.test-1-hdls-svc.activemq-artemis-self-provisioning-plugin.svc.cluster.local',

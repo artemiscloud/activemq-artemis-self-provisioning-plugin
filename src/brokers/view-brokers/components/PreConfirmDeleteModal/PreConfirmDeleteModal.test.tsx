@@ -6,7 +6,6 @@ import {
   waitForI18n,
 } from '../../../../test-utils';
 import { PreConfirmDeleteModal } from '../PreConfirmDeleteModal/PreConfirmDeleteModal';
-jest.mock('react-i18next');
 
 describe('PreConfirmDeleteModal', () => {
   const onDeleteButtonClick = jest.fn();

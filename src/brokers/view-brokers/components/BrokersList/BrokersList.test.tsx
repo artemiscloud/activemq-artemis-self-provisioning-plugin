@@ -6,10 +6,6 @@ afterEach(() => {
   cleanup();
 });
 
-jest.mock('react-i18next');
-console.log('render', render);
-console.log('brokerlist', BrokersList);
-
 jest.mock('@openshift-console/dynamic-plugin-sdk', () => ({
   ...jest.requireActual('@openshift-console/dynamic-plugin-sdk'),
   useListPageFilter: jest.fn(),

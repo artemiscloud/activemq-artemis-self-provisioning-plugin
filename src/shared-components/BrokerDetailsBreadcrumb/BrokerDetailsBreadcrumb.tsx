@@ -77,7 +77,12 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
       <LevelItem>
         <Dropdown
           onSelect={onSelect}
-          toggle={<KebabToggle id="broker-toggle-kebab" onToggle={onToggle} />}
+          toggle={
+            <KebabToggle
+              data-testid="broker-toggle-kebab"
+              onToggle={onToggle}
+            />
+          }
           isOpen={isOpen}
           isPlain
           dropdownItems={dropdownItems}

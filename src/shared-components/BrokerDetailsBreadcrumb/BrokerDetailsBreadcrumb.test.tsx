@@ -1,7 +1,6 @@
 import { screen, fireEvent, render, waitForI18n } from '../../test-utils';
 import { BrokerDetailsBreadcrumb } from './BrokerDetailsBreadcrumb';
 import { MemoryRouter } from 'react-router-dom';
-jest.mock('react-i18next');
 
 describe('BrokerDetailsBreadcrumb', () => {
   const name = 'test-1';

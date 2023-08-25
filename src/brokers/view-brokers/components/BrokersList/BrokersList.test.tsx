@@ -1,15 +1,5 @@
-import { cleanup, render, screen, waitForI18n } from '../../../../test-utils';
+import { render, screen, waitForI18n } from '../../../../test-utils';
 import { BrokersList } from '../BrokersList/BrokersList';
-
-afterEach(() => {
-  jest.clearAllMocks();
-  cleanup();
-});
-
-jest.mock('@openshift-console/dynamic-plugin-sdk', () => ({
-  ...jest.requireActual('@openshift-console/dynamic-plugin-sdk'),
-  useListPageFilter: jest.fn(),
-}));
 
 describe('BrokerList', () => {
   const onEditBroker = jest.fn();

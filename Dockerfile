@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/nodejs-16:latest AS build
+FROM registry.access.redhat.com/ubi8/nodejs-16:latest AS BUILD_IMAGE
 
 ### BEGIN REMOTE SOURCE
 # Use the COPY instruction only inside the REMOTE SOURCE block
@@ -19,17 +19,22 @@ ADD . /usr/src/app
 WORKDIR /usr/src/app
 
 ## Install dependencies
-RUN yarn install --frozen-lockfile --network-timeout 1000000
+RUN yarn install  --network-timeout 1000000
+
 ## Build application
 RUN yarn build
 
-FROM registry.access.redhat.com/ubi8/nginx-120:latest
+FROM registry.access.redhat.com/ubi8/nodejs-16-minimal
 
-COPY --from=build /usr/src/app/dist /usr/share/nginx/html
 USER 1001
 
-EXPOSE 8001
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+WORKDIR /app
+
+COPY --from=BUILD_IMAGE /usr/src/app/dist ./dist
+COPY --from=BUILD_IMAGE /usr/src/app/node_modules ./node_modules
+COPY --from=BUILD_IMAGE /usr/src/app/http-server.sh ./http-server.sh
+
+ENTRYPOINT [ "./http-server.sh", "./dist" ]
 
 ## Labels
 LABEL name="artemiscloud/activemq-artemis-self-provisioning-plugin"

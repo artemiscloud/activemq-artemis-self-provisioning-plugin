@@ -2,7 +2,7 @@ FROM registry.access.redhat.com/ubi8/nodejs-16:latest AS BUILD_IMAGE
 
 ### BEGIN REMOTE SOURCE
 # Use the COPY instruction only inside the REMOTE SOURCE block
-# Use the COPY instruction only to copy files to the container path $REMOTE_SOURCE_DIR/app
+# Use the COPY instruction only to copy files to the container path $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/app
 ARG REMOTE_SOURCE_DIR=/tmp/remote_source
 RUN mkdir -p $REMOTE_SOURCE_DIR/app
 WORKDIR $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/app
@@ -14,9 +14,11 @@ COPY yarn.lock yarn.lock
 USER root
 ENV HUSKY=0
 
+RUN command -v yarn || npm i -g yarn
+
 ## Install dependencies
-RUN source $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/cachito.env  && \
-yarn install --frozen-lockfile --network-timeout 1000000
+#RUN source $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/cachito.env  && \
+RUN yarn install --frozen-lockfile --network-timeout 1000000
 ### END REMOTE SOURCE
 
 ## Build application

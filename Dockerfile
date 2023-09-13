@@ -4,7 +4,7 @@ FROM registry.access.redhat.com/ubi8/nodejs-16:latest AS BUILD_IMAGE
 # Use the COPY instruction only inside the REMOTE SOURCE block
 # Use the COPY instruction only to copy files to the container path $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/app
 ARG REMOTE_SOURCE_DIR=/tmp/remote_source
-RUN mkdir -p $REMOTE_SOURCE_DIR/app
+RUN mkdir -p $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/app
 WORKDIR $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/app
 # Copy package.json and yarn.lock to the container
 COPY package.json package.json
@@ -32,9 +32,9 @@ USER 1001
 
 WORKDIR /app
 
-COPY --from=BUILD_IMAGE $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/app/dist /usr/src/app/dist
-COPY --from=BUILD_IMAGE $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/app/node_modules /usr/src/app/node_modules 
-COPY --from=BUILD_IMAGE $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/app/http-server.sh /usr/src/app/http-server.sh
+COPY --from=BUILD_IMAGE $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/app/dist ./dist
+COPY --from=BUILD_IMAGE $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/app/node_modules ./node_modules 
+COPY --from=BUILD_IMAGE $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/app/http-server.sh ./http-server.sh
 
 ENTRYPOINT [ "./http-server.sh", "./dist" ]
 

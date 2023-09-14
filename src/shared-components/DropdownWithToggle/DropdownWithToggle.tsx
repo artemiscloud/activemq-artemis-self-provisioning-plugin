@@ -69,7 +69,11 @@ export const DropdownWithToggle: React.FC<IDropdownWithToggleProps> = ({
   };
 
   const dropdownToggle = (
-    <DropdownToggle id={toggleId} onToggle={onToggle}>
+    <DropdownToggle
+      id={toggleId}
+      onToggle={onToggle}
+      data-testid="dropdown-toggle"
+    >
       {getSelectedValue()}
     </DropdownToggle>
   );

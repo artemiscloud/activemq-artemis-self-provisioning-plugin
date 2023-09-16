@@ -23,7 +23,7 @@ RUN yarn install --frozen-lockfile --network-timeout 1000000
 
 ## Set up the workspace
 RUN mkdir -p /workspace
-RUN mv  $REMOTE_SOURCE_DIR/activemq-artemis-self-provisioning-plugin/app /workspace
+RUN mv  $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app /workspace
 WORKDIR /workspace/activemq-artemis-self-provisioning-plugin/app
 
 ## Build application

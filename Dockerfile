@@ -22,9 +22,13 @@ RUN yarn install --frozen-lockfile --network-timeout 1000000
 ### END REMOTE SOURCE
 
 ## Set up the workspace
-RUN mkdir -p /workspace
-RUN mv ${REMOTE_SOURCES_DIR}/activemq-artemis-self-provisioning-plugin /workspace
-WORKDIR /workspace/activemq-artemis-self-provisioning-plugin/app
+# RUN mkdir -p /workspace
+# RUN mv ${REMOTE_SOURCES_DIR}/activemq-artemis-self-provisioning-plugin /workspace
+# WORKDIR /workspace/activemq-artemis-self-provisioning-plugin/app
+ADD . /usr/src/app
+RUN mv ${REMOTE_SOURCES_DIR}/activemq-artemis-self-provisioning-plugin/app /usr/src/app
+WORKDIR /usr/src/app
+
 
 ## Build application
 RUN yarn build
@@ -35,11 +39,11 @@ FROM registry.access.redhat.com/ubi8/nodejs-16-minimal
 ## Use none-root user
 USER 1001
 
-WORKDIR /
+WORKDIR /app
 
-COPY --from=BUILD_IMAGE /workspace/activemq-artemis-self-provisioning-plugin/app/dist ./dist
-COPY --from=BUILD_IMAGE /workspace/activemq-artemis-self-provisioning-plugin/app/node_modules ./node_modules
-COPY --from=BUILD_IMAGE /workspace/activemq-artemis-self-provisioning-plugin/app/http-server.sh ./http-server.sh
+COPY --from=BUILD_IMAGE /usr/src/app/dist ./dist
+COPY --from=BUILD_IMAGE /usr/src/app/node_modules ./node_modules
+COPY --from=BUILD_IMAGE /usr/src/app/http-server.sh ./http-server.sh
 
 ENTRYPOINT [ "./http-server.sh", "./dist" ]
 

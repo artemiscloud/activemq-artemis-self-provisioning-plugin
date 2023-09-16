@@ -17,7 +17,7 @@ ENV HUSKY=0
 RUN command -v yarn || npm i -g yarn
 
 ## Install dependencies
-RUN source $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/cachito.env  && \
+#RUN source $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/cachito.env  && \
 RUN yarn install --frozen-lockfile --network-timeout 1000000
 ### END REMOTE SOURCE
 

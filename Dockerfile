@@ -7,8 +7,8 @@ ARG REMOTE_SOURCES_DIR=/tmp/remote_source
 RUN mkdir -p $REMOTE_SOURCES_DIR/app
 WORKDIR $REMOTE_SOURCES_DIR/app
 # Copy package.json and yarn.lock to the container
-COPY package.json package.json
-COPY yarn.lock yarn.lock
+COPY package.json $REMOTE_SOURCES_DIR/app
+COPY yarn.lock $REMOTE_SOURCES_DIR/app
 
 ## Switch to root as required for some operations
 USER root
@@ -25,7 +25,7 @@ RUN yarn install --frozen-lockfile --network-timeout 1000000
 # RUN mkdir -p /workspace
 # RUN mv ${REMOTE_SOURCES_DIR}/activemq-artemis-self-provisioning-plugin /workspace
 # WORKDIR /workspace/activemq-artemis-self-provisioning-plugin/app
-RUN mkdir -p /usr/src/app
+ADD . /usr/src/app
 RUN mv ${REMOTE_SOURCES_DIR}/app /usr/src/app
 WORKDIR /usr/src/app
 

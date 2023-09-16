@@ -18,19 +18,16 @@ RUN command -v yarn || npm i -g yarn
 
 ## Install dependencies
 #RUN source $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/cachito.env  && \
-#RUN yarn install --frozen-lockfile --network-timeout 1000000
+RUN yarn install --frozen-lockfile --network-timeout 1000000
 ### END REMOTE SOURCE
-RUN echo $(ls -l $REMOTE_SOURCES_DIR)
-
-USER root
 
 ## Set up the workspace
-ADD . /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p /workspace
+RUN mv ${REMOTE_SOURCES_DIR}/activemq-artemis-self-provisioning-plugin/app /workspace
+WORKDIR /workspace/activemq-artemis-self-provisioning-plugin/app
 
-## Install dependenciesß
-RUN yarn install --frozen-lockfile --network-timeout 1000000
-
+RUN echo $(ls -l $REMOTE_SOURCES_DIR)
+RUN echo $(ls -l workspace)
 ## Build application
 RUN yarn build
 
@@ -40,11 +37,11 @@ FROM registry.access.redhat.com/ubi8/nodejs-16-minimal
 ## Use none-root user
 USER 1001
 
-WORKDIR /app
+WORKDIR /
 
-COPY --from=BUILD_IMAGE /usr/src/app/dist ./dist
-COPY --from=BUILD_IMAGE /usr/src/app/node_modules ./node_modules
-COPY --from=BUILD_IMAGE /usr/src/app/http-server.sh ./http-server.sh
+COPY --from=BUILD_IMAGE /workspace/activemq-artemis-self-provisioning-plugin/app/dist ./dist
+COPY --from=BUILD_IMAGE /workspace/activemq-artemis-self-provisioning-plugin/app/node_modules ./node_modules
+COPY --from=BUILD_IMAGE /workspace/activemq-artemis-self-provisioning-plugin/app/http-server.sh ./http-server.sh
 
 ENTRYPOINT [ "./http-server.sh", "./dist" ]
 

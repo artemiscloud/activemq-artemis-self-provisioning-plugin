@@ -4,8 +4,8 @@ FROM registry.access.redhat.com/ubi8/nodejs-16:latest AS BUILD_IMAGE
 # Use the COPY instruction only inside the REMOTE SOURCE block
 # Use the COPY instruction only to copy files to the container path $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app
 ARG REMOTE_SOURCES_DIR=/tmp/remote_source
-RUN mkdir -p $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app
-WORKDIR $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app
+RUN mkdir -p $REMOTE_SOURCES_DIR/app
+WORKDIR $REMOTE_SOURCES_DIR/app
 # Copy package.json and yarn.lock to the container
 COPY package.json package.json
 COPY yarn.lock yarn.lock
@@ -25,9 +25,9 @@ RUN yarn install --frozen-lockfile --network-timeout 1000000
 # RUN mkdir -p /workspace
 # RUN mv ${REMOTE_SOURCES_DIR}/activemq-artemis-self-provisioning-plugin /workspace
 # WORKDIR /workspace/activemq-artemis-self-provisioning-plugin/app
-ADD . /usr/src/app
-RUN mv ${REMOTE_SOURCES_DIR}/activemq-artemis-self-provisioning-plugin/app /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p /workspace
+RUN mv ${REMOTE_SOURCES_DIR}/app /workspace
+WORKDIR /workspace/app
 
 
 ## Build application
@@ -39,11 +39,11 @@ FROM registry.access.redhat.com/ubi8/nodejs-16-minimal
 ## Use none-root user
 USER 1001
 
-WORKDIR /app
+WORKDIR /
 
-COPY --from=BUILD_IMAGE /usr/src/app/dist ./dist
-COPY --from=BUILD_IMAGE /usr/src/app/node_modules ./node_modules
-COPY --from=BUILD_IMAGE /usr/src/app/http-server.sh ./http-server.sh
+COPY --from=BUILD_IMAGE /workspace/app/dist ./dist
+COPY --from=BUILD_IMAGE /workspace/app/node_modules ./node_modules
+COPY --from=BUILD_IMAGE /workspace/app/http-server.sh ./http-server.sh
 
 ENTRYPOINT [ "./http-server.sh", "./dist" ]
 

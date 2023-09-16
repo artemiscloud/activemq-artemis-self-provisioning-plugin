@@ -7,9 +7,9 @@ ARG REMOTE_SOURCES_DIR=/tmp/remote_source
 RUN mkdir -p $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app
 WORKDIR $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app
 # Copy package.json and yarn.lock to the container
-COPY package.json $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app
-COPY yarn.lock $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app
-
+COPY package.json package.json
+COPY yarn.lock yarn.lock
+RUN file="$(ls -1 $REMOTE_SOURCES_DIR)" && echo $file
 ## Switch to root as required for some operations
 USER root
 ENV HUSKY=0
@@ -22,9 +22,8 @@ RUN yarn install --frozen-lockfile --network-timeout 1000000
 ### END REMOTE SOURCE
 
 ## Set up the workspace
-RUN mkdir -p /workspace
-RUN mv  $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app /workspace
-WORKDIR /workspace/app
+ADD . /usr/src/app
+WORKDIR /usr/src/app
 
 ## Build application
 RUN yarn build
@@ -35,11 +34,11 @@ FROM registry.access.redhat.com/ubi8/nodejs-16-minimal
 ## Use none-root user
 USER 1001
 
-WORKDIR /
+WORKDIR /app
 
-COPY --from=BUILD_IMAGE /workspace/app/dist ./dist
-COPY --from=BUILD_IMAGE /workspace/app/node_modules ./node_modules 
-COPY --from=BUILD_IMAGE /workspace/app/http-server.sh ./http-server.sh
+COPY --from=BUILD_IMAGE /usr/src/app/dist ./dist
+COPY --from=BUILD_IMAGE /usr/src/app/node_modules ./node_modules
+COPY --from=BUILD_IMAGE /usr/src/app/http-server.sh ./http-server.sh
 
 ENTRYPOINT [ "./http-server.sh", "./dist" ]
 

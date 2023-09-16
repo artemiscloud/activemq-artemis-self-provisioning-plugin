@@ -18,15 +18,18 @@ RUN command -v yarn || npm i -g yarn
 
 ## Install dependencies
 #RUN source $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/cachito.env  && \
-RUN yarn install --frozen-lockfile --network-timeout 1000000
+#RUN yarn install --frozen-lockfile --network-timeout 1000000
 ### END REMOTE SOURCE
-RUN echo $(ls -1 $REMOTE_SOURCES_DIR)
+RUN echo $(ls -l $REMOTE_SOURCES_DIR)
 
 USER root
 
 ## Set up the workspace
 ADD . /usr/src/app
 WORKDIR /usr/src/app
+
+## Install dependenciesß
+RUN yarn install --frozen-lockfile --network-timeout 1000000
 
 ## Build application
 RUN yarn build

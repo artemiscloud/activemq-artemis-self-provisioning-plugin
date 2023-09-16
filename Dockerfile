@@ -7,8 +7,8 @@ ARG REMOTE_SOURCES_DIR=/tmp/remote_source
 RUN mkdir -p $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app
 WORKDIR $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app
 # Copy package.json and yarn.lock to the container
-COPY package.json package.json
-COPY yarn.lock yarn.lock
+COPY package.json $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app
+COPY yarn.lock $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app
 
 ## Switch to root as required for some operations
 USER root

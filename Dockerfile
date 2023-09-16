@@ -9,7 +9,7 @@ WORKDIR $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app
 # Copy package.json and yarn.lock to the container
 COPY package.json package.json
 COPY yarn.lock yarn.lock
-RUN file="$(ls -1 $REMOTE_SOURCES_DIR)" && echo $file
+
 ## Switch to root as required for some operations
 USER root
 ENV HUSKY=0
@@ -20,6 +20,9 @@ RUN command -v yarn || npm i -g yarn
 #RUN source $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/cachito.env  && \
 RUN yarn install --frozen-lockfile --network-timeout 1000000
 ### END REMOTE SOURCE
+RUN echo $(ls -1 $REMOTE_SOURCES_DIR)
+
+USER root
 
 ## Set up the workspace
 ADD . /usr/src/app

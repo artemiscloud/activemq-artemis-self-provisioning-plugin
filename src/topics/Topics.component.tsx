@@ -5,7 +5,12 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { Topic } from './Topics.container';
 import { TopicsRow } from './TopicsRow';
-import { PageSection, Title } from '@patternfly/react-core';
+import {
+  Page,
+  PageSection,
+  PageSectionVariants,
+  Title,
+} from '@patternfly/react-core';
 
 export type TopicsProps = {
   topicData: Topic[];
@@ -27,8 +32,8 @@ const Topics: React.FC<TopicsProps> = ({ topicData, isLoaded, loadError }) => {
     },
   ];
   return (
-    <>
-      <PageSection>
+    <Page>
+      <PageSection variant={PageSectionVariants.light}>
         <Title headingLevel="h1">{t('topics')}</Title>
       </PageSection>
       <VirtualizedTable<Topic>
@@ -46,7 +51,7 @@ const Topics: React.FC<TopicsProps> = ({ topicData, isLoaded, loadError }) => {
           />
         )}
       />
-    </>
+    </Page>
   );
 };
 

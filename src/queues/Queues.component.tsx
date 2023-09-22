@@ -5,7 +5,12 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { Queue } from './Queues.container';
 import { QueueRow } from './QueueRow';
-import { PageSection, Title } from '@patternfly/react-core';
+import {
+  Page,
+  PageSection,
+  PageSectionVariants,
+  Title,
+} from '@patternfly/react-core';
 
 export type QueuesProps = {
   queueData: Queue[];
@@ -39,8 +44,8 @@ const Queues: React.FC<QueuesProps> = ({ queueData, isLoaded, loadError }) => {
     },
   ];
   return (
-    <>
-      <PageSection>
+    <Page>
+      <PageSection variant={PageSectionVariants.light}>
         <Title headingLevel="h1">{t('queues')}</Title>
       </PageSection>
       <VirtualizedTable<Queue>
@@ -58,7 +63,7 @@ const Queues: React.FC<QueuesProps> = ({ queueData, isLoaded, loadError }) => {
           />
         )}
       />
-    </>
+    </Page>
   );
 };
 

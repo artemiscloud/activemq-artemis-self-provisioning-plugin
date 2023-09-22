@@ -5,7 +5,12 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { Client } from './Clients.container';
 import { ClientsRow } from './ClientsRow';
-import { PageSection, Title } from '@patternfly/react-core';
+import {
+  Page,
+  PageSection,
+  PageSectionVariants,
+  Title,
+} from '@patternfly/react-core';
 
 export type ClientProps = {
   clientData: Client[];
@@ -39,8 +44,8 @@ const Clients: React.FC<ClientProps> = ({
     },
   ];
   return (
-    <>
-      <PageSection>
+    <Page>
+      <PageSection variant={PageSectionVariants.light}>
         <Title headingLevel="h1">{t('clients')}</Title>
       </PageSection>
       <VirtualizedTable<Client>
@@ -58,7 +63,7 @@ const Clients: React.FC<ClientProps> = ({
           />
         )}
       />
-    </>
+    </Page>
   );
 };
 

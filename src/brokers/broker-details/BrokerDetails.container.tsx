@@ -64,48 +64,37 @@ const BrokerDetailsPage: FC<BrokerDetailsProps> = ({ match }) => {
             {t('broker')} {name}
           </Title>
         </div>
-        <div>
-          <Tabs defaultActiveKey={0}>
-            <Tab
-              eventKey={0}
-              title={<TabTitleText>{t('overview')}</TabTitleText>}
-            >
-              <OverviewContainer
-                name={name}
-                namespace={namespace}
-                size={brokerDetails?.spec?.deploymentPlan?.size}
-                loading={loading}
-              />
-            </Tab>
-            <Tab
-              eventKey={1}
-              title={<TabTitleText>{t('configuration')}</TabTitleText>}
-            >
-              <ConfigurationContainer
-                configurationSettings={brokerDetails}
-                loading={loading}
-              />
-            </Tab>
-            <Tab
-              eventKey={2}
-              title={<TabTitleText>{t('clients')}</TabTitleText>}
-            >
-              <ClientsContainer />
-            </Tab>
-            <Tab
-              eventKey={3}
-              title={<TabTitleText>{t('queues')}</TabTitleText>}
-            >
-              <QueuesContainer />
-            </Tab>
-            <Tab
-              eventKey={4}
-              title={<TabTitleText>{t('topics')}</TabTitleText>}
-            >
-              <TopicsContainer />
-            </Tab>
-          </Tabs>
-        </div>
+        <Tabs defaultActiveKey={0}>
+          <Tab
+            eventKey={0}
+            title={<TabTitleText>{t('overview')}</TabTitleText>}
+          >
+            <OverviewContainer
+              name={name}
+              namespace={namespace}
+              size={brokerDetails?.spec?.deploymentPlan?.size}
+              loading={loading}
+            />
+          </Tab>
+          <Tab
+            eventKey={1}
+            title={<TabTitleText>{t('configuration')}</TabTitleText>}
+          >
+            <ConfigurationContainer
+              configurationSettings={brokerDetails}
+              loading={loading}
+            />
+          </Tab>
+          <Tab eventKey={2} title={<TabTitleText>{t('clients')}</TabTitleText>}>
+            <ClientsContainer />
+          </Tab>
+          <Tab eventKey={3} title={<TabTitleText>{t('queues')}</TabTitleText>}>
+            <QueuesContainer />
+          </Tab>
+          <Tab eventKey={4} title={<TabTitleText>{t('topics')}</TabTitleText>}>
+            <TopicsContainer />
+          </Tab>
+        </Tabs>
       </PageSection>
     </>
   );

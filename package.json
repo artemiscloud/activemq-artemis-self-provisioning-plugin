@@ -1,6 +1,6 @@
 {
-  "name": "activemq-activemq-artemis-self-provisioning-plugin",
-  "version": "0.0.1",
+  "name": "activemq-artemis-self-provisioning-plugin",
+  "version": "0.1.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -36,9 +36,9 @@
     "@babel/preset-env": "^7.22.0",
     "@babel/preset-react": "7.22.0",
     "@babel/preset-typescript": "7.21.0",
-    "@openshift-console/dynamic-plugin-sdk": "0.0.12",
+    "@openshift-console/dynamic-plugin-sdk": "0.0.21",
     "@openshift-console/dynamic-plugin-sdk-internal": "0.0.11",
-    "@openshift-console/dynamic-plugin-sdk-webpack": "0.0.8",
+    "@openshift-console/dynamic-plugin-sdk-webpack": "0.0.11",
     "@patternfly/patternfly": "4.215.1",
     "@patternfly/react-charts": "6.94.18",
     "@patternfly/react-core": "4.239.0",
@@ -117,7 +117,7 @@
   },
   "consolePlugin": {
     "name": "activemq-artemis-self-provisioning-plugin",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "displayName": "Artemis Self Provisioning Plugin",
     "description": "Artemis Self Provisioning Plugin",
     "exposedModules": {
@@ -127,7 +127,7 @@
       "BrokerDetailsPage": "./brokers/broker-details"
     },
     "dependencies": {
-      "@console/pluginAPI": "*"
+      "@console/pluginAPI": "~4.12.0"
     }
   },
   "lint-staged": {
@@ -141,5 +141,5 @@
   },
   "readme": "ERROR: No README data found!",
   "homepage": "https://github.com/artemiscloud/activemq-artemis-self-provisioning-plugin#readme",
-  "_id": "activemq-artemis-self-provisioning-plugin@0.0.1"
+  "_id": "activemq-artemis-self-provisioning-plugin@0.1.0"
 }

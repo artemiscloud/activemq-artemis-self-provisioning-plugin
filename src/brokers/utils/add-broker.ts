@@ -31,6 +31,8 @@ export const addBrokerInitialValues = (
       namespace,
     },
     spec: {
+      adminUser: 'admin',
+      adminPassword: 'admin',
       deploymentPlan: {
         image: 'placeholder',
         requireLogin: false,
@@ -52,6 +54,8 @@ export const addBrokerInitialValues = (
     editorType: EditorType.YAML,
     yamlData: convertFormToBrokerYaml(initialFormData),
     formData: initialFormData,
+    // adminUser: 'admin',
+    // adminPassword: 'admin'
   };
 };
 

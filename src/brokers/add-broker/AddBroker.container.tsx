@@ -24,7 +24,20 @@ const AddBrokerPage: FC = () => {
   };
 
   const k8sCreateBroker = (content: K8sResourceCommon) => {
-    k8sCreate({ model: AMQBrokerModel, data: content })
+    const { adminUser, adminPassword } = content.spec;
+    console.log('username', adminUser);
+    console.log('password', adminPassword);
+
+    const updatedContent = {
+      ...content,
+      spec: {
+        ...content.spec,
+        adminUser,
+        adminPassword,
+      },
+    };
+
+    k8sCreate({ model: AMQBrokerModel, data: updatedContent })
       .then(() => {
         setNotification(defaultNotification);
         handleRedirect();

@@ -23,15 +23,22 @@ export const useGetQueues = async (
   console.log('jolokia url', url);
   const response = await fetch(url, {
     method: 'GET',
-    mode: 'no-cors',
+    // mode: 'no-cors',
     headers: headers,
-  })
-    .then((resp) => {
-      return resp.json();
-    })
-    .then((data) => console.log(data))
-    .catch((error) => {
-      console.error('Error fetching data from Jolokia:', error);
-    });
-  return response;
+  });
+  //   .then((resp) => {
+  //     return resp.json();
+  //   })
+  //   .then((data) => console.log(data))
+  //   .catch((error) => {
+  //     console.error('Error fetching data from Jolokia:', error);
+  //   });
+  // return response;
+  if (response.ok) {
+    const responseData = await response.json();
+    console.log('Response from Jolokia:', responseData);
+    return responseData;
+  } else {
+    throw new Error('Failed to fetch data');
+  }
 };

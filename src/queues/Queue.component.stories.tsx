@@ -12,18 +12,14 @@ export default {
 const props: QueuesProps = {
   queueData: [
     {
-      name: 'jobs',
-      routingType: 'Anycast',
-      autoCreateQueues: true,
-      autoDeleteQueues: true,
-      created: new Date('Thu Mar 16 2023 12:05:22'),
+      status: 200,
+      timestamp: 1703261174,
+      agent: '1.7.1',
     },
     {
-      name: 'commands',
-      routingType: 'Multicast',
-      autoCreateQueues: false,
-      autoDeleteQueues: false,
-      created: new Date('Thu Mar 16 2023 12:05:22'),
+      status: 200,
+      timestamp: 1703261174,
+      agent: '1.7.1',
     },
   ],
   isLoaded: true,

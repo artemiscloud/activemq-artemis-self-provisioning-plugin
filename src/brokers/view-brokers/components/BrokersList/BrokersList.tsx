@@ -7,10 +7,10 @@ import {
   ListPageFilter,
   TableColumn,
   ListPageCreateLink,
+  K8sResourceCommon,
 } from '@openshift-console/dynamic-plugin-sdk';
 import { BrokerRow, BrokerRowProps } from './BrokerRow';
 import { useTranslation } from '../../../../i18n';
-import { K8sResourceCommon } from '../../../../utils';
 
 type BrokersTableProps = Pick<
   BrokerRowProps,

@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { useHistory, RouteComponentProps } from 'react-router-dom';
+import { useHistory, RouteComponentProps, withRouter } from 'react-router-dom';
 import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from './AddBroker.component';
@@ -47,4 +47,4 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
   );
 };
 
-export default AddBrokerPage;
+export default withRouter(AddBrokerPage);

@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { k8sGet, k8sUpdate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from '../add-broker/AddBroker.component';
@@ -71,4 +71,4 @@ const UpdateBrokerPage: FC<UpdateBrokerPageProps> = ({ match }) => {
   );
 };
 
-export default UpdateBrokerPage;
+export default withRouter(UpdateBrokerPage);

@@ -1,5 +1,5 @@
 import { useEffect, useState, FC } from 'react';
-import { RouteComponentProps, useHistory } from 'react-router-dom';
+import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom';
 import { k8sListItems, k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import {
   AMQBrokerModel,
@@ -90,4 +90,4 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
   );
 };
 
-export default BrokersContainer;
+export default withRouter(BrokersContainer);

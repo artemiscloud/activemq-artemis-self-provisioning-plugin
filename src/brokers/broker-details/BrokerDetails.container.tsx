@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { k8sGet } from '@openshift-console/dynamic-plugin-sdk';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import {
   Tabs,
   Tab,
@@ -100,4 +100,4 @@ const BrokerDetailsPage: FC<BrokerDetailsProps> = ({ match }) => {
   );
 };
 
-export default BrokerDetailsPage;
+export default withRouter(BrokerDetailsPage);

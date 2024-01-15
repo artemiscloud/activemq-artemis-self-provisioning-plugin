@@ -37,7 +37,7 @@
     "@babel/preset-react": "7.22.0",
     "@babel/preset-typescript": "7.21.0",
     "@openshift-console/dynamic-plugin-sdk": "0.0.21",
-    "@openshift-console/dynamic-plugin-sdk-internal": "0.0.11",
+    "@openshift-console/dynamic-plugin-sdk-internal": "0.0.12",
     "@openshift-console/dynamic-plugin-sdk-webpack": "0.0.11",
     "@patternfly/patternfly": "4.215.1",
     "@patternfly/react-charts": "6.94.18",
@@ -127,7 +127,7 @@
       "BrokerDetailsPage": "./brokers/broker-details"
     },
     "dependencies": {
-      "@console/pluginAPI": "~4.12.0"
+      "@console/pluginAPI": "*"
     }
   },
   "lint-staged": {

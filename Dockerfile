@@ -42,4 +42,4 @@ ENTRYPOINT [ "./http-server.sh", "./dist" ]
 LABEL name="artemiscloud/activemq-artemis-self-provisioning-plugin"
 LABEL description="ActiveMQ Artemis Self Provisioning Plugin"
 LABEL maintainer="Roderick Kieley <rkieley@redhat.com>"
-LABEL version="0.0.1"
+LABEL version="0.1.0"

@@ -192,9 +192,9 @@ export const MetricsActions: FC<MetricsActionsProps> = ({
   ];
 
   return (
-    <Card isFullHeight>
+    <Card isFullHeight data-testid="metrics-card">
       <CardHeader>
-        <CardActions>
+        <CardActions data-testid="metrics-card-actions">
           <DropdownWithToggle
             id="metrics-list-dropdown"
             toggleId="metrics-list-dropdowntoggle"

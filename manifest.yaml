@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: activemq-artemis-self-provisioning-plugin
-          image: quay.io/artemiscloud/activemq-artemis-self-provisioning-plugin:dev.latest
+          image: quay.io/hgao/activemq-artemis-self-provisioning-plugin:1.0.0-con-latest-ssl
           ports:
             - containerPort: 9443
               protocol: TCP
@@ -44,18 +44,10 @@ spec:
             - name: plugin-serving-cert
               readOnly: true
               mountPath: /var/serving-cert
-            - name: nginx-conf
-              readOnly: true
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
       volumes:
         - name: plugin-serving-cert
           secret:
             secretName: plugin-serving-cert
-            defaultMode: 420
-        - name: nginx-conf
-          configMap:
-            name: nginx-conf
             defaultMode: 420
       restartPolicy: Always
       dnsPolicy: ClusterFirst
@@ -66,35 +58,10 @@ spec:
       maxSurge: 25%
 ---
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: nginx-conf
-  namespace: activemq-artemis-self-provisioning-plugin
-  labels:
-    app: activemq-artemis-self-provisioning-plugin
-    app.kubernetes.io/part-of: activemq-artemis-self-provisioning-plugin
-data:
-  nginx.conf: |
-    error_log /dev/stdout info;
-    events {}
-    http {
-      access_log         /dev/stdout;
-      include            /etc/nginx/mime.types;
-      default_type       application/octet-stream;
-      keepalive_timeout  65;
-      server {
-        listen              9443 ssl;
-        ssl_certificate     /var/serving-cert/tls.crt;
-        ssl_certificate_key /var/serving-cert/tls.key;
-        root                /usr/share/nginx/html;
-      }
-    }
----
-apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    service.alpha.openshift.io/serving-cert-secret-name: plugin-serving-cert
+    service.beta.openshift.io/serving-cert-secret-name: plugin-serving-cert
   name: activemq-artemis-self-provisioning-plugin
   namespace: activemq-artemis-self-provisioning-plugin
   labels:

@@ -36,7 +36,7 @@ COPY --from=BUILD_IMAGE /usr/src/app/dist ./dist
 COPY --from=BUILD_IMAGE /usr/src/app/node_modules ./node_modules
 COPY --from=BUILD_IMAGE /usr/src/app/http-server.sh ./http-server.sh
 
-ENTRYPOINT [ "./http-server.sh", "./dist" ]
+ENTRYPOINT [ "./http-server.sh", "./dist", "-p 9443 -S -C /var/serving-cert/tls.crt -K /var/serving-cert/tls.key" ]
 
 ## Labels
 LABEL name="artemiscloud/activemq-artemis-self-provisioning-plugin"

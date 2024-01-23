@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.openshift.io/serving-cert-secret-name: plugin-serving-cert
+  name: activemq-artemis-self-provisioning-plugin
+  labels:
+    app: activemq-artemis-self-provisioning-plugin
+    app.kubernetes.io/component: activemq-artemis-self-provisioning-plugin
+    app.kubernetes.io/instance: activemq-artemis-self-provisioning-plugin
+    app.kubernetes.io/part-of: activemq-artemis-self-provisioning-plugin
+spec:
+  ports:
+    - name: 9443-tcp
+      protocol: TCP
+      port: 9443
+      targetPort: 9443
+  selector:
+    app: activemq-artemis-self-provisioning-plugin
+  type: ClusterIP
+  sessionAffinity: None

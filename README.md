@@ -9,6 +9,11 @@ In one terminal window, run:
 1. `yarn install`
 2. `yarn run start`
 
+Note: `yarn run start` starts the plugin in http mode.
+if you want the plugin to run in https mode, run
+
+`yarn run start-tls`
+
 In another terminal window, run:
 
 1. `oc login`
@@ -17,6 +22,25 @@ In another terminal window, run:
 This will run the OpenShift console in a container connected to the cluster
 you've logged into. The plugin HTTP server runs on port 9001 with CORS enabled.
 Navigate to <http://localhost:9000> to see the running plugin.
+
+If you want the console to run in `https` mode, run:
+
+`yarn run start-console-tls`
+
+This command will run the console in `https` mode on port 9442.
+The console url is <https://localhost:9442>
+
+Note: Running console in `https` mode requires the plugin running in `https` mode too.
+
+The console in https mode requires a private key and a server certificate that are generated
+with openssl command. They are located under `console-cert` directory. The domain.key is the
+private key and domain.crt is the server certificate. Please read the `console-cert/readme`
+for instructions on how they are generated.
+
+To run the console in https mode, you need to mount the private key and server cert to the
+docker container and pass the locations to the console using BRIDGE_TLS_CERT_FILE and
+BRIDGE_TLS_KEY_FILE environment variables respectively. Please see the `start-console-tls.sh`
+for details.
 
 ## Docker image
 
@@ -33,20 +57,35 @@ Navigate to <http://localhost:9000> to see the running plugin.
    docker push quay.io/artemiscloud/activemq-artemis-self-provisioning-plugin:latest
    ```
 
-Update and apply `manifest.yaml` to use a activemq-artemis-self-provisioning-plugin image.
-
 ## Deployment on cluster
 
-You can deploy the plugin to a cluster by applying `manifest.yaml`.
+You can deploy the plugin to a cluster by running this following command:
 
 ```sh
-oc apply -f manifest.yaml
+./deploy-plugin.sh [-i <image> -n]
 ```
 
-Once deployed, patch the
-[Console operator](https://github.com/openshift/console-operator)
-config to enable the plugin.
+Without any arguments, the plugin will run in https mode on port 9443.
+
+The optional `-i <image>` (or `--image <image>`) argument allows you to pass in the plugin image. If not specified the default
+`quay.io/artemiscloud/activemq-artemis-self-provisioning-plugin:latest` is deployed. for example:
 
 ```sh
-oc patch consoles.operator.openshift.io cluster --patch '{ "spec": { "plugins": ["activemq-artemis-self-provisioning-plugin"] } }' --type=merge
+./deploy-plugin.sh -i quay.io/hgao/activemq-artemis-self-provisioning-plugin:1.0.1
+```
+
+The optional `-n` (or `--nossl`) argument disables the https and makes the plugin run in http mode on port 9001.
+For example:
+
+```sh
+./deploy-plugin.sh -n
+```
+
+The deploy-plugin.sh uses `oc kustomize` (built-in [kustomize](https://github.com/kubernetes-sigs/kustomize)) command to configure and deploy the plugin using
+resources and patches defined under ./deploy directory.
+
+To undeploy the plugin, run
+
+```sh
+./undeploy-plugin.sh
 ```

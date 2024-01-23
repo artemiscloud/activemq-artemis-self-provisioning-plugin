@@ -1,0 +1,18 @@
+This dir contains cert and key files used to configure a https console
+
+Those files are generated using openssl:
+
+1. openssl genrsa -out domain.key 4096
+  This command generates a private key written in file domain.key
+2. openssl req -key domain.key -new -out domain.csr
+  This command generates a certificate signing request (csr) that is used for signing a certificate.
+3. openssl x509 -signkey domain.key -in domain.csr -req -days 3650 -out domain.crt
+  This command generates a x509 certificate signed by the private key stored in domain.key.
+  The certificate is stored in domain.crt and is valid for 3650 days
+4. openssl req -x509 -nodes -sha256 -days 3650 -newkey rsa:4096 -keyout rootCA.key -out rootCA.crt
+  This command generates another private key and certificate pair using a single command.
+  The certificate will be used as the CA to sign the domain certificate.
+5. openssl x509 -req -CA rootCA.crt -CAkey rootCA.key -in domain.csr -out domain.crt -days 3650 -CAcreateserial -extfile domain.ext
+  This command uses the rootCA cert to sign the domain certificate.
+
+The signed domain.crt and domain.key will be used by the console to set up its https mode.

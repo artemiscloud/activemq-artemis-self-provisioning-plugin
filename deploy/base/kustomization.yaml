@@ -1,0 +1,7 @@
+namespace: activemq-artemis-self-provisioning-plugin
+
+resources:
+  - namespace.yaml
+  - deployment.yaml
+  - service.yaml
+  - plugin.yaml

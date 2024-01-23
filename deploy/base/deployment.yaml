@@ -1,13 +1,7 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: activemq-artemis-self-provisioning-plugin
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: activemq-artemis-self-provisioning-plugin
-  namespace: activemq-artemis-self-provisioning-plugin
   labels:
     app: activemq-artemis-self-provisioning-plugin
     app.kubernetes.io/component: activemq-artemis-self-provisioning-plugin
@@ -26,10 +20,13 @@ spec:
     spec:
       containers:
         - name: activemq-artemis-self-provisioning-plugin
-          image: quay.io/artemiscloud/activemq-artemis-self-provisioning-plugin:dev.latest
+          image: quay.io/artemiscloud/activemq-artemis-self-provisioning-plugin:latest
           ports:
             - containerPort: 9443
               protocol: TCP
+          env:
+            - name: TLS_ENABLED
+              value: 'true'
           imagePullPolicy: Always
           securityContext:
             allowPrivilegeEscalation: false
@@ -56,40 +53,3 @@ spec:
     rollingUpdate:
       maxUnavailable: 25%
       maxSurge: 25%
----
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-    service.beta.openshift.io/serving-cert-secret-name: plugin-serving-cert
-  name: activemq-artemis-self-provisioning-plugin
-  namespace: activemq-artemis-self-provisioning-plugin
-  labels:
-    app: activemq-artemis-self-provisioning-plugin
-    app.kubernetes.io/component: activemq-artemis-self-provisioning-plugin
-    app.kubernetes.io/instance: activemq-artemis-self-provisioning-plugin
-    app.kubernetes.io/part-of: activemq-artemis-self-provisioning-plugin
-spec:
-  ports:
-    - name: 9443-tcp
-      protocol: TCP
-      port: 9443
-      targetPort: 9443
-  selector:
-    app: activemq-artemis-self-provisioning-plugin
-  type: ClusterIP
-  sessionAffinity: None
----
-apiVersion: console.openshift.io/v1alpha1
-kind: ConsolePlugin
-metadata:
-  name: activemq-artemis-self-provisioning-plugin
-spec:
-  displayName: 'OpenShift Console ActiveMQ Artemis Self Provisioning Plugin'
-  # i18n:
-  #   loadType: Preload
-  service:
-    name: activemq-artemis-self-provisioning-plugin
-    namespace: activemq-artemis-self-provisioning-plugin
-    port: 9443
-    basePath: '/'

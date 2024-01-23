@@ -1,0 +1,21 @@
+resources:
+  - ../base
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: activemq-artemis-self-provisioning-plugin
+    path: deployment-patch.yaml
+  - target:
+      version: v1
+      kind: Service
+      name: activemq-artemis-self-provisioning-plugin
+    path: service-patch.yaml
+  - target:
+      group: console.openshift.io
+      version: v1
+      kind: ConsolePlugin
+      name: activemq-artemis-self-provisioning-plugin
+    path: plugin-patch.yaml

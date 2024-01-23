@@ -1,0 +1,15 @@
+apiVersion: console.openshift.io/v1
+kind: ConsolePlugin
+metadata:
+  name: activemq-artemis-self-provisioning-plugin
+spec:
+  displayName: 'OpenShift Console ActiveMQ Artemis Self Provisioning Plugin'
+  # i18n:
+  #   loadType: Preload
+  backend:
+    type: Service
+    service:
+      name: activemq-artemis-self-provisioning-plugin
+      namespace: activemq-artemis-self-provisioning-plugin
+      port: 9443
+      basePath: '/'

@@ -4,3 +4,4 @@ dist/
 storybook-static
 .yarn
 coverage
+tmp/

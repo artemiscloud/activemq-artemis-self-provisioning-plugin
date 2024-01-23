@@ -1,0 +1,3 @@
+- op: replace
+  path: /spec/backend/service/port
+  value: 9001

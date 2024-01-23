@@ -3,6 +3,7 @@
 import { Configuration as WebpackConfiguration } from 'webpack';
 import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
 import * as path from 'path';
+//import fs from 'fs';
 import { ConsoleRemotePlugin } from '@openshift-console/dynamic-plugin-sdk-webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 
@@ -58,7 +59,12 @@ const config: Configuration = {
   },
   devServer: {
     static: './dist',
-    port: 9001,
+    port: 9443,
+    https: true,
+    // {
+    //  key: fs.readFileSync('/var/serving-cert/plugin-serving-cert/key.pem'),
+    //  cert: fs.readFileSync('/var/serving-cert/plugin-serving-cert/cert.pem'),
+    //},
     // Allow bridge running in a container to connect to the plugin dev server.
     allowedHosts: 'all',
     headers: {

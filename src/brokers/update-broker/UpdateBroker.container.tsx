@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { k8sGet, k8sUpdate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from '../add-broker/AddBroker.component';
@@ -7,14 +7,14 @@ import { Loading } from '../../shared-components';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
 import { EditorType } from '../utils/add-broker';
 
-type UpdateBrokerPageProps = RouteComponentProps<{
-  ns?: string;
-  name?: string;
-}>;
+// type UpdateBrokerPageProps = RouteComponentProps<{
+//   ns?: string;
+//   name?: string;
+// }>;
 
-const UpdateBrokerPage: FC<UpdateBrokerPageProps> = ({ match }) => {
-  const namespace = match.params.ns;
-  const { name } = match.params;
+const UpdateBrokerPage: FC = () => {
+  const { ns: namespace } = useParams<{ ns?: string }>();
+  const { name } = useParams<{ name?: string }>();
   const defaultNotification = { title: '', variant: AlertVariant.default };
 
   //states

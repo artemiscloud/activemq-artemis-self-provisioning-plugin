@@ -36,13 +36,13 @@ echo "Console URL: http://localhost:${CONSOLE_PORT}"
 if [ -x "$(command -v podman)" ]; then
     if [ "$(uname -s)" = "Linux" ]; then
         # Use host networking on Linux since host.containers.internal is unreachable in some environments.
-        BRIDGE_PLUGINS="${npm_package_consolePlugin_name}=http://localhost:9001"
+        BRIDGE_PLUGINS="${npm_package_consolePlugin_name}=https://localhost:9443"
         podman run --pull always --rm --network=host --env-file <(set | grep BRIDGE) $CONSOLE_IMAGE
     else
-        BRIDGE_PLUGINS="${npm_package_consolePlugin_name}=http://host.containers.internal:9001"
+        BRIDGE_PLUGINS="${npm_package_consolePlugin_name}=https://host.containers.internal:9443"
         podman run --arch x86_64 --pull always --rm -p "$CONSOLE_PORT":9000 --env-file <(set | grep BRIDGE) $CONSOLE_IMAGE
     fi
 else
-    BRIDGE_PLUGINS="${npm_package_consolePlugin_name}=http://host.docker.internal:9001"
+    BRIDGE_PLUGINS="${npm_package_consolePlugin_name}=https://host.docker.internal:9443"
     docker run --pull always --rm -p "$CONSOLE_PORT":9000 --env-file <(set | grep BRIDGE) $CONSOLE_IMAGE
 fi

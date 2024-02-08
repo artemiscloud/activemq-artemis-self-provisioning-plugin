@@ -13,8 +13,7 @@ import { EditorType } from '../utils/add-broker';
 // }>;
 
 const UpdateBrokerPage: FC = () => {
-  const { ns: namespace } = useParams<{ ns?: string }>();
-  const { name } = useParams<{ name?: string }>();
+  const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
   const defaultNotification = { title: '', variant: AlertVariant.default };
 
   //states

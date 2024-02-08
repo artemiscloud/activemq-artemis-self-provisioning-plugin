@@ -16,3 +16,7 @@ export class Dummy extends Error {
 export function useResolvedExtensions(): any[] {
   return [[], undefined, undefined];
 }
+
+export function useListPageFilter(): any[] {
+  return [[], undefined, undefined];
+}

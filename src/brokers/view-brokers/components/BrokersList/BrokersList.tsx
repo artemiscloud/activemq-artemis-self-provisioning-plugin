@@ -104,7 +104,7 @@ const BrokersList: FC<BrokersListProps> = ({
   return (
     <>
       <ListPageHeader title={t('brokers')}>
-        <ListPageCreateLink to={`/k8s/${namespace}/add-broker`}>
+        <ListPageCreateLink to={`/k8s/ns/${namespace || 'default'}/add-broker`}>
           {t('create_broker')}
         </ListPageCreateLink>
       </ListPageHeader>

@@ -9,7 +9,7 @@ import { addBrokerInitialValues, AddBrokerFormYamlValues } from '../utils';
 
 const AddBrokerPage: FC = () => {
   const history = useHistory();
-  const { ns: namespace = 'default' } = useParams<{ ns?: string }>();
+  const { ns: namespace } = useParams<{ ns?: string }>();
 
   const defaultNotification = { title: '', variant: AlertVariant.default };
   const initialValues: AddBrokerFormYamlValues =

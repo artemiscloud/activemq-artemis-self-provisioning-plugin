@@ -13,7 +13,6 @@ import { PreConfirmDeleteModal } from './components/PreConfirmDeleteModal';
 const BrokersContainer: FC = () => {
   const history = useHistory();
   const { ns: namespace } = useParams<{ ns?: string }>();
-  console.log('namespace', namespace);
 
   //states
   const [brokers, setBrokers] = useState<K8sResourceKind[]>();
@@ -46,7 +45,6 @@ const BrokersContainer: FC = () => {
 
   const onEditBroker = (broker: K8sResourceCommon) => {
     const namespace = broker.metadata.namespace;
-    console.log('namespace', namespace);
     const name = broker.metadata.name;
     history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
   };

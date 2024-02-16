@@ -11,7 +11,7 @@
     "type": "console.page/route",
     "properties": {
       "exact": true,
-      "path": ["/k8s/ns/:ns/add-broker", "/k8s/all-namespaces/add-broker"],
+      "path": ["/k8s/ns/:ns/add-broker"],
       "component": { "$codeRef": "AddBrokerPage" }
     }
   },
@@ -19,10 +19,7 @@
     "type": "console.page/route",
     "properties": {
       "exact": true,
-      "path": [
-        "/k8s/ns/:ns/edit-broker/:name",
-        "/k8s/all-namespaces/edit-broker/:name"
-      ],
+      "path": ["/k8s/ns/:ns/edit-broker/:name", "/k8s/all-namespaces/edit-broker/:name"],
       "component": { "$codeRef": "UpdateBrokerPage" }
     }
   },
@@ -30,10 +27,7 @@
     "type": "console.page/route",
     "properties": {
       "exact": false,
-      "path": [
-        "/k8s/ns/:ns/brokers/:name",
-        "/k8s/all-namespaces/brokers/:name"
-      ],
+      "path": ["/k8s/ns/:ns/brokers/:name", "/k8s/all-namespaces/brokers/:name"],
       "component": { "$codeRef": "BrokerDetailsPage" }
     }
   },

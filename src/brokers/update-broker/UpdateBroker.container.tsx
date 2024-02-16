@@ -1,16 +1,11 @@
 import { FC, useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom-v5-compat';
 import { k8sGet, k8sUpdate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from '../add-broker/AddBroker.component';
 import { Loading } from '../../shared-components';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
 import { EditorType } from '../utils/add-broker';
-
-// type UpdateBrokerPageProps = RouteComponentProps<{
-//   ns?: string;
-//   name?: string;
-// }>;
 
 const UpdateBrokerPage: FC = () => {
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();

@@ -1,5 +1,6 @@
 import { useEffect, useState, FC } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom-v5-compat';
 import { k8sListItems, k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import {
   AMQBrokerModel,
@@ -9,13 +10,10 @@ import {
 import { BrokersList } from './components/BrokersList';
 import { PreConfirmDeleteModal } from './components/PreConfirmDeleteModal';
 
-//export type BrokersContainerProps = RouteComponentProps<{ ns?: string }>;
-
 const BrokersContainer: FC = () => {
   const history = useHistory();
-  //const namespace = match.params.ns;
   const { ns: namespace } = useParams<{ ns?: string }>();
-  // console.log("namespace",namespace)
+  console.log('namespace', namespace);
 
   //states
   const [brokers, setBrokers] = useState<K8sResourceKind[]>();

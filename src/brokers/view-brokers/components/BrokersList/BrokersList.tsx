@@ -87,12 +87,14 @@ export type BrokersListProps = Pick<
   brokers: K8sResourceCommon[];
   loaded: boolean;
   loadError: any;
+  namespace: string;
 };
 
 const BrokersList: FC<BrokersListProps> = ({
   brokers,
   loaded,
   loadError,
+  namespace,
   onOpenModal,
   onEditBroker,
 }) => {
@@ -102,7 +104,7 @@ const BrokersList: FC<BrokersListProps> = ({
   return (
     <>
       <ListPageHeader title={t('brokers')}>
-        <ListPageCreateLink to={'add-broker'}>
+        <ListPageCreateLink to={`/k8s/ns/${namespace || 'default'}/add-broker`}>
           {t('create_broker')}
         </ListPageCreateLink>
       </ListPageHeader>

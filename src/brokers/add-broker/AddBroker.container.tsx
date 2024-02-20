@@ -1,16 +1,15 @@
 import { FC, useState } from 'react';
-import { useHistory, RouteComponentProps } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from './AddBroker.component';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
 import { addBrokerInitialValues, AddBrokerFormYamlValues } from '../utils';
 
-type AddBrokerPageProps = RouteComponentProps<{ ns?: string }>;
+const AddBrokerPage: FC = () => {
+  const navigate = useNavigate();
+  const { ns: namespace } = useParams<{ ns?: string }>();
 
-const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
-  const history = useHistory();
-  const namespace = match.params.ns || 'default';
   const defaultNotification = { title: '', variant: AlertVariant.default };
   const initialValues: AddBrokerFormYamlValues =
     addBrokerInitialValues(namespace);
@@ -21,7 +20,7 @@ const AddBrokerPage: FC<AddBrokerPageProps> = ({ match }) => {
   const [notification, setNotification] = useState(defaultNotification);
 
   const handleRedirect = () => {
-    history.push(`brokers`);
+    navigate('/k8s/all-namespaces/brokers');
   };
 
   const k8sCreateBroker = (content: K8sResourceCommon) => {

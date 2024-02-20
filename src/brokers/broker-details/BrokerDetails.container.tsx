@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { k8sGet } from '@openshift-console/dynamic-plugin-sdk';
-import { RouteComponentProps } from 'react-router-dom';
+import { useParams } from 'react-router-dom-v5-compat';
 import {
   Tabs,
   Tab,
@@ -20,15 +20,9 @@ import {
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
 import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBreadcrumb';
 
-export type BrokerDetailsProps = RouteComponentProps<{
-  ns?: string;
-  name?: string;
-}>;
-
-const BrokerDetailsPage: FC<BrokerDetailsProps> = ({ match }) => {
+const BrokerDetailsPage: FC = () => {
   const { t } = useTranslation();
-  const namespace = match.params.ns;
-  const { name } = match.params;
+  const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
 
   const [brokerDetails, setBrokerDetails] = useState<K8sResourceCommon>();
   const [loading, setLoading] = useState<boolean>(true);

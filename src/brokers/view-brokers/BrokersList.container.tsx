@@ -1,5 +1,5 @@
 import { useEffect, useState, FC } from 'react';
-import { RouteComponentProps, useHistory } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { k8sListItems, k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import {
   AMQBrokerModel,
@@ -9,11 +9,10 @@ import {
 import { BrokersList } from './components/BrokersList';
 import { PreConfirmDeleteModal } from './components/PreConfirmDeleteModal';
 
-export type BrokersContainerProps = RouteComponentProps<{ ns?: string }>;
+const BrokersContainer: FC = () => {
+  const navigate = useNavigate();
+  const { ns: namespace } = useParams<{ ns?: string }>();
 
-const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
-  const history = useHistory();
-  const namespace = match.params.ns;
   //states
   const [brokers, setBrokers] = useState<K8sResourceKind[]>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -46,7 +45,7 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
   const onEditBroker = (broker: K8sResourceCommon) => {
     const namespace = broker.metadata.namespace;
     const name = broker.metadata.name;
-    history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
+    navigate(`/k8s/ns/${namespace}/edit-broker/${name}`);
   };
 
   const onDeleteBroker = () => {
@@ -83,6 +82,7 @@ const BrokersContainer: FC<BrokersContainerProps> = ({ match }) => {
         brokers={brokers}
         loadError={loadError}
         loaded={loading}
+        namespace={namespace}
         onOpenModal={onOpenModal}
         onEditBroker={onEditBroker}
       />

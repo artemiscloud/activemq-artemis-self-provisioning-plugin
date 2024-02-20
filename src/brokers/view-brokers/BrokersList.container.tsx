@@ -1,6 +1,5 @@
 import { useEffect, useState, FC } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { k8sListItems, k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import {
   AMQBrokerModel,
@@ -11,7 +10,7 @@ import { BrokersList } from './components/BrokersList';
 import { PreConfirmDeleteModal } from './components/PreConfirmDeleteModal';
 
 const BrokersContainer: FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { ns: namespace } = useParams<{ ns?: string }>();
 
   //states
@@ -46,7 +45,7 @@ const BrokersContainer: FC = () => {
   const onEditBroker = (broker: K8sResourceCommon) => {
     const namespace = broker.metadata.namespace;
     const name = broker.metadata.name;
-    history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
+    navigate(`/k8s/ns/${namespace}/edit-broker/${name}`);
   };
 
   const onDeleteBroker = () => {

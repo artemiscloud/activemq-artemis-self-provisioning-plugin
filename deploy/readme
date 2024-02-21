@@ -1,0 +1,8 @@
+This directory contains the resources and configurations for `oc kustomize` command
+to process and deploy the plugin in openshift.
+
+The base directory has the default resources for deploying the plugin in https mode.
+
+The http directory has the patch files for deploying the plugin in http mode.
+
+Please refer to the ../deploy-plugin.sh on how to use `oc kustomize` to deploy the plugin.

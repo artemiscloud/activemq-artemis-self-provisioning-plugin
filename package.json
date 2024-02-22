@@ -110,7 +110,6 @@
     "ts-loader": "9.4.1",
     "ts-node": "10.9.1",
     "typescript": "4.8.4",
-    "victory-core": "36.6.8",
     "webpack": "^5.73.0",
     "webpack-cli": "4.10.0",
     "webpack-dev-server": "4.11.1"
@@ -135,6 +134,12 @@
       "yarn run pretty-quick --staged",
       "eslint --fix"
     ]
+  },
+  "resolutions": {
+    "victory-core": "<36.9.0"
+  },
+  "overrides": {
+    "victory-core": "<36.9.0"
   },
   "bugs": {
     "url": "https://github.com/artemiscloud/activemq-artemis-self-provisioning-plugin/issues"

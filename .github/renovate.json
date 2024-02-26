@@ -14,9 +14,9 @@
       "automerge": true
     },
     {
-      "matchPackageNames": ["react-router-dom-v5-compat"],
-      "groupName": "React Router Dom v5 compat",
-      "allowedVersions": "^6.22.0",
+      "matchPackageNames": ["react-router-dom"],
+      "groupName": "React Router Dom",
+      "allowedVersions": "5.2.1",
       "automerge": true
     }
   ],

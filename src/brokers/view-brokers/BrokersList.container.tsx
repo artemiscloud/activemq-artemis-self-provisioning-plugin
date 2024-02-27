@@ -1,6 +1,5 @@
 import { useEffect, useState, FC } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useParams } from 'react-router-dom-v5-compat';
+import { useHistory, useParams } from 'react-router-dom';
 import { k8sListItems, k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import {
   AMQBrokerModel,

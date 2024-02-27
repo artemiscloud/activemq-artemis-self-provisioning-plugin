@@ -1,6 +1,5 @@
 import { FC, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useParams } from 'react-router-dom-v5-compat';
+import { useHistory, useParams } from 'react-router-dom';
 import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from './AddBroker.component';

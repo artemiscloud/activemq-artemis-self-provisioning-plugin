@@ -11,6 +11,13 @@ import {
   LevelItem,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
+import {
+  AMQBrokerModel,
+  K8sResourceCommon,
+  K8sResourceKind,
+} from '../../utils';
+import { k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
+import { PreConfirmDeleteModal } from '../../brokers/view-brokers/components/PreConfirmDeleteModal';
 
 export type BrokerDetailsBreadcrumbProps = {
   name: string;
@@ -23,6 +30,9 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBroker, setSelectedBroker] = useState<K8sResourceKind>();
+
   const history = useHistory();
 
   let redirectPath: string;
@@ -33,12 +43,39 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
     redirectPath = `/k8s/${namespace}/brokers`;
   }
 
+  const onDeleteBroker = () => {
+    k8sDelete({
+      model: AMQBrokerModel,
+      resource: { ...selectedBroker },
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+      .finally(() => {
+        setIsModalOpen(false);
+      });
+  };
+
+  const onOpenModal = (broker?: K8sResourceCommon) => {
+    setSelectedBroker(broker);
+    setIsModalOpen(!isModalOpen);
+  };
+
   const onClickEditBroker = () => {
     history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
   };
 
   const onClickDeleteBroker = () => {
     //Todo: add logic to open delete modal
+    <PreConfirmDeleteModal
+      onDeleteButtonClick={onDeleteBroker}
+      isModalOpen={isModalOpen}
+      onOpenModal={onOpenModal}
+      name={selectedBroker?.metadata?.name}
+    />;
   };
 
   const dropdownItems = [

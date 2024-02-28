@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { k8sGet } from '@openshift-console/dynamic-plugin-sdk';
-import { useParams } from 'react-router-dom-v5-compat';
+import { useParams } from 'react-router-dom';
 import {
   Tabs,
   Tab,

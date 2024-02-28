@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -23,7 +23,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
+  const history = useHistory();
 
   let redirectPath: string;
   redirectPath = `/k8s/ns/${namespace}/brokers`;
@@ -34,7 +34,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   }
 
   const onClickEditBroker = () => {
-    navigate(`/k8s/ns/${namespace}/edit-broker/${name}`);
+    history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
   };
 
   const onClickDeleteBroker = () => {

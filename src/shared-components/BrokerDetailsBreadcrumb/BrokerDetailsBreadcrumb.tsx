@@ -10,14 +10,10 @@ import {
   Level,
   LevelItem,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../i18n';
-import {
-  AMQBrokerModel,
-  K8sResourceCommon,
-  K8sResourceKind,
-} from '../../utils';
-import { k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import { PreConfirmDeleteModal } from '../../brokers/view-brokers/components/PreConfirmDeleteModal';
+import { useTranslation } from '../../i18n';
+import { k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
+import { AMQBrokerModel } from '../../utils';
 
 export type BrokerDetailsBreadcrumbProps = {
   name: string;
@@ -31,8 +27,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedBroker, setSelectedBroker] = useState<K8sResourceKind>();
-
+  const [_loadError, setLoadError] = useState<any>();
   const history = useHistory();
 
   let redirectPath: string;
@@ -43,39 +38,29 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
     redirectPath = `/k8s/${namespace}/brokers`;
   }
 
-  const onDeleteBroker = () => {
-    k8sDelete({
-      model: AMQBrokerModel,
-      resource: { ...selectedBroker },
-    })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((e) => {
-        console.log(e);
-      })
-      .finally(() => {
-        setIsModalOpen(false);
-      });
-  };
-
-  const onOpenModal = (broker?: K8sResourceCommon) => {
-    setSelectedBroker(broker);
-    setIsModalOpen(!isModalOpen);
-  };
-
   const onClickEditBroker = () => {
     history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
   };
 
   const onClickDeleteBroker = () => {
-    //Todo: add logic to open delete modal
-    <PreConfirmDeleteModal
-      onDeleteButtonClick={onDeleteBroker}
-      isModalOpen={isModalOpen}
-      onOpenModal={onOpenModal}
-      name={selectedBroker?.metadata?.name}
-    />;
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const onOpenModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const onDeleteBroker = () => {
+    k8sDelete({
+      model: AMQBrokerModel,
+      resource: { metadata: { name, namespace: namespace } },
+    })
+      .then(() => {
+        history.push(redirectPath);
+      })
+      .catch((e) => {
+        setLoadError(e.message);
+      });
   };
 
   const dropdownItems = [
@@ -102,31 +87,39 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   };
 
   return (
-    <Level>
-      <LevelItem>
-        <Breadcrumb className="pf-u-mb-md">
-          <BreadcrumbItem to={redirectPath}>{t('brokers')}</BreadcrumbItem>
-          <BreadcrumbItem isActive>
-            {t('broker')} {name}
-          </BreadcrumbItem>
-        </Breadcrumb>
-      </LevelItem>
-      <LevelItem>
-        <Dropdown
-          onSelect={onSelect}
-          toggle={
-            <KebabToggle
-              data-testid="broker-toggle-kebab"
-              onToggle={onToggle}
-            />
-          }
-          isOpen={isOpen}
-          isPlain
-          dropdownItems={dropdownItems}
-          position={DropdownPosition.right}
-        />
-      </LevelItem>
-    </Level>
+    <>
+      <Level>
+        <LevelItem>
+          <Breadcrumb className="pf-u-mb-md">
+            <BreadcrumbItem to={redirectPath}>{t('brokers')}</BreadcrumbItem>
+            <BreadcrumbItem isActive>
+              {t('broker')} {name}
+            </BreadcrumbItem>
+          </Breadcrumb>
+        </LevelItem>
+        <LevelItem>
+          <Dropdown
+            onSelect={onSelect}
+            toggle={
+              <KebabToggle
+                data-testid="broker-toggle-kebab"
+                onToggle={onToggle}
+              />
+            }
+            isOpen={isOpen}
+            isPlain
+            dropdownItems={dropdownItems}
+            position={DropdownPosition.right}
+          />
+        </LevelItem>
+      </Level>
+      <PreConfirmDeleteModal
+        onDeleteButtonClick={onDeleteBroker}
+        isModalOpen={isModalOpen}
+        onOpenModal={onOpenModal}
+        name={name}
+      />
+    </>
   );
 };
 

@@ -2,8 +2,8 @@ import { K8sResourceCommon as K8sResource } from '@openshift-console/dynamic-plu
 
 export type K8sResourceCommon = K8sResource & {
   spec?: {
-    adminUser?: string;
-    adminPassword?: string;
+    // adminUser?: string;
+    // adminPassword?: string;
     [key: string]: any;
   };
   status?: { [key: string]: any };

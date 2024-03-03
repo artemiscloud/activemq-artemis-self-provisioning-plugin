@@ -2,7 +2,11 @@
 
 set -euo pipefail
 
+<<<<<<< HEAD
 CONSOLE_IMAGE=${CONSOLE_IMAGE:="quay.io/openshift/origin-console:4.14.0"}
+=======
+CONSOLE_IMAGE=${CONSOLE_IMAGE:="quay.io/openshift/origin-console:4.11.0"}
+>>>>>>> c6ee2b5 (Modified custom resource file)
 CONSOLE_PORT=${CONSOLE_PORT:=9000}
 
 echo "Starting local OpenShift console..."

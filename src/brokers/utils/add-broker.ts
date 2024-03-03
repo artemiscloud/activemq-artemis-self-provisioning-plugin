@@ -34,9 +34,19 @@ export const addBrokerInitialValues = (
       adminUser: 'admin',
       adminPassword: 'admin',
       deploymentPlan: {
-        image: 'placeholder',
+        image: 'quay.io/hgao/amq-openshift-image:jolokia',
+        initImage: 'quay.io/hgao/init-container:jolokia',
         requireLogin: false,
         size: 1,
+      },
+      env: [
+        {
+          name: 'JOLOKIA_ALLOW_ORIGIN',
+          value: '*',
+        },
+      ],
+      console: {
+        expose: true,
       },
     },
   };

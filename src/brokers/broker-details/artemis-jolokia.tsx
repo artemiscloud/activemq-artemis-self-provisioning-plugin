@@ -5,25 +5,25 @@ export const useGetQueues = async (
   adminPassword: string,
 ): Promise<any> => {
   const defaultHostName =
-    'test-2-wconsj-0-svc-rte-default.apps.spp0-414.amq-broker-qe.psi.redhat.com';
+    'test-1-wconsj-0-svc-rte-default.apps.spp0-414.amq-broker-qe.psi.redhat.com';
   const defaultProtocol = 'http';
   const defaultPort = '80';
 
   const headers = new Headers();
-  //headers.set('Accept', 'application/json');
+  headers.set('Accept', 'application/json');
   headers.set('Content-Type', 'application/json');
   headers.set(
     'Authorization',
     'Basic ' + encode(`${adminUser}:${adminPassword}`),
   );
-  //headers.set('Origin', `http://${defaultHostName}`);
+  headers.set('Origin', `http://${defaultHostName}`);
 
   const url = `${defaultProtocol}://${defaultHostName}:${defaultPort}/console/jolokia/version`;
   //const url = `${defaultProtocol}://${defaultHostName}:${defaultPort}/console/jolokia/read/org.apache.activemq.artemis:broker=\"amq-broker\"/Status`;
   console.log('jolokia url', url);
   const response = await fetch(url, {
     method: 'GET',
-    mode: 'cors',
+    mode: 'no-cors',
     headers: headers,
   })
     .then((resp) => {

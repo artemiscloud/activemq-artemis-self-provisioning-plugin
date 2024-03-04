@@ -22,6 +22,7 @@ const config: Configuration = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    modules: [path.join(__dirname, 'node_modules')],
   },
   module: {
     rules: [
@@ -33,6 +34,36 @@ const config: Configuration = {
             loader: 'ts-loader',
             options: {
               configFile: path.resolve(__dirname, 'tsconfig.json'),
+              transpileOnly: true,
+            },
+          },
+        ],
+      },
+      {
+        exclude:
+          /node_modules\/(?!(@patternfly|@openshift-console\/plugin-shared|@openshift-console\/dynamic-plugin-sdk)\/).*/,
+        test: /\.scss$/,
+        use: [
+          { loader: 'style-loader' },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+          {
+            loader: 'resolve-url-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                outputStyle: 'compressed',
+              },
+              sourceMap: true,
             },
           },
         ],
@@ -57,7 +88,9 @@ const config: Configuration = {
     ],
   },
   devServer: {
-    static: './dist',
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
     port: 9001,
     // Allow bridge running in a container to connect to the plugin dev server.
     allowedHosts: 'all',
@@ -75,22 +108,28 @@ const config: Configuration = {
   plugins: [
     new ConsoleRemotePlugin(),
     new CopyWebpackPlugin({
-      patterns: [{ from: path.resolve(__dirname, 'locales'), to: 'locales' }],
+      patterns: [
+        { from: path.resolve(__dirname, 'locales'), to: 'dist/locales' },
+      ],
     }),
   ],
   devtool: 'source-map',
   optimization: {
     chunkIds: 'named',
-    minimize: false,
+    minimize: true,
   },
 };
 
 if (process.env.NODE_ENV === 'production') {
   config.mode = 'production';
-  config!.output!.filename = '[name]-bundle-[hash].min.js';
-  config!.output!.chunkFilename = '[name]-chunk-[chunkhash].min.js';
-  config!.optimization!.chunkIds = 'deterministic';
-  config!.optimization!.minimize = true;
+  if (config.output) {
+    config.output.filename = '[name]-bundle-[hash].min.js';
+    config.output.chunkFilename = '[name]-chunk-[chunkhash].min.js';
+  }
+  if (config.optimization) {
+    config.optimization.chunkIds = 'deterministic';
+    config.optimization.minimize = true;
+  }
 }
 
 export default config;

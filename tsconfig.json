@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "baseUrl": ".",
-    "outDir": "./dist",
+    "outDir": "dist",
     "module": "esnext",
     "moduleResolution": "node",
     "target": "es2020",
     "jsx": "react-jsx",
-    "allowJs": true,
     "strict": false,
+    "removeComments": true,
     "esModuleInterop": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,
@@ -21,8 +22,9 @@
     "skipLibCheck": true,
     "paths": {
       "@app/*": ["src/*"],
-      "react": ["./node_modules/@types/react"]
-    }
+      "react": ["./node_modules/react", "./node_modules/@types/react"]
+    },
+    "sourceMap": false
   },
   "include": ["./src/*", "./src/**/*", "setupTests.ts", "__mocks__"],
   "exclude": ["node_modules", "dist"]

@@ -36,30 +36,8 @@ const QueuesContainer: FC = () => {
       },
     ];
     setQueueData(formattedData);
-    //setIsLoading(false);
-
-    //setIsLoading(false);
-    //setError(true);
-    // console.log('Error fetching queue data.', error);
   };
-  // TODO:make the real api call(using mock data now)
-  //   setQueueData([
-  //     {
-  //       name: 'jobs',
-  //       routingType: 'Anycast',
-  //       autoCreateQueues: true,
-  //       autoDeleteQueues: true,
-  //       created: new Date('Thu Mar 16 2023 12:05:22'),
-  //     },
-  //     {
-  //       name: 'commands',
-  //       routingType: 'Multicast',
-  //       autoCreateQueues: false,
-  //       autoDeleteQueues: false,
-  //       created: new Date('Thu Mar 16 2023 12:05:22'),
-  //     },
-  //   ]);
-  // };
+
   useEffect(() => {
     getQueueData();
   }, []);

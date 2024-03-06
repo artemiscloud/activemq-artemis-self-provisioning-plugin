@@ -1,3 +1,4 @@
+import { K8sResourceCommon } from '@app/utils';
 import { encode } from 'base-64';
 
 export const useGetQueues = async (

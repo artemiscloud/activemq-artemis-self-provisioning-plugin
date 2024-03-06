@@ -1,27 +1,35 @@
 import { FC, useEffect, useState } from 'react';
 import { Queues } from './Queues.component';
 import { useGetQueues } from '../brokers/broker-details/artemis-jolokia';
-// export interface QueuesContainerProps {
-//   // TODO:add any prop if requried in future
-// }
+import { useK8sWatchResource } from '@openshift-console/dynamic-plugin-sdk';
+import { K8sResourceCommon } from '../utils';
 
 export type Queue = {
   status: number;
   timestamp: number;
   agent: string;
 };
+interface QueuesContainerProps {
+  brokerDetails: K8sResourceCommon;
+}
 
-const QueuesContainer: FC = () => {
+const QueuesContainer: FC<QueuesContainerProps> = ({ brokerDetails }) => {
   const adminUser = 'admin';
   const adminPassword = 'admin';
 
-  // TODO:need to add real loading state after connection with real api
-  // TODO:need to add error state after connection with real api
-  //const [isLoading, setIsLoading] = useState<boolean>(false);
-  //const [error, setError] = useState<boolean>(false);
   const [queueData, setQueueData] = useState<Queue[]>([]);
-
-  const getQueues = useGetQueues(adminUser, adminPassword);
+  const [routes, routesLoaded, routesLoadError] = useK8sWatchResource<
+    K8sResourceCommon[]
+  >({
+    isList: true,
+    groupVersionKind: {
+      group: 'route.openshift.io',
+      kind: 'Route',
+      version: 'v1',
+    },
+    namespaced: true,
+  });
+  const getQueues = useGetQueues(adminUser, adminPassword, routes);
 
   const getQueueData = async () => {
     //setIsLoading(true);

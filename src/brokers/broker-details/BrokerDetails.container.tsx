@@ -83,7 +83,7 @@ const BrokerDetailsPage: FC = () => {
             <ClientsContainer />
           </Tab>
           <Tab eventKey={3} title={<TabTitleText>{t('queues')}</TabTitleText>}>
-            <QueuesContainer />
+            <QueuesContainer brokerDetails={brokerDetails} />
           </Tab>
           <Tab eventKey={4} title={<TabTitleText>{t('topics')}</TabTitleText>}>
             <TopicsContainer />

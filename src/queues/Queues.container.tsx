@@ -29,27 +29,46 @@ const QueuesContainer: FC<QueuesContainerProps> = ({ brokerDetails }) => {
     },
     namespaced: true,
   });
-  const getQueues = useGetQueues(adminUser, adminPassword, routes);
-
-  const getQueueData = async () => {
-    //setIsLoading(true);
-
-    const response = await getQueues;
-    console.log('Response from Jolokia:', response);
-    const formattedData: Queue[] = [
-      {
-        status: response.status,
-        timestamp: response.timestamp,
-        agent: response.value.agent,
-      },
-    ];
-    setQueueData(formattedData);
-  };
 
   useEffect(() => {
-    getQueueData();
-  }, []);
-  // TODO: replace hardcoded value with real data
+    if (routesLoaded && !routesLoadError) {
+      const filteredRoutes = routes.filter((route) =>
+        route.metadata.ownerReferences?.some(
+          (ref) =>
+            ref.name === brokerDetails.metadata.name &&
+            ref.kind === 'ActiveMQArtemis',
+        ),
+      );
+      const route = filteredRoutes.length > 0 ? filteredRoutes[0] : null;
+      const hostName = route?.spec.host;
+      console.log('Host Name:', hostName);
+
+      const getQueueData = async () => {
+        try {
+          if (hostName) {
+            const response = await useGetQueues(
+              adminUser,
+              adminPassword,
+              hostName,
+            );
+            console.log('Response from Jolokia:', response);
+            const formattedData: Queue[] = [
+              {
+                status: response.status,
+                timestamp: response.timestamp,
+                agent: response.value.agent,
+              },
+            ];
+            setQueueData(formattedData);
+          }
+        } catch (error) {
+          console.error('Error from Jolokia:', error);
+        }
+      };
+      getQueueData();
+    }
+  }, [brokerDetails, routesLoaded, routes, routesLoadError]);
+
   return <Queues queueData={queueData} isLoaded={true} loadError={null} />;
 };
 

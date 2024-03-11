@@ -24,7 +24,9 @@ const BrokerDetailsPage: FC = () => {
   const { t } = useTranslation();
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
 
-  const [brokerDetails, setBrokerDetails] = useState<K8sResourceCommon>();
+  const [brokerDetails, setBrokerDetails] = useState<K8sResourceCommon | null>(
+    null,
+  );
   const [loading, setLoading] = useState<boolean>(true);
 
   const k8sGetBroker = () => {
@@ -83,7 +85,9 @@ const BrokerDetailsPage: FC = () => {
             <ClientsContainer />
           </Tab>
           <Tab eventKey={3} title={<TabTitleText>{t('queues')}</TabTitleText>}>
-            <QueuesContainer brokerDetails={brokerDetails} />
+            {brokerDetails !== null && (
+              <QueuesContainer brokerDetails={brokerDetails} />
+            )}
           </Tab>
           <Tab eventKey={4} title={<TabTitleText>{t('topics')}</TabTitleText>}>
             <TopicsContainer />

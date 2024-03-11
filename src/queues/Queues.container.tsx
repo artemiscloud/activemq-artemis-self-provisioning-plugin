@@ -9,6 +9,7 @@ export type Queue = {
   timestamp: number;
   agent: string;
 };
+
 interface QueuesContainerProps {
   brokerDetails: K8sResourceCommon;
 }

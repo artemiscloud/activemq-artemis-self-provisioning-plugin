@@ -64,8 +64,6 @@ export const addBrokerInitialValues = (
     editorType: EditorType.YAML,
     yamlData: convertFormToBrokerYaml(initialFormData),
     formData: initialFormData,
-    // adminUser: 'admin',
-    // adminPassword: 'admin'
   };
 };
 

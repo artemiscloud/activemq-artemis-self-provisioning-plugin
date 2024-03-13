@@ -26,13 +26,15 @@ RUN yarn install  --network-timeout 1000000
 ## Build application
 RUN yarn build
 
-FROM registry.access.redhat.com/ubi8/nginx-122
+FROM registry.access.redhat.com/ubi8/nginx-122:latest
 
 USER 1001
 
 WORKDIR /app
 
 COPY --from=BUILD_IMAGE /usr/src/app/dist /usr/share/nginx/html
+
+CMD ["nginx", "-g", "daemon off;"]
 
 ## Labels
 LABEL name="artemiscloud/activemq-artemis-self-provisioning-plugin"

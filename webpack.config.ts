@@ -22,7 +22,6 @@ const config: Configuration = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
-    modules: [path.join(__dirname, 'node_modules')],
   },
   module: {
     rules: [
@@ -34,7 +33,6 @@ const config: Configuration = {
             loader: 'ts-loader',
             options: {
               configFile: path.resolve(__dirname, 'tsconfig.json'),
-              transpileOnly: true,
             },
           },
         ],
@@ -108,9 +106,7 @@ const config: Configuration = {
   plugins: [
     new ConsoleRemotePlugin(),
     new CopyWebpackPlugin({
-      patterns: [
-        { from: path.resolve(__dirname, 'locales'), to: 'dist/locales' },
-      ],
+      patterns: [{ from: path.resolve(__dirname, 'locales'), to: 'locales' }],
     }),
   ],
   devtool: 'source-map',

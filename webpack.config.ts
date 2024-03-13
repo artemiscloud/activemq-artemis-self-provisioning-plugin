@@ -38,35 +38,6 @@ const config: Configuration = {
         ],
       },
       {
-        exclude:
-          /node_modules\/(?!(@patternfly|@openshift-console\/plugin-shared|@openshift-console\/dynamic-plugin-sdk)\/).*/,
-        test: /\.scss$/,
-        use: [
-          { loader: 'style-loader' },
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true,
-            },
-          },
-          {
-            loader: 'resolve-url-loader',
-            options: {
-              sourceMap: true,
-            },
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              sassOptions: {
-                outputStyle: 'compressed',
-              },
-              sourceMap: true,
-            },
-          },
-        ],
-      },
-      {
         test: /\.s?(css)$/,
         use: ['style-loader', 'css-loader'],
       },
@@ -86,9 +57,7 @@ const config: Configuration = {
     ],
   },
   devServer: {
-    static: {
-      directory: path.join(__dirname, 'dist'),
-    },
+    static: './dist',
     port: 9001,
     // Allow bridge running in a container to connect to the plugin dev server.
     allowedHosts: 'all',
@@ -112,7 +81,7 @@ const config: Configuration = {
   devtool: 'source-map',
   optimization: {
     chunkIds: 'named',
-    minimize: true,
+    minimize: false,
   },
 };
 

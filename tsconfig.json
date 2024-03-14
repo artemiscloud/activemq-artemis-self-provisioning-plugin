@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "baseUrl": ".",
     "outDir": "./dist",
     "module": "esnext",
     "moduleResolution": "node",
     "target": "es2020",
     "jsx": "react-jsx",
-    "allowJs": true,
     "strict": false,
     "esModuleInterop": true,
     "noUnusedLocals": true,

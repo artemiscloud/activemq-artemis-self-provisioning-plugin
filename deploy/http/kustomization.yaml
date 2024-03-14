@@ -19,3 +19,8 @@ patches:
       kind: ConsolePlugin
       name: activemq-artemis-self-provisioning-plugin
     path: plugin-patch.yaml
+  - target:
+      version: v1
+      kind: ConfigMap
+      name: nginx-conf
+    path: nginx-configmap-patch.yaml

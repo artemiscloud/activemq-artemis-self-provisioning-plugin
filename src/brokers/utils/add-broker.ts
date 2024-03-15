@@ -44,6 +44,10 @@ export const addBrokerInitialValues = (
           name: 'JOLOKIA_ALLOW_ORIGIN',
           value: '*',
         },
+        {
+          name: 'JAVA_ARGS_APPEND',
+          value: '-Dhawtio.authenticationEnabled=false',
+        },
       ],
       console: {
         expose: true,

@@ -23,16 +23,20 @@ const Queues: React.FC<QueuesProps> = ({ queueData, isLoaded, loadError }) => {
 
   const columns: TableColumn<Queue>[] = [
     {
-      title: t('status'),
-      id: 'status',
+      title: t('agent'),
+      id: 'agent',
+    },
+    {
+      title: t('agent_Type'),
+      id: 'agentType',
     },
     {
       title: t('timestamp'),
       id: 'timestamp',
     },
     {
-      title: t('agent'),
-      id: 'agent',
+      title: t('streaming'),
+      id: 'streaming',
     },
   ];
   return (

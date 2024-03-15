@@ -77,6 +77,8 @@
   "all_metrics": "All Metrics",
   "memory_usage_metrics": "Memory Usage Metrics",
   "cpu_usage_metrics": "CPU Usage Metrics",
+  "agent": "agent",
+  "agent_Type": "agentType",
   "timestamp": "timestamp",
-  "agent": "agent"
+  "streaming": "streaming"
 }

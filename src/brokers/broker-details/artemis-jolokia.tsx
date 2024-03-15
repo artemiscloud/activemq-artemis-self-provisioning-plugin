@@ -26,7 +26,6 @@ export const useGetQueues = async (
   });
   if (response.ok) {
     const responseData = await response.json();
-    console.log('Response from Jolokia:', responseData);
     return responseData;
   } else {
     throw new Error('Failed to fetch data');

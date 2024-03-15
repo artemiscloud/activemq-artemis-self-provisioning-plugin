@@ -12,14 +12,16 @@ export default {
 const props: QueuesProps = {
   queueData: [
     {
-      status: 200,
-      timestamp: 1703261174,
       agent: '1.7.1',
+      agentType: 'servlet',
+      timestamp: 1709909566,
+      streaming: true,
     },
     {
-      status: 200,
-      timestamp: 1703261174,
       agent: '1.7.1',
+      agentType: 'servlet',
+      timestamp: 1709909566,
+      streaming: true,
     },
   ],
   isLoaded: true,

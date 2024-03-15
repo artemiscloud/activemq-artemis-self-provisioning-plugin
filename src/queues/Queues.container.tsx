@@ -5,9 +5,10 @@ import { useK8sWatchResource } from '@openshift-console/dynamic-plugin-sdk';
 import { K8sResourceCommon } from '../utils';
 
 export type Queue = {
-  status: number;
-  timestamp: number;
   agent: string;
+  agentType: string;
+  timestamp: number;
+  streaming: boolean;
 };
 
 interface QueuesContainerProps {
@@ -55,9 +56,10 @@ const QueuesContainer: FC<QueuesContainerProps> = ({ brokerDetails }) => {
             console.log('Response from Jolokia:', response);
             const formattedData: Queue[] = [
               {
-                status: response.status,
-                timestamp: response.timestamp,
                 agent: response.value.agent,
+                agentType: response.value.config.agentType,
+                timestamp: response.timestamp,
+                streaming: response.value.config.streaming,
               },
             ];
             setQueueData(formattedData);

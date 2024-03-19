@@ -19,8 +19,7 @@ export const useGetQueues = async (
   );
   headers.set('Origin', `http://${hostName}`);
 
-  const url = `${defaultProtocol}://${hostName}:${defaultPort}/console/jolokia/read/${defaultObjectName}:broker=&#34;${defaultBroker}&#34;/QueueNames`;
-  //const url = `${defaultProtocol}://${hostName}:${defaultPort}/console/jolokia/read/${defaultObjectName}:broker=\"${defaultBroker}\",address=\"ExpiryQueue\",component=addresses,queue=\"ExpiryQueue\",routing-type=\"anycast\",*`;
+  const url = `${defaultProtocol}://${hostName}:${defaultPort}/console/jolokia/read/${defaultObjectName}:broker=!%22${defaultBroker}!%22,address=!%22ExpiryQueue!%22,component=addresses,queue=!%22ExpiryQueue!%22,routing-type=!%22anycast!%22,*`;
   console.log('jolokia url', url);
   const response = await fetch(url, {
     method: 'GET',

@@ -77,8 +77,7 @@
   "all_metrics": "All Metrics",
   "memory_usage_metrics": "Memory Usage Metrics",
   "cpu_usage_metrics": "CPU Usage Metrics",
-  "timestamp": "Timestamp",
-  "expiry_queue": "ExpiryQueue",
-  "attribute": "Attribute",
-  "value": "Value"
+  "message_count": "Message Count",
+  "durable": "Durable",
+  "auto_delete": "Auto Delete"
 }

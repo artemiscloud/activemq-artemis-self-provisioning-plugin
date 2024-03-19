@@ -27,8 +27,20 @@ const Queues: React.FC<QueuesProps> = ({ queueData, isLoaded, loadError }) => {
       id: 'name',
     },
     {
-      title: t('timestamp'),
-      id: 'timestamp',
+      title: t('routing_type'),
+      id: 'routing_type',
+    },
+    {
+      title: t('message_count'),
+      id: 'message_count',
+    },
+    {
+      title: t('durable'),
+      id: 'durable',
+    },
+    {
+      title: t('auto_delete'),
+      id: 'auto_delete',
     },
   ];
   return (

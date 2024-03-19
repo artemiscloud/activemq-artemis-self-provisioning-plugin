@@ -13,11 +13,10 @@ const props: QueuesProps = {
   queueData: [
     {
       name: 'ExpiryQueue',
-      timestamp: 1710749484,
-    },
-    {
-      name: 'DLQ',
-      timestamp: 1710749484,
+      routingType: 'anycast',
+      messageCount: 0,
+      durable: true,
+      autoDelete: false,
     },
   ],
   isLoaded: true,

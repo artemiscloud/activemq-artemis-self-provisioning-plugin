@@ -6,7 +6,10 @@ import { K8sResourceCommon } from '../utils';
 
 export type Queue = {
   name: string;
-  timestamp: number;
+  routingType: string;
+  messageCount: number;
+  durable: boolean;
+  autoDelete: boolean;
 };
 export interface QueuesContainerProps {
   brokerDetails: K8sResourceCommon;
@@ -51,14 +54,17 @@ const QueuesContainer: FC<QueuesContainerProps> = ({ brokerDetails }) => {
               hostName,
             );
             console.log('Response from Jolokia:', response);
+            const nestedObject =
+              response.value[
+                'org.apache.activemq.artemis:address="ExpiryQueue",broker="amq-broker",component=addresses,queue="ExpiryQueue",routing-type="anycast",subcomponent=queues'
+              ];
             const formattedData: Queue[] = [
               {
-                name: response.value[0],
-                timestamp: response.timestamp,
-              },
-              {
-                name: response.value[1],
-                timestamp: response.timestamp,
+                name: nestedObject.Name,
+                routingType: nestedObject.RoutingType,
+                messageCount: nestedObject.MessageCount,
+                durable: nestedObject.Durable,
+                autoDelete: nestedObject.AutoDelete,
               },
             ];
             setQueueData(formattedData);

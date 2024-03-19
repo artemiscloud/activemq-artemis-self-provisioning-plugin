@@ -134,7 +134,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,ts,tsx,ks,cert}": [
+    "*.{js,ts,tsx}": [
       "yarn run pretty-quick --staged",
       "eslint --fix"
     ]

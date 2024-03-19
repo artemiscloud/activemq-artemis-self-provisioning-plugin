@@ -19,8 +19,7 @@ export const useGetExpiryQueueAttributes = async (
   );
   headers.set('Origin', `http://${hostName}`);
 
-  //eslint-disable-next-line
-  const url = `${defaultProtocol}://${hostName}:${defaultPort}/console/jolokia/read/${defaultObjectName}:broker=\"${defaultBroker}\",address=\"ExpiryQueue\",component=addresses,queue=\"ExpiryQueue\",routing-type=\"anycast\",*`;
+  const url = `${defaultProtocol}://${hostName}:${defaultPort}/console/jolokia/read/${defaultObjectName}:broker=&#34;${defaultBroker}&#34;,address=&#34;ExpiryQueue&#34;,component=addresses,queue=&#34;ExpiryQueue&#34;,routing-type=&#34;anycast&#34;,*`;
   console.log('jolokia url', url);
   console.log('jolokia url', url);
   const response = await fetch(url, {

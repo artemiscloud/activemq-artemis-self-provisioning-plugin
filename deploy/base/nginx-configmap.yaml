@@ -19,26 +19,14 @@ data:
         listen              9443 ssl;
         ssl_certificate     /var/serving-cert/tls.crt;
         ssl_certificate_key /var/serving-cert/tls.key;
-
+        root                /usr/share/nginx/html;
+        
         location / {
-            root   /opt/app-root/src;
-        }
-
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   /usr/share/nginx/html;
-        }
-       
-        location = /plugin-entry.js {
-            root   /opt/app-root/src;
-            expires -1;
-            add_header 'Cache-Control' 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-        }
-
-        location = /plugin-manifest.json {
-            root   /opt/app-root/src;
-            expires -1;
-            add_header 'Cache-Control' 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+          add_header Last-Modified $date_gmt;
+          add_header Cache-Control 'no-store, no-cache';
+          if_modified_since off;
+          expires off;
+          etag off;
         }
       }
     }

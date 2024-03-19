@@ -1,10 +1,10 @@
-import { useTranslation } from '../i18n';
+import { useTranslation } from '../../i18n';
 import {
   TableColumn,
   VirtualizedTable,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { Queue } from './Queues.container';
-import { QueueRow } from './QueueRow';
+import { ExpiryQueue } from './ExpiryQueue.container';
+import { ExpiryQueueRow } from './ExpiryQueueRow';
 import {
   Page,
   PageSection,
@@ -12,38 +12,42 @@ import {
   Title,
 } from '@patternfly/react-core';
 
-export type QueuesProps = {
-  queueData: Queue[];
+export type ExpiryQueuesProps = {
+  expiryQueueData: ExpiryQueue[];
   isLoaded: boolean;
   loadError: boolean;
 };
 
-const Queues: React.FC<QueuesProps> = ({ queueData, isLoaded, loadError }) => {
+const ExpiryQueues: React.FC<ExpiryQueuesProps> = ({
+  expiryQueueData,
+  isLoaded,
+  loadError,
+}) => {
   const { t } = useTranslation();
 
-  const columns: TableColumn<Queue>[] = [
+  const columns: TableColumn<ExpiryQueue>[] = [
     {
-      title: t('name'),
-      id: 'name',
+      title: t('attribute'),
+      id: 'attribute',
     },
     {
-      title: t('timestamp'),
-      id: 'timestamp',
+      title: t('value'),
+      id: 'value',
     },
   ];
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light}>
-        <Title headingLevel="h1">{t('queues')}</Title>
+        <Title headingLevel="h1">{t('expiry_queue')}</Title>
       </PageSection>
-      <VirtualizedTable<Queue>
-        data={queueData}
-        unfilteredData={queueData}
+      <VirtualizedTable<ExpiryQueue>
+        data={expiryQueueData}
+        unfilteredData={expiryQueueData}
         loaded={isLoaded}
         loadError={loadError}
         columns={columns}
         Row={({ obj, activeColumnIDs, rowData }) => (
-          <QueueRow
+          <ExpiryQueueRow
             obj={obj}
             rowData={rowData}
             activeColumnIDs={activeColumnIDs}
@@ -55,4 +59,4 @@ const Queues: React.FC<QueuesProps> = ({ queueData, isLoaded, loadError }) => {
   );
 };
 
-export { Queues };
+export { ExpiryQueues };

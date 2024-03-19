@@ -4,27 +4,26 @@ import {
   TableData,
   TableColumn,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { Queue } from './Queues.container';
-//import { useTranslation } from '../i18n';
+import { ExpiryQueue } from './ExpiryQueue.container';
 
-export type QueueRowProps = RowProps<Queue> & {
-  columns: TableColumn<Queue>[];
+export type ExporyQueueRowProps = RowProps<ExpiryQueue> & {
+  columns: TableColumn<ExpiryQueue>[];
 };
 
-export const QueueRow: FC<QueueRowProps> = ({
+export const ExpiryQueueRow: FC<ExporyQueueRowProps> = ({
   obj,
   activeColumnIDs,
   columns,
 }) => {
-  const { name, timestamp } = obj;
-  //const { t } = useTranslation();
+  const { attribute, value } = obj;
+
   return (
     <>
       <TableData id={columns[0].id} activeColumnIDs={activeColumnIDs}>
-        {name}
+        {attribute}
       </TableData>
       <TableData id={columns[1].id} activeColumnIDs={activeColumnIDs}>
-        {timestamp}
+        {value}
       </TableData>
     </>
   );

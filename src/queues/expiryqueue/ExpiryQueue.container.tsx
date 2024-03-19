@@ -1,22 +1,20 @@
 import { FC, useEffect, useState } from 'react';
-import { Queues } from './Queues.component';
-import { useGetQueues } from '../brokers/broker-details/artemis-jolokia';
+import { ExpiryQueues } from './ExpiryQueue.component';
+import { useGetExpiryQueueAttributes } from './expiryqueue-jolokia';
 import { useK8sWatchResource } from '@openshift-console/dynamic-plugin-sdk';
-import { K8sResourceCommon } from '../utils';
+import { K8sResourceCommon } from '../../utils';
+import { QueuesContainerProps } from '../Queues.container';
 
-export type Queue = {
-  name: string;
-  timestamp: number;
+export type ExpiryQueue = {
+  attribute: string;
+  value: number;
 };
-export interface QueuesContainerProps {
-  brokerDetails: K8sResourceCommon;
-}
 
-const QueuesContainer: FC<QueuesContainerProps> = ({ brokerDetails }) => {
+const ExpiryQueueContainer: FC<QueuesContainerProps> = ({ brokerDetails }) => {
   const adminUser = 'admin';
   const adminPassword = 'admin';
 
-  const [queueData, setQueueData] = useState<Queue[]>([]);
+  const [queueData, setQueueData] = useState<ExpiryQueue[]>([]);
   const [routes, routesLoaded, routesLoadError] = useK8sWatchResource<
     K8sResourceCommon[]
   >({
@@ -45,20 +43,20 @@ const QueuesContainer: FC<QueuesContainerProps> = ({ brokerDetails }) => {
       const getQueueData = async () => {
         try {
           if (hostName) {
-            const response = await useGetQueues(
+            const response = await useGetExpiryQueueAttributes(
               adminUser,
               adminPassword,
               hostName,
             );
             console.log('Response from Jolokia:', response);
-            const formattedData: Queue[] = [
+            const formattedData: ExpiryQueue[] = [
               {
-                name: response.value[0],
-                timestamp: response.timestamp,
+                attribute: response.value[0],
+                value: response.timestamp,
               },
               {
-                name: response.value[1],
-                timestamp: response.timestamp,
+                attribute: response.value[1],
+                value: response.timestamp,
               },
             ];
             setQueueData(formattedData);
@@ -71,7 +69,13 @@ const QueuesContainer: FC<QueuesContainerProps> = ({ brokerDetails }) => {
     }
   }, [brokerDetails, routesLoaded, routes, routesLoadError]);
 
-  return <Queues queueData={queueData} isLoaded={true} loadError={null} />;
+  return (
+    <ExpiryQueues
+      expiryQueueData={queueData}
+      isLoaded={true}
+      loadError={null}
+    />
+  );
 };
 
-export { QueuesContainer };
+export { ExpiryQueueContainer };

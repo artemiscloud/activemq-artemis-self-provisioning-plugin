@@ -12,16 +12,12 @@ export default {
 const props: QueuesProps = {
   queueData: [
     {
-      agent: '1.7.1',
-      agentType: 'servlet',
-      timestamp: 1709909566,
-      streaming: true,
+      name: 'ExpiryQueue',
+      timestamp: 1710749484,
     },
     {
-      agent: '1.7.1',
-      agentType: 'servlet',
-      timestamp: 1709909566,
-      streaming: true,
+      name: 'DLQ',
+      timestamp: 1710749484,
     },
   ],
   isLoaded: true,

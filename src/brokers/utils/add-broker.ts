@@ -33,6 +33,9 @@ export const addBrokerInitialValues = (
     spec: {
       adminUser: 'admin',
       adminPassword: 'admin',
+      console: {
+        expose: true,
+      },
       deploymentPlan: {
         image: 'quay.io/hgao/amq-openshift-image:jolokia',
         initImage: 'quay.io/hgao/init-container:jolokia',
@@ -49,9 +52,6 @@ export const addBrokerInitialValues = (
           value: '-Dhawtio.authenticationEnabled=false',
         },
       ],
-      console: {
-        expose: true,
-      },
     },
   };
 

@@ -1,6 +1,6 @@
 import { encode } from 'base-64';
 
-export const useGetQueues = async (
+export const useGetExpiryQueueAttributes = async (
   adminUser: string,
   adminPassword: string,
   hostName: string,
@@ -19,9 +19,9 @@ export const useGetQueues = async (
   );
   headers.set('Origin', `http://${hostName}`);
 
-  //eslint-disable-next-line no-useless-escape
-  const url = `${defaultProtocol}://${hostName}:${defaultPort}/console/jolokia/read/${defaultObjectName}:broker=\"${defaultBroker}\"/QueueNames`;
-  //const url = `${defaultProtocol}://${hostName}:${defaultPort}/console/jolokia/read/${defaultObjectName}:broker=\"${defaultBroker}\",address=\"ExpiryQueue\",component=addresses,queue=\"ExpiryQueue\",routing-type=\"anycast\",*`;
+  //eslint-disable-next-line
+  const url = `${defaultProtocol}://${hostName}:${defaultPort}/console/jolokia/read/${defaultObjectName}:broker=\"${defaultBroker}\",address=\"ExpiryQueue\",component=addresses,queue=\"ExpiryQueue\",routing-type=\"anycast\",*`;
+  console.log('jolokia url', url);
   console.log('jolokia url', url);
   const response = await fetch(url, {
     method: 'GET',

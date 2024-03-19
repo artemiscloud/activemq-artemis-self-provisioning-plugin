@@ -31,11 +31,27 @@ export const addBrokerInitialValues = (
       namespace,
     },
     spec: {
+      adminUser: 'admin',
+      adminPassword: 'admin',
+      console: {
+        expose: true,
+      },
       deploymentPlan: {
-        image: 'placeholder',
+        image: 'quay.io/hgao/amq-openshift-image:jolokia',
+        initImage: 'quay.io/hgao/init-container:jolokia',
         requireLogin: false,
         size: 1,
       },
+      env: [
+        {
+          name: 'JOLOKIA_ALLOW_ORIGIN',
+          value: '*',
+        },
+        {
+          name: 'JAVA_ARGS_APPEND',
+          value: '-Dhawtio.authenticationEnabled=false',
+        },
+      ],
     },
   };
 

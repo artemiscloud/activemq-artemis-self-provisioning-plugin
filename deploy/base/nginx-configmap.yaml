@@ -20,7 +20,7 @@ data:
         ssl_certificate     /var/serving-cert/tls.crt;
         ssl_certificate_key /var/serving-cert/tls.key;
         root                /usr/share/nginx/html;
-
+        
         location / {
           add_header Last-Modified $date_gmt;
           add_header Cache-Control 'no-store, no-cache';

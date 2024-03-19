@@ -31,16 +31,16 @@ const Queues: React.FC<QueuesProps> = ({ queueData, isLoaded, loadError }) => {
       id: 'routing_type',
     },
     {
-      title: t('auto_create_queues'),
-      id: 'auto_create_queues',
+      title: t('message_count'),
+      id: 'message_count',
     },
     {
-      title: t('auto_delete_queues'),
-      id: 'auto_delete_queues',
+      title: t('durable'),
+      id: 'durable',
     },
     {
-      title: t('created'),
-      id: 'created',
+      title: t('auto_delete'),
+      id: 'auto_delete',
     },
   ];
   return (

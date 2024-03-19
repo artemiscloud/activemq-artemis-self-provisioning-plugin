@@ -1,45 +1,82 @@
 import { FC, useEffect, useState } from 'react';
 import { Queues } from './Queues.component';
-// export interface QueuesContainerProps {
-//   // TODO:add any prop if requried in future
-// }
+import { useGetQueues } from '../brokers/broker-details/artemis-jolokia';
+import { useK8sWatchResource } from '@openshift-console/dynamic-plugin-sdk';
+import { K8sResourceCommon } from '../utils';
 
 export type Queue = {
   name: string;
-  routingType: string; // this maybe an enum
-  autoCreateQueues: boolean;
-  autoDeleteQueues: boolean;
-  created: Date;
+  routingType: string;
+  messageCount: number;
+  durable: boolean;
+  autoDelete: boolean;
 };
+export interface QueuesContainerProps {
+  brokerDetails: K8sResourceCommon;
+}
 
-const QueuesContainer: FC = () => {
-  // TODO:need to add real loading state after connection with real api
-  // TODO:need to add error state after connection with real api
+const QueuesContainer: FC<QueuesContainerProps> = ({ brokerDetails }) => {
+  const adminUser = 'admin';
+  const adminPassword = 'admin';
+
   const [queueData, setQueueData] = useState<Queue[]>([]);
-  const getQueueData = () => {
-    // TODO:make the real api call(using mock data now)
-    setQueueData([
-      {
-        name: 'jobs',
-        routingType: 'Anycast',
-        autoCreateQueues: true,
-        autoDeleteQueues: true,
-        created: new Date('Thu Mar 16 2023 12:05:22'),
-      },
-      {
-        name: 'commands',
-        routingType: 'Multicast',
-        autoCreateQueues: false,
-        autoDeleteQueues: false,
-        created: new Date('Thu Mar 16 2023 12:05:22'),
-      },
-    ]);
-  };
+  const [routes, routesLoaded, routesLoadError] = useK8sWatchResource<
+    K8sResourceCommon[]
+  >({
+    isList: true,
+    groupVersionKind: {
+      group: 'route.openshift.io',
+      kind: 'Route',
+      version: 'v1',
+    },
+    namespaced: true,
+  });
 
   useEffect(() => {
-    getQueueData();
-  }, []);
-  // TODO: replace hardcoded value with real data
+    if (routesLoaded && !routesLoadError) {
+      const filteredRoutes = routes.filter((route) =>
+        route.metadata.ownerReferences?.some(
+          (ref) =>
+            ref.name === brokerDetails.metadata.name &&
+            ref.kind === 'ActiveMQArtemis',
+        ),
+      );
+      const route = filteredRoutes.length > 0 ? filteredRoutes[0] : null;
+      const hostName = route?.spec.host;
+      console.log('Host Name:', hostName);
+
+      const getQueueData = async () => {
+        try {
+          if (hostName) {
+            const response = await useGetQueues(
+              adminUser,
+              adminPassword,
+              hostName,
+            );
+            console.log('Response from Jolokia:', response);
+            const nestedObject =
+              response.value[
+                'org.apache.activemq.artemis:address="ExpiryQueue",broker="amq-broker",component=addresses,queue="ExpiryQueue",routing-type="anycast",subcomponent=queues'
+              ];
+            const formattedData: Queue[] = [
+              {
+                name: nestedObject.Name,
+                routingType: nestedObject.RoutingType,
+                messageCount: nestedObject.MessageCount,
+                durable: nestedObject.Durable,
+                autoDelete: nestedObject.AutoDelete,
+              },
+            ];
+            setQueueData(formattedData);
+          }
+        } catch (error) {
+          console.error('Error from Jolokia:', error);
+        }
+      };
+      getQueueData();
+    }
+  }, [brokerDetails, routesLoaded, routes, routesLoadError]);
+
   return <Queues queueData={queueData} isLoaded={true} loadError={null} />;
 };
 

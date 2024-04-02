@@ -13,3 +13,12 @@ spec:
       namespace: activemq-artemis-self-provisioning-plugin
       port: 9443
       basePath: '/'
+  proxy:
+    - type: Service
+      alias: api-server-service
+      endpoint:
+        type: Service
+        service:
+          name: activemq-artemis-self-provisioning-plugin
+          namespace: activemq-artemis-self-provisioning-plugin
+          port: 9443

@@ -92,7 +92,7 @@ To undeploy the plugin, run
 ./undeploy-plugin.sh
 ```
 
-## Notes the api-server
+## About the api-server
 
 The plugin uses a api server as a backend service to get access broker's jolokia
 endpoint. The source code is in `api-server` directory.

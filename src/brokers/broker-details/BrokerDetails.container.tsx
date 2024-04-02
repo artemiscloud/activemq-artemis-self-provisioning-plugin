@@ -1,5 +1,9 @@
 import { FC, useState, useEffect } from 'react';
-import { k8sGet } from '@openshift-console/dynamic-plugin-sdk';
+import {
+  K8sResourceKind,
+  k8sGet,
+  useK8sWatchResource,
+} from '@openshift-console/dynamic-plugin-sdk';
 import { useParams } from 'react-router-dom';
 import {
   Tabs,
@@ -17,20 +21,35 @@ import {
   TopicsContainer,
   OverviewContainer,
 } from './components';
-import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
+import {
+  AMQBrokerModel,
+  JolokiaTestPanel,
+  LoginHandler,
+  RouteContext,
+} from '../../utils';
 import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBreadcrumb';
 
 const BrokerDetailsPage: FC = () => {
   const { t } = useTranslation();
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
-
-  const [brokerDetails, setBrokerDetails] = useState<K8sResourceCommon>();
+  const [brokerDetails, setBrokerDetails] = useState<K8sResourceKind>({});
   const [loading, setLoading] = useState<boolean>(true);
+  const [routes] = useK8sWatchResource<K8sResourceKind[]>({
+    isList: true,
+    groupVersionKind: {
+      group: 'route.openshift.io',
+      kind: 'Route',
+      version: 'v1',
+    },
+    namespaced: true,
+  });
 
   const k8sGetBroker = () => {
     setLoading(true);
+    console.log('try get broker resource', name, 'ns', namespace);
     k8sGet({ model: AMQBrokerModel, name, ns: namespace })
-      .then((broker: K8sResourceCommon) => {
+      .then((broker: K8sResourceKind) => {
+        console.log('----going to set brokers', broker);
         setBrokerDetails(broker);
       })
       .catch((e) => {
@@ -46,7 +65,8 @@ const BrokerDetailsPage: FC = () => {
   }, []);
 
   return (
-    <>
+    <RouteContext.Provider value={routes}>
+      <LoginHandler brokerDetail={brokerDetails}></LoginHandler>
       <PageSection
         variant={PageSectionVariants.light}
         padding={{ default: 'noPadding' }}
@@ -88,9 +108,15 @@ const BrokerDetailsPage: FC = () => {
           <Tab eventKey={4} title={<TabTitleText>{t('topics')}</TabTitleText>}>
             <TopicsContainer />
           </Tab>
+          <Tab
+            eventKey={5}
+            title={<TabTitleText>{t('check-jolokia')}</TabTitleText>}
+          >
+            <JolokiaTestPanel broker={brokerDetails} />
+          </Tab>
         </Tabs>
       </PageSection>
-    </>
+    </RouteContext.Provider>
   );
 };
 

@@ -15,6 +15,10 @@ spec:
       protocol: TCP
       port: 9443
       targetPort: 9443
+    - name: 9001-tcp
+      protocol: TCP
+      port: 9001
+      targetPort: 9001
   selector:
     app: activemq-artemis-self-provisioning-plugin
   type: ClusterIP

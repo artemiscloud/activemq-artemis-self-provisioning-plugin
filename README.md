@@ -7,7 +7,9 @@ This project is a ActiveMQ Artemis Self Provisioning Plugin to the Administrator
 In one terminal window, run:
 
 1. `yarn install`
-2. `yarn run start`
+2. `yarn build-server`
+3. `yarn build-dev`
+4. `yarn run start`
 
 Note: `yarn run start` starts the plugin in http mode.
 if you want the plugin to run in https mode, run
@@ -71,7 +73,7 @@ The optional `-i <image>` (or `--image <image>`) argument allows you to pass in 
 `quay.io/artemiscloud/activemq-artemis-self-provisioning-plugin:latest` is deployed. for example:
 
 ```sh
-./deploy-plugin.sh -i quay.io/hgao/activemq-artemis-self-provisioning-plugin:1.0.1
+./deploy-plugin.sh -i quay.io/<repo>/activemq-artemis-self-provisioning-plugin:1.0.1
 ```
 
 The optional `-n` (or `--nossl`) argument disables the https and makes the plugin run in http mode on port 9001.
@@ -89,3 +91,10 @@ To undeploy the plugin, run
 ```sh
 ./undeploy-plugin.sh
 ```
+
+## Notes the api-server
+
+The plugin uses a api server as a backend service to get access broker's jolokia
+endpoint. The source code is in `api-server` directory.
+
+Please read [api.md](api.md) for details.

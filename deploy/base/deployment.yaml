@@ -24,9 +24,9 @@ spec:
           ports:
             - containerPort: 9443
               protocol: TCP
-          args: [ "-g", "daemon off;"]
+          args: ['server/app.js', 'dist']
           command:
-          - nginx
+            - node
           imagePullPolicy: Always
           securityContext:
             allowPrivilegeEscalation: false
@@ -41,18 +41,10 @@ spec:
             - name: plugin-serving-cert
               readOnly: true
               mountPath: /var/serving-cert
-            - name: nginx-conf
-              readOnly: true
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
       volumes:
         - name: plugin-serving-cert
           secret:
             secretName: plugin-serving-cert
-            defaultMode: 420
-        - name: nginx-conf
-          configMap:
-            name: nginx-conf
             defaultMode: 420
       restartPolicy: Always
       dnsPolicy: ClusterFirst

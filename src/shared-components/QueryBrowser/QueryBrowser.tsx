@@ -76,7 +76,10 @@ export const QueryBrowser: FC<QueryBrowserProps> = ({
   const domain = { x: fixedXDomain, y: fixedXDomain };
   const xAxisTickCount = Math.round(width / 100);
 
-  const newResult = _.map(allMetricsSeries, 'data.result');
+  //const newResult = _.map(allMetricsSeries, 'data.result');
+  const newResult = allMetricsSeries.map((metric) => {
+    return metric.data.result;
+  });
   const hasMetrics = _.some(newResult, (r) => (r && r.length) > 0);
 
   // Only update X-axis if the time range (fixedXDomain or span) or graph data (allSeries) change

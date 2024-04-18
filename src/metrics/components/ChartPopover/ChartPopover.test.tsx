@@ -8,7 +8,7 @@ describe('ChartPopover', () => {
     );
     await waitForI18n(comp);
     expect(
-      screen.getByLabelText('chart_popover_icon_screenreader_text')
+      screen.getByLabelText('chart_popover_icon_screenreader_text'),
     ).toBeInTheDocument();
   });
 });

@@ -6,6 +6,7 @@ env:
 extends:
   - eslint:recommended
   - plugin:react/recommended
+  - plugin:react-hooks/recommended
   - plugin:@typescript-eslint/recommended
   - prettier
 parser: '@typescript-eslint/parser'
@@ -19,6 +20,7 @@ plugins:
   - react
   - '@typescript-eslint'
 rules:
+  eqeqeq: error
   prettier/prettier:
     - error
   react/react-in-jsx-scope: 'off'

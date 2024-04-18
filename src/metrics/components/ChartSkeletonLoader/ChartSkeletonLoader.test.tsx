@@ -6,7 +6,7 @@ describe('ChartSkeletonLoader', () => {
     const comp = render(<ChartSkeletonLoader />);
     await waitForI18n(comp);
     expect(
-      comp.getByText('skeleton_loader_screenreader_text')
+      comp.getByText('skeleton_loader_screenreader_text'),
     ).toBeInTheDocument();
   });
 });

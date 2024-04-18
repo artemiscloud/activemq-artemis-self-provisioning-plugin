@@ -1,1 +1,1 @@
-export { default } from "./BrokerDetails.container";
+export { default } from './BrokerDetails.container';

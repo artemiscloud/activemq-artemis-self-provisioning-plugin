@@ -2,7 +2,7 @@ import {
   K8sResourceCommon,
   K8sResourceKind,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { FC, createContext, useContext, useState } from 'react';
+import { FC, createContext, useContext, useEffect, useState } from 'react';
 import {
   Button,
   TextContent,
@@ -10,28 +10,7 @@ import {
   TextArea,
 } from '@patternfly/react-core';
 
-export const RouteContext = createContext<K8sResourceKind[]>(null);
-
-interface JolokiaTestProps {
-  broker: K8sResourceKind;
-}
-
-export function needLogin(
-  broker?: K8sResourceCommon,
-  ordinal?: number,
-): boolean {
-  if (broker === undefined) {
-    return false;
-  }
-  return getAuthToken(broker, ordinal) === null;
-}
-
-export function getAuthToken(
-  broker: K8sResourceCommon,
-  ordinal?: number,
-): string {
-  return sessionStorage.getItem(getBrokerKey(broker, ordinal ? ordinal : 0));
-}
+export const AuthContext = createContext<string>('');
 
 function getJolokiaProtocol(broker: K8sResourceKind): string {
   return broker.spec['console'].sslEnabled ? 'https' : 'http';
@@ -50,7 +29,7 @@ export async function LoginJolokia(
   apiHost: string,
   apiPort: string,
   ordinal?: number,
-): Promise<boolean> {
+): Promise<[boolean, string]> {
   let jolokiaHost: string;
   let jolokiaPort: string;
   //todo: get the userName and password from the login form
@@ -66,7 +45,7 @@ export async function LoginJolokia(
       broker?.metadata.name + '-wconsj-' + ordinal + '-svc';
     jolokiaHost = consoleServiceName + '.' + broker?.metadata.namespace;
 
-    console.log('broker service host name', jolokiaHost);
+    console.log('API-SERVER', 'broker service host name', jolokiaHost);
     jolokiaPort = '8161';
   } else {
     jolokiaHost = route?.spec.host;
@@ -81,7 +60,7 @@ export async function LoginJolokia(
     getProxyUrl() +
     '/api/v1/jolokia/login';
 
-  console.log('login to', authUrl);
+  console.log('API-SERVER', 'login to', authUrl);
 
   type LoginOptions = {
     [key: string]: string;
@@ -99,6 +78,7 @@ export async function LoginJolokia(
   };
 
   console.log(
+    'API-SERVER',
     '****login with',
     'brokerName',
     details.brokerName,
@@ -136,14 +116,10 @@ export async function LoginJolokia(
   });
   if (response.ok) {
     const data = await response.json();
-    sessionStorage.setItem(
-      getBrokerKey(broker, ordinal),
-      data['jolokia-session-id'],
-    );
-    return true;
+    return [true, data['jolokia-session-id']];
   } else {
-    console.log('login failed', response);
-    return false;
+    console.log('API-SERVER', 'login failed', response);
+    return [false, ''];
   }
 }
 
@@ -163,15 +139,16 @@ function getProxyUrl(): string {
     : '';
 }
 
-const JolokiaTestPanel: FC<JolokiaTestProps> = ({ broker }) => {
+const JolokiaTestPanel: FC = () => {
   const [testUrl, setTestUrl] = useState<string>('');
   const [jolokiaTestResult, setJolokiaTestResult] = useState('Result:');
 
-  const brokerRoutes = useContext(RouteContext);
+  const authToken = useContext(AuthContext);
 
   const onButtonClickShowApi = () => {
+    // TODO sending requests on a button click needs also some work
     try {
-      console.log('showing api info', getProxyUrl());
+      console.log('API-SERVER', 'showing api info', getProxyUrl());
       const apiUrl =
         'https://' +
         getApiHost() +
@@ -185,7 +162,7 @@ const JolokiaTestPanel: FC<JolokiaTestProps> = ({ broker }) => {
       })
         .then((result): void => {
           result.json().then((data) => {
-            console.log('get back result', data, 'utl', testUrl);
+            console.log('API-SERVER', 'get back result', data, 'utl', testUrl);
             const hostInfo =
               'https://' +
               getApiHost() +
@@ -206,8 +183,9 @@ const JolokiaTestPanel: FC<JolokiaTestProps> = ({ broker }) => {
   };
 
   const onButtonClickExec = () => {
+    // TODO sending requests on a button click needs also some work
     try {
-      console.log('showing api info', getProxyUrl());
+      console.log('API-SERVER', 'showing api info', getProxyUrl());
       const apiUrl =
         'https://' +
         getApiHost() +
@@ -224,7 +202,7 @@ const JolokiaTestPanel: FC<JolokiaTestProps> = ({ broker }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'jolokia-session-id': getAuthToken(broker),
+          'jolokia-session-id': authToken,
           'jolokia-target-pod': '0', //indicate target pod ordinal, e.g. ex-aao-ss-{0}
         },
         body: JSON.stringify(methodData),
@@ -234,7 +212,7 @@ const JolokiaTestPanel: FC<JolokiaTestProps> = ({ broker }) => {
             result
               .json()
               .then((data) => {
-                console.log('get back exec result', data);
+                console.log('API-SERVER', 'get back exec result', data);
                 setJolokiaTestResult(JSON.stringify(data));
               })
               .catch((result_err) => {
@@ -251,47 +229,32 @@ const JolokiaTestPanel: FC<JolokiaTestProps> = ({ broker }) => {
   };
 
   const onButtonClick = () => {
+    // TODO sending requests on a button click needs also some work
     try {
-      if (needLogin(broker)) {
-        console.log('require login', broker.metadata.name);
-        if (confirm('plugin log in to broker: ' + broker.metadata.name)) {
-          LoginJolokia(
-            broker,
-            getBrokerRoute(broker),
-            getApiHost(),
-            getApiPort(),
-          ).then((result) => {
-            if (result) {
-              alert('login successful');
-            } else {
-              alert('login failed');
-            }
-          });
-        } else {
-          alert('login cancelled, you wont get jolokia access!');
-          console.log('cancelled');
-        }
-        return;
-      }
-
-      console.log('starting querying', testUrl);
+      console.log('API-SERVER', 'starting querying', testUrl);
       if (testUrl == '') {
         alert('you need to give a jolokia request url');
         return;
       }
 
       const encodedUrl = testUrl.replace(/,/g, '%2C');
-      console.log('after encoded', encodedUrl);
+      console.log('API-SERVER', 'after encoded', encodedUrl);
       fetch(encodedUrl, {
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         headers: {
-          'jolokia-session-id': getAuthToken(broker),
+          'jolokia-session-id': authToken,
         },
       })
         .then((result): void => {
           if (result.ok) {
             result.json().then((data) => {
-              console.log('get back result', data, 'utl', testUrl);
+              console.log(
+                'API-SERVER',
+                'get back result',
+                data,
+                'utl',
+                testUrl,
+              );
               setJolokiaTestResult(JSON.stringify(data, null, 2));
             });
           } else {
@@ -308,20 +271,8 @@ const JolokiaTestPanel: FC<JolokiaTestProps> = ({ broker }) => {
     }
   };
 
-  const getBrokerRoute = (b: K8sResourceKind): K8sResourceKind => {
-    if (brokerRoutes.length > 0) {
-      const filteredRoutes = brokerRoutes.filter((route) =>
-        route.metadata.ownerReferences?.some(
-          (ref) =>
-            ref.name === b.metadata.name && ref.kind === 'ActiveMQArtemis',
-        ),
-      );
-      return filteredRoutes.length > 0 ? filteredRoutes[0] : null;
-    }
-    console.log('no route created');
-    return null;
-  };
-
+  // TODO for now the two buttons that are triggering calls to the backend API
+  // are disabled when there's no token available
   return (
     <>
       <TextInput
@@ -340,7 +291,7 @@ const JolokiaTestPanel: FC<JolokiaTestProps> = ({ broker }) => {
       />
 
       <div>
-        <Button name="query" onClick={onButtonClick}>
+        <Button name="query" onClick={onButtonClick} disabled={!authToken}>
           Submit query
         </Button>
         &nbsp;&nbsp;&nbsp;
@@ -348,7 +299,7 @@ const JolokiaTestPanel: FC<JolokiaTestProps> = ({ broker }) => {
           Show api info
         </Button>
         &nbsp;&nbsp;&nbsp;
-        <Button name="exec" onClick={onButtonClickExec}>
+        <Button name="exec" onClick={onButtonClickExec} disabled={!authToken}>
           Test Operation
         </Button>
       </div>
@@ -365,23 +316,22 @@ const JolokiaTestPanel: FC<JolokiaTestProps> = ({ broker }) => {
   );
 };
 
-interface LoginProp {
-  brokerDetail: K8sResourceKind;
-}
+export type LoginState = 'none' | 'ongoing' | 'fail' | 'ok';
 
-export const LoginHandler: FC<LoginProp> = ({ brokerDetail }) => {
-  const brokerRoutes = useContext(RouteContext);
-
-  const [loginState, setLoginState] = useState<
-    'none' | 'ongoing' | 'fail' | 'ok'
-  >('none');
+export const useJolokiaLogin = (
+  brokerDetail: K8sResourceKind,
+  brokerRoutes: K8sResourceKind[],
+): [string, LoginState] => {
+  const [token, setToken] = useState<string>('');
+  const [loginState, setLoginState] = useState<LoginState>('none');
+  const ordinal = 0;
 
   const getBrokerRoute = (
     routes: K8sResourceKind[],
     broker: K8sResourceKind,
     ordinal: number,
   ): K8sResourceKind => {
-    console.log('*** get broker route from', routes?.length);
+    console.log('API-SERVER', '*** get broker route from', routes?.length);
     let target: K8sResourceKind = null;
 
     if (routes.length > 0) {
@@ -397,63 +347,61 @@ export const LoginHandler: FC<LoginProp> = ({ brokerDetail }) => {
         }
       });
     }
-    console.log('target route' + target);
+    console.log('API-SERVER', 'target route' + target);
     return target;
   };
 
-  const handleLogin = (
-    broker: K8sResourceKind,
-    routes: K8sResourceKind[],
-    ordinal = 0,
-  ): any => {
-    if (loginState === 'ok' || loginState === 'ongoing') {
-      console.log('not to handle login becasue of state', loginState);
-      return null;
+  useEffect(() => {
+    if (['ok', 'ongoing', 'fail'].includes(loginState)) {
+      console.log(
+        'API-SERVER',
+        'not to handle login becasue of state ',
+        loginState,
+      );
+      return;
     }
-    console.log('handing login', routes?.length, 'broker', broker);
-    if (routes?.length == 0 && process.env.NODE_ENV !== 'production') {
-      console.log('no routes available for dev');
-      return null;
+    console.log(
+      'API-SERVER',
+      'handing login',
+      brokerRoutes?.length,
+      'broker',
+      brokerDetail,
+    );
+    if (brokerRoutes?.length == 0 && process.env.NODE_ENV !== 'production') {
+      console.log('API-SERVER', 'no routes available for dev');
+      return;
     }
-    if (!broker?.metadata?.name) {
-      console.log('no broker for login', broker);
-      return null;
+    if (!brokerDetail?.metadata?.name) {
+      console.log('API-SERVER', 'no broker for login', brokerDetail);
+      return;
     }
-    if (needLogin(broker, ordinal)) {
+    if (!token) {
       setLoginState('ongoing');
       let apiHost = 'localhost';
       let apiPort = '9443';
-      console.log('require login', broker.metadata.name);
+      console.log('API-SERVER', 'require login', brokerDetail.metadata.name);
       if (process.env.NODE_ENV === 'production') {
-        console.log('in production env');
+        console.log('API-SERVER', 'in production env');
         apiHost = location.hostname;
         apiPort = '443';
       }
 
-      const theRoute = getBrokerRoute(routes, broker, ordinal);
+      const theRoute = getBrokerRoute(brokerRoutes, brokerDetail, ordinal);
 
-      LoginJolokia(broker, theRoute, apiHost, apiPort, ordinal).then(
+      LoginJolokia(brokerDetail, theRoute, apiHost, apiPort, ordinal).then(
         (result) => {
-          if (result) {
+          const [success, receivedToken] = result;
+          if (success) {
+            setToken(receivedToken);
             setLoginState('ok');
-            alert('login successful' + broker?.metadata?.name);
           } else {
             setLoginState('fail');
-            alert('login failed');
           }
         },
       );
     }
-    return null;
-  };
-
-  console.log(
-    'return handle login ',
-    brokerDetail,
-    'routes',
-    brokerRoutes?.length,
-  );
-  return handleLogin(brokerDetail, brokerRoutes);
+  }, [brokerDetail, brokerRoutes, token, loginState]);
+  return [token, loginState];
 };
 
 export { JolokiaTestPanel };

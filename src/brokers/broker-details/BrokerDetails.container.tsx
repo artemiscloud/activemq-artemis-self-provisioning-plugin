@@ -24,8 +24,9 @@ import {
 import {
   AMQBrokerModel,
   JolokiaTestPanel,
-  LoginHandler,
-  RouteContext,
+  useJolokiaLogin,
+  AuthContext,
+  LoginState,
 } from '../../utils';
 import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBreadcrumb';
 
@@ -46,10 +47,10 @@ const BrokerDetailsPage: FC = () => {
 
   const k8sGetBroker = () => {
     setLoading(true);
-    console.log('try get broker resource', name, 'ns', namespace);
+    console.log('API-SERVER', 'try get broker resource', name, 'ns', namespace);
     k8sGet({ model: AMQBrokerModel, name, ns: namespace })
       .then((broker: K8sResourceKind) => {
-        console.log('----going to set brokers', broker);
+        console.log('API-SERVER', '----going to set brokers', broker);
         setBrokerDetails(broker);
       })
       .catch((e) => {
@@ -64,9 +65,28 @@ const BrokerDetailsPage: FC = () => {
     k8sGetBroker();
   }, []);
 
+  const [token, loginState] = useJolokiaLogin(brokerDetails, routes);
+  const [prevLoginState, setPrevLoginState] = useState<LoginState>(loginState);
+  console.log('API-SERVER', ' token ', token);
+
+  if (prevLoginState !== loginState) {
+    if (loginState === 'ok') {
+      // TODO maybe use the OpenShift console notification system to let the
+      // user know that the login was a success?
+      alert(
+        'login successful ' + brokerDetails?.metadata?.name + ' token ' + token,
+      );
+    }
+    // TODO maybe use the OpenShift console notification system to let the user
+    // know that there was an issue with the jolokia login.
+    if (loginState === 'fail') {
+      alert('login failed');
+    }
+    setPrevLoginState(loginState);
+  }
+
   return (
-    <RouteContext.Provider value={routes}>
-      <LoginHandler brokerDetail={brokerDetails}></LoginHandler>
+    <AuthContext.Provider value={token}>
       <PageSection
         variant={PageSectionVariants.light}
         padding={{ default: 'noPadding' }}
@@ -112,11 +132,11 @@ const BrokerDetailsPage: FC = () => {
             eventKey={5}
             title={<TabTitleText>{t('check-jolokia')}</TabTitleText>}
           >
-            <JolokiaTestPanel broker={brokerDetails} />
+            <JolokiaTestPanel />
           </Tab>
         </Tabs>
       </PageSection>
-    </RouteContext.Provider>
+    </AuthContext.Provider>
   );
 };
 

@@ -1,4 +1,5 @@
 import {
+  ErrorStatus,
   K8sResourceCommon,
   K8sResourceKind,
 } from '@openshift-console/dynamic-plugin-sdk';
@@ -139,11 +140,26 @@ function getProxyUrl(): string {
     : '';
 }
 
-const JolokiaTestPanel: FC = () => {
+type JolokiaTestPanelType = {
+  broker: K8sResourceKind;
+  ordinal?: number;
+};
+
+const JolokiaTestPanel: FC<JolokiaTestPanelType> = ({
+  broker,
+  ordinal = 0,
+}) => {
   const [testUrl, setTestUrl] = useState<string>('');
   const [jolokiaTestResult, setJolokiaTestResult] = useState('Result:');
+  const [requestError, setRequestError] = useState(false);
 
   const authToken = useContext(AuthContext);
+
+  const setError = (error: string) => {
+    sessionStorage.removeItem(getBrokerKey(broker, ordinal));
+    setJolokiaTestResult(error);
+    setRequestError(true);
+  };
 
   const onButtonClickShowApi = () => {
     // TODO sending requests on a button click needs also some work
@@ -175,10 +191,10 @@ const JolokiaTestPanel: FC = () => {
           });
         })
         .catch((err) => {
-          setJolokiaTestResult(err);
+          setError(err);
         });
     } catch (error) {
-      setJolokiaTestResult(error);
+      setError(error);
     }
   };
 
@@ -216,15 +232,19 @@ const JolokiaTestPanel: FC = () => {
                 setJolokiaTestResult(JSON.stringify(data));
               })
               .catch((result_err) => {
-                setJolokiaTestResult('result error: ' + result_err);
+                setError('result error: ' + result_err);
               });
+          } else {
+            result.text().then((data) => {
+              setError(data);
+            });
           }
         })
         .catch((err) => {
-          setJolokiaTestResult('fetch error' + err);
+          setError('fetch error' + err);
         });
     } catch (error) {
-      setJolokiaTestResult(error);
+      setError(error);
     }
   };
 
@@ -259,15 +279,15 @@ const JolokiaTestPanel: FC = () => {
             });
           } else {
             result.text().then((data) => {
-              setJolokiaTestResult(data);
+              setError(data);
             });
           }
         })
         .catch((err) => {
-          setJolokiaTestResult(err);
+          setError(err);
         });
     } catch (error) {
-      setJolokiaTestResult(error);
+      setError(error);
     }
   };
 
@@ -275,6 +295,9 @@ const JolokiaTestPanel: FC = () => {
   // are disabled when there's no token available
   return (
     <>
+      {requestError && (
+        <ErrorStatus title="The Jolokia login needs to get refreshed please reload the page." />
+      )}
       <TextInput
         value={testUrl}
         type="text"
@@ -289,7 +312,6 @@ const JolokiaTestPanel: FC = () => {
           '/api/v1/brokers'
         }
       />
-
       <div>
         <Button name="query" onClick={onButtonClick} disabled={!authToken}>
           Submit query
@@ -316,15 +338,15 @@ const JolokiaTestPanel: FC = () => {
   );
 };
 
-export type LoginState = 'none' | 'ongoing' | 'fail' | 'ok';
+export type LoginState = 'none' | 'session' | 'ongoing' | 'fail' | 'ok';
 
 export const useJolokiaLogin = (
   brokerDetail: K8sResourceKind,
   brokerRoutes: K8sResourceKind[],
+  ordinal = 0,
 ): [string, LoginState] => {
   const [token, setToken] = useState<string>('');
   const [loginState, setLoginState] = useState<LoginState>('none');
-  const ordinal = 0;
 
   const getBrokerRoute = (
     routes: K8sResourceKind[],
@@ -352,7 +374,7 @@ export const useJolokiaLogin = (
   };
 
   useEffect(() => {
-    if (['ok', 'ongoing', 'fail'].includes(loginState)) {
+    if (loginState !== 'none') {
       console.log(
         'API-SERVER',
         'not to handle login becasue of state ',
@@ -375,32 +397,45 @@ export const useJolokiaLogin = (
       console.log('API-SERVER', 'no broker for login', brokerDetail);
       return;
     }
-    if (!token) {
-      setLoginState('ongoing');
-      let apiHost = 'localhost';
-      let apiPort = '9443';
-      console.log('API-SERVER', 'require login', brokerDetail.metadata.name);
-      if (process.env.NODE_ENV === 'production') {
-        console.log('API-SERVER', 'in production env');
-        apiHost = location.hostname;
-        apiPort = '443';
-      }
-
-      const theRoute = getBrokerRoute(brokerRoutes, brokerDetail, ordinal);
-
-      LoginJolokia(brokerDetail, theRoute, apiHost, apiPort, ordinal).then(
-        (result) => {
-          const [success, receivedToken] = result;
-          if (success) {
-            setToken(receivedToken);
-            setLoginState('ok');
-          } else {
-            setLoginState('fail');
-          }
-        },
-      );
+    setLoginState('ongoing');
+    let apiHost = 'localhost';
+    let apiPort = '9443';
+    console.log('API-SERVER', 'require login', brokerDetail.metadata.name);
+    if (process.env.NODE_ENV === 'production') {
+      console.log('API-SERVER', 'in production env');
+      apiHost = location.hostname;
+      apiPort = '443';
     }
-  }, [brokerDetail, brokerRoutes, token, loginState]);
+
+    const theRoute = getBrokerRoute(brokerRoutes, brokerDetail, ordinal);
+
+    const sessionToken = sessionStorage.getItem(
+      getBrokerKey(brokerDetail, ordinal),
+    );
+
+    if (sessionToken) {
+      console.log('API-SERVER: return session token');
+      setToken(sessionToken);
+      setLoginState('session');
+      return;
+    }
+
+    LoginJolokia(brokerDetail, theRoute, apiHost, apiPort, ordinal).then(
+      (result) => {
+        const [success, receivedToken] = result;
+        if (success) {
+          setToken(receivedToken);
+          sessionStorage.setItem(
+            getBrokerKey(brokerDetail, ordinal),
+            receivedToken,
+          );
+          setLoginState('ok');
+        } else {
+          setLoginState('fail');
+        }
+      },
+    );
+  }, [brokerDetail, brokerRoutes, loginState]);
   return [token, loginState];
 };
 

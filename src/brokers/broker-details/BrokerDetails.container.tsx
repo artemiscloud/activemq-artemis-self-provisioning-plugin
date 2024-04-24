@@ -1,6 +1,8 @@
 import { FC, useState, useEffect } from 'react';
 import {
+  GreenCheckCircleIcon,
   K8sResourceKind,
+  RedExclamationCircleIcon,
   k8sGet,
   useK8sWatchResource,
 } from '@openshift-console/dynamic-plugin-sdk';
@@ -70,6 +72,9 @@ const BrokerDetailsPage: FC = () => {
   console.log('API-SERVER', ' token ', token);
 
   if (prevLoginState !== loginState) {
+    if (loginState === 'session') {
+      console.log('login jolokia from session token');
+    }
     if (loginState === 'ok') {
       // TODO maybe use the OpenShift console notification system to let the
       // user know that the login was a success?
@@ -132,7 +137,7 @@ const BrokerDetailsPage: FC = () => {
             eventKey={5}
             title={<TabTitleText>{t('check-jolokia')}</TabTitleText>}
           >
-            <JolokiaTestPanel />
+            <JolokiaTestPanel broker={brokerDetails} />
           </Tab>
         </Tabs>
       </PageSection>

@@ -31,11 +31,10 @@ export const BrokerRow: FC<BrokerRowProps> = ({
   const { t } = useTranslation();
   const {
     metadata: { name, creationTimestamp, namespace },
-    spec: {
-      deploymentPlan: { size },
-    },
     status,
   } = obj;
+
+  const size = obj.spec?.deploymentPlan?.size;
 
   const readyCondition = status
     ? getCondition(obj.status.conditions, BrokerConditionTypes.Ready)

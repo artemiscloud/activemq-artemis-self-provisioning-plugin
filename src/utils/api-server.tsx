@@ -46,7 +46,6 @@ export async function LoginJolokia(
       broker?.metadata.name + '-wconsj-' + ordinal + '-svc';
     jolokiaHost = consoleServiceName + '.' + broker?.metadata.namespace;
 
-    console.log('API-SERVER', 'broker service host name', jolokiaHost);
     jolokiaPort = '8161';
   } else {
     jolokiaHost = route?.spec.host;
@@ -60,8 +59,6 @@ export async function LoginJolokia(
     apiPort +
     getProxyUrl() +
     '/api/v1/jolokia/login';
-
-  console.log('API-SERVER', 'login to', authUrl);
 
   type LoginOptions = {
     [key: string]: string;
@@ -77,25 +74,6 @@ export async function LoginJolokia(
     port: jolokiaPort,
     scheme: protocol,
   };
-
-  console.log(
-    'API-SERVER',
-    '****login with',
-    'brokerName',
-    details.brokerName,
-    'scheme',
-    details.scheme,
-    'port',
-    details.port,
-    'user',
-    details.userName,
-    'jolokiaHost',
-    details.jolokiaHost,
-    'apiHost',
-    apiHost,
-    'apiPort',
-    apiPort,
-  );
 
   const formBody = [];
   for (const property in details) {
@@ -119,7 +97,6 @@ export async function LoginJolokia(
     const data = await response.json();
     return [true, data['jolokia-session-id']];
   } else {
-    console.log('API-SERVER', 'login failed', response);
     return [false, ''];
   }
 }
@@ -164,7 +141,6 @@ const JolokiaTestPanel: FC<JolokiaTestPanelType> = ({
   const onButtonClickShowApi = () => {
     // TODO sending requests on a button click needs also some work
     try {
-      console.log('API-SERVER', 'showing api info', getProxyUrl());
       const apiUrl =
         'https://' +
         getApiHost() +
@@ -178,7 +154,6 @@ const JolokiaTestPanel: FC<JolokiaTestPanelType> = ({
       })
         .then((result): void => {
           result.json().then((data) => {
-            console.log('API-SERVER', 'get back result', data, 'utl', testUrl);
             const hostInfo =
               'https://' +
               getApiHost() +
@@ -201,7 +176,6 @@ const JolokiaTestPanel: FC<JolokiaTestPanelType> = ({
   const onButtonClickExec = () => {
     // TODO sending requests on a button click needs also some work
     try {
-      console.log('API-SERVER', 'showing api info', getProxyUrl());
       const apiUrl =
         'https://' +
         getApiHost() +
@@ -228,7 +202,6 @@ const JolokiaTestPanel: FC<JolokiaTestPanelType> = ({
             result
               .json()
               .then((data) => {
-                console.log('API-SERVER', 'get back exec result', data);
                 setJolokiaTestResult(JSON.stringify(data));
               })
               .catch((result_err) => {
@@ -251,14 +224,12 @@ const JolokiaTestPanel: FC<JolokiaTestPanelType> = ({
   const onButtonClick = () => {
     // TODO sending requests on a button click needs also some work
     try {
-      console.log('API-SERVER', 'starting querying', testUrl);
       if (testUrl == '') {
         alert('you need to give a jolokia request url');
         return;
       }
 
       const encodedUrl = testUrl.replace(/,/g, '%2C');
-      console.log('API-SERVER', 'after encoded', encodedUrl);
       fetch(encodedUrl, {
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         headers: {
@@ -268,13 +239,6 @@ const JolokiaTestPanel: FC<JolokiaTestPanelType> = ({
         .then((result): void => {
           if (result.ok) {
             result.json().then((data) => {
-              console.log(
-                'API-SERVER',
-                'get back result',
-                data,
-                'utl',
-                testUrl,
-              );
               setJolokiaTestResult(JSON.stringify(data, null, 2));
             });
           } else {
@@ -353,7 +317,6 @@ export const useJolokiaLogin = (
     broker: K8sResourceKind,
     ordinal: number,
   ): K8sResourceKind => {
-    console.log('API-SERVER', '*** get broker route from', routes?.length);
     let target: K8sResourceKind = null;
 
     if (routes.length > 0) {
@@ -369,40 +332,23 @@ export const useJolokiaLogin = (
         }
       });
     }
-    console.log('API-SERVER', 'target route' + target);
     return target;
   };
 
   useEffect(() => {
     if (loginState !== 'none') {
-      console.log(
-        'API-SERVER',
-        'not to handle login becasue of state ',
-        loginState,
-      );
       return;
     }
-    console.log(
-      'API-SERVER',
-      'handing login',
-      brokerRoutes?.length,
-      'broker',
-      brokerDetail,
-    );
     if (brokerRoutes?.length == 0 && process.env.NODE_ENV !== 'production') {
-      console.log('API-SERVER', 'no routes available for dev');
       return;
     }
     if (!brokerDetail?.metadata?.name) {
-      console.log('API-SERVER', 'no broker for login', brokerDetail);
       return;
     }
     setLoginState('ongoing');
     let apiHost = 'localhost';
     let apiPort = '9443';
-    console.log('API-SERVER', 'require login', brokerDetail.metadata.name);
     if (process.env.NODE_ENV === 'production') {
-      console.log('API-SERVER', 'in production env');
       apiHost = location.hostname;
       apiPort = '443';
     }
@@ -414,7 +360,6 @@ export const useJolokiaLogin = (
     );
 
     if (sessionToken) {
-      console.log('API-SERVER: return session token');
       setToken(sessionToken);
       setLoginState('session');
       return;

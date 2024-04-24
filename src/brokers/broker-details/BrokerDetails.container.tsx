@@ -49,10 +49,8 @@ const BrokerDetailsPage: FC = () => {
 
   const k8sGetBroker = () => {
     setLoading(true);
-    console.log('API-SERVER', 'try get broker resource', name, 'ns', namespace);
     k8sGet({ model: AMQBrokerModel, name, ns: namespace })
       .then((broker: K8sResourceKind) => {
-        console.log('API-SERVER', '----going to set brokers', broker);
         setBrokerDetails(broker);
       })
       .catch((e) => {
@@ -69,12 +67,8 @@ const BrokerDetailsPage: FC = () => {
 
   const [token, loginState] = useJolokiaLogin(brokerDetails, routes);
   const [prevLoginState, setPrevLoginState] = useState<LoginState>(loginState);
-  console.log('API-SERVER', ' token ', token);
 
   if (prevLoginState !== loginState) {
-    if (loginState === 'session') {
-      console.log('login jolokia from session token');
-    }
     if (loginState === 'ok') {
       // TODO maybe use the OpenShift console notification system to let the
       // user know that the login was a success?

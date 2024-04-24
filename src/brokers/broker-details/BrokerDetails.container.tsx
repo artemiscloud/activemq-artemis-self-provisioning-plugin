@@ -135,7 +135,18 @@ const BrokerDetailsPage: FC = () => {
           </Tab>
           <Tab
             eventKey={5}
-            title={<TabTitleText>{t('check-jolokia')}</TabTitleText>}
+            title={
+              <TabTitleText>
+                {t('check-jolokia')}
+
+                {(loginState === 'ok' || loginState === 'session') && (
+                  <GreenCheckCircleIcon title="Jolokia connected" />
+                )}
+                {loginState === 'fail' && (
+                  <RedExclamationCircleIcon title="Jolokia connection failed" />
+                )}
+              </TabTitleText>
+            }
           >
             <JolokiaTestPanel broker={brokerDetails} />
           </Tab>

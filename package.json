@@ -145,6 +145,7 @@
       "BrokersPage": "./brokers/view-brokers",
       "AddBrokerPage": "./brokers/add-broker",
       "UpdateBrokerPage": "./brokers/update-broker",
+      "PodsListPage": "./brokers/broker-pods",
       "BrokerDetailsPage": "./brokers/broker-details"
     },
     "dependencies": {

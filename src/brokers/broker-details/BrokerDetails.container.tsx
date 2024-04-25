@@ -34,7 +34,15 @@ import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBr
 
 const BrokerDetailsPage: FC = () => {
   const { t } = useTranslation();
-  const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
+  const {
+    ns: namespace,
+    brokerName,
+    podName,
+  } = useParams<{
+    ns?: string;
+    brokerName?: string;
+    podName?: string;
+  }>();
   const [brokerDetails, setBrokerDetails] = useState<K8sResourceKind>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [routes] = useK8sWatchResource<K8sResourceKind[]>({
@@ -49,7 +57,7 @@ const BrokerDetailsPage: FC = () => {
 
   const k8sGetBroker = () => {
     setLoading(true);
-    k8sGet({ model: AMQBrokerModel, name, ns: namespace })
+    k8sGet({ model: AMQBrokerModel, name: brokerName, ns: namespace })
       .then((broker: K8sResourceKind) => {
         setBrokerDetails(broker);
       })
@@ -65,7 +73,13 @@ const BrokerDetailsPage: FC = () => {
     k8sGetBroker();
   }, []);
 
-  const [token, loginState] = useJolokiaLogin(brokerDetails, routes);
+  const podOrdinal = parseInt(podName.replace(brokerName + '-ss-', ''));
+
+  const [token, loginState] = useJolokiaLogin(
+    brokerDetails,
+    routes,
+    podOrdinal,
+  );
   const [prevLoginState, setPrevLoginState] = useState<LoginState>(loginState);
 
   if (prevLoginState !== loginState) {
@@ -92,9 +106,9 @@ const BrokerDetailsPage: FC = () => {
         className="pf-c-page__main-tabs"
       >
         <div className="pf-u-mt-md pf-u-ml-md pf-u-mb-md">
-          <BrokerDetailsBreadcrumb name={name} namespace={namespace} />
+          <BrokerDetailsBreadcrumb name={brokerName} namespace={namespace} />
           <Title headingLevel="h2">
-            {t('broker')} {name}
+            {t('broker')} {brokerName} {t('/')} {podName}
           </Title>
         </div>
         <Tabs defaultActiveKey={0}>
@@ -103,7 +117,7 @@ const BrokerDetailsPage: FC = () => {
             title={<TabTitleText>{t('overview')}</TabTitleText>}
           >
             <OverviewContainer
-              name={name}
+              name={brokerName}
               namespace={namespace}
               size={brokerDetails?.spec?.deploymentPlan?.size}
               loading={loading}
@@ -142,7 +156,7 @@ const BrokerDetailsPage: FC = () => {
               </TabTitleText>
             }
           >
-            <JolokiaTestPanel broker={brokerDetails} />
+            <JolokiaTestPanel broker={brokerDetails} ordinal={podOrdinal} />
           </Tab>
         </Tabs>
       </PageSection>

@@ -76,5 +76,7 @@
   "last_2_weeks": "Last 2 weeks",
   "all_metrics": "All Metrics",
   "memory_usage_metrics": "Memory Usage Metrics",
-  "cpu_usage_metrics": "CPU Usage Metrics"
+  "cpu_usage_metrics": "CPU Usage Metrics",
+  "pods": "Pods",
+  "/": "/"
 }

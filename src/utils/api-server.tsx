@@ -29,7 +29,7 @@ export async function LoginJolokia(
   route: K8sResourceKind,
   apiHost: string,
   apiPort: string,
-  ordinal?: number,
+  ordinal: number,
 ): Promise<[boolean, string]> {
   let jolokiaHost: string;
   let jolokiaPort: string;
@@ -119,13 +119,10 @@ function getProxyUrl(): string {
 
 type JolokiaTestPanelType = {
   broker: K8sResourceKind;
-  ordinal?: number;
+  ordinal: number;
 };
 
-const JolokiaTestPanel: FC<JolokiaTestPanelType> = ({
-  broker,
-  ordinal = 0,
-}) => {
+const JolokiaTestPanel: FC<JolokiaTestPanelType> = ({ broker, ordinal }) => {
   const [testUrl, setTestUrl] = useState<string>('');
   const [jolokiaTestResult, setJolokiaTestResult] = useState('Result:');
   const [requestError, setRequestError] = useState(false);
@@ -306,7 +303,7 @@ export type LoginState = 'none' | 'session' | 'ongoing' | 'fail' | 'ok';
 export const useJolokiaLogin = (
   brokerDetail: K8sResourceKind,
   brokerRoutes: K8sResourceKind[],
-  ordinal = 0,
+  ordinal: number,
 ): [string, LoginState] => {
   const [token, setToken] = useState<string>('');
   const [loginState, setLoginState] = useState<LoginState>('none');
@@ -379,7 +376,7 @@ export const useJolokiaLogin = (
         }
       },
     );
-  }, [brokerDetail, brokerRoutes, loginState]);
+  }, [brokerDetail, brokerRoutes, loginState, ordinal]);
   return [token, loginState];
 };
 

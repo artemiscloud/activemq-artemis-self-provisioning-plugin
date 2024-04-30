@@ -50,7 +50,8 @@ yamljs \
 base-64 \
 jsonwebtoken \
 dotenv \
-express-rate-limit
+express-rate-limit \
+node-fetch@2
 
 RUN echo "node /usr/share/amq-spp/server/app.js /usr/share/amq-spp/dist" > run.sh
 RUN chmod +x run.sh

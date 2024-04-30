@@ -699,7 +699,7 @@ components:
         signature:
           type: string
           description: The method signature
-        arguments:
+        args:
           type: array
           items:
             description: The method arguments

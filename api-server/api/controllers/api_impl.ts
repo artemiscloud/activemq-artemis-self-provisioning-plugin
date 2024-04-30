@@ -149,9 +149,9 @@ export const execBrokerOperation = (
   try {
     const jolokia = res.locals.jolokia;
 
-    const { signature, params } = req.body;
+    const { signature, args } = req.body;
 
-    const resp = jolokia.execBrokerOperation(signature, params);
+    const resp = jolokia.execBrokerOperation(signature, args);
     resp
       .then((result: JolokiaExecResponse) => {
         res.json(result);

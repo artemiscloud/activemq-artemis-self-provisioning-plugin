@@ -3,7 +3,9 @@ import * as OpenApiValidator from 'express-openapi-validator';
 import { Express } from 'express-serve-static-core';
 import { Summary, connector, summarise } from 'swagger-routes-express';
 import { rateLimit } from 'express-rate-limit';
-import YAML from 'yamljs';
+//import YAML from 'yamljs';
+import * as YAML from 'js-yaml';
+import * as fs from 'fs';
 import path from 'path';
 import cors from 'cors';
 
@@ -14,8 +16,13 @@ export let API_SUMMARY: Summary;
 const createServer = async (staticBaseDir: string): Promise<Express> => {
   console.log('static dir', staticBaseDir);
   const yamlSpecFile = path.join(__dirname, '../config/openapi.yml');
-  const apiDefinition = YAML.load(yamlSpecFile);
+  console.log('parseing api.yaml', yamlSpecFile);
+
+  const ymlData = fs.readFileSync(yamlSpecFile, 'utf-8');
+  const apiDefinition = YAML.load(ymlData) as object;
+  console.log('LOADED apiDef', apiDefinition);
   API_SUMMARY = summarise(apiDefinition);
+  console.log('output summary', API_SUMMARY);
   console.info(API_SUMMARY);
 
   const server = express();
@@ -32,7 +39,6 @@ const createServer = async (staticBaseDir: string): Promise<Express> => {
   server.use(limiter);
 
   const validatorOptions = {
-    coerceTypes: true,
     apiSpec: yamlSpecFile,
     validateRequests: true,
     ignorePaths: /jolokia\/login/,

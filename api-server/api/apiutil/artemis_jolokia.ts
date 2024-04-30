@@ -1,4 +1,5 @@
 import base64 from 'base-64';
+import fetch from 'node-fetch';
 
 // search the broker
 const brokerSearchPattern = 'org.apache.activemq.artemis:broker=*';
@@ -78,8 +79,8 @@ export class ArtemisJolokia {
     this.brokerName = '';
   }
 
-  getAuthHeaders = (): Headers => {
-    const headers = new Headers();
+  getAuthHeaders = (): fetch.Headers => {
+    const headers = new fetch.Headers();
     headers.set(
       'Authorization',
       'Basic ' + base64.encode(this.username + ':' + this.password),
@@ -399,6 +400,7 @@ export class ArtemisJolokia {
     if (result.length === 1) {
       //org.apache.activemq.artemis:broker="amq-broker"
       this.brokerName = result[0].split('=', 2)[1];
+
       //remove quotes
       this.brokerName = this.brokerName.replace(/"/g, '');
       return true;
@@ -469,7 +471,7 @@ interface JolokiaRequestType {
   type: string;
 }
 
-interface JolokiaResponseType {
+export interface JolokiaResponseType {
   request: JolokiaRequestType;
   value: any;
   timestamp: number;

@@ -186,14 +186,13 @@ const JolokiaTestPanel: FC<JolokiaTestPanelType> = ({
 
       const methodData = {
         signature: 'listAddresses(java.lang.String)',
-        params: [','],
+        args: [','],
       };
       fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'jolokia-session-id': authToken,
-          'jolokia-target-pod': '0', //indicate target pod ordinal, e.g. ex-aao-ss-{0}
         },
         body: JSON.stringify(methodData),
       })
@@ -224,7 +223,7 @@ const JolokiaTestPanel: FC<JolokiaTestPanelType> = ({
   const onButtonClick = () => {
     // TODO sending requests on a button click needs also some work
     try {
-      if (testUrl == '') {
+      if (testUrl === '') {
         alert('you need to give a jolokia request url');
         return;
       }
@@ -339,7 +338,7 @@ export const useJolokiaLogin = (
     if (loginState !== 'none') {
       return;
     }
-    if (brokerRoutes?.length == 0 && process.env.NODE_ENV !== 'production') {
+    if (brokerRoutes?.length === 0 && process.env.NODE_ENV !== 'production') {
       return;
     }
     if (!brokerDetail?.metadata?.name) {

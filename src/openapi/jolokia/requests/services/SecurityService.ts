@@ -18,11 +18,11 @@ export class SecurityService {
    * Once authenticated, the client can access the
    * apis defined in this file. With each request the client must include a valid jwt token in a http header named `jolokia-session-id`. The api-server will validate the token before processing a request is and rejects the request if the token is not valid.
    *
-   * @param formData
+   * @param requestBody
    * @returns SimpleResponse Success
    * @throws ApiError
    */
-  public static login(formData: {
+  public static login(requestBody: {
     /**
      * identity of the broker instance, must in form of {cr-name}-{pod-ordinal}:{namespace}. For example ex-aao-0:test1
      */
@@ -51,8 +51,8 @@ export class SecurityService {
     return __request(OpenAPI, {
       method: 'POST',
       url: '/jolokia/login',
-      formData: formData,
-      mediaType: 'application/x-www-form-urlencoded',
+      body: requestBody,
+      mediaType: 'application/json',
     });
   }
 }

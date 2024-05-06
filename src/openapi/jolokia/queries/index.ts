@@ -14,7 +14,7 @@ export const useSecurityServiceLogin = (
       Awaited<ReturnType<typeof SecurityService.login>>,
       unknown,
       {
-        formData: {
+        requestBody: {
           brokerName: string;
           userName: string;
           password: string;
@@ -27,7 +27,8 @@ export const useSecurityServiceLogin = (
     >,
     'mutationFn'
   >,
-) => useMutation(({ formData }) => SecurityService.login(formData), options);
+) =>
+  useMutation(({ requestBody }) => SecurityService.login(requestBody), options);
 export const useJolokiaServiceGetBrokersKey = 'JolokiaServiceGetBrokers';
 export const useJolokiaServiceGetBrokers = <
   TQueryKey extends Array<unknown> = unknown[],

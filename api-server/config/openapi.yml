@@ -173,6 +173,12 @@ paths:
       tags:
         - jolokia
       operationId: getBrokers
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
       responses:
         200:
           description: Success
@@ -223,6 +229,12 @@ paths:
       tags:
         - jolokia
       operationId: getBrokerDetails
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
       responses:
         200:
           description: Success
@@ -264,6 +276,11 @@ paths:
         - jolokia
       operationId: readBrokerAttributes
       parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
         - name: names
           description: attribute names separated by commas. If not speified read all attributes.
           required: false
@@ -325,6 +342,12 @@ paths:
       tags:
         - jolokia
       operationId: execBrokerOperation
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
       requestBody:
         required: true
         content:
@@ -367,6 +390,12 @@ paths:
       tags:
         - jolokia
       operationId: getBrokerComponents
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
       responses:
         200:
           description: Success
@@ -396,6 +425,12 @@ paths:
       tags:
         - jolokia
       operationId: getAddresses
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
       responses:
         200:
           description: Success
@@ -425,6 +460,11 @@ paths:
         - jolokia
       operationId: getQueues
       parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
         - name: address
           required: false
           in: query
@@ -484,6 +524,11 @@ paths:
         - jolokia
       operationId: getQueueDetails
       parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
         - name: addressName
           required: false
           in: query
@@ -548,6 +593,11 @@ paths:
         - jolokia
       operationId: getAddressDetails
       parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
         - name: name
           required: true
           in: query
@@ -581,6 +631,12 @@ paths:
       tags:
         - jolokia
       operationId: getAcceptors
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
       responses:
         200:
           description: Success
@@ -628,6 +684,11 @@ paths:
         - jolokia
       operationId: getAcceptorDetails
       parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
         - name: name
           required: true
           in: query

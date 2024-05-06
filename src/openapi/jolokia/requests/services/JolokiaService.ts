@@ -24,13 +24,19 @@ export class JolokiaService {
    * ]
    * ```
    *
+   * @param jolokiaSessionId
    * @returns BrokersResponse Success
    * @throws ApiError
    */
-  public static getBrokers(): CancelablePromise<BrokersResponse> {
+  public static getBrokers(
+    jolokiaSessionId: string,
+  ): CancelablePromise<BrokersResponse> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/brokers',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
     });
   }
 
@@ -73,13 +79,19 @@ export class JolokiaService {
    * }
    * ```
    *
+   * @param jolokiaSessionId
    * @returns BrokersResponse Success
    * @throws ApiError
    */
-  public static getBrokerDetails(): CancelablePromise<BrokersResponse> {
+  public static getBrokerDetails(
+    jolokiaSessionId: string,
+  ): CancelablePromise<BrokersResponse> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/brokerDetails',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
     });
   }
 
@@ -112,16 +124,21 @@ export class JolokiaService {
    * **Note**: to read multiple attributes, set it to **names** parameter
    * separated by commas, e.g. `Version,Status`.
    *
+   * @param jolokiaSessionId
    * @param names attribute names separated by commas. If not speified read all attributes.
    * @returns BrokersResponse Success
    * @throws ApiError
    */
   public static readBrokerAttributes(
+    jolokiaSessionId: string,
     names?: Array<string>,
   ): CancelablePromise<BrokersResponse> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/readBrokerAttributes',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
       query: {
         names: names,
       },
@@ -168,16 +185,21 @@ export class JolokiaService {
    * ]
    * ```
    *
+   * @param jolokiaSessionId
    * @param requestBody
    * @returns BrokersResponse Success
    * @throws ApiError
    */
   public static execBrokerOperation(
+    jolokiaSessionId: string,
     requestBody: OperationRef,
   ): CancelablePromise<BrokersResponse> {
     return __request(OpenAPI, {
       method: 'POST',
       url: '/execBrokerOperation',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
       body: requestBody,
       mediaType: 'application/json',
     });
@@ -208,13 +230,19 @@ export class JolokiaService {
    * ]
    * ```
    *
+   * @param jolokiaSessionId
    * @returns BrokersResponse Success
    * @throws ApiError
    */
-  public static getBrokerComponents(): CancelablePromise<BrokersResponse> {
+  public static getBrokerComponents(
+    jolokiaSessionId: string,
+  ): CancelablePromise<BrokersResponse> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/brokerComponents',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
     });
   }
 
@@ -236,13 +264,19 @@ export class JolokiaService {
    * ]
    * ```
    *
+   * @param jolokiaSessionId
    * @returns BrokersResponse Success
    * @throws ApiError
    */
-  public static getAddresses(): CancelablePromise<BrokersResponse> {
+  public static getAddresses(
+    jolokiaSessionId: string,
+  ): CancelablePromise<BrokersResponse> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/addresses',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
     });
   }
 
@@ -263,16 +297,21 @@ export class JolokiaService {
    * ]
    * ```
    *
+   * @param jolokiaSessionId
    * @param address
    * @returns BrokersResponse Success
    * @throws ApiError
    */
   public static getQueues(
+    jolokiaSessionId: string,
     address?: string,
   ): CancelablePromise<BrokersResponse> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/queues',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
       query: {
         address: address,
       },
@@ -320,6 +359,7 @@ export class JolokiaService {
    * }
    * ```
    *
+   * @param jolokiaSessionId
    * @param name
    * @param routingType
    * @param addressName
@@ -327,6 +367,7 @@ export class JolokiaService {
    * @throws ApiError
    */
   public static getQueueDetails(
+    jolokiaSessionId: string,
     name: string,
     routingType: string,
     addressName?: string,
@@ -334,6 +375,9 @@ export class JolokiaService {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/queueDetails',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
       query: {
         addressName: addressName,
         name: name,
@@ -376,16 +420,21 @@ export class JolokiaService {
    * }
    * ```
    *
+   * @param jolokiaSessionId
    * @param name
    * @returns BrokersResponse Success
    * @throws ApiError
    */
   public static getAddressDetails(
+    jolokiaSessionId: string,
     name: string,
   ): CancelablePromise<BrokersResponse> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/addressDetails',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
       query: {
         name: name,
       },
@@ -408,13 +457,19 @@ export class JolokiaService {
    * ]
    * ```
    *
+   * @param jolokiaSessionId
    * @returns BrokersResponse Success
    * @throws ApiError
    */
-  public static getAcceptors(): CancelablePromise<BrokersResponse> {
+  public static getAcceptors(
+    jolokiaSessionId: string,
+  ): CancelablePromise<BrokersResponse> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/acceptors',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
     });
   }
 
@@ -453,16 +508,21 @@ export class JolokiaService {
    * }
    * ```
    *
+   * @param jolokiaSessionId
    * @param name
    * @returns BrokersResponse Success
    * @throws ApiError
    */
   public static getAcceptorDetails(
+    jolokiaSessionId: string,
     name: string,
   ): CancelablePromise<BrokersResponse> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/acceptorDetails',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
       query: {
         name: name,
       },

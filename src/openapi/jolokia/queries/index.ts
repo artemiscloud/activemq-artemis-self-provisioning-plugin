@@ -4,9 +4,7 @@ import {
   UseQueryOptions,
   UseMutationOptions,
 } from '@tanstack/react-query';
-import { SimpleResponse } from '../requests/models/SimpleResponse';
 import { OperationRef } from '../requests/models/OperationRef';
-import { BrokersResponse } from '../requests/models/BrokersResponse';
 import { SecurityService } from '../requests/services/SecurityService';
 import { JolokiaService } from '../requests/services/JolokiaService';
 import { DevelopmentService } from '../requests/services/DevelopmentService';
@@ -34,6 +32,11 @@ export const useJolokiaServiceGetBrokersKey = 'JolokiaServiceGetBrokers';
 export const useJolokiaServiceGetBrokers = <
   TQueryKey extends Array<unknown> = unknown[],
 >(
+  {
+    jolokiaSessionId,
+  }: {
+    jolokiaSessionId: string;
+  },
   queryKey?: TQueryKey,
   options?: Omit<
     UseQueryOptions<
@@ -46,8 +49,8 @@ export const useJolokiaServiceGetBrokers = <
   >,
 ) =>
   useQuery(
-    [useJolokiaServiceGetBrokersKey, ...(queryKey ?? [])],
-    () => JolokiaService.getBrokers(),
+    [useJolokiaServiceGetBrokersKey, ...(queryKey ?? [{ jolokiaSessionId }])],
+    () => JolokiaService.getBrokers(jolokiaSessionId),
     options,
   );
 export const useJolokiaServiceGetBrokerDetailsKey =
@@ -55,6 +58,11 @@ export const useJolokiaServiceGetBrokerDetailsKey =
 export const useJolokiaServiceGetBrokerDetails = <
   TQueryKey extends Array<unknown> = unknown[],
 >(
+  {
+    jolokiaSessionId,
+  }: {
+    jolokiaSessionId: string;
+  },
   queryKey?: TQueryKey,
   options?: Omit<
     UseQueryOptions<
@@ -67,8 +75,11 @@ export const useJolokiaServiceGetBrokerDetails = <
   >,
 ) =>
   useQuery(
-    [useJolokiaServiceGetBrokerDetailsKey, ...(queryKey ?? [])],
-    () => JolokiaService.getBrokerDetails(),
+    [
+      useJolokiaServiceGetBrokerDetailsKey,
+      ...(queryKey ?? [{ jolokiaSessionId }]),
+    ],
+    () => JolokiaService.getBrokerDetails(jolokiaSessionId),
     options,
   );
 export const useJolokiaServiceReadBrokerAttributesKey =
@@ -77,8 +88,10 @@ export const useJolokiaServiceReadBrokerAttributes = <
   TQueryKey extends Array<unknown> = unknown[],
 >(
   {
+    jolokiaSessionId,
     names,
   }: {
+    jolokiaSessionId: string;
     names?: Array<string>;
   },
   queryKey?: TQueryKey,
@@ -93,8 +106,11 @@ export const useJolokiaServiceReadBrokerAttributes = <
   >,
 ) =>
   useQuery(
-    [useJolokiaServiceReadBrokerAttributesKey, ...(queryKey ?? [{ names }])],
-    () => JolokiaService.readBrokerAttributes(names),
+    [
+      useJolokiaServiceReadBrokerAttributesKey,
+      ...(queryKey ?? [{ jolokiaSessionId, names }]),
+    ],
+    () => JolokiaService.readBrokerAttributes(jolokiaSessionId, names),
     options,
   );
 export const useJolokiaServiceExecBrokerOperation = (
@@ -103,6 +119,7 @@ export const useJolokiaServiceExecBrokerOperation = (
       Awaited<ReturnType<typeof JolokiaService.execBrokerOperation>>,
       unknown,
       {
+        jolokiaSessionId: string;
         requestBody: OperationRef;
       },
       unknown
@@ -111,7 +128,8 @@ export const useJolokiaServiceExecBrokerOperation = (
   >,
 ) =>
   useMutation(
-    ({ requestBody }) => JolokiaService.execBrokerOperation(requestBody),
+    ({ jolokiaSessionId, requestBody }) =>
+      JolokiaService.execBrokerOperation(jolokiaSessionId, requestBody),
     options,
   );
 export const useJolokiaServiceGetBrokerComponentsKey =
@@ -119,6 +137,11 @@ export const useJolokiaServiceGetBrokerComponentsKey =
 export const useJolokiaServiceGetBrokerComponents = <
   TQueryKey extends Array<unknown> = unknown[],
 >(
+  {
+    jolokiaSessionId,
+  }: {
+    jolokiaSessionId: string;
+  },
   queryKey?: TQueryKey,
   options?: Omit<
     UseQueryOptions<
@@ -131,14 +154,22 @@ export const useJolokiaServiceGetBrokerComponents = <
   >,
 ) =>
   useQuery(
-    [useJolokiaServiceGetBrokerComponentsKey, ...(queryKey ?? [])],
-    () => JolokiaService.getBrokerComponents(),
+    [
+      useJolokiaServiceGetBrokerComponentsKey,
+      ...(queryKey ?? [{ jolokiaSessionId }]),
+    ],
+    () => JolokiaService.getBrokerComponents(jolokiaSessionId),
     options,
   );
 export const useJolokiaServiceGetAddressesKey = 'JolokiaServiceGetAddresses';
 export const useJolokiaServiceGetAddresses = <
   TQueryKey extends Array<unknown> = unknown[],
 >(
+  {
+    jolokiaSessionId,
+  }: {
+    jolokiaSessionId: string;
+  },
   queryKey?: TQueryKey,
   options?: Omit<
     UseQueryOptions<
@@ -151,8 +182,8 @@ export const useJolokiaServiceGetAddresses = <
   >,
 ) =>
   useQuery(
-    [useJolokiaServiceGetAddressesKey, ...(queryKey ?? [])],
-    () => JolokiaService.getAddresses(),
+    [useJolokiaServiceGetAddressesKey, ...(queryKey ?? [{ jolokiaSessionId }])],
+    () => JolokiaService.getAddresses(jolokiaSessionId),
     options,
   );
 export const useJolokiaServiceGetQueuesKey = 'JolokiaServiceGetQueues';
@@ -160,8 +191,10 @@ export const useJolokiaServiceGetQueues = <
   TQueryKey extends Array<unknown> = unknown[],
 >(
   {
+    jolokiaSessionId,
     address,
   }: {
+    jolokiaSessionId: string;
     address?: string;
   },
   queryKey?: TQueryKey,
@@ -176,8 +209,11 @@ export const useJolokiaServiceGetQueues = <
   >,
 ) =>
   useQuery(
-    [useJolokiaServiceGetQueuesKey, ...(queryKey ?? [{ address }])],
-    () => JolokiaService.getQueues(address),
+    [
+      useJolokiaServiceGetQueuesKey,
+      ...(queryKey ?? [{ jolokiaSessionId, address }]),
+    ],
+    () => JolokiaService.getQueues(jolokiaSessionId, address),
     options,
   );
 export const useJolokiaServiceGetQueueDetailsKey =
@@ -186,10 +222,12 @@ export const useJolokiaServiceGetQueueDetails = <
   TQueryKey extends Array<unknown> = unknown[],
 >(
   {
+    jolokiaSessionId,
     name,
     routingType,
     addressName,
   }: {
+    jolokiaSessionId: string;
     name: string;
     routingType: string;
     addressName?: string;
@@ -208,9 +246,15 @@ export const useJolokiaServiceGetQueueDetails = <
   useQuery(
     [
       useJolokiaServiceGetQueueDetailsKey,
-      ...(queryKey ?? [{ name, routingType, addressName }]),
+      ...(queryKey ?? [{ jolokiaSessionId, name, routingType, addressName }]),
     ],
-    () => JolokiaService.getQueueDetails(name, routingType, addressName),
+    () =>
+      JolokiaService.getQueueDetails(
+        jolokiaSessionId,
+        name,
+        routingType,
+        addressName,
+      ),
     options,
   );
 export const useJolokiaServiceGetAddressDetailsKey =
@@ -219,8 +263,10 @@ export const useJolokiaServiceGetAddressDetails = <
   TQueryKey extends Array<unknown> = unknown[],
 >(
   {
+    jolokiaSessionId,
     name,
   }: {
+    jolokiaSessionId: string;
     name: string;
   },
   queryKey?: TQueryKey,
@@ -235,14 +281,22 @@ export const useJolokiaServiceGetAddressDetails = <
   >,
 ) =>
   useQuery(
-    [useJolokiaServiceGetAddressDetailsKey, ...(queryKey ?? [{ name }])],
-    () => JolokiaService.getAddressDetails(name),
+    [
+      useJolokiaServiceGetAddressDetailsKey,
+      ...(queryKey ?? [{ jolokiaSessionId, name }]),
+    ],
+    () => JolokiaService.getAddressDetails(jolokiaSessionId, name),
     options,
   );
 export const useJolokiaServiceGetAcceptorsKey = 'JolokiaServiceGetAcceptors';
 export const useJolokiaServiceGetAcceptors = <
   TQueryKey extends Array<unknown> = unknown[],
 >(
+  {
+    jolokiaSessionId,
+  }: {
+    jolokiaSessionId: string;
+  },
   queryKey?: TQueryKey,
   options?: Omit<
     UseQueryOptions<
@@ -255,8 +309,8 @@ export const useJolokiaServiceGetAcceptors = <
   >,
 ) =>
   useQuery(
-    [useJolokiaServiceGetAcceptorsKey, ...(queryKey ?? [])],
-    () => JolokiaService.getAcceptors(),
+    [useJolokiaServiceGetAcceptorsKey, ...(queryKey ?? [{ jolokiaSessionId }])],
+    () => JolokiaService.getAcceptors(jolokiaSessionId),
     options,
   );
 export const useJolokiaServiceGetAcceptorDetailsKey =
@@ -265,8 +319,10 @@ export const useJolokiaServiceGetAcceptorDetails = <
   TQueryKey extends Array<unknown> = unknown[],
 >(
   {
+    jolokiaSessionId,
     name,
   }: {
+    jolokiaSessionId: string;
     name: string;
   },
   queryKey?: TQueryKey,
@@ -281,8 +337,11 @@ export const useJolokiaServiceGetAcceptorDetails = <
   >,
 ) =>
   useQuery(
-    [useJolokiaServiceGetAcceptorDetailsKey, ...(queryKey ?? [{ name }])],
-    () => JolokiaService.getAcceptorDetails(name),
+    [
+      useJolokiaServiceGetAcceptorDetailsKey,
+      ...(queryKey ?? [{ jolokiaSessionId, name }]),
+    ],
+    () => JolokiaService.getAcceptorDetails(jolokiaSessionId, name),
     options,
   );
 export const useDevelopmentServiceApiInfoKey = 'DevelopmentServiceApiInfo';

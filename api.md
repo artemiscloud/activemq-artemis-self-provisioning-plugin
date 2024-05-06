@@ -175,6 +175,12 @@ If necessary update the code that is using the hooks to comply with your changes
   ["org.apache.activemq.artemis:broker=\"amq-broker\""]
   ```
 
+#### Headers
+
+```ts
+jolokia-session-id: string
+```
+
 #### Responses
 
 - 200 Success
@@ -231,6 +237,12 @@ If necessary update the code that is using the hooks to comply with your changes
   }
   ```
 
+#### Headers
+
+```ts
+jolokia-session-id: string
+```
+
 #### Responses
 
 - 200 Success
@@ -279,6 +291,12 @@ If necessary update the code that is using the hooks to comply with your changes
 
 ```ts
 names?: string[]
+```
+
+#### Headers
+
+```ts
+jolokia-session-id: string
 ```
 
 #### Responses
@@ -334,6 +352,12 @@ names?: string[]
   ]
   ```
 
+#### Headers
+
+```ts
+jolokia-session-id: string
+```
+
 #### RequestBody
 
 - application/json
@@ -387,6 +411,12 @@ names?: string[]
   ]
   ```
 
+#### Headers
+
+```ts
+jolokia-session-id: string
+```
+
 #### Responses
 
 - 200 Success
@@ -419,6 +449,12 @@ names?: string[]
     "org.apache.activemq.artemis:address=\"ExpiryQueue\",broker=\"amq-broker\",component=addresses"
   ]
   ```
+
+#### Headers
+
+```ts
+jolokia-session-id: string
+```
 
 #### Responses
 
@@ -457,6 +493,12 @@ names?: string[]
 ```ts
 // If given only list the queues on this address
 address?: string
+```
+
+#### Headers
+
+```ts
+jolokia-session-id: string
 ```
 
 #### Responses
@@ -533,6 +575,12 @@ name: string;
 routingType: string;
 ```
 
+#### Headers
+
+```ts
+jolokia-session-id: string
+```
+
 #### Responses
 
 - 200 Success
@@ -590,6 +638,12 @@ routingType: string;
 name: string;
 ```
 
+#### Headers
+
+```ts
+jolokia-session-id: string
+```
+
 #### Responses
 
 - 200 Success
@@ -620,6 +674,12 @@ name: string;
     "org.apache.activemq.artemis:broker=\"amq-broker\",component=acceptors,name=\"scaleDown\""
   ]
   ```
+
+#### Headers
+
+```ts
+jolokia-session-id: string
+```
 
 #### Responses
 
@@ -677,6 +737,12 @@ name: string;
 ```ts
 // the acceptor name
 name: string;
+```
+
+#### Headers
+
+```ts
+jolokia-session-id: string
 ```
 
 #### Responses

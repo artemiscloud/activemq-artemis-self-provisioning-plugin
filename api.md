@@ -74,6 +74,11 @@ see [openapi spec](https://spec.openapis.org/oas/latest.html)
 
 **Note**: If you make changes to the openapi.yml, please run `yarn build-api-doc` to update the doc.
 
+### Update the generated endpoints for the frontend
+
+After any change to the api, run `yarn codegen` to regenerate the endpoints for the frontend.
+If necessary update the code that is using the hooks to comply with your changes.
+
 ## Path Table
 
 | Method | Path                                              | Description                      |
@@ -338,7 +343,7 @@ names?: string[]
   // The method signature
   signature: string
   // The method arguments
-  arguments?: string[]
+  args?: string[]
 }
 ```
 
@@ -756,7 +761,7 @@ name: string;
   // The method signature
   signature: string
   // The method arguments
-  arguments?: string[]
+  args?: string[]
 }
 ```
 

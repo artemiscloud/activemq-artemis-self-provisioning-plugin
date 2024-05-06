@@ -124,7 +124,7 @@ If necessary update the code that is using the hooks to comply with your changes
 
 #### RequestBody
 
-- application/x-www-form-urlencoded
+- application/json
 
 ```ts
 {

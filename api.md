@@ -81,21 +81,22 @@ If necessary update the code that is using the hooks to comply with your changes
 
 ## Path Table
 
-| Method | Path                                              | Description                      |
-| ------ | ------------------------------------------------- | -------------------------------- |
-| POST   | [/jolokia/login](#postjolokialogin)               | The login api                    |
-| GET    | [/brokers](#getbrokers)                           | retrieve the broker mbean        |
-| GET    | [/brokerDetails](#getbrokerdetails)               | broker details                   |
-| GET    | [/readBrokerAttributes](#getreadbrokerattributes) | read broker attributes           |
-| POST   | [/execBrokerOperation](#postexecbrokeroperation)  | execute a broker operation       |
-| GET    | [/brokerComponents](#getbrokercomponents)         | list all mbeans                  |
-| GET    | [/addresses](#getaddresses)                       | retrieve all addresses on broker |
-| GET    | [/queues](#getqueues)                             | list queues                      |
-| GET    | [/queueDetails](#getqueuedetails)                 | retrieve queue details           |
-| GET    | [/addressDetails](#getaddressdetails)             | retrieve address details         |
-| GET    | [/acceptors](#getacceptors)                       | list acceptors                   |
-| GET    | [/acceptorDetails](#getacceptordetails)           | retrieve acceptor details        |
-| GET    | [/api-info](#getapi-info)                         | the api info                     |
+| Method | Path                                              | Description                           |
+| ------ | ------------------------------------------------- | ------------------------------------- |
+| POST   | [/jolokia/login](#postjolokialogin)               | The login api                         |
+| GET    | [/brokers](#getbrokers)                           | retrieve the broker mbean             |
+| GET    | [/brokerDetails](#getbrokerdetails)               | broker details                        |
+| GET    | [/readBrokerAttributes](#getreadbrokerattributes) | read broker attributes                |
+| GET    | [/checkCredentials](#getcheckcredentials)         | Check the validity of the credentials |
+| POST   | [/execBrokerOperation](#postexecbrokeroperation)  | execute a broker operation            |
+| GET    | [/brokerComponents](#getbrokercomponents)         | list all mbeans                       |
+| GET    | [/addresses](#getaddresses)                       | retrieve all addresses on broker      |
+| GET    | [/queues](#getqueues)                             | list queues                           |
+| GET    | [/queueDetails](#getqueuedetails)                 | retrieve queue details                |
+| GET    | [/addressDetails](#getaddressdetails)             | retrieve address details              |
+| GET    | [/acceptors](#getacceptors)                       | list acceptors                        |
+| GET    | [/acceptorDetails](#getacceptordetails)           | retrieve acceptor details             |
+| GET    | [/api-info](#getapi-info)                         | the api info                          |
 
 ## Reference Table
 
@@ -309,6 +310,34 @@ jolokia-session-id: string
 {
 }
 [];
+```
+
+---
+
+### [GET]/checkCredentials
+
+- Summary  
+  Check the validity of the credentials
+
+#### Headers
+
+```ts
+jolokia-session-id: string
+```
+
+#### Responses
+
+- 200 Success
+
+`application/json`
+
+```ts
+{
+  message: string
+  status: string
+  // The jwt token
+  jolokia-session-id: string
+}
 ```
 
 ---

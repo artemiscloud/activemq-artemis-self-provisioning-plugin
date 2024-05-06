@@ -3,6 +3,7 @@
 /* eslint-disable */
 import type { BrokersResponse } from '../models/BrokersResponse';
 import type { OperationRef } from '../models/OperationRef';
+import type { SimpleResponse } from '../models/SimpleResponse';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -141,6 +142,24 @@ export class JolokiaService {
       },
       query: {
         names: names,
+      },
+    });
+  }
+
+  /**
+   * Check the validity of the credentials
+   * @param jolokiaSessionId
+   * @returns SimpleResponse Success
+   * @throws ApiError
+   */
+  public static checkCredentials(
+    jolokiaSessionId: string,
+  ): CancelablePromise<SimpleResponse> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/checkCredentials',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
       },
     });
   }

@@ -113,6 +113,35 @@ export const useJolokiaServiceReadBrokerAttributes = <
     () => JolokiaService.readBrokerAttributes(jolokiaSessionId, names),
     options,
   );
+export const useJolokiaServiceCheckCredentialsKey =
+  'JolokiaServiceCheckCredentials';
+export const useJolokiaServiceCheckCredentials = <
+  TQueryKey extends Array<unknown> = unknown[],
+>(
+  {
+    jolokiaSessionId,
+  }: {
+    jolokiaSessionId: string;
+  },
+  queryKey?: TQueryKey,
+  options?: Omit<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof JolokiaService.checkCredentials>>,
+      unknown,
+      Awaited<ReturnType<typeof JolokiaService.checkCredentials>>,
+      unknown[]
+    >,
+    'queryKey' | 'queryFn' | 'initialData'
+  >,
+) =>
+  useQuery(
+    [
+      useJolokiaServiceCheckCredentialsKey,
+      ...(queryKey ?? [{ jolokiaSessionId }]),
+    ],
+    () => JolokiaService.checkCredentials(jolokiaSessionId),
+    options,
+  );
 export const useJolokiaServiceExecBrokerOperation = (
   options?: Omit<
     UseMutationOptions<

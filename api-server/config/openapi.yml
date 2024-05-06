@@ -298,6 +298,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BrokersResponse'
+  /checkCredentials:
+    get:
+      summary: Check the validity of the credentials
+      tags:
+        - jolokia
+      operationId: checkCredentials
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleResponse'
   /execBrokerOperation:
     post:
       summary: execute a broker operation

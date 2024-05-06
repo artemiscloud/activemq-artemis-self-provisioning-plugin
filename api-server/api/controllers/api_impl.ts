@@ -285,3 +285,13 @@ export const apiInfo = (_: express.Request, res: express.Response): void => {
     status: 'successful',
   });
 };
+
+export const checkCredentials = (
+  _: express.Request,
+  res: express.Response,
+): void => {
+  res.json({
+    message: 'ok',
+    status: 'successful',
+  });
+};

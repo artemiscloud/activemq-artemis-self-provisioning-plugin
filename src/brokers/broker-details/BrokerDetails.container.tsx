@@ -14,6 +14,7 @@ import {
   Title,
   PageSection,
   PageSectionVariants,
+  Spinner,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
 import {
@@ -28,9 +29,11 @@ import {
   JolokiaTestPanel,
   useJolokiaLogin,
   AuthContext,
-  LoginState,
+  getApiServerBaseUrl,
 } from '../../utils';
 import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBreadcrumb';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { OpenAPI as OpenAPIConfig } from '../../openapi/jolokia/requests/core/OpenAPI';
 
 const BrokerDetailsPage: FC = () => {
   const { t } = useTranslation();
@@ -75,27 +78,31 @@ const BrokerDetailsPage: FC = () => {
 
   const podOrdinal = parseInt(podName.replace(brokerName + '-ss-', ''));
 
-  const [token, loginState] = useJolokiaLogin(
+  const { token, isSucces, isLoading, isError, source } = useJolokiaLogin(
     brokerDetails,
     routes,
     podOrdinal,
   );
-  const [prevLoginState, setPrevLoginState] = useState<LoginState>(loginState);
 
-  if (prevLoginState !== loginState) {
-    if (loginState === 'ok') {
+  const [prevIsLoading, setPrevIsLoading] = useState(isLoading);
+  const [notify, setNotify] = useState(false);
+  if (prevIsLoading !== isLoading) {
+    if (!isLoading && source === 'api') {
+      setNotify(true);
+    }
+    setPrevIsLoading(isLoading);
+  }
+  if (notify) {
+    if (isSucces) {
       // TODO maybe use the OpenShift console notification system to let the
       // user know that the login was a success?
       alert(
         'login successful ' + brokerDetails?.metadata?.name + ' token ' + token,
       );
-    }
-    // TODO maybe use the OpenShift console notification system to let the user
-    // know that there was an issue with the jolokia login.
-    if (loginState === 'fail') {
+    } else {
       alert('login failed');
     }
-    setPrevLoginState(loginState);
+    setNotify(false);
   }
 
   return (
@@ -145,18 +152,20 @@ const BrokerDetailsPage: FC = () => {
             eventKey={5}
             title={
               <TabTitleText>
-                {t('check-jolokia')}
+                {t('check-jolokia ')}
 
-                {(loginState === 'ok' || loginState === 'session') && (
-                  <GreenCheckCircleIcon title="Jolokia connected" />
+                {isLoading && (
+                  <Spinner size="sm" aria-label="connecting to jolokia" />
                 )}
-                {loginState === 'fail' && (
+                {isSucces && <GreenCheckCircleIcon title="Jolokia connected" />}
+                {isError && (
                   <RedExclamationCircleIcon title="Jolokia connection failed" />
                 )}
               </TabTitleText>
             }
           >
-            <JolokiaTestPanel broker={brokerDetails} ordinal={podOrdinal} />
+            <JolokiaTestPanel />
+            <br />
           </Tab>
         </Tabs>
       </PageSection>
@@ -164,4 +173,14 @@ const BrokerDetailsPage: FC = () => {
   );
 };
 
-export default BrokerDetailsPage;
+const App: FC = () => {
+  OpenAPIConfig.BASE = getApiServerBaseUrl();
+  const querClient = new QueryClient();
+  return (
+    <QueryClientProvider client={querClient}>
+      <BrokerDetailsPage />
+    </QueryClientProvider>
+  );
+};
+
+export default App;

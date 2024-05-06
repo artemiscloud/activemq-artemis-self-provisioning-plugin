@@ -180,8 +180,14 @@ export const VerifyLogin = async (
             } else {
               const brokerKey = decoded['id'];
               const jolokia = securityStore.get(brokerKey);
-              res.locals.jolokia = jolokia;
-              next();
+              if (jolokia) {
+                res.locals.jolokia = jolokia;
+                next();
+              } else {
+                res.status(401).json({
+                  message: 'This session has expired. Please login again',
+                });
+              }
             }
           },
         );

@@ -262,7 +262,7 @@ const getJolokiaLoginParameters = (
   if (brokerRoutes?.length === 0 && process.env.NODE_ENV !== 'production') {
     return requestBody;
   }
-  if (!broker.spec) {
+  if (!broker.spec || !broker.spec['console']) {
     return requestBody;
   }
 

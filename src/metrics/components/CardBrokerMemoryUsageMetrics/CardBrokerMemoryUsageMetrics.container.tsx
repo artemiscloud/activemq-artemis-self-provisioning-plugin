@@ -1,5 +1,4 @@
 import { FC, useState, useEffect, useMemo, useCallback } from 'react';
-import _ from 'lodash';
 import { CardQueryBrowser } from '../../../shared-components/CardQueryBrowser/CardQueryBrowser';
 import { parsePrometheusDuration } from '../../../utils';
 import {

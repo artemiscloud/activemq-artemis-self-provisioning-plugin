@@ -19,6 +19,7 @@ plugins:
   - prettier
   - react
   - '@typescript-eslint'
+  - 'unused-imports'
 rules:
   eqeqeq: error
   prettier/prettier:
@@ -26,6 +27,7 @@ rules:
   react/react-in-jsx-scope: 'off'
   react/no-unescaped-entities: 'off'
   react/prop-types: 'off'
+  unused-imports/no-unused-imports-ts: 2
 settings:
   react:
     version: detect

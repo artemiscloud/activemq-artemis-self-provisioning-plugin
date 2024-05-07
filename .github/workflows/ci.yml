@@ -52,6 +52,32 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
 
+  openapi:
+    name: Check that the openapi file is in sync with the generated files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Get cache and install dependencies
+        uses: ./.github/actions/cache-restore
+
+      - name: run the code generation
+        continue-on-error: true
+        run: yarn codegen
+
+      - name: regenerate the api.md
+        continue-on-error: true
+        run: yarn build-api-doc && yarn pretty-quick
+
+      - name: check there is no manual changes
+        run: git diff && [ -z "$(git status --porcelain=v1 2>/dev/null)" ] && echo "✓ No manual changes." || echo "✗ Codegen manually changed, please refer to the api.md for the procedure to follow for programmatically generated endpoints." && [ -z "$(git status --porcelain=v1 2>/dev/null)" ]
+
   build:
     name: Build
     runs-on: ubuntu-latest

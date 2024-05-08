@@ -78,10 +78,15 @@ export const getAddresses = (
     const jolokia = res.locals.jolokia;
 
     const comps = jolokia.getComponents(ArtemisJolokia.ADDRESS);
-
     comps
       .then((result: any[]) => {
-        res.json(result);
+        const names = result.map((r) =>
+          r.split(',')[0].split('=')[1].replace(new RegExp('"', 'g'), ''),
+        );
+        const returnValue = names.map((name) => {
+          return { name: name };
+        });
+        res.json(returnValue);
       })
       .catch((error: any) => {
         console.log(error);

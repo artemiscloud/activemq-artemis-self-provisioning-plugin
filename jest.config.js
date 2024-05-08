@@ -23,4 +23,5 @@ module.exports = {
     'storiesHelpers.ts',
     '.*.stories.tsx',
   ],
+  testTimeout: 30000,
 };

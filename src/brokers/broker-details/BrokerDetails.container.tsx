@@ -20,8 +20,7 @@ import { useTranslation } from '../../i18n';
 import {
   ClientsContainer,
   ConfigurationContainer,
-  QueuesContainer,
-  TopicsContainer,
+  AddressContainer,
   OverviewContainer,
 } from './components';
 import {
@@ -142,11 +141,11 @@ const BrokerDetailsPage: FC = () => {
           <Tab eventKey={2} title={<TabTitleText>{t('clients')}</TabTitleText>}>
             <ClientsContainer />
           </Tab>
-          <Tab eventKey={3} title={<TabTitleText>{t('queues')}</TabTitleText>}>
-            <QueuesContainer />
-          </Tab>
-          <Tab eventKey={4} title={<TabTitleText>{t('topics')}</TabTitleText>}>
-            <TopicsContainer />
+          <Tab
+            eventKey={3}
+            title={<TabTitleText>{t('addresses')}</TabTitleText>}
+          >
+            <AddressContainer />
           </Tab>
           <Tab
             eventKey={5}

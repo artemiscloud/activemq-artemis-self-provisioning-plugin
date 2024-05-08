@@ -418,15 +418,19 @@ describe('test api server apis', () => {
         apiUrlPrefix +
           '/search/org.apache.activemq.artemis:broker=%22amq-broker%22,component=addresses,address=*',
       )
-      .reply(200, JSON.stringify(jolokiaResp));
+      .reply(200, jolokiaResp);
 
     const resp = await doGet('/addresses', authToken);
     expect(resp.ok).toBeTruthy();
 
     const value = await resp.json();
-    expect(value.length).toEqual(result.length);
+    const expectedValue = result
+      .map((r) => r.split(',')[0].split('=')[1].replace(/"/g, ''))
+      .map((name) => ({ name }));
+
+    expect(value.length).toEqual(expectedValue.length);
     for (let i = 0; i < value.length; i++) {
-      expect(value[i]).toEqual(result[i]);
+      expect(value[i].name).toEqual(expectedValue[i].name);
     }
   });
 

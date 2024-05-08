@@ -6,6 +6,7 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { Address } from './models/Address';
 export type { BrokersResponse } from './models/BrokersResponse';
 export type { OperationRef } from './models/OperationRef';
 export type { SimpleResponse } from './models/SimpleResponse';

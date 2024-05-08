@@ -36,7 +36,7 @@
   "chart_popover_icon_screenreader_text": "Information about {{title}}",
   "skeleton_loader_screenreader_text": "Metrics data is loading",
   "metric_not_available": "Data unavailable",
-  "routing_type": "Routing type",
+  "routing_type": "Routing Type",
   "auto_create_queues": "Auto create queues",
   "auto_delete_queues": "Auto delete queues",
   "delete_modal_instance_title": "Delete instance ?",
@@ -78,5 +78,7 @@
   "memory_usage_metrics": "Memory Usage Metrics",
   "cpu_usage_metrics": "CPU Usage Metrics",
   "pods": "Pods",
-  "/": "/"
+  "/": "/",
+  "addresses": "Addresses",
+  "address": "Address"
 }

@@ -520,7 +520,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BrokersResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Address'
   /queues:
     get:
       summary: list queues
@@ -874,3 +876,10 @@ components:
       items:
         type: object
         additionalProperties: true
+    Address:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string

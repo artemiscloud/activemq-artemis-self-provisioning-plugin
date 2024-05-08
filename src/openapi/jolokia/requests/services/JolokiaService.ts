@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Address } from '../models/Address';
 import type { BrokersResponse } from '../models/BrokersResponse';
 import type { OperationRef } from '../models/OperationRef';
 import type { SimpleResponse } from '../models/SimpleResponse';
@@ -339,12 +340,12 @@ export class JolokiaService {
    * ```
    *
    * @param jolokiaSessionId
-   * @returns BrokersResponse Success
+   * @returns Address Success
    * @throws ApiError
    */
   public static getAddresses(
     jolokiaSessionId: string,
-  ): CancelablePromise<BrokersResponse> {
+  ): CancelablePromise<Array<Address>> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/addresses',

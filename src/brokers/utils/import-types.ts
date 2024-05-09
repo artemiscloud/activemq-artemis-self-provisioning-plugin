@@ -1,9 +1,9 @@
 import { K8sResourceCommon } from '../../utils';
 import { EditorType } from './add-broker';
 
-export interface AddBrokerFormYamlValues {
-  editorType?: EditorType;
+export interface AddBrokerResourceValues {
   shouldShowYAMLMessage?: boolean;
-  formData?: K8sResourceCommon;
+  editorType?: EditorType;
   yamlData?: K8sResourceCommon;
+  setYamlData?: (updater: (brokerModel: K8sResourceCommon) => void) => void;
 }

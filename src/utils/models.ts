@@ -1,5 +1,11 @@
 import { K8sModel } from '@openshift-console/dynamic-plugin-sdk';
-import { AMQ_BROKER_APIGROUP, API_VERSION } from './constants';
+import {
+  AMQ_BROKER_APIGROUP,
+  API_VERSION,
+  CERT_ISSUER_VERSION,
+  CERT_MANAGER_APIGROUP,
+  CERT_VERSION,
+} from './constants';
 
 export const AMQBrokerModel: K8sModel = {
   apiGroup: AMQ_BROKER_APIGROUP,
@@ -12,6 +18,36 @@ export const AMQBrokerModel: K8sModel = {
   plural: 'activemqartemises',
   id: 'broker',
   abbr: 'B',
+  namespaced: false,
+  crd: true,
+};
+
+export const CertIssuerModel: K8sModel = {
+  apiGroup: CERT_MANAGER_APIGROUP,
+  apiVersion: CERT_ISSUER_VERSION,
+  kind: 'IssuerList',
+  label: 'Issuer',
+  labelKey: 'Issuers',
+  labelPlural: 'Issuers',
+  labelPluralKey: 'issuers',
+  plural: 'issuers',
+  id: 'issuer',
+  abbr: 'I',
+  namespaced: false,
+  crd: true,
+};
+
+export const CertModel: K8sModel = {
+  apiGroup: CERT_MANAGER_APIGROUP,
+  apiVersion: CERT_VERSION,
+  kind: 'CertificateList',
+  label: 'Certificate',
+  labelKey: 'Certificate',
+  labelPlural: 'Certificates',
+  labelPluralKey: 'Certificates',
+  plural: 'certificates',
+  id: 'certificate',
+  abbr: 'C',
   namespaced: false,
   crd: true,
 };

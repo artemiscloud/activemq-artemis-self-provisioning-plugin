@@ -1,14 +1,17 @@
-import { FC, FormEvent } from 'react';
+import { FC, FormEvent, useContext } from 'react';
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant, Divider } from '@patternfly/react-core';
 import { YamlEditorView, EditorToggle, FormView } from './components';
-import { AddBrokerFormYamlValues, EditorType } from '../utils';
+import {
+  AddBrokerResourceValues,
+  BrokerConfigContext,
+  EditorType,
+} from '../utils';
 
 type AddBrokerProps = {
   onCreateBroker: (data?: K8sResourceCommon) => void;
-  onChangeValue?: (values: AddBrokerFormYamlValues) => void;
+  onChangeValue?: (values: AddBrokerResourceValues) => void;
   namespace: string;
-  formValues: AddBrokerFormYamlValues;
   notification: {
     title: string;
     variant: AlertVariant;
@@ -20,10 +23,11 @@ const AddBroker: FC<AddBrokerProps> = ({
   onCreateBroker,
   notification,
   namespace,
-  formValues,
   onChangeValue,
   isEditWorkFlow,
 }) => {
+  const formValues = useContext(BrokerConfigContext);
+
   const { editorType } = formValues;
 
   const onSelectEditorType = (editorType: EditorType) => {
@@ -38,9 +42,9 @@ const AddBroker: FC<AddBrokerProps> = ({
     const newFormValues = {
       ...formValues,
       formData: {
-        ...formValues.formData,
+        ...formValues.yamlData,
         metadata: {
-          ...formValues.formData.metadata,
+          ...formValues.yamlData.metadata,
           [fieldName]: value,
         },
       },
@@ -58,12 +62,12 @@ const AddBroker: FC<AddBrokerProps> = ({
           <Divider />
           <EditorToggle value={editorType} onChange={onSelectEditorType} />
           <Divider />
-          {editorType === EditorType.Form && (
+          {editorType === EditorType.BROKER && (
             <FormView
-              formValues={formValues.formData}
               onChangeFieldValue={onChangeFieldValue}
               onCreateBroker={onCreateBroker}
               notification={notification}
+              targetNs={namespace}
             />
           )}
         </>

@@ -1,13 +1,20 @@
-import { FC, Suspense, useState, useEffect } from 'react';
-import { load } from 'js-yaml';
-import { Alert, AlertVariant, AlertGroup } from '@patternfly/react-core';
+import { FC, Suspense, useContext } from 'react';
 import {
-  ResourceYAMLEditor,
+  Alert,
+  AlertVariant,
+  AlertGroup,
+  Button,
+  Page,
+} from '@patternfly/react-core';
+import {
+  CodeEditor,
   useAccessReview,
 } from '@openshift-console/dynamic-plugin-sdk';
 import { AMQBrokerModel, K8sResourceCommon } from '../../../../utils';
 import { Loading } from '../../../../shared-components';
 import { useTranslation } from '../../../../i18n';
+import { BrokerConfigContext } from '../../../utils';
+//import _ from 'lodash';
 
 export type YamlEditorViewProps = {
   onCreateBroker: (content: any) => void;
@@ -22,11 +29,13 @@ export type YamlEditorViewProps = {
 const YamlEditorView: FC<YamlEditorViewProps> = ({
   onCreateBroker,
   namespace,
-  initialResourceYAML,
   notification,
 }) => {
   const { t } = useTranslation();
-  const [data, setData] = useState<K8sResourceCommon>();
+
+  //  const [data, setData] = useState<K8sResourceCommon>();
+  const yamlValue = useContext(BrokerConfigContext);
+
   const [canCreateBroker, loadingAccessReview] = useAccessReview({
     group: AMQBrokerModel.apiGroup,
     resource: AMQBrokerModel.plural,
@@ -34,14 +43,24 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
     verb: 'create',
   });
 
-  useEffect(() => {
-    setData(initialResourceYAML);
-  }, [initialResourceYAML]);
-
-  const onSave = (content: string) => {
-    const yamlData: K8sResourceCommon = load(content);
-    setData(yamlData);
+  const onSave = () => {
+    const yamlData: K8sResourceCommon = yamlValue.yamlData;
     onCreateBroker(yamlData);
+  };
+
+  //event: contains information of changes
+  //value: contains full yaml model
+  const onChanges = (newValue: any, _event: any) => {
+    //yamlValue.yamlData = JSON.parse(newValue);
+    //instead of blatantly replce the whole contents
+    //compare them and only accept additive contents, or
+    // else warning and refuse to update.
+    console.log('old value:', yamlValue.yamlData);
+    console.log('new value', JSON.parse(newValue));
+    Object.assign(yamlValue.yamlData, JSON.parse(newValue));
+    //_.merge(yamlValue.yamlData, newValue);
+
+    console.log('module after merge:', yamlValue.yamlData);
   };
 
   if (loadingAccessReview) return <Loading />;
@@ -49,7 +68,7 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
   return (
     <>
       {canCreateBroker ? (
-        <>
+        <Page>
           {notification.title && (
             <AlertGroup>
               <Alert
@@ -63,13 +82,15 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
             </AlertGroup>
           )}
           <Suspense fallback={<Loading />}>
-            <ResourceYAMLEditor
-              initialResource={data}
-              header={t('create_resource')}
+            <CodeEditor
+              value={JSON.stringify(yamlValue.yamlData, null, '  ')}
+              language="yaml"
               onSave={onSave}
+              onChange={onChanges}
             />
           </Suspense>
-        </>
+          <Button>Save</Button>
+        </Page>
       ) : (
         <Alert
           variant={AlertVariant.default}

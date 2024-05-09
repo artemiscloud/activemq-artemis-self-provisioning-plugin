@@ -29,12 +29,12 @@ export const EditorToggle: React.FC<EditorToggleProps> = ({
       >
         <label id="radio-group-title-editor-toggle">{t('configure_via')}</label>
         <Radio
-          isChecked={value === EditorType.Form}
-          name={EditorType.Form}
+          isChecked={value === EditorType.BROKER}
+          name={EditorType.BROKER}
           onChange={handleChange}
-          label={t('form_view')}
-          id={EditorType.Form}
-          value={EditorType.Form}
+          label={t('broker_view')}
+          id={EditorType.BROKER}
+          value={EditorType.BROKER}
         />
         <Radio
           isChecked={value === EditorType.YAML}

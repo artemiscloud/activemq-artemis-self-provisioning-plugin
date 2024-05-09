@@ -1,36 +1,32 @@
-import { getAPIVersionForModel } from '@openshift-console/dynamic-plugin-sdk';
-import { AddBrokerFormYamlValues } from './import-types';
-import {
-  K8sResourceKind,
-  AMQBrokerModel,
-  K8sResourceCommon,
-} from '../../utils';
+//import { getAPIVersionForModel } from '@openshift-console/dynamic-plugin-sdk';
+import { AddBrokerResourceValues } from './import-types';
+import { K8sResourceKind, K8sResourceCommon } from '../../utils';
+import { createContext } from 'react';
 // import { safeJSToYAML } from '../utils';
 
-export const convertFormToBrokerYaml = (
-  formData: K8sResourceCommon,
-): K8sResourceKind => {
-  const { metadata, spec = {}, kind } = formData;
+export enum EditorType {
+  BROKER = 'broker',
+  YAML = 'yaml',
+}
 
-  return {
-    apiVersion: getAPIVersionForModel(AMQBrokerModel),
-    kind,
-    metadata,
-    spec,
-  };
-};
+export const BrokerConfigContext = createContext<AddBrokerResourceValues>({});
 
 export const addBrokerInitialValues = (
   namespace: string,
-): AddBrokerFormYamlValues => {
+): AddBrokerResourceValues => {
   const initialFormData: K8sResourceCommon = {
     apiVersion: 'broker.amq.io/v1beta1',
     kind: 'ActiveMQArtemis',
     metadata: {
-      name: 'default',
+      name: 'ex-aao',
       namespace,
     },
     spec: {
+      adminUser: 'admin',
+      adminPassword: 'admin',
+      console: {
+        expose: true,
+      },
       deploymentPlan: {
         image: 'placeholder',
         requireLogin: false,
@@ -49,16 +45,13 @@ export const addBrokerInitialValues = (
 
   return {
     shouldShowYAMLMessage: true,
-    editorType: EditorType.YAML,
-    yamlData: convertFormToBrokerYaml(initialFormData),
-    formData: initialFormData,
+    editorType: EditorType.BROKER,
+    yamlData: initialFormData,
+    setYamlData: (updater: (brokerModel: K8sResourceCommon) => void) => {
+      updater(initialFormData);
+    },
   };
 };
-
-export enum EditorType {
-  Form = 'form',
-  YAML = 'yaml',
-}
 
 export const convertYamlToForm = (yamlBroker: K8sResourceKind) => {
   const { metadata } = yamlBroker;

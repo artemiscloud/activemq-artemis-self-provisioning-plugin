@@ -1,15 +1,15 @@
-import express from 'express';
+//import express from 'express';
 import createServer from './utils/server';
 import https from 'https';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-import webpack from 'webpack';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
+//import webpack from 'webpack';
+//import webpackDevMiddleware from 'webpack-dev-middleware';
 import livereload from 'livereload';
 import connectLiveReload from 'connect-livereload';
-import config from '../webpack.config';
+// import webpackHotMiddleware from 'webpack-hot-middleware';
+// import config from '../webpack.config';
 
 dotenv.config();
 
@@ -26,35 +26,40 @@ if (process.argv[2] === undefined) {
 const staticBase = path.resolve(process.argv[2]);
 console.log('Serving static files under', staticBase);
 
-const app = express();
-const compiler = webpack(config);
+// const app = express();
+// const compiler = webpack(config);
 
-//Livereload setup
-if (process.env.NODE_ENV === 'development') {
-  const liveReloadServer = livereload.createServer();
-  liveReloadServer.watch(path.join(__dirname, 'dist'));
-}
-
-// Use webpack-dev-middleware to serve webpack bundles
-app.use(
-  webpackDevMiddleware(compiler, {
-    publicPath: config?.output?.publicPath,
-  }),
-);
+// // Use webpack-dev-middleware to serve webpack bundles
+// app.use(
+//   webpackDevMiddleware(compiler, {
+//     publicPath: config?.output?.publicPath,
+//   }),
+// );
 
 // Use webpack-hot-middleware for hot-reloading
-app.use(webpackHotMiddleware(compiler));
+//app.use(webpackHotMiddleware(compiler));
 
 // Serve your static files
-app.use(express.static(staticBase));
+//app.use(express.static(staticBase));
 
 // Use connect-livereload
-if (process.env.NODE_ENV === 'development') {
-  app.use(connectLiveReload());
-}
+// if (process.env.NODE_ENV === 'development') {
+//   app.use(connectLiveReload());
+// }
 
 createServer(staticBase)
   .then((server) => {
+    //Livereload setup
+    if (process.env.NODE_ENV === 'development') {
+      const liveReloadServer = livereload.createServer();
+      liveReloadServer.watch(path.join(__dirname, 'dist'));
+      liveReloadServer.server.once('connection', () => {
+        setTimeout(() => {
+          liveReloadServer.refresh('/');
+        }, 100);
+      });
+      server.use(connectLiveReload());
+    }
     server.listen(9001, () => {
       console.info(`Listening on http://0.0.0.0:9001`);
     });

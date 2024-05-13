@@ -16,7 +16,7 @@ import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 
 type FormViewProps = {
   formValues: K8sResourceCommon;
-  onChangeFieldValue: (value: string, evt: FormEvent<HTMLInputElement>) => void;
+  onChangeFieldValue: (evt: FormEvent<HTMLInputElement>, value: string) => void;
   onCreateBroker: (formValues: K8sResourceCommon) => void;
   notification: {
     title: string;
@@ -32,7 +32,7 @@ export const FormView: FC<FormViewProps> = ({
 }) => {
   const { t } = useTranslation();
   const history = useHistory();
-  const defaultNotification = { title: '', variant: AlertVariant.default };
+  const defaultNotification = { title: '', variant: AlertVariant.custom };
 
   //states
   const [notification, setNotification] = useState(defaultNotification);

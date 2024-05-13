@@ -9,7 +9,7 @@ import { EditorType } from '../utils/add-broker';
 
 const UpdateBrokerPage: FC = () => {
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
-  const defaultNotification = { title: '', variant: AlertVariant.default };
+  const defaultNotification = { title: '', variant: AlertVariant.info };
 
   //states
   const [notification, setNotification] = useState(defaultNotification);

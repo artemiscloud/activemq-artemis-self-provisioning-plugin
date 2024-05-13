@@ -31,8 +31,8 @@ const AddBroker: FC<AddBrokerProps> = ({
   };
 
   const onChangeFieldValue = (
-    value: string,
     evt: FormEvent<HTMLInputElement>,
+    value: string,
   ) => {
     const fieldName = evt.currentTarget.name;
     const newFormValues = {

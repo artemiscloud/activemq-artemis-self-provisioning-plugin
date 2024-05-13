@@ -160,7 +160,7 @@ const JolokiaTestPanel: FC = () => {
       <TextInput
         value={testUrl}
         type="text"
-        onChange={(value, _event) => setTestUrl(value)}
+        onChange={(_event, value) => setTestUrl(value)}
         aria-label="text input example"
         placeholder={
           'input jolokia url here, example: https://' +

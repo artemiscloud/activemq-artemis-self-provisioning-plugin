@@ -1,4 +1,4 @@
-import { ChartThemeColor, mergeTheme } from '@patternfly/react-charts';
+import { ChartThemeColor, getCustomTheme } from '@patternfly/react-charts';
 import { global_palette_black_300 as globalBlack300 } from '@patternfly/react-tokens/dist/js/global_palette_black_300';
 
 const pfDependentAxisTickLabels = {
@@ -50,4 +50,4 @@ const theme = {
   },
 };
 
-export const chartTheme = mergeTheme(ChartThemeColor.multiUnordered, theme);
+export const chartTheme = getCustomTheme(ChartThemeColor.multiUnordered, theme);

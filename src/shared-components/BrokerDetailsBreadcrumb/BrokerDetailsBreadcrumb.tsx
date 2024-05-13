@@ -3,13 +3,15 @@ import { useHistory } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
+  Level,
+  LevelItem,
+} from '@patternfly/react-core';
+import {
   Dropdown,
   DropdownItem,
   DropdownPosition,
   KebabToggle,
-  Level,
-  LevelItem,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { PreConfirmDeleteModal } from '../../brokers/view-brokers/components/PreConfirmDeleteModal';
 import { useTranslation } from '../../i18n';
 import { k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
@@ -103,7 +105,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
             toggle={
               <KebabToggle
                 data-testid="broker-toggle-kebab"
-                onToggle={onToggle}
+                onToggle={(_event, isOpen: boolean) => onToggle(isOpen)}
               />
             }
             isOpen={isOpen}

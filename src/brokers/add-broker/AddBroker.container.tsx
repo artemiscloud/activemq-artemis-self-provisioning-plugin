@@ -10,7 +10,7 @@ const AddBrokerPage: FC = () => {
   const history = useHistory();
   const { ns: namespace } = useParams<{ ns?: string }>();
 
-  const defaultNotification = { title: '', variant: AlertVariant.default };
+  const defaultNotification = { title: '', variant: AlertVariant.info };
   const initialValues: AddBrokerFormYamlValues =
     addBrokerInitialValues(namespace);
 

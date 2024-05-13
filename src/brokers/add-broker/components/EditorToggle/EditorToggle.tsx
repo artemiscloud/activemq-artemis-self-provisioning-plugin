@@ -31,7 +31,7 @@ export const EditorToggle: React.FC<EditorToggleProps> = ({
         <Radio
           isChecked={value === EditorType.Form}
           name={EditorType.Form}
-          onChange={handleChange}
+          onChange={(event, _checked: boolean) => handleChange(_checked, event)}
           label={t('form_view')}
           id={EditorType.Form}
           value={EditorType.Form}
@@ -39,7 +39,7 @@ export const EditorToggle: React.FC<EditorToggleProps> = ({
         <Radio
           isChecked={value === EditorType.YAML}
           name={EditorType.YAML}
-          onChange={handleChange}
+          onChange={(event, _checked: boolean) => handleChange(_checked, event)}
           label={t('yaml_view')}
           id={EditorType.YAML}
           value={EditorType.YAML}

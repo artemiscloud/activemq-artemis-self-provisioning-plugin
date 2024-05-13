@@ -19,7 +19,7 @@
     "img-push": "podman push quay.io/$QUAY_USER/$npm_package_name:$npm_package_version",
     "img-run": "podman run -it -p 9001:9001 quay.io/$QUAY_USER/$npm_package_name:$npm_package_version",
     "start": "node ./server/app.js ./dist",
-    "start-dev": "yarn livereload & nodemon -e ts,tsx,json --exec ts-node --project tsconfig-server.json ./api-server/app.ts ./dist",
+    "start-dev": "nodemon --watch dist --watch api-server -e js,ts,tsx,json --exec ts-node --project tsconfig-server.json ./api-server/app.ts ./dist",
     "livereload": "livereload ./dist",
     "start-console": "./start-console.sh",
     "start-console-tls": "./start-console-tls.sh",
@@ -105,7 +105,6 @@
     "@types/react-router": "5.1.20",
     "@types/react-router-dom": "5.3.3",
     "@types/webpack": "5.28.1",
-    "@types/webpack-hot-middleware": "^2.25.9",
     "@typescript-eslint/eslint-plugin": "5.38.1",
     "@typescript-eslint/parser": "5.38.1",
     "babel-loader": "8.2.5",
@@ -144,10 +143,7 @@
     "ts-node": "10.9.1",
     "typescript": "4.8.4",
     "webpack": "^5.73.0",
-    "webpack-cli": "4.10.0",
-    "webpack-dev-middleware": "^7.2.1",
-    "webpack-dev-server": "^5.0.4",
-    "webpack-hot-middleware": "^2.26.1"
+    "webpack-cli": "4.10.0"
   },
   "consolePlugin": {
     "name": "activemq-artemis-self-provisioning-plugin",

@@ -4,11 +4,8 @@ import { Configuration as WebpackConfiguration } from 'webpack';
 import * as path from 'path';
 import { ConsoleRemotePlugin } from '@openshift-console/dynamic-plugin-sdk-webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 
-type Configuration = WebpackConfiguration & {
-  devServer?: DevServerConfiguration;
-};
+type Configuration = WebpackConfiguration;
 
 const config: Configuration = {
   mode: 'development',
@@ -62,9 +59,6 @@ const config: Configuration = {
       patterns: [{ from: path.resolve(__dirname, 'locales'), to: 'locales' }],
     }),
   ],
-  devServer: {
-    hot: true,
-  },
   devtool: 'source-map',
   optimization: {
     chunkIds: 'named',

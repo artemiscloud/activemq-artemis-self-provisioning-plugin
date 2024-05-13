@@ -1,15 +1,10 @@
-//import express from 'express';
 import createServer from './utils/server';
 import https from 'https';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-//import webpack from 'webpack';
-//import webpackDevMiddleware from 'webpack-dev-middleware';
 import livereload from 'livereload';
 import connectLiveReload from 'connect-livereload';
-// import webpackHotMiddleware from 'webpack-hot-middleware';
-// import config from '../webpack.config';
 
 dotenv.config();
 
@@ -25,27 +20,6 @@ if (process.argv[2] === undefined) {
 
 const staticBase = path.resolve(process.argv[2]);
 console.log('Serving static files under', staticBase);
-
-// const app = express();
-// const compiler = webpack(config);
-
-// // Use webpack-dev-middleware to serve webpack bundles
-// app.use(
-//   webpackDevMiddleware(compiler, {
-//     publicPath: config?.output?.publicPath,
-//   }),
-// );
-
-// Use webpack-hot-middleware for hot-reloading
-//app.use(webpackHotMiddleware(compiler));
-
-// Serve your static files
-//app.use(express.static(staticBase));
-
-// Use connect-livereload
-// if (process.env.NODE_ENV === 'development') {
-//   app.use(connectLiveReload());
-// }
 
 createServer(staticBase)
   .then((server) => {

@@ -278,6 +278,45 @@ describe('test api server apis', () => {
     expect(JSON.stringify(value)).toEqual(JSON.stringify(jolokiaResp));
   });
 
+  it('test readAddressAttributes', async () => {
+    const jolokiaResp = [
+      {
+        request: {
+          mbean:
+            'org.apache.activemq.artemis:broker="amq-broker",component=addresses,address="DLQ"',
+          attribute: 'RoutingTypes',
+          type: 'read',
+        },
+        value: ['ANYCAST'],
+        timestamp: 1713712378,
+        status: 200,
+      },
+    ];
+    mockJolokia
+      .post(apiUrlPrefix + '/', (body) => {
+        if (
+          body.length === 1 &&
+          body[0].type === 'read' &&
+          body[0].mbean ===
+            'org.apache.activemq.artemis:broker="amq-broker",component=addresses,address="DLQ"' &&
+          body[0].attribute === 'RoutingTypes'
+        ) {
+          return true;
+        }
+        return false;
+      })
+      .reply(200, JSON.stringify(jolokiaResp));
+
+    const resp = await doGet(
+      '/readAddressAttributes?name=DLQ&attrs=RoutingTypes',
+      authToken,
+    );
+    expect(resp.ok).toBeTruthy();
+
+    const value = await resp.json();
+    expect(JSON.stringify(value)).toEqual(JSON.stringify(jolokiaResp));
+  });
+
   it('test execBrokerOperation', async () => {
     const jolokiaResp = [
       {

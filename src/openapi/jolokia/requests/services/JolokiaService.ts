@@ -147,6 +147,61 @@ export class JolokiaService {
   }
 
   /**
+   * read address attributes
+   * **Read values of address attributes**
+   * The return value is a json array that contains
+   * values of requested attributes of the addresses's mbean.
+   *
+   * **Example:**
+   *
+   * **Request url:** https://localhost:9443/api/v1/readAddressAttributes?name=DLQ,attrs=RoutingTypes
+   * (To read the `RoutingTypes` attribute of the address DLQ)
+   *
+   * **Response:**
+   * ```json
+   * [
+   * {
+   * "request": {
+   * "mbean": "org.apache.activemq.artemis:address=\"DLQ\",broker=\"amq-broker\",component=addresses",
+   * "attribute": "RoutingTypes",
+   * "type": "read"
+   * },
+   * "value": [
+   * "ANYCAST"
+   * ],
+   * "timestamp": 1715864988,
+   * "status": 200
+   * }
+   * ]
+   * ```
+   * **Note**: to read multiple attributes, set it to **attrs** parameter
+   * separated by commas, e.g. `RoutingTypes,Address`.
+   *
+   * @param jolokiaSessionId
+   * @param name the address name
+   * @param attrs attribute names separated by commas. If not speified read all attributes.
+   * @returns BrokersResponse Success
+   * @throws ApiError
+   */
+  public static readAddressAttributes(
+    jolokiaSessionId: string,
+    name: string,
+    attrs?: Array<string>,
+  ): CancelablePromise<BrokersResponse> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/readAddressAttributes',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
+      query: {
+        name: name,
+        attrs: attrs,
+      },
+    });
+  }
+
+  /**
    * Check the validity of the credentials
    * @param jolokiaSessionId
    * @returns SimpleResponse Success

@@ -92,6 +92,33 @@ export const getAddresses = (
   }
 };
 
+export const readAddressAttributes = (
+  req: express.Request,
+  res: express.Response,
+): void => {
+  try {
+    const jolokia = res.locals.jolokia;
+    const addressName = req.query.name as string;
+    const addressAttrNames = req.query.attrs as string[];
+
+    const attributes = jolokia.readAddressAttributes(
+      addressName,
+      addressAttrNames,
+    );
+    attributes
+      .then((result: JolokiaReadResponse[]) => {
+        res.json(result);
+      })
+      .catch((error: any) => {
+        console.log(error);
+        res.status(500).json({ message: 'server error' });
+      });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: 'server error: ' + JSON.stringify(err) });
+  }
+};
+
 export const getQueues = (
   req: express.Request,
   res: express.Response,

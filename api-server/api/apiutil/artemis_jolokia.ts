@@ -26,6 +26,8 @@ const brokerDetailsListPattern =
 
 const brokerComponentPattern =
   'org.apache.activemq.artemis:broker="BROKER_NAME"';
+const addressComponentPattern =
+  'org.apache.activemq.artemis:broker="BROKER_NAME",component=addresses,address="ADDRESS_NAME"';
 
 export class ArtemisJolokia {
   username: string;
@@ -62,6 +64,7 @@ export class ArtemisJolokia {
 
   componentNameMap = new Map<string, string>([
     [ArtemisJolokia.BROKER, brokerComponentPattern],
+    [ArtemisJolokia.ADDRESS, addressComponentPattern],
   ]);
 
   constructor(
@@ -286,7 +289,51 @@ export class ArtemisJolokia {
       headers: headers,
       body: this.getPostBodyForAttributes(
         ArtemisJolokia.BROKER,
+        new Map<string, string>(),
         brokerAttrNames,
+      ),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.text();
+        }
+        throw response;
+      }) //directly use json()?
+      .then((message) => {
+        const resp: JolokiaReadResponse[] = JSON.parse(message);
+        return resp;
+      })
+      .catch((err) => {
+        throw err;
+      });
+
+    return reply;
+  };
+
+  readAddressAttributes = async (
+    addressName: string,
+    addressAttrNames: string[],
+  ): Promise<JolokiaReadResponse[]> => {
+    const headers = this.getAuthHeaders();
+    headers.set('Content-Type', 'application/json');
+    const url =
+      this.protocol +
+      '://' +
+      this.hostName +
+      ':' +
+      this.port +
+      '/console/jolokia/';
+
+    const param = new Map<string, string>();
+    param.set('ADDRESS_NAME', addressName);
+
+    const reply = await fetch(url, {
+      method: 'POST',
+      headers: headers,
+      body: this.getPostBodyForAttributes(
+        ArtemisJolokia.ADDRESS,
+        param,
+        addressAttrNames,
       ),
     })
       .then((response) => {
@@ -409,11 +456,20 @@ export class ArtemisJolokia {
     return false;
   };
 
-  getPostBodyForAttributes = (component: string, attrs?: string[]): string => {
+  getPostBodyForAttributes = (
+    component: string,
+    params?: Map<string, string>,
+    attrs?: string[],
+  ): string => {
     const bodyItems: JolokiaPostReadBodyItem[] = [];
     let bean = this.componentNameMap.get(component) as string;
     if (!bean) {
       throw 'undefined bean';
+    }
+    if (params !== undefined) {
+      for (const [key, value] of params) {
+        bean = bean.replace(key, value);
+      }
     }
     bean = bean.replace('BROKER_NAME', this.brokerName);
     if (attrs) {

@@ -298,6 +298,70 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BrokersResponse'
+  /readAddressAttributes:
+    get:
+      summary: read address attributes
+      description: >
+        **Read values of address attributes**
+          The return value is a json array that contains
+          values of requested attributes of the addresses's mbean.
+
+          **Example:**
+          
+          **Request url:** https://localhost:9443/api/v1/readAddressAttributes?name=DLQ,attrs=RoutingTypes
+          (To read the `RoutingTypes` attribute of the address DLQ)
+
+          **Response:**
+          ```json
+          [
+            {
+              "request": {
+                "mbean": "org.apache.activemq.artemis:address=\"DLQ\",broker=\"amq-broker\",component=addresses",
+                "attribute": "RoutingTypes",
+                "type": "read"
+              },
+              "value": [
+                "ANYCAST"
+              ],
+              "timestamp": 1715864988,
+              "status": 200
+            }
+          ]
+          ```
+          **Note**: to read multiple attributes, set it to **attrs** parameter
+          separated by commas, e.g. `RoutingTypes,Address`.
+      tags:
+        - jolokia
+      operationId: readAddressAttributes
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
+        - name: name
+          description: the address name
+          schema:
+            type: string
+          required: true
+          in: query
+        - name: attrs
+          description: attribute names separated by commas. If not speified read all attributes.
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrokersResponse'
   /checkCredentials:
     get:
       summary: Check the validity of the credentials

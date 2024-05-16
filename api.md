@@ -81,22 +81,23 @@ If necessary update the code that is using the hooks to comply with your changes
 
 ## Path Table
 
-| Method | Path                                              | Description                           |
-| ------ | ------------------------------------------------- | ------------------------------------- |
-| POST   | [/jolokia/login](#postjolokialogin)               | The login api                         |
-| GET    | [/brokers](#getbrokers)                           | retrieve the broker mbean             |
-| GET    | [/brokerDetails](#getbrokerdetails)               | broker details                        |
-| GET    | [/readBrokerAttributes](#getreadbrokerattributes) | read broker attributes                |
-| GET    | [/checkCredentials](#getcheckcredentials)         | Check the validity of the credentials |
-| POST   | [/execBrokerOperation](#postexecbrokeroperation)  | execute a broker operation            |
-| GET    | [/brokerComponents](#getbrokercomponents)         | list all mbeans                       |
-| GET    | [/addresses](#getaddresses)                       | retrieve all addresses on broker      |
-| GET    | [/queues](#getqueues)                             | list queues                           |
-| GET    | [/queueDetails](#getqueuedetails)                 | retrieve queue details                |
-| GET    | [/addressDetails](#getaddressdetails)             | retrieve address details              |
-| GET    | [/acceptors](#getacceptors)                       | list acceptors                        |
-| GET    | [/acceptorDetails](#getacceptordetails)           | retrieve acceptor details             |
-| GET    | [/api-info](#getapi-info)                         | the api info                          |
+| Method | Path                                                | Description                           |
+| ------ | --------------------------------------------------- | ------------------------------------- |
+| POST   | [/jolokia/login](#postjolokialogin)                 | The login api                         |
+| GET    | [/brokers](#getbrokers)                             | retrieve the broker mbean             |
+| GET    | [/brokerDetails](#getbrokerdetails)                 | broker details                        |
+| GET    | [/readBrokerAttributes](#getreadbrokerattributes)   | read broker attributes                |
+| GET    | [/readAddressAttributes](#getreadaddressattributes) | read address attributes               |
+| GET    | [/checkCredentials](#getcheckcredentials)           | Check the validity of the credentials |
+| POST   | [/execBrokerOperation](#postexecbrokeroperation)    | execute a broker operation            |
+| GET    | [/brokerComponents](#getbrokercomponents)           | list all mbeans                       |
+| GET    | [/addresses](#getaddresses)                         | retrieve all addresses on broker      |
+| GET    | [/queues](#getqueues)                               | list queues                           |
+| GET    | [/queueDetails](#getqueuedetails)                   | retrieve queue details                |
+| GET    | [/addressDetails](#getaddressdetails)               | retrieve address details              |
+| GET    | [/acceptors](#getacceptors)                         | list acceptors                        |
+| GET    | [/acceptorDetails](#getacceptordetails)             | retrieve acceptor details             |
+| GET    | [/api-info](#getapi-info)                           | the api info                          |
 
 ## Reference Table
 
@@ -292,6 +293,66 @@ jolokia-session-id: string
 
 ```ts
 names?: string[]
+```
+
+#### Headers
+
+```ts
+jolokia-session-id: string
+```
+
+#### Responses
+
+- 200 Success
+
+`application/json`
+
+```ts
+{
+}
+[];
+```
+
+---
+
+### [GET]/readAddressAttributes
+
+- Summary  
+  read address attributes
+
+- Description  
+  **Read values of address attributes**  
+   The return value is a json array that contains  
+   values of requested attributes of the addresses's mbean.
+  **Example:**
+  **Request url:** https://localhost:9443/api/v1/readAddressAttributes?name=DLQ,attrs=RoutingTypes  
+   (To read the `RoutingTypes` attribute of the address DLQ)
+  **Response:**
+  ```json
+  [
+    {
+      "request": {
+        "mbean": "org.apache.activemq.artemis:address=\"DLQ\",broker=\"amq-broker\",component=addresses",
+        "attribute": "RoutingTypes",
+        "type": "read"
+      },
+      "value": ["ANYCAST"],
+      "timestamp": 1715864988,
+      "status": 200
+    }
+  ]
+  ```
+  **Note**: to read multiple attributes, set it to **attrs** parameter  
+   separated by commas, e.g. `RoutingTypes,Address`.
+
+#### Parameters(Query)
+
+```ts
+name: string;
+```
+
+```ts
+attrs?: string[]
 ```
 
 #### Headers

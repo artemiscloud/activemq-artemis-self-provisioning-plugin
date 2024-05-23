@@ -6,7 +6,7 @@ import {
   k8sGet,
   useK8sWatchResource,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom-v5-compat';
 import {
   Tabs,
   Tab,

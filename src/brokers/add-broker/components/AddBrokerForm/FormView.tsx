@@ -1,5 +1,5 @@
 import { FC, FormEvent, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Form,
   FormGroup,
@@ -31,7 +31,7 @@ export const FormView: FC<FormViewProps> = ({
   notification: serverNotification,
 }) => {
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const defaultNotification = { title: '', variant: AlertVariant.custom };
 
   //states
@@ -65,7 +65,7 @@ export const FormView: FC<FormViewProps> = ({
   };
 
   const onCancel = () => {
-    history.push('/k8s/all-namespaces/brokers');
+    navigate('/k8s/all-namespaces/brokers');
   };
 
   return (

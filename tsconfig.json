@@ -1,29 +1,25 @@
 {
   "compilerOptions": {
-    "allowJs": true,
     "baseUrl": ".",
-    "outDir": "./dist",
     "module": "esnext",
     "moduleResolution": "node",
     "target": "es2020",
     "jsx": "react-jsx",
-    "strict": false,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "allowJs": true,
     "esModuleInterop": true,
+    "strict": false,
     "noUnusedLocals": true,
     "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true,
-    "importHelpers": true,
-    "declaration": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "skipLibCheck": true,
-    "paths": {
-      "@app/*": ["src/*"],
-      "react": ["./node_modules/@types/react"]
-    }
   },
-  "include": ["./src/*", "./src/**/*", "setupTests.ts", "__mocks__"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src", "__mocks__", "setupTests.ts"],
+  "exclude": ["node_modules"],
+  "ts-node": {
+    "files": true,
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  }
 }

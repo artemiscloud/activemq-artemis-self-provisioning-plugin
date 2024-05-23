@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -30,7 +30,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [_loadError, setLoadError] = useState<any>();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   let redirectPath: string;
   redirectPath = `/k8s/ns/${namespace}/brokers`;
@@ -41,7 +41,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   }
 
   const onClickEditBroker = () => {
-    history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
+    navigate(`/k8s/ns/${namespace}/edit-broker/${name}`);
   };
 
   const onClickDeleteBroker = () => {
@@ -58,7 +58,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
       resource: { metadata: { name, namespace: namespace } },
     })
       .then(() => {
-        history.push(redirectPath);
+        navigate(redirectPath);
       })
       .catch((e) => {
         setLoadError(e.message);

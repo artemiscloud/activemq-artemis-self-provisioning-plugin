@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom-v5-compat';
 import { Spinner } from '@patternfly/react-core';
 import { PartialStoryFn, StoryContext } from '@storybook/csf';
 import { Args, ReactFramework } from '@storybook/react/types-6-0';

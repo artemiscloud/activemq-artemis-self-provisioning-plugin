@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { SimpleResponse } from '../models/SimpleResponse';
+import type { LoginResponse } from '../models/LoginResponse';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -19,7 +19,7 @@ export class SecurityService {
    * apis defined in this file. With each request the client must include a valid jwt token in a http header named `jolokia-session-id`. The api-server will validate the token before processing a request is and rejects the request if the token is not valid.
    *
    * @param requestBody
-   * @returns SimpleResponse Success
+   * @returns LoginResponse Success
    * @throws ApiError
    */
   public static login(requestBody: {
@@ -47,12 +47,16 @@ export class SecurityService {
      * port number of jolokia endpoint
      */
     port: string;
-  }): CancelablePromise<SimpleResponse> {
+  }): CancelablePromise<LoginResponse> {
     return __request(OpenAPI, {
       method: 'POST',
       url: '/jolokia/login',
       body: requestBody,
       mediaType: 'application/json',
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
+      },
     });
   }
 }

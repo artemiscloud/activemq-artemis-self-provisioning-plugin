@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type SimpleResponse = {
+export type LoginResponse = {
   message: string;
   status: string;
   /**

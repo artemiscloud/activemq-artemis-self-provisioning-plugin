@@ -7,6 +7,21 @@ import {
 } from '../apiutil/artemis_jolokia';
 import { API_SUMMARY } from '../../utils/server';
 
+const BROKER = 'broker';
+const ADDRESS = 'address';
+const QUEUE = 'queue';
+const ROUTING_TYPE = 'routing-type';
+
+const parseProps = (rawProps: string): Map<string, string> => {
+  const props = rawProps.split(':')[1];
+  const map = new Map<string, string>();
+  props.split(',').forEach((entry) => {
+    const [key, value] = entry.split('=');
+    map.set(key, value.replace(new RegExp('"', 'g'), ''));
+  });
+  return map;
+};
+
 export const getBrokers = (_: express.Request, res: express.Response): void => {
   try {
     const jolokia = res.locals.jolokia;
@@ -15,14 +30,24 @@ export const getBrokers = (_: express.Request, res: express.Response): void => {
 
     comps
       .then((result: any[]) => {
-        res.json(result);
+        res.json(
+          result.map((entry: string) => {
+            const props = parseProps(entry);
+            return {
+              name: props.get(BROKER),
+            };
+          }),
+        );
       })
       .catch((error: any) => {
         console.log(error);
       });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'server error: ' + JSON.stringify(err) });
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
   }
 };
 
@@ -37,14 +62,58 @@ export const getAcceptors = (
 
     comps
       .then((result: any[]) => {
-        res.json(result);
+        res.json(
+          result.map((entry: string) => {
+            const props = parseProps(entry);
+            const acceptor = {
+              name: props.get('name'),
+              broker: {
+                name: props.get(BROKER),
+              },
+            };
+            return acceptor;
+          }),
+        );
       })
       .catch((error: any) => {
         console.log(error);
       });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'server error: ' + JSON.stringify(err) });
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
+  }
+};
+
+export const readAcceptorAttributes = (
+  req: express.Request,
+  res: express.Response,
+): void => {
+  try {
+    const jolokia = res.locals.jolokia;
+    const acceptorName = req.query.name as string;
+    const acceptorAttrNames = req.query.attrs as string[];
+
+    const attributes = jolokia.readAcceptorAttributes(
+      acceptorName,
+      acceptorAttrNames,
+    );
+    attributes
+      .then((result: JolokiaReadResponse[]) => {
+        res.json(result);
+      })
+      .catch((error: any) => {
+        console.log(error);
+        res.status(500).json({ status: 'error', message: 'server error' });
+      });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
   }
 };
 
@@ -66,7 +135,10 @@ export const getBrokerComponents = (
       });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'server error: ' + JSON.stringify(err) });
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
   }
 };
 
@@ -80,20 +152,28 @@ export const getAddresses = (
     const comps = jolokia.getComponents(ArtemisJolokia.ADDRESS);
     comps
       .then((result: any[]) => {
-        const names = result.map((r) =>
-          r.split(',')[0].split('=')[1].replace(new RegExp('"', 'g'), ''),
+        res.json(
+          result.map((entry: string) => {
+            const props = parseProps(entry);
+            const address = {
+              name: props.get(ADDRESS),
+              broker: {
+                name: props.get(BROKER),
+              },
+            };
+            return address;
+          }),
         );
-        const returnValue = names.map((name) => {
-          return { name: name };
-        });
-        res.json(returnValue);
       })
       .catch((error: any) => {
         console.log(error);
       });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'server error: ' + JSON.stringify(err) });
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
   }
 };
 
@@ -116,11 +196,14 @@ export const readAddressAttributes = (
       })
       .catch((error: any) => {
         console.log(error);
-        res.status(500).json({ message: 'server error' });
+        res.status(500).json({ status: 'error', message: 'server error' });
       });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'server error: ' + JSON.stringify(err) });
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
   }
 };
 
@@ -140,14 +223,69 @@ export const getQueues = (
 
     comps
       .then((result: any[]) => {
-        res.json(result);
+        res.json(
+          result.map((entry: string) => {
+            const props = parseProps(entry);
+            const queue = {
+              name: props.get(QUEUE),
+              'routing-type': props.get(ROUTING_TYPE),
+              address: {
+                name: props.get(ADDRESS),
+                broker: {
+                  name: props.get(BROKER),
+                },
+              },
+              broker: {
+                name: props.get(BROKER),
+              },
+            };
+            return queue;
+          }),
+        );
       })
       .catch((error: any) => {
         console.log(error);
       });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'server error: ' + JSON.stringify(err) });
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
+  }
+};
+
+export const readQueueAttributes = (
+  req: express.Request,
+  res: express.Response,
+): void => {
+  try {
+    const jolokia = res.locals.jolokia;
+    const queueName = req.query.name as string;
+    const routingType = req.query['routing-type'] as string;
+    const addressName = req.query.address as string;
+    const queueAttrNames = req.query.attrs as string[];
+
+    const attributes = jolokia.readQueueAttributes(
+      queueName,
+      routingType,
+      addressName,
+      queueAttrNames,
+    );
+    attributes
+      .then((result: JolokiaReadResponse[]) => {
+        res.json(result);
+      })
+      .catch((error: any) => {
+        console.log(error);
+        res.status(500).json({ status: 'error', message: 'server error' });
+      });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
   }
 };
 
@@ -162,18 +300,46 @@ export const getBrokerDetails = (
 
     compDetails
       .then((result: JolokiaObjectDetailsType) => {
+        // Update the op to conform to the openapi output format
+        Object.entries(result.op).forEach(([key, value]) => {
+          if (!Array.isArray(value)) {
+            result.op[key] = [value];
+          }
+        });
         res.json(result);
       })
       .catch((error: any) => {
         console.log(error);
-        res.status(500).json({ message: 'server error' });
+        res.status(500).json({ status: 'error', message: 'server error' });
       });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'server error: ' + JSON.stringify(err) });
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
   }
 };
 
+type OperationRef = {
+  signature: {
+    name: string;
+    args: Array<OperationArgument>;
+  };
+};
+type OperationArgument = {
+  type: JavaTypes;
+  value: string;
+};
+enum JavaTypes {
+  JAVA_LANG_STRING = 'java.lang.String',
+  BOOLEAN = 'boolean',
+  JAVA_UTIL_MAP = 'java.util.Map',
+  INT = 'int',
+  LONG = 'long',
+  DOUBLE = 'double',
+  VOID = 'void',
+}
 export const execBrokerOperation = (
   req: express.Request,
   res: express.Response,
@@ -181,20 +347,33 @@ export const execBrokerOperation = (
   try {
     const jolokia = res.locals.jolokia;
 
-    const { signature, args } = req.body;
+    const operationRef = req.body as OperationRef;
+    const strArgs: string[] = [];
+    let strSignature = operationRef.signature.name + '(';
+    operationRef.signature.args.forEach((arg, item, array) => {
+      strSignature = strSignature + arg.type;
+      if (item < array.length - 1) {
+        strSignature = strSignature + ',';
+      }
+      strArgs.push(arg.value);
+    });
+    strSignature = strSignature + ')';
 
-    const resp = jolokia.execBrokerOperation(signature, args);
+    const resp = jolokia.execBrokerOperation(strSignature, strArgs);
     resp
       .then((result: JolokiaExecResponse) => {
         res.json(result);
       })
       .catch((error: any) => {
         console.log(error);
-        res.status(500).json({ message: 'server error' });
+        res.status(500).json({ status: 'error', message: 'server error' });
       });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'server error: ' + JSON.stringify(err) });
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
   }
 };
 
@@ -213,11 +392,14 @@ export const readBrokerAttributes = (
       })
       .catch((error: any) => {
         console.log(error);
-        res.status(500).json({ message: 'server error' });
+        res.status(500).json({ status: 'error', message: 'server error' });
       });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'server error: ' + JSON.stringify(err) });
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
   }
 };
 
@@ -237,15 +419,23 @@ export const getAddressDetails = (
 
     compDetails
       .then((result: JolokiaObjectDetailsType) => {
+        Object.entries(result.op).forEach(([key, value]) => {
+          if (!Array.isArray(value)) {
+            result.op[key] = [value];
+          }
+        });
         res.json(result);
       })
       .catch((error: any) => {
         console.log(error);
-        res.status(500).json({ message: 'server error' });
+        res.status(500).json({ status: 'error', message: 'server error' });
       });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'server error: ' + JSON.stringify(err) });
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
   }
 };
 
@@ -265,15 +455,23 @@ export const getAcceptorDetails = (
 
     compDetails
       .then((result: JolokiaObjectDetailsType) => {
+        Object.entries(result.op).forEach(([key, value]) => {
+          if (!Array.isArray(value)) {
+            result.op[key] = [value];
+          }
+        });
         res.json(result);
       })
       .catch((error: any) => {
         console.log(error);
-        res.status(500).json({ message: 'server error' });
+        res.status(500).json({ status: 'error', message: 'server error' });
       });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'server error: ' + JSON.stringify(err) });
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
   }
 };
 
@@ -299,21 +497,29 @@ export const getQueueDetails = (
 
     compDetails
       .then((result: JolokiaObjectDetailsType) => {
+        Object.entries(result.op).forEach(([key, value]) => {
+          if (!Array.isArray(value)) {
+            result.op[key] = [value];
+          }
+        });
         res.json(result);
       })
       .catch((error: any) => {
         console.log(error);
-        res.status(500).json({ message: 'server error' });
+        res.status(500).json({ status: 'error', message: 'server error' });
       });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: 'server error: ' + JSON.stringify(err) });
+    res.status(500).json({
+      status: 'error',
+      message: 'server error: ' + JSON.stringify(err),
+    });
   }
 };
 
 export const apiInfo = (_: express.Request, res: express.Response): void => {
   res.json({
-    message: JSON.stringify(API_SUMMARY),
+    message: API_SUMMARY,
     status: 'successful',
   });
 };

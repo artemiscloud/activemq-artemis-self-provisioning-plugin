@@ -2,4 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type BrokersResponse = Array<Record<string, any>>;
+export type Broker = {
+  name: string;
+};

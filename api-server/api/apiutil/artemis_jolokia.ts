@@ -28,6 +28,10 @@ const brokerComponentPattern =
   'org.apache.activemq.artemis:broker="BROKER_NAME"';
 const addressComponentPattern =
   'org.apache.activemq.artemis:broker="BROKER_NAME",component=addresses,address="ADDRESS_NAME"';
+const acceptorComponentPattern =
+  'org.apache.activemq.artemis:broker="BROKER_NAME",component=acceptors,name="ACCEPTOR_NAME"';
+const queueComponentPattern =
+  'org.apache.activemq.artemis:address="ADDRESS_NAME",broker="BROKER_NAME",component=addresses,queue="QUEUE_NAME",routing-type="ROUTING_TYPE",subcomponent=queues';
 
 export class ArtemisJolokia {
   username: string;
@@ -65,6 +69,8 @@ export class ArtemisJolokia {
   componentNameMap = new Map<string, string>([
     [ArtemisJolokia.BROKER, brokerComponentPattern],
     [ArtemisJolokia.ADDRESS, addressComponentPattern],
+    [ArtemisJolokia.ACCEPTOR, acceptorComponentPattern],
+    [ArtemisJolokia.QUEUE, queueComponentPattern],
   ]);
 
   constructor(
@@ -442,6 +448,94 @@ export class ArtemisJolokia {
     return reply;
   };
 
+  readQueueAttributes = async (
+    queueName: string,
+    routingType: string,
+    addressName: string,
+    queueAttrNames: string[],
+  ): Promise<JolokiaReadResponse[]> => {
+    const headers = this.getAuthHeaders();
+    headers.set('Content-Type', 'application/json');
+    const url =
+      this.protocol +
+      '://' +
+      this.hostName +
+      ':' +
+      this.port +
+      '/console/jolokia/';
+
+    const param = new Map<string, string>();
+    param.set('QUEUE_NAME', queueName);
+    param.set('ROUTING_TYPE', routingType);
+    param.set('ADDRESS_NAME', addressName);
+
+    const reply = await fetch(url, {
+      method: 'POST',
+      headers: headers,
+      body: this.getPostBodyForAttributes(
+        ArtemisJolokia.QUEUE,
+        param,
+        queueAttrNames,
+      ),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.text();
+        }
+        throw response;
+      }) //directly use json()?
+      .then((message) => {
+        const resp: JolokiaReadResponse[] = JSON.parse(message);
+        return resp;
+      })
+      .catch((err) => {
+        throw err;
+      });
+    return reply;
+  };
+
+  readAcceptorAttributes = async (
+    acceptorName: string,
+    acceptorAttrNames: string[],
+  ): Promise<JolokiaReadResponse[]> => {
+    const headers = this.getAuthHeaders();
+    headers.set('Content-Type', 'application/json');
+    const url =
+      this.protocol +
+      '://' +
+      this.hostName +
+      ':' +
+      this.port +
+      '/console/jolokia/';
+
+    const param = new Map<string, string>();
+    param.set('ACCEPTOR_NAME', acceptorName);
+
+    const reply = await fetch(url, {
+      method: 'POST',
+      headers: headers,
+      body: this.getPostBodyForAttributes(
+        ArtemisJolokia.ACCEPTOR,
+        param,
+        acceptorAttrNames,
+      ),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.text();
+        }
+        throw response;
+      }) //directly use json()?
+      .then((message) => {
+        const resp: JolokiaReadResponse[] = JSON.parse(message);
+        return resp;
+      })
+      .catch((err) => {
+        throw err;
+      });
+    return reply;
+  };
+
   validateUser = async (): Promise<boolean> => {
     const result = await this.getComponents(ArtemisJolokia.BROKER);
     if (result.length === 1) {
@@ -541,27 +635,37 @@ interface JolokiaListRequestType {
   type: string;
 }
 
-interface ArgumentType {
+type JavaTypes =
+  | 'java.lang.Object'
+  | 'java.lang.String'
+  | 'boolean'
+  | 'java.util.Map'
+  | 'int'
+  | 'long'
+  | 'double'
+  | 'void';
+
+interface Argument {
   name: string;
-  type: string;
+  type: JavaTypes;
   desc: string;
 }
 
-export interface OperationType {
-  args: ArgumentType[];
-  ret: string;
+export interface Op {
+  args: Argument[];
+  ret?: JavaTypes;
   desc: string;
 }
 
-export interface AttributeType {
+export interface Attr {
   rw: boolean;
-  type: string;
+  type: JavaTypes;
   desc: string;
 }
 
 export interface JolokiaObjectDetailsType {
-  op: Map<string, OperationType>;
-  attr: Map<string, AttributeType>;
+  op: { [key: string]: Op | Op[] };
+  attr: { [key: string]: Attr };
   class: string;
   desc: string;
 }

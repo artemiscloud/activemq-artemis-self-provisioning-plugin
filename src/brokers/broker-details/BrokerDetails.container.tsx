@@ -29,6 +29,10 @@ import {
   useJolokiaLogin,
   AuthContext,
   getApiServerBaseUrl,
+  JolokiaBrokerDetails,
+  JolokiaAddressDetails,
+  JolokiaAcceptorDetails,
+  JolokiaQueueDetails,
 } from '../../utils';
 import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBreadcrumb';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -165,6 +169,49 @@ const BrokerDetailsPage: FC = () => {
           >
             <JolokiaTestPanel />
             <br />
+          </Tab>
+          <Tab
+            eventKey={6}
+            title={
+              <TabTitleText>
+                {t('-jolokia-details')}
+
+                {isLoading && (
+                  <Spinner size="sm" aria-label="connecting to jolokia" />
+                )}
+                {isSucces && <GreenCheckCircleIcon title="Jolokia connected" />}
+                {isError && (
+                  <RedExclamationCircleIcon title="Jolokia connection failed" />
+                )}
+              </TabTitleText>
+            }
+          >
+            <Tabs defaultActiveKey={0}>
+              <Tab
+                eventKey={0}
+                title={<TabTitleText>{t('broker')}</TabTitleText>}
+              >
+                <JolokiaBrokerDetails />
+              </Tab>
+              <Tab
+                eventKey={1}
+                title={<TabTitleText>{t('addresses')}</TabTitleText>}
+              >
+                <JolokiaAddressDetails />
+              </Tab>
+              <Tab
+                eventKey={2}
+                title={<TabTitleText>{t('acceptors')}</TabTitleText>}
+              >
+                <JolokiaAcceptorDetails />
+              </Tab>
+              <Tab
+                eventKey={3}
+                title={<TabTitleText>{t('queues')}</TabTitleText>}
+              >
+                <JolokiaQueueDetails />
+              </Tab>
+            </Tabs>
           </Tab>
         </Tabs>
       </PageSection>

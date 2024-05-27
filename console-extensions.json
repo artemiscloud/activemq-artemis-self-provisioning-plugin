@@ -40,12 +40,23 @@
   {
     "type": "console.page/route",
     "properties": {
-      "exact": false,
+      "exact": true,
       "path": [
         "/k8s/ns/:ns/brokers/:brokerName/:podName",
         "/k8s/all-namespaces/brokers/:brokerName/:podName"
       ],
       "component": { "$codeRef": "BrokerDetailsPage" }
+    }
+  },
+  {
+    "type": "console.page/route",
+    "properties": {
+      "exact": true,
+      "path": [
+        "/k8s/ns/:ns/brokers/:brokerName/:podName/address/:name",
+        "/k8s/all-namespaces/brokers/:brokerName/:podName/address/:name"
+      ],
+      "component": { "$codeRef": "AddressDetailsPage" }
     }
   },
   {

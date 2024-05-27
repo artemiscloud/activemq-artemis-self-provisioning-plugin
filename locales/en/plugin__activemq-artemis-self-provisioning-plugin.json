@@ -79,5 +79,11 @@
   "pods": "Pods",
   "/": "/",
   "addresses": "Addresses",
-  "address": "Address"
+  "address": "Address",
+  "dlq": "DLQ",
+  "addressAttributes": "Address Attributes",
+  "attributes": "Attributes",
+  "values": "Values",
+  "search": "Search by attribute name...",
+  "error_loading": "Error loading address details..."
 }

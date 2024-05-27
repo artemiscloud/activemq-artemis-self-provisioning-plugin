@@ -151,7 +151,8 @@
       "AddBrokerPage": "./brokers/add-broker",
       "UpdateBrokerPage": "./brokers/update-broker",
       "PodsListPage": "./brokers/broker-pods",
-      "BrokerDetailsPage": "./brokers/broker-details"
+      "BrokerDetailsPage": "./brokers/broker-details",
+      "AddressDetailsPage": "./addresses/address-details"
     },
     "dependencies": {
       "@console/pluginAPI": "*"

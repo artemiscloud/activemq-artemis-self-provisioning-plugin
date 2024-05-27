@@ -6,7 +6,7 @@ import {
   k8sGet,
   useK8sWatchResource,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useHistory } from 'react-router-dom';
 import {
   Tabs,
   Tab,
@@ -62,6 +62,11 @@ const BrokerDetailsPage: FC = () => {
     namespaced: true,
   });
 
+  const location = useLocation();
+  const history = useHistory();
+  const searchParams = new URLSearchParams(location.search);
+  const activeTabKey = searchParams.get('tab') || 'overview';
+
   const k8sGetBroker = () => {
     setLoading(true);
     k8sGet({ model: AMQBrokerModel, name: brokerName, ns: namespace })
@@ -79,6 +84,11 @@ const BrokerDetailsPage: FC = () => {
   useEffect(() => {
     k8sGetBroker();
   }, []);
+
+  const handleTabSelect = (_event: any, eventKey: string | number) => {
+    searchParams.set('tab', eventKey.toString());
+    history.push({ search: searchParams.toString() });
+  };
 
   const podOrdinal = parseInt(podName.replace(brokerName + '-ss-', ''));
 
@@ -126,9 +136,9 @@ const BrokerDetailsPage: FC = () => {
             {t('broker')} {brokerName} {t('/')} {podName}
           </Title>
         </div>
-        <Tabs defaultActiveKey={0}>
+        <Tabs activeKey={activeTabKey} onSelect={handleTabSelect}>
           <Tab
-            eventKey={0}
+            eventKey={'overview'}
             title={<TabTitleText>{t('overview')}</TabTitleText>}
           >
             <OverviewContainer
@@ -139,7 +149,7 @@ const BrokerDetailsPage: FC = () => {
             />
           </Tab>
           <Tab
-            eventKey={1}
+            eventKey={'configuration'}
             title={<TabTitleText>{t('configuration')}</TabTitleText>}
           >
             <ConfigurationContainer
@@ -147,17 +157,20 @@ const BrokerDetailsPage: FC = () => {
               loading={loading}
             />
           </Tab>
-          <Tab eventKey={2} title={<TabTitleText>{t('clients')}</TabTitleText>}>
+          <Tab
+            eventKey={'clients'}
+            title={<TabTitleText>{t('clients')}</TabTitleText>}
+          >
             <ClientsContainer />
           </Tab>
           <Tab
-            eventKey={3}
+            eventKey={'addresses'}
             title={<TabTitleText>{t('addresses')}</TabTitleText>}
           >
             <AddressContainer />
           </Tab>
           <Tab
-            eventKey={5}
+            eventKey={'jolokiaTestPanel'}
             title={
               <TabTitleText>
                 {t('check-jolokia ')}
@@ -176,7 +189,7 @@ const BrokerDetailsPage: FC = () => {
             <br />
           </Tab>
           <Tab
-            eventKey={6}
+            eventKey={'jolokia-details'}
             title={
               <TabTitleText>
                 {t('-jolokia-details')}

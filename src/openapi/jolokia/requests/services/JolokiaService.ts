@@ -1,10 +1,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Acceptor } from '../models/Acceptor';
 import type { Address } from '../models/Address';
-import type { BrokersResponse } from '../models/BrokersResponse';
+import type { Broker } from '../models/Broker';
+import type { ComponentAttribute } from '../models/ComponentAttribute';
+import type { ComponentDetails } from '../models/ComponentDetails';
+import type { DummyResponse } from '../models/DummyResponse';
+import type { ExecResult } from '../models/ExecResult';
 import type { OperationRef } from '../models/OperationRef';
-import type { SimpleResponse } from '../models/SimpleResponse';
+import type { Queue } from '../models/Queue';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -22,22 +27,28 @@ export class JolokiaService {
    * **Response:**
    * ```json
    * [
-   * "org.apache.activemq.artemis:broker=\"amq-broker\""
+   * {
+   * name: 'amq-broker'
+   * }
    * ]
    * ```
    *
    * @param jolokiaSessionId
-   * @returns BrokersResponse Success
+   * @returns Broker Success
    * @throws ApiError
    */
   public static getBrokers(
     jolokiaSessionId: string,
-  ): CancelablePromise<BrokersResponse> {
+  ): CancelablePromise<Array<Broker>> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/brokers',
       headers: {
         'jolokia-session-id': jolokiaSessionId,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
       },
     });
   }
@@ -82,17 +93,21 @@ export class JolokiaService {
    * ```
    *
    * @param jolokiaSessionId
-   * @returns BrokersResponse Success
+   * @returns ComponentDetails Success
    * @throws ApiError
    */
   public static getBrokerDetails(
     jolokiaSessionId: string,
-  ): CancelablePromise<BrokersResponse> {
+  ): CancelablePromise<ComponentDetails> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/brokerDetails',
       headers: {
         'jolokia-session-id': jolokiaSessionId,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
       },
     });
   }
@@ -128,13 +143,13 @@ export class JolokiaService {
    *
    * @param jolokiaSessionId
    * @param names attribute names separated by commas. If not speified read all attributes.
-   * @returns BrokersResponse Success
+   * @returns ComponentAttribute Success
    * @throws ApiError
    */
   public static readBrokerAttributes(
     jolokiaSessionId: string,
     names?: Array<string>,
-  ): CancelablePromise<BrokersResponse> {
+  ): CancelablePromise<Array<ComponentAttribute>> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/readBrokerAttributes',
@@ -143,6 +158,10 @@ export class JolokiaService {
       },
       query: {
         names: names,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
       },
     });
   }
@@ -181,14 +200,14 @@ export class JolokiaService {
    * @param jolokiaSessionId
    * @param name the address name
    * @param attrs attribute names separated by commas. If not speified read all attributes.
-   * @returns BrokersResponse Success
+   * @returns ComponentAttribute Success
    * @throws ApiError
    */
   public static readAddressAttributes(
     jolokiaSessionId: string,
     name: string,
     attrs?: Array<string>,
-  ): CancelablePromise<BrokersResponse> {
+  ): CancelablePromise<Array<ComponentAttribute>> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/readAddressAttributes',
@@ -199,23 +218,111 @@ export class JolokiaService {
         name: name,
         attrs: attrs,
       },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
+      },
+    });
+  }
+
+  /**
+   * read queue attributes
+   * **Read values of queue attributes**
+   * The return value is a json array that contains
+   * values of requested attributes of the queue's mbean.
+   *
+   * **Note**: to read multiple attributes, set it to **attrs** parameter
+   * separated by commas, e.g. `RoutingTypes,Address`.
+   *
+   * @param jolokiaSessionId
+   * @param name the queue name
+   * @param address the address name
+   * @param routingType the routing type
+   * @param attrs attribute names separated by commas. If not speified read all attributes.
+   * @returns ComponentAttribute Success
+   * @throws ApiError
+   */
+  public static readQueueAttributes(
+    jolokiaSessionId: string,
+    name: string,
+    address: string,
+    routingType: string,
+    attrs?: Array<string>,
+  ): CancelablePromise<Array<ComponentAttribute>> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/readQueueAttributes',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
+      query: {
+        name: name,
+        address: address,
+        'routing-type': routingType,
+        attrs: attrs,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
+      },
+    });
+  }
+
+  /**
+   * read acceptor attributes
+   * **Read values of acceptor attributes**
+   * The return value is a json array that contains
+   * values of requested attributes of the acceptor's mbean.
+   *
+   * **Note**: to read multiple attributes, set it to **attrs** parameter
+   * separated by commas, e.g. `RoutingTypes,Address`.
+   *
+   * @param jolokiaSessionId
+   * @param name the queue name
+   * @param attrs attribute names separated by commas. If not speified read all attributes.
+   * @returns ComponentAttribute Success
+   * @throws ApiError
+   */
+  public static readAcceptorAttributes(
+    jolokiaSessionId: string,
+    name: string,
+    attrs?: Array<string>,
+  ): CancelablePromise<Array<ComponentAttribute>> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/readAcceptorAttributes',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
+      query: {
+        name: name,
+        attrs: attrs,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
+      },
     });
   }
 
   /**
    * Check the validity of the credentials
    * @param jolokiaSessionId
-   * @returns SimpleResponse Success
+   * @returns DummyResponse Success
    * @throws ApiError
    */
   public static checkCredentials(
     jolokiaSessionId: string,
-  ): CancelablePromise<SimpleResponse> {
+  ): CancelablePromise<DummyResponse> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/checkCredentials',
       headers: {
         'jolokia-session-id': jolokiaSessionId,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
       },
     });
   }
@@ -262,13 +369,13 @@ export class JolokiaService {
    *
    * @param jolokiaSessionId
    * @param requestBody
-   * @returns BrokersResponse Success
+   * @returns ExecResult Success
    * @throws ApiError
    */
   public static execBrokerOperation(
     jolokiaSessionId: string,
     requestBody: OperationRef,
-  ): CancelablePromise<BrokersResponse> {
+  ): CancelablePromise<Array<ExecResult>> {
     return __request(OpenAPI, {
       method: 'POST',
       url: '/execBrokerOperation',
@@ -277,6 +384,10 @@ export class JolokiaService {
       },
       body: requestBody,
       mediaType: 'application/json',
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
+      },
     });
   }
 
@@ -306,17 +417,21 @@ export class JolokiaService {
    * ```
    *
    * @param jolokiaSessionId
-   * @returns BrokersResponse Success
+   * @returns string Success
    * @throws ApiError
    */
   public static getBrokerComponents(
     jolokiaSessionId: string,
-  ): CancelablePromise<BrokersResponse> {
+  ): CancelablePromise<Array<string>> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/brokerComponents',
       headers: {
         'jolokia-session-id': jolokiaSessionId,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
       },
     });
   }
@@ -333,9 +448,24 @@ export class JolokiaService {
    * **Response:**
    * ```json
    * [
-   * "org.apache.activemq.artemis:address=\"activemq.notifications\",broker=\"amq-broker\",component=addresses",
-   * "org.apache.activemq.artemis:address=\"DLQ\",broker=\"amq-broker\",component=addresses",
-   * "org.apache.activemq.artemis:address=\"ExpiryQueue\",broker=\"amq-broker\",component=addresses"
+   * {
+   * name: 'activemq.notifications',
+   * broker: {
+   * name: 'amq-broker',
+   * },
+   * },
+   * {
+   * name: 'DLQ',
+   * broker: {
+   * name: 'amq-broker',
+   * },
+   * },
+   * {
+   * name: 'ExpiryQueue',
+   * broker: {
+   * name: 'amq-broker',
+   * },
+   * },
    * ]
    * ```
    *
@@ -352,6 +482,10 @@ export class JolokiaService {
       headers: {
         'jolokia-session-id': jolokiaSessionId,
       },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
+      },
     });
   }
 
@@ -367,20 +501,38 @@ export class JolokiaService {
    * **Response:**
    * ```json
    * [
-   * "org.apache.activemq.artemis:address=\"ExpiryQueue\",broker=\"amq-broker\",component=addresses,queue=\"ExpiryQueue\",routing-type=\"anycast\",subcomponent=queues",
-   * "org.apache.activemq.artemis:address=\"DLQ\",broker=\"amq-broker\",component=addresses,queue=\"DLQ\",routing-type=\"anycast\",subcomponent=queues"
+   * {
+   * name: 'ExpiryQueue',
+   * 'routing-type': 'anycast',
+   * address: {
+   * name: 'ExpiryQueue',
+   * },
+   * broker: {
+   * name: 'amq-broker',
+   * },
+   * },
+   * {
+   * name: 'DLQ',
+   * 'routing-type': 'anycast',
+   * address: {
+   * name: 'DLQ',
+   * },
+   * broker: {
+   * name: 'amq-broker',
+   * },
+   * },
    * ]
    * ```
    *
    * @param jolokiaSessionId
    * @param address
-   * @returns BrokersResponse Success
+   * @returns Queue Success
    * @throws ApiError
    */
   public static getQueues(
     jolokiaSessionId: string,
     address?: string,
-  ): CancelablePromise<BrokersResponse> {
+  ): CancelablePromise<Array<Queue>> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/queues',
@@ -389,6 +541,10 @@ export class JolokiaService {
       },
       query: {
         address: address,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
       },
     });
   }
@@ -438,7 +594,7 @@ export class JolokiaService {
    * @param name
    * @param routingType
    * @param addressName
-   * @returns BrokersResponse Success
+   * @returns ComponentDetails Success
    * @throws ApiError
    */
   public static getQueueDetails(
@@ -446,7 +602,7 @@ export class JolokiaService {
     name: string,
     routingType: string,
     addressName?: string,
-  ): CancelablePromise<BrokersResponse> {
+  ): CancelablePromise<ComponentDetails> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/queueDetails',
@@ -457,6 +613,10 @@ export class JolokiaService {
         addressName: addressName,
         name: name,
         routingType: routingType,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
       },
     });
   }
@@ -497,13 +657,13 @@ export class JolokiaService {
    *
    * @param jolokiaSessionId
    * @param name
-   * @returns BrokersResponse Success
+   * @returns ComponentDetails Success
    * @throws ApiError
    */
   public static getAddressDetails(
     jolokiaSessionId: string,
     name: string,
-  ): CancelablePromise<BrokersResponse> {
+  ): CancelablePromise<ComponentDetails> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/addressDetails',
@@ -512,6 +672,10 @@ export class JolokiaService {
       },
       query: {
         name: name,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
       },
     });
   }
@@ -528,22 +692,31 @@ export class JolokiaService {
    * **Response:**
    * ```json
    * [
-   * "org.apache.activemq.artemis:broker=\"amq-broker\",component=acceptors,name=\"scaleDown\""
+   * {
+   * name: 'scaleDown',
+   * broker: {
+   * name: 'amq-broker',
+   * },
+   * },
    * ]
    * ```
    *
    * @param jolokiaSessionId
-   * @returns BrokersResponse Success
+   * @returns Acceptor Success
    * @throws ApiError
    */
   public static getAcceptors(
     jolokiaSessionId: string,
-  ): CancelablePromise<BrokersResponse> {
+  ): CancelablePromise<Array<Acceptor>> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/acceptors',
       headers: {
         'jolokia-session-id': jolokiaSessionId,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
       },
     });
   }
@@ -585,13 +758,13 @@ export class JolokiaService {
    *
    * @param jolokiaSessionId
    * @param name
-   * @returns BrokersResponse Success
+   * @returns ComponentDetails Success
    * @throws ApiError
    */
   public static getAcceptorDetails(
     jolokiaSessionId: string,
     name: string,
-  ): CancelablePromise<BrokersResponse> {
+  ): CancelablePromise<ComponentDetails> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/acceptorDetails',
@@ -600,6 +773,10 @@ export class JolokiaService {
       },
       query: {
         name: name,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
       },
     });
   }

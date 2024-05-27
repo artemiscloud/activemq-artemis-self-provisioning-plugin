@@ -2,10 +2,14 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { OperationArgument } from './OperationArgument';
+
 export type OperationRef = {
   /**
    * The method signature
    */
-  signature: string;
-  args?: Array<string>;
+  signature: {
+    name: string;
+    args: Array<OperationArgument>;
+  };
 };

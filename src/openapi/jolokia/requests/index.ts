@@ -6,10 +6,25 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { Acceptor } from './models/Acceptor';
 export type { Address } from './models/Address';
-export type { BrokersResponse } from './models/BrokersResponse';
+export { ApiResponse } from './models/ApiResponse';
+export type { Argument } from './models/Argument';
+export type { Attr } from './models/Attr';
+export type { Broker } from './models/Broker';
+export type { ComponentAttribute } from './models/ComponentAttribute';
+export type { ComponentDetails } from './models/ComponentDetails';
+export { DummyResponse } from './models/DummyResponse';
+export type { ExecResult } from './models/ExecResult';
+export { FailureResponse } from './models/FailureResponse';
+export { JavaTypes } from './models/JavaTypes';
+export type { LoginResponse } from './models/LoginResponse';
+export type { OperationArgument } from './models/OperationArgument';
 export type { OperationRef } from './models/OperationRef';
-export type { SimpleResponse } from './models/SimpleResponse';
+export type { OperationResult } from './models/OperationResult';
+export type { Queue } from './models/Queue';
+export type { Signature } from './models/Signature';
+export type { Signatures } from './models/Signatures';
 
 export { DevelopmentService } from './services/DevelopmentService';
 export { JolokiaService } from './services/JolokiaService';

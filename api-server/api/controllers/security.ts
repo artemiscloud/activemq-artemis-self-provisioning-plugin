@@ -136,8 +136,6 @@ export const login = (req: express.Request, res: express.Response) => {
   } catch (err) {
     res.status(500).json({
       status: 'error',
-      code: 500,
-      data: [],
       message: 'Internal Server Error',
     });
     res.end();
@@ -175,6 +173,7 @@ export const VerifyLogin = async (
             if (err) {
               console.log('verify failed', err);
               res.status(401).json({
+                status: 'failed',
                 message: 'This session has expired. Please login again',
               });
             } else {
@@ -185,6 +184,7 @@ export const VerifyLogin = async (
                 next();
               } else {
                 res.status(401).json({
+                  status: 'failed',
                   message: 'This session has expired. Please login again',
                 });
               }
@@ -196,8 +196,6 @@ export const VerifyLogin = async (
   } catch (err) {
     res.status(500).json({
       status: 'error',
-      code: 500,
-      data: [],
       message: 'Internal Server Error',
     });
   }

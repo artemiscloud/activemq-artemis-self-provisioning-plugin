@@ -41,13 +41,13 @@ info:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SimpleResponse'
+                $ref: '#/components/schemas/DummyResponse'
       ```
 
     With the above section added, you defined the new api under the path `/hello`
     and uses http `GET` method. It takes one optional parameter `name` of string
     type. The response contains json value and the structure is defined in
-    `/components/schemas/SimpleResponse` schema defined in the
+    `/components/schemas/DummyResponse` schema defined in the
     same file. The `operationId` represents the method name that implements the api.
 
     Next step is add the implmentation.
@@ -153,7 +153,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SimpleResponse'
+                $ref: '#/components/schemas/LoginResponse'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /brokers:
     get:
       summary: retrieve the broker mbean
@@ -167,7 +181,9 @@ paths:
           **Response:**
           ```json
           [
-            "org.apache.activemq.artemis:broker=\"amq-broker\""
+            {
+              name: 'amq-broker'
+            }
           ]
           ```
       tags:
@@ -185,7 +201,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BrokersResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Broker'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /brokerDetails:
     get:
       summary: broker details
@@ -241,7 +273,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BrokersResponse'
+                $ref: '#/components/schemas/ComponentDetails'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /readBrokerAttributes:
     get:
       summary: read broker attributes
@@ -297,7 +343,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BrokersResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ComponentAttribute'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /readAddressAttributes:
     get:
       summary: read address attributes
@@ -361,7 +423,151 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BrokersResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ComponentAttribute'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+  /readQueueAttributes:
+    get:
+      summary: read queue attributes
+      description: >
+        **Read values of queue attributes**
+          The return value is a json array that contains
+          values of requested attributes of the queue's mbean.
+
+          **Note**: to read multiple attributes, set it to **attrs** parameter
+          separated by commas, e.g. `RoutingTypes,Address`.
+      tags:
+        - jolokia
+      operationId: readQueueAttributes
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
+        - name: name
+          description: the queue name
+          schema:
+            type: string
+          required: true
+          in: query
+        - name: address
+          description: the address name
+          schema:
+            type: string
+          required: true
+          in: query
+        - name: routing-type
+          description: the routing type
+          schema:
+            type: string
+          required: true
+          in: query
+        - name: attrs
+          description: attribute names separated by commas. If not speified read all attributes.
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ComponentAttribute'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+  /readAcceptorAttributes:
+    get:
+      summary: read acceptor attributes
+      description: >
+        **Read values of acceptor attributes**
+          The return value is a json array that contains
+          values of requested attributes of the acceptor's mbean.
+
+          **Note**: to read multiple attributes, set it to **attrs** parameter
+          separated by commas, e.g. `RoutingTypes,Address`.
+      tags:
+        - jolokia
+      operationId: readAcceptorAttributes
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
+        - name: name
+          description: the queue name
+          schema:
+            type: string
+          required: true
+          in: query
+        - name: attrs
+          description: attribute names separated by commas. If not speified read all attributes.
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ComponentAttribute'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /checkCredentials:
     get:
       summary: Check the validity of the credentials
@@ -380,7 +586,22 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SimpleResponse'
+                type: object
+                $ref: '#/components/schemas/DummyResponse'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /execBrokerOperation:
     post:
       summary: execute a broker operation
@@ -443,7 +664,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BrokersResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExecResult'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /brokerComponents:
     get:
       summary: list all mbeans
@@ -485,7 +722,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BrokersResponse'
+                type: array
+                items:
+                  type: string
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /addresses:
     get:
       summary: retrieve all addresses on broker
@@ -500,9 +753,24 @@ paths:
           **Response:**
           ```json
           [
-            "org.apache.activemq.artemis:address=\"activemq.notifications\",broker=\"amq-broker\",component=addresses",
-            "org.apache.activemq.artemis:address=\"DLQ\",broker=\"amq-broker\",component=addresses",
-            "org.apache.activemq.artemis:address=\"ExpiryQueue\",broker=\"amq-broker\",component=addresses"
+            {
+              name: 'activemq.notifications',
+              broker: {
+                name: 'amq-broker',
+              },
+            },
+            {
+              name: 'DLQ',
+              broker: {
+                name: 'amq-broker',
+              },
+            },
+            {
+              name: 'ExpiryQueue',
+              broker: {
+                name: 'amq-broker',
+              },
+            },
           ]
           ```
       tags:
@@ -523,6 +791,20 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Address'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /queues:
     get:
       summary: list queues
@@ -537,8 +819,26 @@ paths:
           **Response:**
           ```json
           [
-            "org.apache.activemq.artemis:address=\"ExpiryQueue\",broker=\"amq-broker\",component=addresses,queue=\"ExpiryQueue\",routing-type=\"anycast\",subcomponent=queues",
-            "org.apache.activemq.artemis:address=\"DLQ\",broker=\"amq-broker\",component=addresses,queue=\"DLQ\",routing-type=\"anycast\",subcomponent=queues"
+            {
+              name: 'ExpiryQueue',
+              'routing-type': 'anycast',
+              address: {
+                name: 'ExpiryQueue',
+              },
+              broker: {
+                name: 'amq-broker',
+              },
+            },
+            {
+              name: 'DLQ',
+              'routing-type': 'anycast',
+              address: {
+                name: 'DLQ',
+              },
+              broker: {
+                name: 'amq-broker',
+              },
+            },
           ]
           ```
       tags:
@@ -562,7 +862,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BrokersResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Queue'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /queueDetails:
     get:
       summary: retrieve queue details
@@ -638,7 +954,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BrokersResponse'
+                $ref: '#/components/schemas/ComponentDetails'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /addressDetails:
     get:
       summary: retrieve address details
@@ -695,7 +1025,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BrokersResponse'
+                $ref: '#/components/schemas/ComponentDetails'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /acceptors:
     get:
       summary: list acceptors
@@ -710,7 +1054,12 @@ paths:
           **Response:**
           ```json
           [
-            "org.apache.activemq.artemis:broker=\"amq-broker\",component=acceptors,name=\"scaleDown\""
+            {
+              name: 'scaleDown',
+              broker: {
+                name: 'amq-broker',
+              },
+            },
           ]
           ```
       tags:
@@ -728,7 +1077,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BrokersResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Acceptor'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /acceptorDetails:
     get:
       summary: retrieve acceptor details
@@ -786,7 +1151,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BrokersResponse'
+                $ref: '#/components/schemas/ComponentDetails'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /api-info:
     get:
       summary: the api info
@@ -840,7 +1219,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SimpleResponse'
+                type: object
+                $ref: '#/components/schemas/ApiResponse'
 
 components:
   schemas:
@@ -848,16 +1228,107 @@ components:
       type: object
       properties:
         signature:
-          type: string
           description: The method signature
-        args:
-          type: array
-          items:
-            description: The method arguments
-            type: string
+          type: object
+          required:
+            - name
+            - args
+          properties:
+            name:
+              type: string
+            args:
+              type: array
+              items:
+                $ref: '#/components/schemas/OperationArgument'
       required:
         - signature
-    SimpleResponse:
+    OperationArgument:
+      type: object
+      required:
+        - type
+        - value
+      properties:
+        type:
+          $ref: '#/components/schemas/JavaTypes'
+        value:
+          type: string
+    OperationResult:
+      type: object
+      required:
+        - request
+        - value
+        - timestamp
+        - status
+      properties:
+        request:
+          type: object
+          required:
+            - mbean
+            - arguments
+            - type
+            - operation
+          properties:
+            mbean:
+              type: string
+            arguments:
+              type: array
+              items:
+                type: string
+            type:
+              type: string
+            operation:
+              type: string
+        value:
+          type: string
+        timestamp:
+          type: number
+        status:
+          type: number
+    DummyResponse:
+      type: object
+      required:
+        - message
+        - status
+      properties:
+        message:
+          type: string
+          enum: [ok]
+        status:
+          type: string
+          enum: [successful]
+    ApiResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            info:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                version:
+                  type: string
+            paths:
+              type: object
+              properties:
+                post:
+                  type: array
+                  items:
+                    type: string
+                get:
+                  type: array
+                  items:
+                    type: string
+        status:
+          type: string
+          enum: [successful]
+        jolokia-session-id:
+          type: string
+          description: The jwt token
+    LoginResponse:
       type: object
       required:
         - status
@@ -871,15 +1342,199 @@ components:
         jolokia-session-id:
           type: string
           description: The jwt token
-    BrokersResponse:
-      type: array
-      items:
-        type: object
-        additionalProperties: true
     Address:
+      type: object
+      required:
+        - name
+        - broker
+      properties:
+        name:
+          type: string
+        broker:
+          $ref: '#/components/schemas/Broker'
+    Acceptor:
+      type: object
+      required:
+        - name
+        - broker
+      properties:
+        name:
+          type: string
+        broker:
+          $ref: '#/components/schemas/Broker'
+    Queue:
+      type: object
+      required:
+        - name
+        - routing-type
+        - broker
+      properties:
+        name:
+          type: string
+        routing-type:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        broker:
+          $ref: '#/components/schemas/Broker'
+    Broker:
       type: object
       required:
         - name
       properties:
         name:
           type: string
+    FailureResponse:
+      type: object
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          enum: [failed, error]
+        message:
+          type: string
+    JavaTypes:
+      type: string
+      enum:
+        - '[Ljava.lang.Object;'
+        - '[Ljava.lang.String;'
+        - '[Ljava.util.Map;'
+        - '[Ljavax.management.openmbean.CompositeData;'
+        - Object
+        - boolean
+        - double
+        - int
+        - java.lang.Boolean
+        - java.lang.Integer
+        - java.lang.Long
+        - java.lang.Object
+        - java.lang.String
+        - java.util.Map
+        - long
+        - void
+    ComponentDetails:
+      type: object
+      required:
+        - op
+        - attr
+        - class
+        - desc
+      properties:
+        op:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Signatures'
+        attr:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Attr'
+        class:
+          type: string
+        desc:
+          type: string
+    Signatures:
+      type: array
+      items:
+        $ref: '#/components/schemas/Signature'
+    Signature:
+      type: object
+      required:
+        - desc
+        - args
+      properties:
+        ret:
+          $ref: '#/components/schemas/JavaTypes'
+        desc:
+          type: string
+        args:
+          type: array
+          items:
+            $ref: '#/components/schemas/Argument'
+    Attr:
+      type: object
+      required:
+        - rw
+        - type
+        - desc
+      properties:
+        desc:
+          type: string
+        rw:
+          type: boolean
+        type:
+          $ref: '#/components/schemas/JavaTypes'
+    Argument:
+      type: object
+      required:
+        - name
+        - type
+        - desc
+      properties:
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/JavaTypes'
+        desc:
+          type: string
+    ComponentAttribute:
+      type: object
+      required:
+        - request
+        - status
+      properties:
+        request:
+          type: object
+          required:
+            - mbean
+            - type
+          properties:
+            mbean:
+              type: string
+            attribute:
+              type: string
+            type:
+              type: string
+        value: {}
+        error_type:
+          type: string
+        error:
+          type: string
+        timestamp:
+          type: number
+        status:
+          type: number
+    ExecResult:
+      type: object
+      required:
+        - request
+        - status
+      properties:
+        request:
+          type: object
+          required:
+            - mbean
+            - arguments
+            - type
+            - operation
+          properties:
+            mbean:
+              type: string
+            arguments:
+              type: array
+              items:
+                type: string
+            type:
+              type: string
+            operation:
+              type: string
+        value: {}
+        error_type:
+          type: string
+        error:
+          type: string
+        timestamp:
+          type: number
+        status:
+          type: number

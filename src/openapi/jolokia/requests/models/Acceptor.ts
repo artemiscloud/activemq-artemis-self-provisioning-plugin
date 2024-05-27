@@ -4,7 +4,7 @@
 
 import type { Broker } from './Broker';
 
-export type Address = {
+export type Acceptor = {
   name: string;
   broker: Broker;
 };

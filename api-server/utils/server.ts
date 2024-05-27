@@ -41,6 +41,7 @@ const createServer = async (staticBaseDir: string): Promise<Express> => {
   const validatorOptions = {
     apiSpec: yamlSpecFile,
     validateRequests: true,
+    validateResponses: true,
     ignorePaths: /jolokia\/login/,
   };
 

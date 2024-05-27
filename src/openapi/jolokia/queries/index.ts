@@ -147,6 +147,85 @@ export const useJolokiaServiceReadAddressAttributes = <
     () => JolokiaService.readAddressAttributes(jolokiaSessionId, name, attrs),
     options,
   );
+export const useJolokiaServiceReadQueueAttributesKey =
+  'JolokiaServiceReadQueueAttributes';
+export const useJolokiaServiceReadQueueAttributes = <
+  TQueryKey extends Array<unknown> = unknown[],
+>(
+  {
+    jolokiaSessionId,
+    name,
+    address,
+    routingType,
+    attrs,
+  }: {
+    jolokiaSessionId: string;
+    name: string;
+    address: string;
+    routingType: string;
+    attrs?: Array<string>;
+  },
+  queryKey?: TQueryKey,
+  options?: Omit<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof JolokiaService.readQueueAttributes>>,
+      unknown,
+      Awaited<ReturnType<typeof JolokiaService.readQueueAttributes>>,
+      unknown[]
+    >,
+    'queryKey' | 'queryFn' | 'initialData'
+  >,
+) =>
+  useQuery(
+    [
+      useJolokiaServiceReadQueueAttributesKey,
+      ...(queryKey ?? [
+        { jolokiaSessionId, name, address, routingType, attrs },
+      ]),
+    ],
+    () =>
+      JolokiaService.readQueueAttributes(
+        jolokiaSessionId,
+        name,
+        address,
+        routingType,
+        attrs,
+      ),
+    options,
+  );
+export const useJolokiaServiceReadAcceptorAttributesKey =
+  'JolokiaServiceReadAcceptorAttributes';
+export const useJolokiaServiceReadAcceptorAttributes = <
+  TQueryKey extends Array<unknown> = unknown[],
+>(
+  {
+    jolokiaSessionId,
+    name,
+    attrs,
+  }: {
+    jolokiaSessionId: string;
+    name: string;
+    attrs?: Array<string>;
+  },
+  queryKey?: TQueryKey,
+  options?: Omit<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof JolokiaService.readAcceptorAttributes>>,
+      unknown,
+      Awaited<ReturnType<typeof JolokiaService.readAcceptorAttributes>>,
+      unknown[]
+    >,
+    'queryKey' | 'queryFn' | 'initialData'
+  >,
+) =>
+  useQuery(
+    [
+      useJolokiaServiceReadAcceptorAttributesKey,
+      ...(queryKey ?? [{ jolokiaSessionId, name, attrs }]),
+    ],
+    () => JolokiaService.readAcceptorAttributes(jolokiaSessionId, name, attrs),
+    options,
+  );
 export const useJolokiaServiceCheckCredentialsKey =
   'JolokiaServiceCheckCredentials';
 export const useJolokiaServiceCheckCredentials = <

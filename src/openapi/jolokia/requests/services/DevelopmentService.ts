@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { SimpleResponse } from '../models/SimpleResponse';
+import type { ApiResponse } from '../models/ApiResponse';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -51,10 +51,10 @@ export class DevelopmentService {
    * }
    * ```
    *
-   * @returns SimpleResponse Success
+   * @returns ApiResponse Success
    * @throws ApiError
    */
-  public static apiInfo(): CancelablePromise<SimpleResponse> {
+  public static apiInfo(): CancelablePromise<ApiResponse> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api-info',

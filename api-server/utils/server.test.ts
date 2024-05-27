@@ -176,10 +176,14 @@ describe('test api server apis', () => {
   });
 
   it('test get brokers', async () => {
-    const result = ['org.apache.activemq.artemis:broker="amq-broker"'];
+    const result = [
+      {
+        name: 'amq-broker',
+      },
+    ];
     const jolokiaResp = {
       request: {},
-      value: result,
+      value: ['org.apache.activemq.artemis:broker="amq-broker"'],
       timestamp: 1714703745,
       status: 200,
     };
@@ -197,6 +201,33 @@ describe('test api server apis', () => {
 
   it('test get broker details', async () => {
     const result = {
+      op: {
+        removeAddressSettings: [
+          {
+            args: [
+              {
+                name: 'addressMatch',
+                type: 'java.lang.String',
+                desc: 'an address match',
+              },
+            ],
+            ret: 'void',
+            desc: 'Remove address settings',
+          },
+        ],
+      },
+      attr: {
+        AddressMemoryUsage: {
+          rw: false,
+          type: 'long',
+          desc: 'Memory used by all the addresses on broker for in-memory messages',
+        },
+      },
+      class:
+        'org.apache.activemq.artemis.core.management.impl.ActiveMQServerControlImpl',
+      desc: 'Information on the management interface of the MBean',
+    };
+    const jolokiaResult = {
       op: {
         removeAddressSettings: {
           args: [
@@ -223,7 +254,7 @@ describe('test api server apis', () => {
     };
     const jolokiaResp = {
       request: {},
-      value: result,
+      value: jolokiaResult,
       timestamp: 1714703745,
       status: 200,
     };
@@ -317,18 +348,107 @@ describe('test api server apis', () => {
     expect(JSON.stringify(value)).toEqual(JSON.stringify(jolokiaResp));
   });
 
+  it('test readAcceptorAttributes', async () => {
+    const jolokiaResp = [
+      {
+        request: {
+          mbean:
+            'org.apache.activemq.artemis:broker="amq-broker",component=acceptors,name="scaleDown"',
+          attribute: 'Parameters',
+          type: 'read',
+        },
+        value: {
+          amqpCredits: '1000',
+          scheme: 'tcp',
+          tcpReceiveBufferSize: '1048576',
+          port: '61616',
+          host: 'ex-aao-ss-0.ex-aao-hdls-svc.openshift-operators.svc.cluster.local',
+          protocols: 'CORE',
+          useEpoll: 'true',
+          amqpMinCredits: '300',
+          tcpSendBufferSize: '1048576',
+        },
+        timestamp: 1716368744,
+        status: 200,
+      },
+    ];
+
+    mockJolokia
+      .post(apiUrlPrefix + '/', (body) => {
+        if (
+          body.length === 1 &&
+          body[0].type === 'read' &&
+          body[0].mbean ===
+            'org.apache.activemq.artemis:broker="amq-broker",component=acceptors,name="scaleDown"' &&
+          body[0].attribute === 'Parameters'
+        ) {
+          return true;
+        }
+        return false;
+      })
+      .reply(200, JSON.stringify(jolokiaResp));
+
+    const resp = await doGet(
+      '/readAcceptorAttributes?name=scaleDown&attrs=Parameters',
+      authToken,
+    );
+    expect(resp.ok).toBeTruthy();
+
+    const value = await resp.json();
+    expect(JSON.stringify(value)).toEqual(JSON.stringify(jolokiaResp));
+  });
+
+  it('test readQueueAttributes', async () => {
+    const jolokiaResp = [
+      {
+        request: {
+          mbean:
+            'org.apache.activemq.artemis:address="ExpiryQueue",broker="amq-broker",component=addresses,queue="ExpiryQueue",routing-type="anycast",subcomponent=queues',
+          attribute: 'ID',
+          type: 'read',
+        },
+        value: 7,
+        timestamp: 1716368499,
+        status: 200,
+      },
+    ];
+    mockJolokia
+      .post(apiUrlPrefix + '/', (body) => {
+        if (
+          body.length === 1 &&
+          body[0].type === 'read' &&
+          body[0].mbean ===
+            'org.apache.activemq.artemis:address="ExpiryQueue",broker="amq-broker",component=addresses,queue="ExpiryQueue",routing-type="anycast",subcomponent=queues' &&
+          body[0].attribute === 'ID'
+        ) {
+          return true;
+        }
+        return false;
+      })
+      .reply(200, JSON.stringify(jolokiaResp));
+
+    const resp = await doGet(
+      '/readQueueAttributes?name=ExpiryQueue&address=ExpiryQueue&routing-type=anycast&attrs=ID',
+      authToken,
+    );
+    expect(resp.ok).toBeTruthy();
+
+    const value = await resp.json();
+    expect(JSON.stringify(value)).toEqual(JSON.stringify(jolokiaResp));
+  });
+
   it('test execBrokerOperation', async () => {
     const jolokiaResp = [
       {
         request: {
           mbean: 'org.apache.activemq.artemis:broker="amq-broker"',
-          args: [','],
+          arguments: [','],
           type: 'exec',
           operation: 'listAddresses(java.lang.String)',
         },
         value:
-          '$.artemis.internal.sf.my-cluster.caceaae5-ff8c-11ee-a198-0a580ad90011,activemq.notifications,DLQ,ExpiryQueue',
-        timestamp: 1713714174,
+          '$.artemis.internal.sf.my-cluster.5c0e3e93-1837-11ef-aa70-0a580ad9005f,activemq.notifications,DLQ,ExpiryQueue',
+        timestamp: 1716385483,
         status: 200,
       },
     ];
@@ -348,16 +468,14 @@ describe('test api server apis', () => {
       })
       .reply(200, JSON.stringify(jolokiaResp));
 
-    const ops = {
-      type: 'exec',
-      mbean: 'org.apache.activemq.artemis:broker="amq-broker"',
-      signature: 'listAddresses(java.lang.String)',
-      args: [','],
-    };
-
     const resp = await doPost(
       '/execBrokerOperation',
-      JSON.stringify(ops),
+      JSON.stringify({
+        signature: {
+          name: 'listAddresses',
+          args: [{ type: 'java.lang.String', value: ',' }],
+        },
+      }),
       authToken,
     );
     expect(resp.ok).toBeTruthy();
@@ -402,14 +520,33 @@ describe('test api server apis', () => {
   });
 
   it('test addresses', async () => {
-    const result = [
-      'org.apache.activemq.artemis:address="activemq.notifications",broker="amq-broker",component=addresses',
-      'org.apache.activemq.artemis:address="DLQ",broker="amq-broker",component=addresses',
-      'org.apache.activemq.artemis:address="ExpiryQueue",broker="amq-broker",component=addresses',
+    const expectedResult = [
+      {
+        name: 'activemq.notifications',
+        broker: {
+          name: 'amq-broker',
+        },
+      },
+      {
+        name: 'DLQ',
+        broker: {
+          name: 'amq-broker',
+        },
+      },
+      {
+        name: 'ExpiryQueue',
+        broker: {
+          name: 'amq-broker',
+        },
+      },
     ];
     const jolokiaResp = {
       request: {},
-      value: result,
+      value: [
+        'org.apache.activemq.artemis:address="activemq.notifications",broker="amq-broker",component=addresses',
+        'org.apache.activemq.artemis:address="DLQ",broker="amq-broker",component=addresses',
+        'org.apache.activemq.artemis:address="ExpiryQueue",broker="amq-broker",component=addresses',
+      ],
       timestamp: 1714703745,
       status: 200,
     };
@@ -424,24 +561,48 @@ describe('test api server apis', () => {
     expect(resp.ok).toBeTruthy();
 
     const value = await resp.json();
-    const expectedValue = result
-      .map((r) => r.split(',')[0].split('=')[1].replace(/"/g, ''))
-      .map((name) => ({ name }));
-
-    expect(value.length).toEqual(expectedValue.length);
+    expect(value.length).toEqual(expectedResult.length);
     for (let i = 0; i < value.length; i++) {
-      expect(value[i].name).toEqual(expectedValue[i].name);
+      expect(value[i]).toEqual(expectedResult[i]);
     }
   });
 
   it('test queues', async () => {
-    const result = [
+    const expectedApiResult = [
+      {
+        name: 'ExpiryQueue',
+        'routing-type': 'anycast',
+        address: {
+          name: 'ExpiryQueue',
+          broker: {
+            name: 'amq-broker',
+          },
+        },
+        broker: {
+          name: 'amq-broker',
+        },
+      },
+      {
+        name: 'DLQ',
+        'routing-type': 'anycast',
+        address: {
+          name: 'DLQ',
+          broker: {
+            name: 'amq-broker',
+          },
+        },
+        broker: {
+          name: 'amq-broker',
+        },
+      },
+    ];
+    const jolokiaResult = [
       'org.apache.activemq.artemis:address="ExpiryQueue",broker="amq-broker",component=addresses,queue="ExpiryQueue",routing-type="anycast",subcomponent=queues',
       'org.apache.activemq.artemis:address="DLQ",broker="amq-broker",component=addresses,queue="DLQ",routing-type="anycast",subcomponent=queues',
     ];
     const jolokiaResp = {
       request: {},
-      value: result,
+      value: jolokiaResult,
       timestamp: 1714703745,
       status: 200,
     };
@@ -456,14 +617,41 @@ describe('test api server apis', () => {
     expect(resp.ok).toBeTruthy();
 
     const value = await resp.json();
-    expect(value.length).toEqual(result.length);
+    expect(value.length).toEqual(expectedApiResult.length);
     for (let i = 0; i < value.length; i++) {
-      expect(value[i]).toEqual(result[i]);
+      expect(value[i]).toEqual(expectedApiResult[i]);
     }
   });
 
   it('test queueDetails', async () => {
-    const result = {
+    const apiResult = {
+      op: {
+        listMessages: [
+          {
+            args: [
+              {
+                name: 'filter',
+                type: 'java.lang.String',
+                desc: 'A message filter (can be empty)',
+              },
+            ],
+            ret: '[Ljava.util.Map;',
+            desc: 'List all the messages in the queue matching the given filter',
+          },
+        ],
+      },
+      attr: {
+        ConfigurationManaged: {
+          rw: false,
+          type: 'boolean',
+          desc: 'is this queue managed by configuration (broker.xml)',
+        },
+      },
+      class:
+        'org.apache.activemq.artemis.core.management.impl.QueueControlImpl',
+      desc: 'Information on the management interface of the MBean',
+    };
+    const jolokiaResult = {
       op: {
         listMessages: {
           args: [
@@ -490,7 +678,7 @@ describe('test api server apis', () => {
     };
     const jolokiaResp = {
       request: {},
-      value: result,
+      value: jolokiaResult,
       timestamp: 1714703745,
       status: 200,
     };
@@ -508,11 +696,32 @@ describe('test api server apis', () => {
     expect(resp.ok).toBeTruthy();
 
     const value = await resp.json();
-    expect(JSON.stringify(value)).toEqual(JSON.stringify(result));
+    expect(JSON.stringify(value)).toEqual(JSON.stringify(apiResult));
   });
 
   it('test addressDetails', async () => {
     const result = {
+      op: {
+        resume: [
+          {
+            args: [],
+            ret: 'void',
+            desc: 'Resumes the queues bound to this address',
+          },
+        ],
+      },
+      attr: {
+        RoutingTypesAsJSON: {
+          rw: false,
+          type: 'java.lang.String',
+          desc: 'Get the routing types enabled on this address as JSON',
+        },
+      },
+      class:
+        'org.apache.activemq.artemis.core.management.impl.AddressControlImpl',
+      desc: 'Information on the management interface of the MBean',
+    };
+    const jolokiaResult = {
       op: {
         resume: {
           args: [],
@@ -534,7 +743,7 @@ describe('test api server apis', () => {
 
     const jolokiaResp = {
       request: {},
-      value: result,
+      value: jolokiaResult,
       timestamp: 1714703745,
       status: 200,
     };
@@ -553,13 +762,22 @@ describe('test api server apis', () => {
   });
 
   it('test acceptors', async () => {
-    const result = [
+    const expectedApiResult = [
+      {
+        name: 'scaleDown',
+        broker: {
+          name: 'amq-broker',
+        },
+      },
+    ];
+
+    const jolokiaResult = [
       'org.apache.activemq.artemis:broker="amq-broker",component=acceptors,name="scaleDown"',
     ];
 
     const jolokiaResp = {
       request: {},
-      value: result,
+      value: jolokiaResult,
       timestamp: 1714703745,
       status: 200,
     };
@@ -574,11 +792,32 @@ describe('test api server apis', () => {
     expect(resp.ok).toBeTruthy();
 
     const value = await resp.json();
-    expect(JSON.stringify(value)).toEqual(JSON.stringify(result));
+    expect(JSON.stringify(value)).toEqual(JSON.stringify(expectedApiResult));
   });
 
   it('test acceptorDetails', async () => {
     const result = {
+      op: {
+        reload: [
+          {
+            args: [],
+            ret: 'void',
+            desc: 'Re-create the acceptor with the existing configuration values. Useful, for example, for reloading key/trust stores on acceptors which support SSL.',
+          },
+        ],
+      },
+      attr: {
+        FactoryClassName: {
+          rw: false,
+          type: 'java.lang.String',
+          desc: 'class name of the AcceptorFactory implementation used by this acceptor',
+        },
+      },
+      class:
+        'org.apache.activemq.artemis.core.management.impl.AcceptorControlImpl',
+      desc: 'Information on the management interface of the MBean',
+    };
+    const jolokiaResult = {
       op: {
         reload: {
           args: [],
@@ -600,7 +839,7 @@ describe('test api server apis', () => {
 
     const jolokiaResp = {
       request: {},
-      value: result,
+      value: jolokiaResult,
       timestamp: 1714703745,
       status: 200,
     };

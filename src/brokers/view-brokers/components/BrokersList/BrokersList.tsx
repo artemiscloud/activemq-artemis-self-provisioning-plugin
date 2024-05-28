@@ -106,6 +106,11 @@ const BrokersList: FC<BrokersListProps> = ({
       <ListPageHeader title={t('brokers')}>
         <ListPageCreateLink to={`/k8s/ns/${namespace || 'default'}/add-broker`}>
           {t('create_broker')}
+        </ListPageCreateLink>{' '}
+        <ListPageCreateLink
+          to={`/k8s/ns/${namespace || 'default'}/add-tls-broker`}
+        >
+          {t('create_tls_broker')}
         </ListPageCreateLink>
       </ListPageHeader>
       <ListPageBody>

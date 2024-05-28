@@ -20,6 +20,17 @@
     "properties": {
       "exact": true,
       "path": [
+        "/k8s/ns/:ns/add-tls-broker",
+        "/k8s/all-namespaces/add-tls-broker"
+      ],
+      "component": { "$codeRef": "AddTlsBrokerPage" }
+    }
+  },
+  {
+    "type": "console.page/route",
+    "properties": {
+      "exact": true,
+      "path": [
         "/k8s/ns/:ns/edit-broker/:name",
         "/k8s/all-namespaces/edit-broker/:name"
       ],

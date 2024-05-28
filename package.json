@@ -147,6 +147,7 @@
     "exposedModules": {
       "BrokersPage": "./brokers/view-brokers",
       "AddBrokerPage": "./brokers/add-broker",
+      "AddTlsBrokerPage": "./brokers/add-tls-broker",
       "UpdateBrokerPage": "./brokers/update-broker",
       "PodsListPage": "./brokers/broker-pods",
       "BrokerDetailsPage": "./brokers/broker-details"

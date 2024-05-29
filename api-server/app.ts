@@ -3,6 +3,8 @@ import https from 'https';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
+import livereload from 'livereload';
+import connectLiveReload from 'connect-livereload';
 
 dotenv.config();
 
@@ -18,8 +20,20 @@ if (process.argv[2] === undefined) {
 
 const staticBase = path.resolve(process.argv[2]);
 console.log('Serving static files under', staticBase);
+
 createServer(staticBase)
   .then((server) => {
+    //Livereload setup
+    if (process.env.NODE_ENV === 'development') {
+      const liveReloadServer = livereload.createServer();
+      liveReloadServer.watch(path.join(__dirname, 'dist'));
+      liveReloadServer.server.once('connection', () => {
+        setTimeout(() => {
+          liveReloadServer.refresh('/');
+        }, 100);
+      });
+      server.use(connectLiveReload());
+    }
     server.listen(9001, () => {
       console.info(`Listening on http://0.0.0.0:9001`);
     });
@@ -34,8 +48,8 @@ createServer(staticBase)
       );
 
       if (
-        process.env.SERVER_KEY != undefined &&
-        process.env.SERVER_CERT != undefined
+        process.env.SERVER_KEY !== undefined &&
+        process.env.SERVER_CERT !== undefined
       ) {
         options = {
           key: fs.readFileSync(process.env.SERVER_KEY),

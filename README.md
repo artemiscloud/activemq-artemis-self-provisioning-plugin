@@ -9,12 +9,9 @@ In one terminal window, run:
 1. `yarn install`
 2. `yarn build-server`
 3. `yarn build-dev`
-4. `yarn run start`
+4. `yarn run start-dev`
 
-Note: `yarn run start` starts the plugin in http mode.
-if you want the plugin to run in https mode, run
-
-`yarn run start-tls`
+Note: The commands `yarn run start-dev` and `yarn run start` default to starting the plugin in https mode.
 
 In another terminal window, run:
 
@@ -31,8 +28,6 @@ If you want the console to run in `https` mode, run:
 
 This command will run the console in `https` mode on port 9442.
 The console url is <https://localhost:9442>
-
-Note: Running console in `https` mode requires the plugin running in `https` mode too.
 
 The console in https mode requires a private key and a server certificate that are generated
 with openssl command. They are located under `console-cert` directory. The domain.key is the

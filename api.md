@@ -209,17 +209,7 @@ If necessary update the code that is using the hooks to comply with your changes
 - Description  
   **Get the broker mbean**  
    The return value is a one-element array that contains  
-   the broker's mbean object name.  
-   **Example:**
-  **Request url:** https://localhost:9443/api/v1/brokers  
-   **Response:**
-  ```json
-  [
-    {
-      "name": "amq-broker"
-    }
-  ]
-  ```
+   the broker's mbean object name.
 
 #### Headers
 
@@ -273,38 +263,7 @@ jolokia-session-id: string
   **Get the broker details**  
    The return value is a json object that contains  
    description of all the operations and attributes of the broker's mbean.  
-   It is defined in [ActiveMQServerControl.java](https://github.com/apache/activemq-artemis/blob/2.33.0/artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/management/ActiveMQServerControl.java)  
-   **Example:**
-  **Request url:** https://localhost:9443/api/v1/brokerDetails  
-   **Response:**
-  ```json
-  {
-    "op": {
-      "removeAddressSettings": {
-        "args": [
-          {
-            "name": "addressMatch",
-            "type": "java.lang.String",
-            "desc": "an address match"
-          }
-        ],
-        "ret": "void",
-        "desc": "Remove address settings"
-      },
-      ...(more)
-    },
-    "attr": {
-      "AddressMemoryUsage": {
-        "rw": false,
-        "type": "long",
-        "desc": "Memory used by all the addresses on broker for in-memory messages"
-      },
-      ...(more)
-    },
-    "class": "org.apache.activemq.artemis.core.management.impl.ActiveMQServerControlImpl",
-    "desc": "Information on the management interface of the MBean"
-  }
-  ```
+   It is defined in [ActiveMQServerControl.java](https://github.com/apache/activemq-artemis/blob/2.33.0/artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/management/ActiveMQServerControl.java)
 
 #### Headers
 
@@ -362,24 +321,6 @@ jolokia-session-id: string
   **Read values of broker attributes**  
    The return value is a json array that contains  
    values of requested attributes of the broker's mbean.
-  **Example:**
-  **Request url:** https://localhost:9443/api/v1/readBrokerAttributes?names=Clustered  
-   (To read the `Clustered` attribute of the broker)
-  **Response:**
-  ```json
-  [
-    {
-      "request": {
-        "mbean": "org.apache.activemq.artemis:broker=\"amq-broker\"",
-        "attribute": "Clustered",
-        "type": "read"
-      },
-      "value": true,
-      "timestamp": 1713712378,
-      "status": 200
-    }
-  ]
-  ```
   **Note**: to read multiple attributes, set it to **names** parameter  
    separated by commas, e.g. `Version,Status`.
 
@@ -448,24 +389,6 @@ jolokia-session-id: string
   **Read values of address attributes**  
    The return value is a json array that contains  
    values of requested attributes of the addresses's mbean.
-  **Example:**
-  **Request url:** https://localhost:9443/api/v1/readAddressAttributes?name=DLQ,attrs=RoutingTypes  
-   (To read the `RoutingTypes` attribute of the address DLQ)
-  **Response:**
-  ```json
-  [
-    {
-      "request": {
-        "mbean": "org.apache.activemq.artemis:address=\"DLQ\",broker=\"amq-broker\",component=addresses",
-        "attribute": "RoutingTypes",
-        "type": "read"
-      },
-      "value": ["ANYCAST"],
-      "timestamp": 1715864988,
-      "status": 200
-    }
-  ]
-  ```
   **Note**: to read multiple attributes, set it to **attrs** parameter  
    separated by commas, e.g. `RoutingTypes,Address`.
 
@@ -740,33 +663,6 @@ jolokia-session-id: string
    should have the operation signature and its args.  
    The return value is a one element json array that contains  
    return values of invoked operation along with the request info.
-  **Example:**
-  To invoke `listAddresses` operation on the broker:  
-   **Request:**
-  ```
-    POST https://localhost:9443/api/v1/execBrokerOperation
-      with body:
-      {
-        signature: 'listAddresses(java.lang.String)',
-        params: [','],
-      }
-  ```
-  **Response:**
-  ```json
-  [
-    {
-      "request": {
-        "mbean": "org.apache.activemq.artemis:broker=\"amq-broker\"",
-        "arguments": [","],
-        "type": "exec",
-        "operation": "listAddresses(java.lang.String)"
-      },
-      "value": "$.artemis.internal.sf.my-cluster.caceaae5-ff8c-11ee-a198-0a580ad90011,activemq.notifications,DLQ,ExpiryQueue",
-      "timestamp": 1713714174,
-      "status": 200
-    }
-  ]
-  ```
 
 #### Headers
 
@@ -845,22 +741,6 @@ jolokia-session-id: string
   **List all broker components**
   It retrieves and returns a list of all mbeans  
    registered directly under the broker managment domain.
-  **Example:**
-  **Request url:** https://localhost:9443/api/v1/execBrokerOperation  
-   **Response:**
-  ```json
-  [
-    "org.apache.activemq.artemis:address=\"ExpiryQueue\",broker=\"amq-broker\",component=addresses,queue=\"ExpiryQueue\",routing-type=\"anycast\",subcomponent=queues",
-    "org.apache.activemq.artemis:broker=\"amq-broker\",component=cluster-connections,name=\"my-cluster\"",
-    "org.apache.activemq.artemis:address=\"activemq.notifications\",broker=\"amq-broker\",component=addresses",
-    "org.apache.activemq.artemis:broker=\"amq-broker\",component=broadcast-groups,name=\"my-broadcast-group\"",
-    "org.apache.activemq.artemis:broker=\"amq-broker\",component=acceptors,name=\"scaleDown\"",
-    "org.apache.activemq.artemis:broker=\"amq-broker\"",
-    "org.apache.activemq.artemis:address=\"DLQ\",broker=\"amq-broker\",component=addresses",
-    "org.apache.activemq.artemis:address=\"DLQ\",broker=\"amq-broker\",component=addresses,queue=\"DLQ\",routing-type=\"anycast\",subcomponent=queues",
-    "org.apache.activemq.artemis:address=\"ExpiryQueue\",broker=\"amq-broker\",component=addresses"
-  ]
-  ```
 
 #### Headers
 
@@ -910,31 +790,6 @@ string[]
 - Description  
   **Get all addresses in a broker**
   It retrieves and returns a list of all address mbeans
-  **Example:**
-  **Request url:** https://localhost:9443/api/v1/addresses  
-   **Response:**
-  ```json
-  [
-    {
-      "name": "activemq.notifications",
-      "broker": {
-        "name": "amq-broker"
-      }
-    },
-    {
-      "name": "DLQ",
-      "broker": {
-        "name": "amq-broker"
-      }
-    },
-    {
-      "name": "ExpiryQueue",
-      "broker": {
-        "name": "amq-broker"
-      }
-    }
-  ]
-  ```
 
 #### Headers
 
@@ -990,33 +845,6 @@ jolokia-session-id: string
 - Description  
   **Get all queues in a broker**
   It retrieves and returns a list of all queue mbeans
-  **Example:**
-  **Request url:** https://localhost:9443/api/v1/queues  
-   **Response:**
-  ```json
-  [
-    {
-      "name": "ExpiryQueue",
-      "routing-type": "anycast",
-      "address": {
-        "name": "ExpiryQueue"
-      },
-      "broker": {
-        "name": "amq-broker"
-      }
-    },
-    {
-      "name": "DLQ",
-      "routing-type": "anycast",
-      "address": {
-        "name": "DLQ"
-      },
-      "broker": {
-        "name": "amq-broker"
-      }
-    }
-  ]
-  ```
 
 #### Parameters(Query)
 
@@ -1084,39 +912,7 @@ jolokia-session-id: string
   **Get details of a queue**  
    The return value is a json object that contains  
    description of all the operations and attributes of the `queue` mbean.
-  It is defined in [QueueControl.java](https://github.com/apache/activemq-artemis/blob/2.33.0/artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/management/QueueControl.java)  
-   **Example:**
-  **Request url:** https://localhost:9443/api/v1/queueDetails?name=DLQ&addressName=DLQ&routingType=anycast  
-   (To get details of queue `DLQ` on address `DLQ` with routingType `anycast`)  
-   **Response:**
-  ```json
-  {
-    "op": {
-      "listMessages": {
-        "args": [
-          {
-            "name": "filter",
-            "type": "java.lang.String",
-            "desc": "A message filter (can be empty)"
-          }
-        ],
-        "ret": "[Ljava.util.Map;",
-        "desc": "List all the messages in the queue matching the given filter"
-      },
-      ...(more)
-    },
-    "attr": {
-      "ConfigurationManaged": {
-        "rw": false,
-        "type": "boolean",
-        "desc": "is this queue managed by configuration (broker.xml)"
-      },
-      ...(more)
-    },
-    "class": "org.apache.activemq.artemis.core.management.impl.QueueControlImpl",
-    "desc": "Information on the management interface of the MBean"
-  }
-  ```
+  It is defined in [QueueControl.java](https://github.com/apache/activemq-artemis/blob/2.33.0/artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/management/QueueControl.java)
 
 #### Parameters(Query)
 
@@ -1191,32 +987,7 @@ jolokia-session-id: string
   **Get details of an address**  
    The return value is a json object that contains  
    description of all the operations and attributes of the address mbean.
-  It is defined in [AddressControl.java](https://github.com/apache/activemq-artemis/blob/2.33.0/artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/management/AddressControl.java)  
-   **Example:**
-  **Request url:**  
-   **Response:**
-  ```json
-  {
-    "op": {
-      "resume": {
-        "args": [],
-        "ret": "void",
-        "desc": "Resumes the queues bound to this address"
-      },
-      ...(more)
-    },
-    "attr": {
-      "RoutingTypesAsJSON": {
-        "rw": false,
-        "type": "java.lang.String",
-        "desc": "Get the routing types enabled on this address as JSON"
-      },
-      ...(more)
-    },
-    "class": "org.apache.activemq.artemis.core.management.impl.AddressControlImpl",
-    "desc": "Information on the management interface of the MBean"
-  }
-  ```
+  It is defined in [AddressControl.java](https://github.com/apache/activemq-artemis/blob/2.33.0/artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/management/AddressControl.java)
 
 #### Parameters(Query)
 
@@ -1280,19 +1051,6 @@ jolokia-session-id: string
 - Description  
   **Get all acceptors in a broker**
   It retrieves and returns a list of all acceptor mbeans
-  **Example:**
-  **Request url:** https://localhost:9443/api/v1/acceptors  
-   **Response:**
-  ```json
-  [
-    {
-      "name": "scaleDown",
-      "broker": {
-        "name": "amq-broker"
-      }
-    }
-  ]
-  ```
 
 #### Headers
 
@@ -1349,33 +1107,7 @@ jolokia-session-id: string
   **Get details of an acceptor**  
    The return value is a json object that contains  
    description of all the operations and attributes of an `acceptor` mbean.
-  It is defined in [AcceptorControl.java](https://github.com/apache/activemq-artemis/blob/2.33.0/artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/management/AcceptorControl.java)  
-   **Example:**
-  **Request url:** https://localhost:9443/api/v1/acceptorDetails?name=scaleDown  
-   (To get the details of an acceptor named `scaleDown`)  
-   **Response:**
-  ```json
-  {
-    "op": {
-      "reload": {
-        "args": [],
-        "ret": "void",
-        "desc": "Re-create the acceptor with the existing configuration values. Useful, for example, for reloading key/trust stores on acceptors which support SSL."
-      },
-      ...(more)
-    },
-    "attr": {
-      "FactoryClassName": {
-        "rw": false,
-        "type": "java.lang.String",
-        "desc": "class name of the AcceptorFactory implementation used by this acceptor"
-      },
-      ...(more)
-    },
-    "class": "org.apache.activemq.artemis.core.management.impl.AcceptorControlImpl",
-    "desc": "Information on the management interface of the MBean"
-  }
-  ```
+  It is defined in [AcceptorControl.java](https://github.com/apache/activemq-artemis/blob/2.33.0/artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/management/AcceptorControl.java)
 
 #### Parameters(Query)
 
@@ -1440,40 +1172,6 @@ jolokia-session-id: string
   **Show all exposed paths on the api server**
   The return value is a json object that contains  
    description of all api paths defined in the api server.
-  **Example:**
-  **Request url:** https://localhost:9443/api/v1/api-info  
-   **Response:**
-  ```json
-  {
-    "message": {
-      "info": {
-        "name": "The Jolokia Api Server\n(Generated by `yarn build-api-doc`.)\n",
-        "description": ...(text omitted for brevity)
-        "version": "1.0.0-alpha"
-      },
-      "paths": {
-        "post": [
-          "/api/v1/jolokia/login",
-          "/api/v1/execBrokerOperation"
-        ],
-        "get": [
-          "/api/v1/brokers",
-          "/api/v1/brokerDetails",
-          "/api/v1/readBrokerAttributes",
-          "/api/v1/brokerComponents",
-          "/api/v1/addresses",
-          "/api/v1/queues",
-          "/api/v1/queueDetails",
-          "/api/v1/addressDetails",
-          "/api/v1/acceptors",
-          "/api/v1/acceptorDetails",
-          "/api/v1/api-info"
-        ]
-      }
-    },
-    "status": "successful"
-  }
-  ```
 
 #### Responses
 

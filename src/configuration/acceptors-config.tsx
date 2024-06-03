@@ -1,5 +1,17 @@
-import { BrokerConfigContext } from '../brokers/utils';
-import { FC, Fragment, useContext, useEffect, useState } from 'react';
+import {
+  ArtemisReducerActions,
+  BrokerConfigContext,
+  BrokerDispatchContext,
+  getAcceptorPort,
+  getAcceptorFactoryClass,
+  listAcceptors,
+  getAcceptorHost,
+  getAcceptorProtocols,
+  GetAcceptorSSLEnabled,
+  getAcceptorBindToAllInterfaces,
+  getAcceptorOtherParams,
+} from '../brokers/utils';
+import { FC, Fragment, useContext, useState } from 'react';
 import {
   Button,
   Checkbox,
@@ -26,8 +38,12 @@ import {
   ToolbarContent,
   ToolbarItem,
 } from '@patternfly/react-core';
-import { ConfigType, NamingPanel, CertSecretSelector } from './broker-models';
-import { K8sResourceCommon } from '../utils';
+import {
+  ConfigType,
+  NamingPanel,
+  CertSecretSelector,
+  ConfigTypeContext,
+} from './broker-models';
 
 export type AcceptorProps = {
   configName: string;
@@ -39,398 +55,94 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
   configName,
   configType,
 }) => {
-  const { yamlData, setYamlData } = useContext(BrokerConfigContext);
+  const { yamlData } = useContext(BrokerConfigContext);
+  const dispatch = useContext(BrokerDispatchContext);
 
-  const GetAcceptorFactoryClass = (brokerModel: K8sResourceCommon): string => {
-    if (brokerModel.spec?.brokerProperties?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.brokerProperties.length; i++) {
-        const prefix =
-          configType === ConfigType.connector
-            ? 'connectorConfigurations.'
-            : 'acceptorConfigurations.';
-        if (brokerModel.spec.brokerProperties[i].startsWith(prefix)) {
-          const fields = brokerModel.spec.brokerProperties[i].split('.', 3);
-          if (fields.length === 3) {
-            if (
-              fields[1] === configName &&
-              fields[2].startsWith('factoryClassName=')
-            ) {
-              const elems = brokerModel.spec.brokerProperties[i].split('=', 2);
-              if (
-                elems[1] ===
-                'org.apache.activemq.artemis.core.remoting.impl.invm.InVMAcceptorFactory'
-              ) {
-                return 'invm';
-              }
-            }
-          }
-        }
-      }
-    }
-    return 'netty';
-  };
-
-  const GetAcceptorPort = (brokerModel: K8sResourceCommon): number => {
-    if (configType === ConfigType.connector) {
-      if (brokerModel.spec?.connectors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-          if (brokerModel.spec.connectors[i].name === configName) {
-            return brokerModel.spec.connectors[i].port;
-          }
-        }
-      }
-    } else {
-      if (brokerModel.spec?.acceptors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-          if (brokerModel.spec.acceptors[i].name === configName) {
-            return brokerModel.spec.acceptors[i].port;
-          }
-        }
-      }
-    }
-    return 5555;
-  };
-
-  const GetAcceptorHost = (brokerModel: K8sResourceCommon): string => {
-    if (configType === ConfigType.connector) {
-      if (brokerModel.spec?.connectors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-          if (brokerModel.spec.connectors[i].name === configName) {
-            return brokerModel.spec.connectors[i].host;
-          }
-        }
-      }
-    }
-    return 'localhost';
-  };
-
-  const GetAcceptorProtocols = (brokerModel: K8sResourceCommon): string => {
-    if (configType === ConfigType.connector) {
-      if (brokerModel.spec?.connectors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-          if (brokerModel.spec.connectors[i].name === configName) {
-            return brokerModel.spec.connectors[i].protocols;
-          }
-        }
-      }
-    } else {
-      if (brokerModel.spec?.acceptors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-          if (brokerModel.spec.acceptors[i].name === configName) {
-            return brokerModel.spec.acceptors[i].protocols;
-          }
-        }
-      }
-    }
-    return 'ALL';
-  };
-
-  const GetAcceptorSSLEnabled = (brokerModel: K8sResourceCommon): boolean => {
-    if (configType === ConfigType.connector) {
-      if (brokerModel.spec?.connectors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-          if (brokerModel.spec.connectors[i].name === configName) {
-            return brokerModel.spec.connectors[i].sslEnabled ? true : false;
-          }
-        }
-      }
-    } else {
-      if (brokerModel.spec?.acceptors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-          if (brokerModel.spec.acceptors[i].name === configName) {
-            return brokerModel.spec.acceptors[i].sslEnabled ? true : false;
-          }
-        }
-      }
-    }
-    return false;
-  };
-
-  const GetBindToAllInterfaces = (brokerModel: K8sResourceCommon): boolean => {
-    if (configType === ConfigType.acceptor) {
-      console.log('getting aceptor bindto', configName);
-      if (brokerModel.spec?.acceptors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-          if (brokerModel.spec.acceptors[i].name === configName) {
-            console.log(
-              'found it type is',
-              typeof brokerModel.spec.acceptors[i].bindToAllInterfaces,
-            );
-            return brokerModel.spec.acceptors[i].bindToAllInterfaces
-              ? true
-              : false;
-          }
-        }
-      }
-    }
-    return false;
-  };
-
-  const updateAcceptorSSLEnabled = (brokerModel: K8sResourceCommon): void => {
-    if (configType === ConfigType.connector) {
-      if (brokerModel.spec?.connectors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-          if (brokerModel.spec.connectors[i].name === configName) {
-            brokerModel.spec.connectors[i].sslEnabled = isSSLEnabled;
-            if (!isSSLEnabled) {
-              //remove trust and ssl secrets
-              delete brokerModel.spec.connectors[i].sslSecret;
-              delete brokerModel.spec.connectors[i].trustSecret;
-            }
-          }
-        }
-      }
-    } else {
-      if (brokerModel.spec?.acceptors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-          if (brokerModel.spec.acceptors[i].name === configName) {
-            brokerModel.spec.acceptors[i].sslEnabled = isSSLEnabled;
-            if (!isSSLEnabled) {
-              //remove trust and ssl secrets
-              delete brokerModel.spec.acceptors[i].sslSecret;
-              delete brokerModel.spec.acceptors[i].trustSecret;
-            }
-          }
-        }
-      }
-    }
-  };
-
-  const getParamKey = (): string => {
-    if (configType === ConfigType.connector) {
-      return 'connectorConfigurations.' + configName + '.params.';
-    }
-    return 'acceptorConfigurations.' + configName + '.params.';
-  };
-
-  const GetAcceptorOtherParams = (brokerModel: K8sResourceCommon): string => {
-    const params: string[] = [];
-    if (brokerModel.spec?.brokerProperties?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.brokerProperties.length; i++) {
-        const paramKey = getParamKey();
-        if (brokerModel.spec.brokerProperties[i].startsWith(paramKey)) {
-          const portKey = paramKey + 'port=';
-          const protKey = paramKey + 'protocols=';
-          if (
-            !brokerModel.spec.brokerProperties[i].startsWith(portKey) &&
-            !brokerModel.spec.brokerProperties[i].startsWith(protKey)
-          ) {
-            const fields = brokerModel.spec.brokerProperties[i].split('=', 2);
-            const pName = fields[0].split('.')[3];
-            params.push(pName + '=' + fields[1]);
-          }
-        }
-      }
-    }
-    return params.toString();
-  };
-
-  const [selectedClass, setSelectedClass] = useState(
-    GetAcceptorFactoryClass(yamlData),
+  const selectedClass = getAcceptorFactoryClass(
+    yamlData,
+    configType,
+    configName,
   );
-  const [port, setPort] = useState(GetAcceptorPort(yamlData));
-  const [host, setHost] = useState(GetAcceptorHost(yamlData));
-  const [protocols, setProtocols] = useState(GetAcceptorProtocols(yamlData));
-  const [otherParams, setOtherParams] = useState(
-    GetAcceptorOtherParams(yamlData),
-  );
-  const [isSSLEnabled, setIsSSLEnabled] = useState(
-    GetAcceptorSSLEnabled(yamlData),
-  );
-  const [bindToAllInterfaces, setBindToAllInterfaces] = useState(
-    GetBindToAllInterfaces(yamlData),
+  const port = getAcceptorPort(yamlData, configType, configName);
+  const host = getAcceptorHost(yamlData, configType, configName);
+  const protocols = getAcceptorProtocols(yamlData, configType, configName);
+  const otherParams = getAcceptorOtherParams(yamlData, configType, configName);
+  const isSSLEnabled = GetAcceptorSSLEnabled(yamlData, configType, configName);
+  const bindToAllInterfaces = getAcceptorBindToAllInterfaces(
+    yamlData,
+    configType,
+    configName,
   );
 
-  const updateAcceptorPort = (brokerModel: K8sResourceCommon): void => {
-    if (configType === ConfigType.connector) {
-      if (brokerModel.spec?.connectors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-          if (brokerModel.spec.connectors[i].name === configName) {
-            brokerModel.spec.connectors[i].port = port;
-          }
-        }
-      }
-    } else {
-      if (brokerModel.spec?.acceptors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-          if (brokerModel.spec.acceptors[i].name === configName) {
-            brokerModel.spec.acceptors[i].port = port;
-          }
-        }
-      }
-    }
-  };
-
-  const updateAcceptorHost = (brokerModel: K8sResourceCommon): void => {
-    if (
-      configType === ConfigType.connector &&
-      brokerModel.spec?.connectors?.length > 0
-    ) {
-      for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-        if (brokerModel.spec.connectors[i].name === configName) {
-          brokerModel.spec.connectors[i].host = host;
-        }
-      }
-    }
-  };
-
-  const updateAcceptorBindToAllInterfaces = (
-    brokerModel: K8sResourceCommon,
-  ): void => {
-    console.log('calling update bindto', configName, 'type', configType);
-    if (
-      configType === ConfigType.acceptor &&
-      brokerModel.spec?.acceptors?.length > 0
-    ) {
-      console.log('updating bindto on acceptor', configName);
-      for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-        if (brokerModel.spec.acceptors[i].name === configName) {
-          console.log('found update', bindToAllInterfaces);
-          brokerModel.spec.acceptors[i].bindToAllInterfaces =
-            bindToAllInterfaces;
-        }
-      }
-    }
-  };
-
-  const updateAcceptorProtocols = (brokerModel: K8sResourceCommon): void => {
-    if (configType === ConfigType.connector) {
-      if (brokerModel.spec?.connectors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-          if (brokerModel.spec.connectors[i].name === configName) {
-            brokerModel.spec.connectors[i].protocols = protocols;
-          }
-        }
-      }
-    } else {
-      if (brokerModel.spec?.acceptors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-          if (brokerModel.spec.acceptors[i].name === configName) {
-            brokerModel.spec.acceptors[i].protocols = protocols;
-          }
-        }
-      }
-    }
-  };
-
-  const getOtherParamsMap = (): Map<string, string> => {
-    const pMap = new Map<string, string>();
-    const params = otherParams.split(',');
-    if (params?.length > 0) {
-      params.forEach((p) => {
-        const [pk, pv] = p.split('=');
-        if (pk && pv) {
-          pMap.set(pk, pv);
-        }
-      });
-    }
-    return pMap;
-  };
-
-  const isOtherParam = (pname: string): boolean => {
-    return (
-      pname !== 'port' &&
-      pname !== 'protocols' &&
-      pname !== 'host' &&
-      pname !== 'bindToAllInterfaces' &&
-      pname !== 'sslEnabled' &&
-      pname !== 'sslSecret'
-    );
-  };
-
-  const updateAcceptorOtherParams = (brokerModel: K8sResourceCommon): void => {
-    //const paramSet = new Set<string>(otherParams.split(','));
-    const paramMap = getOtherParamsMap();
-    const paramPrefix = getParamKey();
-    if (brokerModel.spec?.brokerProperties?.length > 0) {
-      //update
-      for (let i = 0; i < brokerModel.spec.brokerProperties.length; i++) {
-        if (brokerModel.spec.brokerProperties[i].startsWith(paramPrefix)) {
-          const param = brokerModel.spec.brokerProperties[i].substring(
-            paramPrefix.length,
-          );
-          const [paramName] = param.split('=');
-          if (isOtherParam(paramName)) {
-            if (paramMap.has(paramName)) {
-              //update
-              brokerModel.spec.brokerProperties[i] =
-                paramPrefix + paramName + '=' + paramMap.get(paramName);
-              paramMap.delete(paramName);
-            } else {
-              //mark for deletion
-              brokerModel.spec.brokerProperties[i] = 'mark-to-delete';
-            }
-          }
-        }
-      }
-      //remove
-      brokerModel.spec.brokerProperties =
-        brokerModel.spec.brokerProperties.filter((x: string) => {
-          return x !== 'mark-to-delete';
-        });
-    }
-    //now new params
-    paramMap.forEach((v, k) => {
-      brokerModel.spec.brokerProperties.push(paramPrefix + k + '=' + v);
+  const onChangeClass = (value: string) => {
+    dispatch({
+      operation: ArtemisReducerActions.updateAcceptorFactoryClass,
+      payload: {
+        brokerModel: yamlData,
+        configType: configType,
+        configName: configName,
+        selectedClass: value,
+      },
     });
   };
 
-  const getConfigPrefix = () => {
-    if (configType === ConfigType.connector) {
-      return 'connectorConfigurations.';
-    }
-    return 'acceptorConfigurations.';
-  };
-
-  const updateAcceptorFactoryClass = (brokerModel: K8sResourceCommon): void => {
-    for (let i = 0; i < brokerModel.spec.brokerProperties.length; i++) {
-      const configPrefix = getConfigPrefix();
-      if (brokerModel.spec.brokerProperties[i].startsWith(configPrefix)) {
-        const fields = brokerModel.spec.brokerProperties[i].split('.', 3);
-        if (fields.length === 3) {
-          if (
-            fields[1] === configName &&
-            fields[2].startsWith('factoryClassName=')
-          ) {
-            if (selectedClass === 'invm') {
-              brokerModel.spec.brokerProperties[i] =
-                configPrefix +
-                configName +
-                '.factoryClassName=org.apache.activemq.artemis.core.remoting.impl.invm.InVMAcceptorFactory';
-            } else {
-              brokerModel.spec.brokerProperties[i] =
-                configPrefix +
-                configName +
-                '.factoryClassName=org.apache.activemq.artemis.core.remoting.impl.netty.NettyAcceptorFactory';
-            }
-            break;
-          }
-        }
-      }
-    }
-  };
-
-  const onChangeClass = (value: string) => {
-    setSelectedClass(value);
-  };
-
   const onHostChange = (host: string) => {
-    setHost(host);
+    dispatch({
+      operation: ArtemisReducerActions.updateAcceptorHost,
+      payload: {
+        brokerModel: yamlData,
+        configType: configType,
+        configName: configName,
+        host: host,
+      },
+    });
   };
 
   const onPortChange = (port: string) => {
-    setPort(+port);
+    dispatch({
+      operation: ArtemisReducerActions.updateAcceptorPort,
+      payload: {
+        brokerModel: yamlData,
+        configType: configType,
+        configName: configName,
+        port: Number(port),
+      },
+    });
   };
 
   const onProtocolsChange = (prot: string) => {
-    setProtocols(prot);
+    dispatch({
+      operation: ArtemisReducerActions.updateAcceptorProtocols,
+      payload: {
+        brokerModel: yamlData,
+        configType: configType,
+        configName: configName,
+        protocols: prot,
+      },
+    });
   };
   const onOtherParamsChange = (params: string) => {
-    setOtherParams(params);
+    dispatch({
+      operation: ArtemisReducerActions.updateAcceptorOtherParams,
+      payload: {
+        brokerModel: yamlData,
+        configType: configType,
+        configName: configName,
+        otherParams: params,
+      },
+    });
   };
 
   const handleSSLEnabled = (value: boolean) => {
-    setIsSSLEnabled(value);
+    dispatch({
+      operation: ArtemisReducerActions.updateAcceptorSSLEnabled,
+      payload: {
+        brokerModel: yamlData,
+        configType: configType,
+        configName: configName,
+        sslEnabled: value,
+      },
+    });
   };
 
   const onBindToAllInterfacesChange = (
@@ -447,30 +159,16 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
       'current',
       bindToAllInterfaces,
     );
-    setBindToAllInterfaces(checked);
+    dispatch({
+      operation: ArtemisReducerActions.updateAcceptorBindToAllInterfaces,
+      payload: {
+        brokerModel: yamlData,
+        configType: configType,
+        configName: configName,
+        bindToAllInterfaces: checked,
+      },
+    });
   };
-
-  const updateAcceptor = (brokerModel: K8sResourceCommon) => {
-    updateAcceptorFactoryClass(brokerModel);
-    updateAcceptorPort(brokerModel);
-    updateAcceptorProtocols(brokerModel);
-    updateAcceptorSSLEnabled(brokerModel);
-    updateAcceptorHost(brokerModel);
-    updateAcceptorBindToAllInterfaces(brokerModel);
-    updateAcceptorOtherParams(brokerModel);
-  };
-
-  useEffect(() => {
-    setYamlData(updateAcceptor);
-  }, [
-    selectedClass,
-    host,
-    port,
-    protocols,
-    otherParams,
-    isSSLEnabled,
-    bindToAllInterfaces,
-  ]);
 
   const options = [
     { value: 'netty', label: 'Netty', disabled: false },
@@ -505,7 +203,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
             </FormSelect>
           </FormGroup>
         </FlexItem>
-        {configType === ConfigType.connector && (
+        {configType === ConfigType.connectors && (
           <FlexItem>
             <FormGroup
               label="Host"
@@ -563,7 +261,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
             />
           </FormGroup>
         </FlexItem>
-        {configType === ConfigType.acceptor && (
+        {configType === ConfigType.acceptors && (
           <FlexItem>
             <FormGroup
               label="BindToAllInterfaces"
@@ -642,32 +340,17 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
   );
 };
 
-const GenerateUniqueName = (prefix: string, existing: Set<string>): string => {
-  const limit = existing.size + 1;
-  let newName;
-  for (let i = 0; i < limit; i++) {
-    newName = prefix + i;
-    if (!existing.has(newName)) {
-      break;
-    }
-  }
-  return newName;
-};
-
 export type AcceptorConfigSectionProps = {
   configType: ConfigType;
   configName: string;
-  onDeleteAcceptor: () => void;
-  onUpdateAcceptor: () => void;
 };
 
 export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
   configType,
   configName,
-  onDeleteAcceptor,
-  onUpdateAcceptor,
 }) => {
-  const { yamlData, setYamlData } = useContext(BrokerConfigContext);
+  const { yamlData } = useContext(BrokerConfigContext);
+  const dispatch = useContext(BrokerDispatchContext);
 
   const [isConfigExpanded, setIsConfigExpanded] = useState(false);
   const [isActionOpen, setIsActionOpen] = useState(false);
@@ -685,91 +368,18 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
     setIsActionOpen(isOpen);
   };
 
-  const deleteAcceptor = (brokerModel: K8sResourceCommon) => {
-    const prefix =
-      configType === ConfigType.connector
-        ? 'connectorConfigurations.'
-        : 'acceptorConfigurations.';
-    if (brokerModel.spec?.brokerProperties?.length > 0) {
-      const configKey = prefix + configName + '.';
-      brokerModel.spec.brokerProperties =
-        brokerModel.spec.brokerProperties.filter((x: string) => {
-          return !x.startsWith(configKey);
-        });
-      if (configType === ConfigType.connector) {
-        if (brokerModel.spec?.connectors?.length > 0) {
-          brokerModel.spec.connectors = brokerModel.spec.connectors.filter(
-            (x: { name: string }) => {
-              return x.name !== configName;
-            },
-          );
-        }
-      } else {
-        if (brokerModel.spec?.acceptors?.length > 0) {
-          brokerModel.spec.acceptors = brokerModel.spec.acceptors.filter(
-            (x: { name: string }) => {
-              return x.name !== configName;
-            },
-          );
-        }
-      }
-    }
-  };
-
   const onDelete = () => {
-    setYamlData(deleteAcceptor);
-    onDeleteAcceptor();
+    dispatch({
+      operation: ArtemisReducerActions.deleteAcceptor,
+      payload: {
+        acceptorName: configName,
+        configType: configType,
+      },
+    });
   };
 
   const onRename = () => {
     setIsNaming(true);
-  };
-
-  const applyNewName = (newName: string) => {
-    if (newName === configName) return;
-    setYamlData((brokerModel: K8sResourceCommon) => {
-      const prefix =
-        configType === ConfigType.connector
-          ? 'connectorConfigurations.'
-          : 'acceptorConfigurations.';
-      if (brokerModel.spec?.brokerProperties?.length > 0) {
-        const configKey = prefix + configName + '.';
-        const newKey = prefix + newName + '.';
-        brokerModel.spec.brokerProperties =
-          brokerModel.spec.brokerProperties.map((o: string) => {
-            if (o.startsWith(configKey)) {
-              return o.replace(configKey, newKey);
-            }
-            return o;
-          });
-
-        if (configType === ConfigType.connector) {
-          if (brokerModel.spec?.connectors?.length > 0) {
-            brokerModel.spec.connectors = brokerModel.spec.connectors.map(
-              (o: { name: string }) => {
-                if (o.name === configName) {
-                  return { ...o, name: newName };
-                }
-                return o;
-              },
-            );
-          }
-        } else {
-          if (brokerModel.spec?.acceptors?.length > 0) {
-            brokerModel.spec.acceptors = brokerModel.spec.acceptors.map(
-              (o: { name: string }) => {
-                if (o.name === configName) {
-                  return { ...o, name: newName };
-                }
-                return o;
-              },
-            );
-          }
-        }
-      }
-    });
-    setIsNaming(false);
-    onUpdateAcceptor();
   };
 
   const dropdownItems = [
@@ -782,7 +392,7 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
   ];
 
   const getAcceptorNameSet = () => {
-    return getAcceptorEntries(configType, yamlData, 'set');
+    return listAcceptors(configType, yamlData, 'set');
   };
 
   return (
@@ -802,7 +412,6 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
         {isNaming && (
           <NamingPanel
             initName={configName}
-            applyNewName={applyNewName}
             uniqueSet={getAcceptorNameSet() as Set<string>}
           />
         )}
@@ -826,101 +435,21 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
   );
 };
 
-const getAcceptorEntries = (
-  configType: ConfigType,
-  brokerModel: K8sResourceCommon,
-  resultType?: string,
-): { name: string }[] | Set<string> => {
-  const acceptors = new Set<string>();
-  if (configType === ConfigType.connector) {
-    if (brokerModel.spec?.connectors?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-        acceptors.add(brokerModel.spec.connectors[i].name);
-      }
-    }
-  } else {
-    if (brokerModel.spec?.acceptors?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-        acceptors.add(brokerModel.spec.acceptors[i].name);
-      }
-    }
-  }
-  if (resultType === 'set') {
-    return acceptors;
-  }
-  const result: { name: string }[] = [];
-  acceptors.forEach((value) => result.push({ name: value }));
-  return result;
-};
-
 export type AcceptorsConfigProps = {
   brokerId: number;
-  configType: ConfigType;
 };
 
-export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({
-  brokerId,
-  configType,
-}) => {
+export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
   const brokerConfig = useContext(BrokerConfigContext);
-  //for now this can make page update
-  const [totalAcceptors, setTotalAcceptors] = useState(0);
-  const [updateRevision, setUpdateRevision] = useState(1);
-
-  const addNewAcceptorToModel = () => {
-    const { yamlData } = brokerConfig;
-    if (!yamlData.spec.brokerProperties) {
-      yamlData.spec.brokerProperties = [];
-    }
-
-    const acceptorSet = getAcceptorEntries(
-      configType,
-      yamlData,
-      'set',
-    ) as Set<string>;
-
-    const newName = GenerateUniqueName(configType, acceptorSet);
-
-    if (configType === ConfigType.connector) {
-      if (!yamlData.spec.connectors) {
-        yamlData.spec.connectors = [];
-      }
-      yamlData.spec.connectors.push({
-        name: newName,
-        protocols: 'ALL',
-        host: 'localhost',
-        port: 5555,
-      });
-    } else {
-      if (!yamlData.spec.acceptors) {
-        yamlData.spec.acceptors = [];
-      }
-      yamlData.spec.acceptors.push({
-        name: newName,
-        protocols: 'ALL',
-        port: 5555,
-      });
-    }
-
-    const prefix =
-      configType === ConfigType.connector
-        ? 'connectorConfigurations.'
-        : 'acceptorConfigurations.';
-
-    yamlData.spec.brokerProperties.push(
-      prefix +
-        newName +
-        '.factoryClassName=org.apache.activemq.artemis.core.remoting.impl.netty.NettyAcceptorFactory',
-    );
-    setTotalAcceptors(totalAcceptors + 1);
-  };
+  const configType = useContext(ConfigTypeContext);
+  const dispatch = useContext(BrokerDispatchContext);
 
   const getAcceptorsFromModel = (brokerId: number): any[] => {
     const { yamlData: brokerModel } = brokerConfig;
     const acceptors = [];
 
     let i = 0;
-    const acceptorEntries = getAcceptorEntries(configType, brokerModel) as {
+    const acceptorEntries = listAcceptors(configType, brokerModel) as {
       name: string;
     }[];
 
@@ -932,12 +461,6 @@ export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({
           <AcceptorConfigSection
             configType={configType}
             configName={entry.name}
-            onDeleteAcceptor={() => {
-              setTotalAcceptors(totalAcceptors - 1);
-            }}
-            onUpdateAcceptor={() => {
-              setUpdateRevision(updateRevision + 1);
-            }}
           />
         </ListItem>,
       );
@@ -952,7 +475,15 @@ export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({
         <SearchInput aria-label="search acceptors" />
       </ToolbarItem>
       <ToolbarItem>
-        <Button variant="plain" onClick={addNewAcceptorToModel}>
+        <Button
+          variant="plain"
+          onClick={() =>
+            dispatch({
+              operation: ArtemisReducerActions.addNewAcceptorToModel,
+              payload: configType,
+            })
+          }
+        >
           +
         </Button>
       </ToolbarItem>

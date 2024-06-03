@@ -1,4 +1,4 @@
-import { FC, FormEvent, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Form,
@@ -27,10 +27,13 @@ import {
 import { useTranslation } from '../../../../i18n';
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import { BrokerProperties, BrokerPropertiesList } from './BrokerProperties';
-import { BrokerConfigContext } from '../../../utils';
+import {
+  ArtemisReducerActions,
+  BrokerConfigContext,
+  BrokerDispatchContext,
+} from '../../../utils';
 
 type FormViewProps = {
-  onChangeFieldValue: (value: string, evt: FormEvent<HTMLInputElement>) => void;
   onCreateBroker: (formValues: K8sResourceCommon) => void;
   notification: {
     title: string;
@@ -40,7 +43,6 @@ type FormViewProps = {
 };
 
 export const FormView: FC<FormViewProps> = ({
-  //  onChangeFieldValue,
   onCreateBroker,
   notification: serverNotification,
   targetNs,
@@ -53,8 +55,7 @@ export const FormView: FC<FormViewProps> = ({
   const [notification, setNotification] = useState(defaultNotification);
 
   const yamlValue = useContext(BrokerConfigContext);
-
-  const [crName, setCrName] = useState(yamlValue.yamlData.metadata.name);
+  const dispatch = useContext(BrokerDispatchContext);
 
   useEffect(() => {
     setNotification(serverNotification);
@@ -88,23 +89,7 @@ export const FormView: FC<FormViewProps> = ({
   };
 
   const handleNameChange = (name: string) => {
-    setCrName(name);
-    yamlValue.yamlData.metadata.name = name;
-  };
-
-  const [replicas, setReplicas] = useState(
-    yamlValue.yamlData.spec.deploymentPlan.size,
-  );
-
-  const replicaStepper = (stepValue: number) => {
-    setReplicas(replicas + stepValue);
-    yamlValue.yamlData.spec.deploymentPlan.size += stepValue;
-  };
-
-  const onChangeReplicas = (event: React.FormEvent<HTMLInputElement>) => {
-    const value = (event.target as HTMLInputElement).value;
-    setReplicas(value);
-    yamlValue.yamlData.spec.deploymentPlan.size = +value;
+    dispatch({ operation: ArtemisReducerActions.setBrokerName, payload: name });
   };
 
   const [isPerBrokerConfig, setIsPerBrokerConfig] = useState<boolean>(false);
@@ -127,6 +112,8 @@ export const FormView: FC<FormViewProps> = ({
     { value: '8.0', label: 'AMQ 8.0', disabled: true },
   ];
 
+  const crName = yamlValue.yamlData.metadata.name;
+  const replicas = yamlValue.yamlData.spec.deploymentPlan.size;
   return (
     <Form
       isWidthLimited
@@ -177,9 +164,22 @@ export const FormView: FC<FormViewProps> = ({
                   value={replicas}
                   min={1}
                   max={1024}
-                  onMinus={() => replicaStepper(-1)}
-                  onChange={onChangeReplicas}
-                  onPlus={() => replicaStepper(1)}
+                  onMinus={() =>
+                    dispatch({
+                      operation: ArtemisReducerActions.decrementReplicas,
+                    })
+                  }
+                  onChange={(event) =>
+                    dispatch({
+                      operation: ArtemisReducerActions.updateReclicasNumber,
+                      payload: Number((event.target as HTMLInputElement).value),
+                    })
+                  }
+                  onPlus={() =>
+                    dispatch({
+                      operation: ArtemisReducerActions.incrementReplicas,
+                    })
+                  }
                   inputName="input"
                   inputAriaLabel="number input"
                   minusBtnAriaLabel="minus"
@@ -239,7 +239,7 @@ export const FormView: FC<FormViewProps> = ({
         <StackItem isFilled>
           {isPerBrokerConfig && replicas > 1 ? (
             <BrokerPropertiesList
-              replicas={yamlValue.yamlData.spec.deploymentPlan.size}
+              replicas={replicas}
               crName={crName}
               targetNs={targetNs}
             />

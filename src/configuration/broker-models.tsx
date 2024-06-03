@@ -34,8 +34,8 @@ import {
 import {
   FC,
   PropsWithChildren,
+  createContext,
   useContext,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -45,13 +45,18 @@ import {
   useK8sWatchResource,
 } from '@openshift-console/dynamic-plugin-sdk';
 import { ConsoleConfigPage } from './console-config';
-import { BrokerConfigContext } from '../brokers/utils';
+import {
+  ArtemisReducerActions,
+  BrokerConfigContext,
+  BrokerDispatchContext,
+  getAcceptorSecret,
+} from '../brokers/utils';
 import { AcceptorsConfigPage } from './acceptors-config';
 import { SelectOptionObject } from '@patternfly/react-core/dist/js';
 
 export const enum ConfigType {
-  connector = 'connector',
-  acceptor = 'acceptor',
+  connectors = 'connectors',
+  acceptors = 'acceptors',
   console = 'console',
 }
 
@@ -151,7 +156,8 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     'ns',
     namespace,
   );
-  const { yamlData, setYamlData } = useContext(BrokerConfigContext);
+  const { yamlData } = useContext(BrokerConfigContext);
+  const dispatch = useContext(BrokerDispatchContext);
 
   const [secrets, loaded, loadError] = useK8sWatchResource<K8sResourceCommon[]>(
     {
@@ -167,71 +173,11 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     console.log('loaded number', secrets.length);
   }
 
-  const newOptionObject = (value: string): SelectOptionObject => {
-    return {
-      toString() {
-        return value;
-      },
-    };
-  };
-
-  const GetAcceptorSecret = (
-    brokerModel: K8sResourceCommon,
-  ): SelectOptionObject => {
-    console.log('getting secret from yaml', configName, 'idCa', isCa);
-    if (configType === ConfigType.connector) {
-      if (brokerModel.spec?.connectors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-          if (brokerModel.spec.connectors[i].name === configName) {
-            if (isCa) {
-              if (brokerModel.spec.connectors[i].trustSecret) {
-                return newOptionObject(
-                  brokerModel.spec.connectors[i].trustSecret,
-                );
-              }
-            } else if (brokerModel.spec.connectors[i].sslSecret) {
-              return newOptionObject(brokerModel.spec.connectors[i].sslSecret);
-            }
-          }
-        }
-      }
-    } else if (configType === ConfigType.acceptor) {
-      console.log('looking for acceptor secrets');
-      if (brokerModel.spec?.acceptors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-          console.log('acceptor ' + i + brokerModel.spec.acceptors[i].name);
-          if (brokerModel.spec.acceptors[i].name === configName) {
-            console.log('name matches');
-            if (isCa) {
-              console.log('for ca');
-              if (brokerModel.spec.acceptors[i].trustSecret) {
-                return newOptionObject(
-                  brokerModel.spec.acceptors[i].trustSecret,
-                );
-              }
-            } else if (brokerModel.spec.acceptors[i].sslSecret) {
-              console.log('for ssl' + brokerModel.spec.acceptors[i].sslSecret);
-              return newOptionObject(brokerModel.spec.acceptors[i].sslSecret);
-            }
-          }
-        }
-      }
-    } else {
-      console.log('console secret');
-      if (isCa) {
-        if (brokerModel.spec.console.trustSecret) {
-          return newOptionObject(brokerModel.spec.console.trustSecret);
-        }
-      } else if (brokerModel.spec.console.sslSecret) {
-        return newOptionObject(brokerModel.spec.console.sslSecret);
-      }
-    }
-    console.log('nothing found');
-    return '';
-  };
-
-  const [selectedSecret, setSelectedSecret] = useState(
-    GetAcceptorSecret(yamlData),
+  const selectedSecret = getAcceptorSecret(
+    yamlData,
+    configType,
+    configName,
+    isCa,
   );
 
   const [isOpen, setIsOpen] = useState(false);
@@ -241,7 +187,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   };
 
   const clearSelection = () => {
-    setSelectedSecret(null);
+    //TODO delete secret
     setIsOpen(false);
   };
 
@@ -253,8 +199,15 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     if (isPlaceholder) {
       clearSelection();
     } else {
-      console.log('=====set new select', value);
-      setSelectedSecret(value);
+      dispatch({
+        operation: ArtemisReducerActions.updatingAcceptorSecret,
+        payload: {
+          configType: configType,
+          secret: value,
+          acceptorName: configName,
+          isCa: isCa,
+        },
+      });
       setIsOpen(false);
     }
   };
@@ -324,77 +277,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     () => parseSecrets(),
     [secrets],
   );
-
-  const updateAcceptorSecret = (brokerModel: K8sResourceCommon) => {
-    console.log('updating model with secret', selectedSecret);
-    if (configType === ConfigType.connector) {
-      if (brokerModel.spec?.connectors?.length > 0) {
-        for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-          if (brokerModel.spec.connectors[i].name === configName) {
-            if (isCa) {
-              if (selectedSecret) {
-                brokerModel.spec.connectors[i].trustSecret =
-                  selectedSecret.toString();
-              } else {
-                delete brokerModel.spec.connectors[i].trustSecret;
-              }
-            } else {
-              if (selectedSecret) {
-                brokerModel.spec.connectors[i].sslSecret =
-                  selectedSecret.toString();
-              } else {
-                delete brokerModel.spec.connectors[i].sslSecret;
-              }
-            }
-          }
-        }
-      }
-    } else if (configType === ConfigType.acceptor) {
-      console.log('upate for acceptor', configName);
-      if (brokerModel.spec?.acceptors?.length > 0) {
-        console.log('has some acceptor already');
-        for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-          if (brokerModel.spec.acceptors[i].name === configName) {
-            console.log('found selector, selected', selectedSecret);
-            if (isCa) {
-              if (selectedSecret) {
-                brokerModel.spec.acceptors[i].trustSecret =
-                  selectedSecret.toString();
-              } else {
-                delete brokerModel.spec.acceptors[i].trustSecret;
-              }
-            } else {
-              console.log('is cert', selectedSecret);
-              if (selectedSecret) {
-                brokerModel.spec.acceptors[i].sslSecret =
-                  selectedSecret.toString();
-              } else {
-                delete brokerModel.spec.acceptors[i].sslSecret;
-              }
-            }
-          }
-        }
-      } else {
-        console.log('+++++no acceptor found for update!', selectedSecret);
-      }
-    } else {
-      if (brokerModel.spec?.console) {
-        if (isCa) {
-          if (selectedSecret) {
-            brokerModel.spec.console.trustSecret = selectedSecret.toString();
-          } else {
-            delete brokerModel.spec.console.trustSecret;
-          }
-        } else {
-          if (selectedSecret) {
-            brokerModel.spec.console.sslSecret = selectedSecret.toString();
-          } else {
-            delete brokerModel.spec.console.sslSecret;
-          }
-        }
-      }
-    }
-  };
 
   const [isSecretGenerating, setIsSecretGenerating] = useState<boolean>(false);
   const [certGenMessage, setCertGenMessage] = useState<string>('Generate');
@@ -589,10 +471,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
       });
   };
 
-  useEffect(() => {
-    setYamlData(updateAcceptorSecret);
-  }, [selectedSecret]);
-
   console.log('**** return group dumping statuse****');
 
   console.log('secrets', secrets + 'loaded', loaded, 'loaderr', loadError);
@@ -668,6 +546,10 @@ export const ConfigCategoryDescPage: FC<string> = (category: string) => {
   );
 };
 
+export const ConfigTypeContext = createContext<ConfigType>(
+  ConfigType.acceptors,
+);
+
 export const GetConfigurationPage: FC<BrokerConfigProps> = ({
   target,
   isPerBrokerConfig,
@@ -676,27 +558,19 @@ export const GetConfigurationPage: FC<BrokerConfigProps> = ({
     return <Text>Per Broker Config is disabled for now.</Text>;
   }
 
+  const configType: ConfigType = target;
+
   if (target) {
     return (
-      <BrokerComponentConfig key={'brokerconfig' + target} category={target}>
-        {target === 'acceptors' && (
-          <AcceptorsConfigPage
-            key={'brokerconfig.acceptors'}
-            brokerId={0}
-            configType={ConfigType.acceptor}
-          />
-        )}
-        {target === 'connectors' && (
-          <AcceptorsConfigPage
-            key={'brokerconfig.connectors'}
-            brokerId={0}
-            configType={ConfigType.connector}
-          />
-        )}
-        {target === 'console' && (
-          <ConsoleConfigPage key={'brokerconfig.console'} brokerId={0} />
-        )}
-      </BrokerComponentConfig>
+      <ConfigTypeContext.Provider value={configType}>
+        <BrokerComponentConfig key={'brokerconfig' + target} category={target}>
+          {target === 'console' ? (
+            <ConsoleConfigPage brokerId={0} />
+          ) : (
+            <AcceptorsConfigPage brokerId={0} />
+          )}
+        </BrokerComponentConfig>
+      </ConfigTypeContext.Provider>
     );
   }
   return (
@@ -708,10 +582,10 @@ export const GetConfigurationPage: FC<BrokerConfigProps> = ({
 
 export type AcceptorDropDownProps = {
   compKey: string;
-  compType: string;
+  compType: ConfigType;
   brokerId: number;
   configName: string;
-  onDelete: (event: MouseEvent) => void;
+  onDelete: () => void;
 };
 
 export const AcceptorDropDown: FC<AcceptorDropDownProps> = ({
@@ -721,9 +595,8 @@ export const AcceptorDropDown: FC<AcceptorDropDownProps> = ({
   configName,
   onDelete,
 }) => {
-  const { setYamlData } = useContext(BrokerConfigContext);
-
   const [isAcceptorOpen, setIsAcceptorOpen] = useState(false);
+  const dispatch = useContext(BrokerDispatchContext);
 
   const onToggleAcceptor = (isOpen: boolean) => {
     setIsAcceptorOpen(isOpen);
@@ -733,40 +606,15 @@ export const AcceptorDropDown: FC<AcceptorDropDownProps> = ({
     setIsAcceptorOpen(!isAcceptorOpen);
   };
 
-  const deleteAcceptor = (brokerModel: K8sResourceCommon) => {
-    const prefix =
-      compType === 'connector'
-        ? 'connectorConfigurations.'
-        : 'acceptorConfigurations.';
-    if (brokerModel.spec?.brokerProperties?.length > 0) {
-      const configKey = prefix + configName + '.';
-      brokerModel.spec.brokerProperties =
-        brokerModel.spec.brokerProperties.filter((x: string) => {
-          return !x.startsWith(configKey);
-        });
-      if (compType === 'connector') {
-        if (brokerModel.spec?.connectors?.length > 0) {
-          brokerModel.spec.connectors = brokerModel.spec.connectors.filter(
-            (x: { name: string }) => {
-              return x.name !== configName;
-            },
-          );
-        }
-      } else {
-        if (brokerModel.spec?.acceptors?.length > 0) {
-          brokerModel.spec.acceptors = brokerModel.spec.acceptors.filter(
-            (x: { name: string }) => {
-              return x.name !== configName;
-            },
-          );
-        }
-      }
-    }
-  };
-
-  const onDeleteAcceptor = (event: MouseEvent) => {
-    setYamlData(deleteAcceptor);
-    onDelete(event);
+  const onDeleteAcceptor = (_event: MouseEvent) => {
+    dispatch({
+      operation: ArtemisReducerActions.deleteAcceptor,
+      payload: {
+        configType: compType,
+        acceptorName: configName,
+      },
+    });
+    onDelete();
   };
 
   const acceptorActionItems = () => {
@@ -797,20 +645,24 @@ export const AcceptorDropDown: FC<AcceptorDropDownProps> = ({
 export type NamingPanelProps = {
   initName: string;
   uniqueSet?: Set<string>;
-  applyNewName: (newName: string) => void;
 };
 
-export const NamingPanel: FC<NamingPanelProps> = ({
-  initName,
-  uniqueSet,
-  applyNewName,
-}) => {
+export const NamingPanel: FC<NamingPanelProps> = ({ initName, uniqueSet }) => {
+  const configType = useContext(ConfigTypeContext);
+  const dispatch = useContext(BrokerDispatchContext);
   const [newName, setNewName] = useState(initName);
   const [toolTip, setTooltip] = useState('');
   const [validateStatus, setValidateStatus] = useState(null);
 
   const handleNewName = () => {
-    applyNewName(newName);
+    dispatch({
+      operation: ArtemisReducerActions.updatingAcceptorName,
+      payload: {
+        acceptorName: initName,
+        newName: newName,
+        configType: configType,
+      },
+    });
   };
 
   const validateName = (value: string) => {

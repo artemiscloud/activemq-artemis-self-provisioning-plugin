@@ -86,6 +86,7 @@ export const BrokerProperties: FC<BrokerIDProp> = ({
   targetNs,
 }) => {
   console.log('configuring broker ', crName, 'in namespace', targetNs);
+
   const [currentConfigItem, setCurrentConfigItem] = useState('');
 
   const onSelectBrokerConfigItem = (

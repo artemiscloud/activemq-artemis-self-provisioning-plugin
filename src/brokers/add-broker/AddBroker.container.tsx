@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
@@ -37,6 +37,14 @@ const AddBrokerPage: FC = () => {
         console.error(e);
       });
   };
+
+  const updateNamespace = (brokerModel: K8sResourceCommon) => {
+    brokerModel.metadata.namespace = namespace;
+  };
+
+  useEffect(() => {
+    formValues.setYamlData(updateNamespace);
+  }, [namespace]);
 
   return (
     <BrokerConfigContext.Provider value={formValues}>

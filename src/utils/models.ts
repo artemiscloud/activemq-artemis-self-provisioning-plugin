@@ -5,6 +5,8 @@ import {
   CERT_ISSUER_VERSION,
   CERT_MANAGER_APIGROUP,
   CERT_VERSION,
+  SECRET_APIGROUP,
+  SECRET_VERSION,
 } from './constants';
 
 export const AMQBrokerModel: K8sModel = {
@@ -48,6 +50,21 @@ export const CertModel: K8sModel = {
   plural: 'certificates',
   id: 'certificate',
   abbr: 'C',
+  namespaced: false,
+  crd: true,
+};
+
+export const SecretModel: K8sModel = {
+  apiGroup: SECRET_APIGROUP,
+  apiVersion: SECRET_VERSION,
+  kind: 'SecretList',
+  label: 'Secret',
+  labelKey: 'Secret',
+  labelPlural: 'Secrets',
+  labelPluralKey: 'Secrets',
+  plural: 'secrets',
+  id: 'secret',
+  abbr: 'S',
   namespaced: false,
   crd: true,
 };

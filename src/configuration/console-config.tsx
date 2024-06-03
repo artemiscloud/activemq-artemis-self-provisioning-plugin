@@ -1,4 +1,9 @@
-import { BrokerConfigContext } from '../brokers/utils';
+import {
+  ArtemisReducerOperations,
+  BrokerConfigContext,
+  BrokerDispatchContext,
+  ExposeMode,
+} from '../brokers/utils';
 import {
   Checkbox,
   Divider,
@@ -11,7 +16,8 @@ import {
   StackItem,
   Switch,
 } from '@patternfly/react-core';
-import { FC, useContext, useEffect, useState } from 'react';
+
+import { FC, useContext, useState } from 'react';
 import { CertSecretSelector, ConfigType } from './broker-models';
 import { K8sResourceCommon } from '../utils';
 
@@ -20,7 +26,8 @@ export type ConsoleConfigProps = {
 };
 
 export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
-  const { yamlData, setYamlData } = useContext(BrokerConfigContext);
+  const { yamlData } = useContext(BrokerConfigContext);
+  const dispatch = useContext(BrokerDispatchContext);
 
   const GetConsoleSSLEnabled = (brokerModel: K8sResourceCommon): boolean => {
     if (brokerModel.spec?.console) {
@@ -29,13 +36,13 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
     return false;
   };
 
-  const GetConsoleExposeMode = (brokerModel: K8sResourceCommon): string => {
+  const GetConsoleExposeMode = (brokerModel: K8sResourceCommon): ExposeMode => {
     if (brokerModel.spec?.console) {
       return brokerModel.spec.console.exposeMode
         ? brokerModel.spec.console.exposeMode
-        : 'route';
+        : ExposeMode.route;
     }
-    return 'route';
+    return ExposeMode.route;
   };
 
   const GetConsoleExpose = (brokerModel: K8sResourceCommon): boolean => {
@@ -47,45 +54,46 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
     return false;
   };
 
-  const [exposeConsole, setExposeConsole] = useState<boolean>(
-    GetConsoleExpose(yamlData),
-  );
-  const [exposeMode, setExposeMode] = useState<string>(
-    GetConsoleExposeMode(yamlData),
-  );
-  const [isSSLEnabled, setIsSSLEnabled] = useState<boolean>(
-    GetConsoleSSLEnabled(yamlData),
-  );
+  const exposeConsole = GetConsoleExpose(yamlData);
+  const exposeMode = GetConsoleExposeMode(yamlData);
+  const isSSLEnabled = GetConsoleSSLEnabled(yamlData);
 
   const handleSSLEnabled = (value: boolean) => {
-    setIsSSLEnabled(value);
+    dispatch({
+      operation: ArtemisReducerOperations.setConsoleSSLEnabled,
+      payload: value,
+    });
   };
 
-  const onExposeConsole = (value: boolean) => {
-    setExposeConsole(value);
+  const setConsoleExpose = (value: boolean) => {
+    dispatch({
+      operation: ArtemisReducerOperations.setConsoleExpose,
+      payload: value,
+    });
   };
 
-  const onChangeExposeMode = (value: string) => {
-    setExposeMode(value);
+  const setConsoleExposeMode = (value: ExposeMode) => {
+    dispatch({
+      operation: ArtemisReducerOperations.setConsoleExposeMode,
+      payload: value,
+    });
   };
 
   const exposeModes = [
-    { value: 'route', label: 'Route', disabled: false },
-    { value: 'ingress', label: 'Ingress', disabled: false },
+    { value: ExposeMode.route, label: 'Route', disabled: false },
+    { value: ExposeMode.ingress, label: 'Ingress', disabled: false },
   ];
 
-  const updateConsole = (brokerModel: K8sResourceCommon): void => {
-    brokerModel.spec.console.sslEnabled = isSSLEnabled;
-    brokerModel.spec.console.exposeMode = exposeMode;
-    brokerModel.spec.console.expose = exposeConsole;
-    //until authentication/authorization is implemented it need this to access jolokia
-    brokerModel.spec.console.adminUser = 'admin';
-    brokerModel.spec.console.adminPassword = 'admin';
-  };
-
-  useEffect(() => {
-    setYamlData(updateConsole);
-  });
+  const [execOnlyOnce, setExecOnlyOnce] = useState(true);
+  if (execOnlyOnce) {
+    setExecOnlyOnce(false);
+    setConsoleExpose(exposeConsole);
+    setConsoleExposeMode(exposeMode);
+    dispatch({
+      operation: ArtemisReducerOperations.setConsoleCredentials,
+      payload: { adminUser: 'admin', adminPassword: 'admin' },
+    });
+  }
 
   return (
     <Stack key={'stack' + brokerId}>
@@ -102,7 +110,7 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
                 isChecked={exposeConsole}
                 name={'check-console-expose'}
                 id={'check-expose-console'}
-                onChange={onExposeConsole}
+                onChange={setConsoleExpose}
               />
             </FormGroup>
           </FlexItem>
@@ -115,7 +123,7 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
               <FormSelect
                 label="console expose mode"
                 value={exposeMode}
-                onChange={onChangeExposeMode}
+                onChange={setConsoleExposeMode}
                 aria-label="formselect-expose-mode-aria-label"
                 key={'formselect-console-exposemode'}
               >

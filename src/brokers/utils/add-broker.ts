@@ -19,7 +19,7 @@ export const addBrokerInitialValues = (
     kind: 'ActiveMQArtemis',
     metadata: {
       name: 'ex-aao',
-      namespace,
+      namespace: namespace,
     },
     spec: {
       adminUser: 'admin',

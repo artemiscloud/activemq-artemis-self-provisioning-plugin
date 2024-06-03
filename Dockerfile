@@ -51,7 +51,8 @@ base-64 \
 jsonwebtoken \
 dotenv \
 express-rate-limit \
-node-fetch@2
+node-fetch@2 \
+node-forge
 
 RUN echo "node /usr/share/amq-spp/server/app.js /usr/share/amq-spp/dist" > run.sh
 RUN chmod +x run.sh

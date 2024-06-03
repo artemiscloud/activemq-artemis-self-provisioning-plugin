@@ -5,5 +5,4 @@ export interface AddBrokerResourceValues {
   shouldShowYAMLMessage?: boolean;
   editorType?: EditorType;
   yamlData?: K8sResourceCommon;
-  setYamlData?: (updater: (brokerModel: K8sResourceCommon) => void) => void;
 }

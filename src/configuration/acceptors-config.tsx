@@ -1,7 +1,7 @@
 import {
   ArtemisReducerOperations,
-  BrokerConfigContext,
-  BrokerDispatchContext,
+  BrokerCreationFormState,
+  BrokerCreationFormDispatch,
   getConfigPort,
   getConfigFactoryClass,
   listConfigs,
@@ -55,17 +55,17 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
   configName,
   configType,
 }) => {
-  const { yamlData } = useContext(BrokerConfigContext);
-  const dispatch = useContext(BrokerDispatchContext);
+  const { cr } = useContext(BrokerCreationFormState);
+  const dispatch = useContext(BrokerCreationFormDispatch);
 
-  const selectedClass = getConfigFactoryClass(yamlData, configType, configName);
-  const port = getConfigPort(yamlData, configType, configName);
-  const host = getConfigHost(yamlData, configType, configName);
-  const protocols = getConfigProtocols(yamlData, configType, configName);
-  const otherParams = getConfigOtherParams(yamlData, configType, configName);
-  const isSSLEnabled = getConfigSSLEnabled(yamlData, configType, configName);
+  const selectedClass = getConfigFactoryClass(cr, configType, configName);
+  const port = getConfigPort(cr, configType, configName);
+  const host = getConfigHost(cr, configType, configName);
+  const protocols = getConfigProtocols(cr, configType, configName);
+  const otherParams = getConfigOtherParams(cr, configType, configName);
+  const isSSLEnabled = getConfigSSLEnabled(cr, configType, configName);
   const bindToAllInterfaces = getConfigBindToAllInterfaces(
-    yamlData,
+    cr,
     configType,
     configName,
   );
@@ -365,7 +365,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               <FlexItem>
                 <CertSecretSelector
                   key={'secret-key' + configType + configName}
-                  namespace={yamlData.metadata.namespace}
+                  namespace={cr.metadata.namespace}
                   isCa={false}
                   configType={configType}
                   configName={configName}
@@ -374,7 +374,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               <FlexItem>
                 <CertSecretSelector
                   key={'secret-ca' + configType + configName}
-                  namespace={yamlData.metadata.namespace}
+                  namespace={cr.metadata.namespace}
                   isCa={true}
                   configType={configType}
                   configName={configName}
@@ -397,8 +397,8 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
   configType,
   configName,
 }) => {
-  const { yamlData } = useContext(BrokerConfigContext);
-  const dispatch = useContext(BrokerDispatchContext);
+  const { cr } = useContext(BrokerCreationFormState);
+  const dispatch = useContext(BrokerCreationFormDispatch);
 
   const [isConfigExpanded, setIsConfigExpanded] = useState(false);
   const [isActionOpen, setIsActionOpen] = useState(false);
@@ -445,7 +445,7 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
   ];
 
   const getAcceptorNameSet = () => {
-    return listConfigs(configType, yamlData, 'set');
+    return listConfigs(configType, cr, 'set');
   };
 
   return (
@@ -493,16 +493,16 @@ export type AcceptorsConfigProps = {
 };
 
 export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
-  const brokerConfig = useContext(BrokerConfigContext);
+  const fromState = useContext(BrokerCreationFormState);
   const configType = useContext(ConfigTypeContext);
-  const dispatch = useContext(BrokerDispatchContext);
+  const dispatch = useContext(BrokerCreationFormDispatch);
 
   const getAcceptorsFromModel = (brokerId: number): any[] => {
-    const { yamlData: brokerModel } = brokerConfig;
+    const { cr } = fromState;
     const acceptors = [];
 
     let i = 0;
-    const acceptorEntries = listConfigs(configType, brokerModel) as {
+    const acceptorEntries = listConfigs(configType, cr) as {
       name: string;
     }[];
 

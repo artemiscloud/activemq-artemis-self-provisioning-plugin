@@ -6,8 +6,8 @@ import { AddBroker } from './AddBroker.component';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
 import {
   ArtemisReducerOperations,
-  BrokerConfigContext,
-  BrokerDispatchContext,
+  BrokerCreationFormState,
+  BrokerCreationFormDispatch,
   newArtemisCRState,
   artemisCrReducer,
 } from '../utils';
@@ -49,15 +49,15 @@ const AddBrokerPage: FC = () => {
   }
 
   return (
-    <BrokerConfigContext.Provider value={brokerModel}>
-      <BrokerDispatchContext.Provider value={dispatch}>
+    <BrokerCreationFormState.Provider value={brokerModel}>
+      <BrokerCreationFormDispatch.Provider value={dispatch}>
         <AddBroker
           namespace={namespace}
           notification={notification}
           onCreateBroker={k8sCreateBroker}
         />
-      </BrokerDispatchContext.Provider>
-    </BrokerConfigContext.Provider>
+      </BrokerCreationFormDispatch.Provider>
+    </BrokerCreationFormState.Provider>
   );
 };
 

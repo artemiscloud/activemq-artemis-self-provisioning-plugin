@@ -29,8 +29,8 @@ import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import { BrokerProperties, BrokerPropertiesList } from './BrokerProperties';
 import {
   ArtemisReducerOperations,
-  BrokerConfigContext,
-  BrokerDispatchContext,
+  BrokerCreationFormState,
+  BrokerCreationFormDispatch,
 } from '../../../utils';
 
 type FormViewProps = {
@@ -54,8 +54,8 @@ export const FormView: FC<FormViewProps> = ({
   //states
   const [notification, setNotification] = useState(defaultNotification);
 
-  const yamlValue = useContext(BrokerConfigContext);
-  const dispatch = useContext(BrokerDispatchContext);
+  const formState = useContext(BrokerCreationFormState);
+  const dispatch = useContext(BrokerCreationFormDispatch);
 
   useEffect(() => {
     setNotification(serverNotification);
@@ -78,9 +78,9 @@ export const FormView: FC<FormViewProps> = ({
   };
 
   const onSubmit = () => {
-    const isValid = validateFormFields(yamlValue.yamlData);
+    const isValid = validateFormFields(formState.cr);
     if (isValid) {
-      onCreateBroker(yamlValue.yamlData);
+      onCreateBroker(formState.cr);
     }
   };
 
@@ -115,8 +115,8 @@ export const FormView: FC<FormViewProps> = ({
     { value: '8.0', label: 'AMQ 8.0', disabled: true },
   ];
 
-  const crName = yamlValue.yamlData.metadata.name;
-  const replicas = yamlValue.yamlData.spec.deploymentPlan.size;
+  const crName = formState.cr.metadata.name;
+  const replicas = formState.cr.spec.deploymentPlan.size;
   return (
     <Form
       isWidthLimited

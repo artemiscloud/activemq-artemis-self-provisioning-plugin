@@ -5,7 +5,7 @@ import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from '../add-broker/AddBroker.component';
 import { Loading } from '../../shared-components';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
-import { BrokerConfigContext, EditorType } from '../utils/add-broker';
+import { BrokerCreationFormState, EditorType } from '../utils/add-broker';
 
 const UpdateBrokerPage: FC = () => {
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
@@ -55,8 +55,8 @@ const UpdateBrokerPage: FC = () => {
   if (loading && !notification.title) return <Loading />;
 
   return (
-    <BrokerConfigContext.Provider
-      value={{ yamlData: initialBrokerValue, editorType: EditorType.YAML }}
+    <BrokerCreationFormState.Provider
+      value={{ cr: initialBrokerValue, editorType: EditorType.YAML }}
     >
       <AddBroker
         namespace={namespace}
@@ -64,7 +64,7 @@ const UpdateBrokerPage: FC = () => {
         onCreateBroker={k8sUpdateBroker}
         isEditWorkFlow={true}
       />
-    </BrokerConfigContext.Provider>
+    </BrokerCreationFormState.Provider>
   );
 };
 

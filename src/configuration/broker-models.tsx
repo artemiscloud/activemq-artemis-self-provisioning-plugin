@@ -49,8 +49,8 @@ import {
 import { ConsoleConfigPage } from './console-config';
 import {
   ArtemisReducerOperations,
-  BrokerConfigContext,
-  BrokerDispatchContext,
+  BrokerCreationFormState,
+  BrokerCreationFormDispatch,
   getConfigSecret,
 } from '../brokers/utils';
 import { AcceptorsConfigPage } from './acceptors-config';
@@ -160,8 +160,8 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     'ns',
     namespace,
   );
-  const { yamlData } = useContext(BrokerConfigContext);
-  const dispatch = useContext(BrokerDispatchContext);
+  const { cr } = useContext(BrokerCreationFormState);
+  const dispatch = useContext(BrokerCreationFormDispatch);
 
   const [secrets, loaded, loadError] = useK8sWatchResource<K8sResourceCommon[]>(
     {
@@ -177,12 +177,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     console.log('loaded number', secrets.length);
   }
 
-  const selectedSecret = getConfigSecret(
-    yamlData,
-    configType,
-    configName,
-    isCa,
-  );
+  const selectedSecret = getConfigSecret(cr, configType, configName, isCa);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -721,7 +716,7 @@ export const AcceptorDropDown: FC<AcceptorDropDownProps> = ({
   onDelete,
 }) => {
   const [isAcceptorOpen, setIsAcceptorOpen] = useState(false);
-  const dispatch = useContext(BrokerDispatchContext);
+  const dispatch = useContext(BrokerCreationFormDispatch);
 
   const onToggleAcceptor = (isOpen: boolean) => {
     setIsAcceptorOpen(isOpen);
@@ -779,7 +774,7 @@ export type NamingPanelProps = {
 
 export const NamingPanel: FC<NamingPanelProps> = ({ initName, uniqueSet }) => {
   const configType = useContext(ConfigTypeContext);
-  const dispatch = useContext(BrokerDispatchContext);
+  const dispatch = useContext(BrokerCreationFormDispatch);
   const [newName, setNewName] = useState(initName);
   const [toolTip, setTooltip] = useState('');
   const [validateStatus, setValidateStatus] = useState(null);

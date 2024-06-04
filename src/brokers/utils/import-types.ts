@@ -4,5 +4,5 @@ import { EditorType } from './add-broker';
 export interface AddBrokerResourceValues {
   shouldShowYAMLMessage?: boolean;
   editorType?: EditorType;
-  yamlData?: K8sResourceCommon;
+  cr?: K8sResourceCommon;
 }

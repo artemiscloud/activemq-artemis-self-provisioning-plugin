@@ -4,8 +4,8 @@ import { AlertVariant, Divider } from '@patternfly/react-core';
 import { YamlEditorView, EditorToggle, FormView } from './components';
 import {
   ArtemisReducerOperations,
-  BrokerConfigContext,
-  BrokerDispatchContext,
+  BrokerCreationFormState,
+  BrokerCreationFormDispatch,
   EditorType,
 } from '../utils';
 
@@ -25,8 +25,8 @@ const AddBroker: FC<AddBrokerProps> = ({
   namespace,
   isEditWorkFlow,
 }) => {
-  const formValues = useContext(BrokerConfigContext);
-  const dispatch = useContext(BrokerDispatchContext);
+  const formValues = useContext(BrokerCreationFormState);
+  const dispatch = useContext(BrokerCreationFormDispatch);
 
   const { editorType } = formValues;
 
@@ -57,7 +57,7 @@ const AddBroker: FC<AddBrokerProps> = ({
         <YamlEditorView
           onCreateBroker={onCreateBroker}
           namespace={namespace}
-          initialResourceYAML={formValues.yamlData}
+          initialResourceYAML={formValues.cr}
           notification={notification}
         />
       )}

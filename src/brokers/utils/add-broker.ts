@@ -1,4 +1,4 @@
-import { AddBrokerResourceValues as ArtemisFormState } from './import-types';
+import { AddBrokerResourceValues as FormState } from './import-types';
 import { K8sResourceKind, K8sResourceCommon as ArtemisCR } from '../../utils';
 import { createContext } from 'react';
 import { ConfigType } from '@app/configuration/broker-models';
@@ -14,12 +14,12 @@ export enum ExposeMode {
   ingress = 'ingress',
 }
 
-export const BrokerConfigContext = createContext<ArtemisFormState>({});
-export const BrokerDispatchContext =
+export const BrokerCreationFormState = createContext<FormState>({});
+export const BrokerCreationFormDispatch =
   createContext<React.Dispatch<ArtemisReducerActions>>(null);
 
-export const newArtemisCRState = (namespace: string): ArtemisFormState => {
-  const initialState: ArtemisCR = {
+export const newArtemisCRState = (namespace: string): FormState => {
+  const initialCr: ArtemisCR = {
     apiVersion: 'broker.amq.io/v1beta1',
     kind: 'ActiveMQArtemis',
     metadata: {
@@ -43,7 +43,7 @@ export const newArtemisCRState = (namespace: string): ArtemisFormState => {
   return {
     shouldShowYAMLMessage: true,
     editorType: EditorType.BROKER,
-    yamlData: initialState,
+    cr: initialCr,
   };
 };
 
@@ -418,49 +418,49 @@ interface SetReplicasNumberAction extends ArtemisReducerActionBase {
  *
  */
 export const artemisCrReducer: React.Reducer<
-  ArtemisFormState,
+  FormState,
   ArtemisReducerActions
-> = (prevBrokerModel, action) => {
-  const brokerModel = { ...prevBrokerModel };
+> = (prevFormState, action) => {
+  const formState = { ...prevFormState };
 
   // set the individual fields
   switch (action.operation) {
     case ArtemisReducerOperations.setEditorType:
-      brokerModel.editorType = action.payload;
+      formState.editorType = action.payload;
       break;
     case ArtemisReducerOperations.setNamespace:
-      brokerModel.yamlData.metadata.namespace = action.payload;
+      formState.cr.metadata.namespace = action.payload;
       break;
     case ArtemisReducerOperations.setReplicasNumber:
-      brokerModel.yamlData.spec.deploymentPlan.size = action.payload;
+      formState.cr.spec.deploymentPlan.size = action.payload;
       break;
     case ArtemisReducerOperations.incrementReplicas:
-      brokerModel.yamlData.spec.deploymentPlan.size += 1;
+      formState.cr.spec.deploymentPlan.size += 1;
       break;
     case ArtemisReducerOperations.decrementReplicas:
-      brokerModel.yamlData.spec.deploymentPlan.size -= 1;
-      if (brokerModel.yamlData.spec.deploymentPlan.size < 1) {
-        brokerModel.yamlData.spec.deploymentPlan.size = 1;
+      formState.cr.spec.deploymentPlan.size -= 1;
+      if (formState.cr.spec.deploymentPlan.size < 1) {
+        formState.cr.spec.deploymentPlan.size = 1;
       }
       break;
     case ArtemisReducerOperations.setBrokerName:
-      brokerModel.yamlData.metadata.name = action.payload;
+      formState.cr.metadata.name = action.payload;
       break;
     case ArtemisReducerOperations.addAcceptor:
-      addConfig(brokerModel.yamlData, ConfigType.acceptors);
+      addConfig(formState.cr, ConfigType.acceptors);
       break;
     case ArtemisReducerOperations.addConnector:
-      addConfig(brokerModel.yamlData, ConfigType.connectors);
+      addConfig(formState.cr, ConfigType.connectors);
       break;
     case ArtemisReducerOperations.deleteAcceptor:
-      deleteConfig(brokerModel.yamlData, ConfigType.acceptors, action.payload);
+      deleteConfig(formState.cr, ConfigType.acceptors, action.payload);
       break;
     case ArtemisReducerOperations.deleteConnector:
-      deleteConfig(brokerModel.yamlData, ConfigType.connectors, action.payload);
+      deleteConfig(formState.cr, ConfigType.connectors, action.payload);
       break;
     case ArtemisReducerOperations.setAcceptorName:
       renameConfig(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.acceptors,
         action.payload.oldName,
         action.payload.newName,
@@ -468,7 +468,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setConnectorName:
       renameConfig(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.connectors,
         action.payload.oldName,
         action.payload.newName,
@@ -476,7 +476,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setAcceptorSecret:
       updateConfigSecret(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.acceptors,
         action.payload.secret,
         action.payload.name,
@@ -485,7 +485,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setConnectorSecret:
       updateConfigSecret(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.connectors,
         action.payload.secret,
         action.payload.name,
@@ -494,7 +494,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setConsoleSecret:
       updateConfigSecret(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.console,
         action.payload.secret,
         action.payload.name,
@@ -502,22 +502,21 @@ export const artemisCrReducer: React.Reducer<
       );
       break;
     case ArtemisReducerOperations.setConsoleSSLEnabled:
-      brokerModel.yamlData.spec.console.sslEnabled = action.payload;
+      formState.cr.spec.console.sslEnabled = action.payload;
       break;
     case ArtemisReducerOperations.setConsoleExposeMode:
-      brokerModel.yamlData.spec.console.exposeMode = action.payload;
+      formState.cr.spec.console.exposeMode = action.payload;
       break;
     case ArtemisReducerOperations.setConsoleExpose:
-      brokerModel.yamlData.spec.console.expose = action.payload;
+      formState.cr.spec.console.expose = action.payload;
       break;
     case ArtemisReducerOperations.setConsoleCredentials:
-      brokerModel.yamlData.spec.console.adminUser = action.payload.adminUser;
-      brokerModel.yamlData.spec.console.adminPassword =
-        action.payload.adminPassword;
+      formState.cr.spec.console.adminUser = action.payload.adminUser;
+      formState.cr.spec.console.adminPassword = action.payload.adminPassword;
       break;
     case ArtemisReducerOperations.setAcceptorPort:
       updateConfigPort(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.acceptors,
         action.payload.name,
         action.payload.port,
@@ -525,7 +524,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setConnectorPort:
       updateConfigPort(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.connectors,
         action.payload.name,
         action.payload.port,
@@ -533,14 +532,14 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setConnectorHost:
       updateConnectorHost(
-        brokerModel.yamlData,
+        formState.cr,
         action.payload.connectorName,
         action.payload.host,
       );
       break;
     case ArtemisReducerOperations.setAcceptorBindToAllInterfaces:
       updateConfigBindToAllInterfaces(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.acceptors,
         action.payload.name,
         action.payload.bindToAllInterfaces,
@@ -548,7 +547,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setConnectorBindToAllInterfaces:
       updateConfigBindToAllInterfaces(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.connectors,
         action.payload.name,
         action.payload.bindToAllInterfaces,
@@ -556,7 +555,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setAcceptorProtocols:
       updateConfigProtocols(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.acceptors,
         action.payload.configName,
         action.payload.protocols,
@@ -564,7 +563,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setConnectorProtocols:
       updateConfigProtocols(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.connectors,
         action.payload.configName,
         action.payload.protocols,
@@ -572,7 +571,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setAcceptorOtherParams:
       updateConfigOtherParams(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.acceptors,
         action.payload.name,
         action.payload.otherParams,
@@ -580,7 +579,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setConnectorOtherParams:
       updateConfigOtherParams(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.connectors,
         action.payload.name,
         action.payload.otherParams,
@@ -588,7 +587,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setAcceptorSSLEnabled:
       updateConfigSSLEnabled(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.acceptors,
         action.payload.name,
         action.payload.sslEnabled,
@@ -596,7 +595,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setConnectorSSLEnabled:
       updateConfigSSLEnabled(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.connectors,
         action.payload.name,
         action.payload.sslEnabled,
@@ -604,7 +603,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.updateAcceptorFactoryClass:
       updateConfigFactoryClass(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.acceptors,
         action.payload.name,
         action.payload.class,
@@ -612,7 +611,7 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.updateConnectorFactoryClass:
       updateConfigFactoryClass(
-        brokerModel.yamlData,
+        formState.cr,
         ConfigType.connectors,
         action.payload.name,
         action.payload.class,
@@ -622,7 +621,7 @@ export const artemisCrReducer: React.Reducer<
       throw Error('Unknown action: ' + action);
   }
 
-  return brokerModel;
+  return formState;
 };
 
 // function used by the reducer to update the state
@@ -639,34 +638,34 @@ const generateUniqueName = (prefix: string, existing: Set<string>): string => {
   return newName;
 };
 
-const initSpec = (yamlData: ArtemisCR) => {
-  if (!yamlData.spec.connectors) {
-    yamlData.spec.connectors = [];
+const initSpec = (cr: ArtemisCR) => {
+  if (!cr.spec.connectors) {
+    cr.spec.connectors = [];
   }
 };
 
-const addConfig = (yamlData: ArtemisCR, configType: ConfigType) => {
-  if (!yamlData.spec.brokerProperties) {
-    yamlData.spec.brokerProperties = [];
+const addConfig = (cr: ArtemisCR, configType: ConfigType) => {
+  if (!cr.spec.brokerProperties) {
+    cr.spec.brokerProperties = [];
   }
 
-  const acceptorSet = listConfigs(configType, yamlData, 'set') as Set<string>;
+  const acceptorSet = listConfigs(configType, cr, 'set') as Set<string>;
 
   const newName = generateUniqueName(configType, acceptorSet);
 
   if (configType === ConfigType.connectors) {
-    initSpec(yamlData);
-    yamlData.spec.connectors.push({
+    initSpec(cr);
+    cr.spec.connectors.push({
       name: newName,
       protocols: 'ALL',
       host: 'localhost',
       port: 5555,
     });
   } else {
-    if (!yamlData.spec.acceptors) {
-      yamlData.spec.acceptors = [];
+    if (!cr.spec.acceptors) {
+      cr.spec.acceptors = [];
     }
-    yamlData.spec.acceptors.push({
+    cr.spec.acceptors.push({
       name: newName,
       protocols: 'ALL',
       port: 5555,
@@ -678,7 +677,7 @@ const addConfig = (yamlData: ArtemisCR, configType: ConfigType) => {
       ? 'connectorConfigurations.'
       : 'acceptorConfigurations.';
 
-  yamlData.spec.brokerProperties.push(
+  cr.spec.brokerProperties.push(
     prefix +
       newName +
       '.factoryClassName=org.apache.activemq.artemis.core.remoting.impl.netty.NettyAcceptorFactory',

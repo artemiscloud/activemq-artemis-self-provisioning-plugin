@@ -1,7 +1,7 @@
 import {
   ArtemisReducerOperations,
-  BrokerConfigContext,
-  BrokerDispatchContext,
+  BrokerCreationFormState,
+  BrokerCreationFormDispatch,
   ExposeMode,
 } from '../brokers/utils';
 import {
@@ -26,8 +26,8 @@ export type ConsoleConfigProps = {
 };
 
 export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
-  const { yamlData } = useContext(BrokerConfigContext);
-  const dispatch = useContext(BrokerDispatchContext);
+  const { cr } = useContext(BrokerCreationFormState);
+  const dispatch = useContext(BrokerCreationFormDispatch);
 
   const GetConsoleSSLEnabled = (brokerModel: K8sResourceCommon): boolean => {
     if (brokerModel.spec?.console) {
@@ -54,9 +54,9 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
     return false;
   };
 
-  const exposeConsole = GetConsoleExpose(yamlData);
-  const exposeMode = GetConsoleExposeMode(yamlData);
-  const isSSLEnabled = GetConsoleSSLEnabled(yamlData);
+  const exposeConsole = GetConsoleExpose(cr);
+  const exposeMode = GetConsoleExposeMode(cr);
+  const isSSLEnabled = GetConsoleSSLEnabled(cr);
 
   const handleSSLEnabled = (value: boolean) => {
     dispatch({
@@ -157,7 +157,7 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
                 <FlexItem>
                   <CertSecretSelector
                     key={'secret-key' + ConfigType.console + 'console'}
-                    namespace={yamlData.metadata.namespace}
+                    namespace={cr.metadata.namespace}
                     isCa={false}
                     configType={ConfigType.console}
                     configName={'console'}
@@ -166,7 +166,7 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
                 <FlexItem>
                   <CertSecretSelector
                     key={'secret-ca' + ConfigType.console + 'console'}
-                    namespace={yamlData.metadata.namespace}
+                    namespace={cr.metadata.namespace}
                     isCa={true}
                     configType={ConfigType.console}
                     configName={'console'}

@@ -13,7 +13,7 @@ import {
 import { AMQBrokerModel, K8sResourceCommon } from '../../../../utils';
 import { Loading } from '../../../../shared-components';
 import { useTranslation } from '../../../../i18n';
-import { BrokerConfigContext } from '../../../utils';
+import { BrokerCreationFormState } from '../../../utils';
 //import _ from 'lodash';
 
 export type YamlEditorViewProps = {
@@ -34,7 +34,7 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
   const { t } = useTranslation();
 
   //  const [data, setData] = useState<K8sResourceCommon>();
-  const yamlValue = useContext(BrokerConfigContext);
+  const fromState = useContext(BrokerCreationFormState);
 
   const [canCreateBroker, loadingAccessReview] = useAccessReview({
     group: AMQBrokerModel.apiGroup,
@@ -44,7 +44,7 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
   });
 
   const onSave = () => {
-    const yamlData: K8sResourceCommon = yamlValue.yamlData;
+    const yamlData: K8sResourceCommon = fromState.cr;
     onCreateBroker(yamlData);
   };
 
@@ -55,12 +55,12 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
     //instead of blatantly replce the whole contents
     //compare them and only accept additive contents, or
     // else warning and refuse to update.
-    console.log('old value:', yamlValue.yamlData);
+    console.log('old value:', fromState.cr);
     console.log('new value', JSON.parse(newValue));
-    Object.assign(yamlValue.yamlData, JSON.parse(newValue));
+    Object.assign(fromState.cr, JSON.parse(newValue));
     //_.merge(yamlValue.yamlData, newValue);
 
-    console.log('module after merge:', yamlValue.yamlData);
+    console.log('module after merge:', fromState.cr);
   };
 
   if (loadingAccessReview) return <Loading />;
@@ -83,7 +83,7 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
           )}
           <Suspense fallback={<Loading />}>
             <CodeEditor
-              value={JSON.stringify(yamlValue.yamlData, null, '  ')}
+              value={JSON.stringify(fromState.cr, null, '  ')}
               language="yaml"
               onSave={onSave}
               onChange={onChanges}

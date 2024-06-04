@@ -1,7 +1,6 @@
 import {
   CertIssuerModel,
   CertModel,
-  K8sResourceCommon,
   K8sResourceKind,
   SecretModel,
 } from '../utils';
@@ -57,6 +56,7 @@ import { AcceptorsConfigPage } from './acceptors-config';
 import { SelectOptionObject } from '@patternfly/react-core/dist/js';
 import { pki } from 'node-forge';
 import base64 from 'base-64';
+import { CertificateDetailsModal } from './CertificateDetailsModal';
 
 export const enum ConfigType {
   connectors = 'connectors',
@@ -163,14 +163,12 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   const { cr } = useContext(BrokerCreationFormState);
   const dispatch = useContext(BrokerCreationFormDispatch);
 
-  const [secrets, loaded, loadError] = useK8sWatchResource<K8sResourceCommon[]>(
-    {
-      isList: true,
-      groupVersionKind: secretGroupVersionKind,
-      namespaced: true,
-      namespace: namespace,
-    },
-  );
+  const [secrets, loaded, loadError] = useK8sWatchResource<K8sResourceKind[]>({
+    isList: true,
+    groupVersionKind: secretGroupVersionKind,
+    namespaced: true,
+    namespace: namespace,
+  });
 
   console.log('secret loading status', loaded, loadError);
   if (loaded) {
@@ -261,22 +259,30 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     return false;
   };
 
+  const hasKey = (data: any, key: string): boolean => {
+    console.log('check key in data ' + typeof data);
+    if (data instanceof Object) {
+      return key in data;
+    }
+    return false;
+  };
+
   const isLegacySecret = (secret: K8sResourceKind): boolean => {
     return (
       !(
         secret.metadata?.annotations &&
         'aa-spp-generated' in secret.metadata.annotations
       ) &&
-      'broker.ks' in secret.data &&
-      'keyStorePassword' in secret.data &&
-      'client.ts' in secret.data &&
-      'trustStorePassword' in secret.data
+      hasKey(secret.data, 'broker.ks') &&
+      hasKey(secret.data, 'keyStorePassword') &&
+      hasKey(secret.data, 'client.ts') &&
+      hasKey(secret.data, 'trustStorePassword')
     );
   };
 
   const parseSecrets = (): {
-    certManagerSecrets: any[];
-    legacySecrets: any[];
+    certManagerSecrets: K8sResourceKind[];
+    legacySecrets: K8sResourceKind[];
   } => {
     console.log(secrets.length, 'isCa', isCa);
     const certSecrets = secrets.filter((x) => {
@@ -299,8 +305,15 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   const [certGenInfo, setCertGenInfo] = useState<string>('');
   const drawerRef = useRef<HTMLDivElement>(null);
   const [caGenFromTlsSecret, setCaGenFromTlsSecret] = useState('');
+  const [isCertDetailsModalOpen, setIsCertDetailsModalOpen] = useState(false);
+  const [certsToShow, setCertsToShow] = useState<pki.Certificate[]>([]);
+  const [certsToShowSecret, setCertsToShowSecret] = useState<string>('');
+  const [sertsToShowPem, setCertsToShowPem] = useState<string>('');
 
-  console.log('watching deployment');
+  const onCloseCertDetailsModel = () => {
+    setIsCertDetailsModalOpen(false);
+  };
+
   const [certManagerDeployments] = useK8sWatchResource<K8sResourceKind[]>({
     isList: true,
     groupVersionKind: {
@@ -337,7 +350,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   });
 
   const onDrawerExpand = () => {
-    //drawerRef.current && drawerRef.current.focus();
+    drawerRef.current && drawerRef.current.focus();
   };
 
   const onCloseDrawer = () => {
@@ -584,7 +597,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
             if (isCa) {
               setCaGenFromTlsSecret(result.secretName);
             } else {
-              console.log('mmmmmmmmmmmm here cert gen ok,', result);
               succeededSecretGen();
             }
           })
@@ -614,12 +626,70 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     isCa,
   });
 
+  const isSelectCertSecret = (): boolean => {
+    const theSecret = certManagerSecrets.filter((value) => {
+      return value.metadata.name === selectedSecret.toString();
+    });
+    return theSecret.length === 1;
+  };
+
+  const parseCertsFromPem = (pem: string): pki.Certificate[] => {
+    const certs: pki.Certificate[] = [];
+    let certPems = pem.split('-----BEGIN CERTIFICATE-----');
+
+    certPems = certPems.filter((value) => {
+      return value !== '';
+    });
+
+    for (let i = 0; i < certPems.length; i++) {
+      const cert = pki.certificateFromPem(
+        '-----BEGIN CERTIFICATE-----' + certPems[i],
+      );
+      certs.push(cert);
+    }
+    return certs;
+  };
+
+  const showCertInfo = () => {
+    const theSecret = certManagerSecrets.filter((value) => {
+      return value.metadata.name === selectedSecret.toString();
+    });
+    if (theSecret.length !== 1) {
+      alert('only support tls format secret from cert-manager');
+    }
+    let pem: string;
+    try {
+      if (isCa) {
+        console.log('showing ca cert', theSecret[0]);
+        Object.keys(theSecret[0].data).forEach((key) => {
+          pem = base64.decode(theSecret[0].data[key]);
+        });
+      } else {
+        pem = base64.decode(theSecret[0].data['tls.crt']);
+      }
+
+      setCertsToShow(parseCertsFromPem(pem));
+      setCertsToShowSecret(theSecret[0].metadata.name);
+      setCertsToShowPem(pem);
+      setIsCertDetailsModalOpen(true);
+    } catch (err) {
+      alert('error decoding cert: ' + err.message);
+    }
+  };
+
   return (
     <FormGroup
       label={isCa ? 'Trust Secrets' : 'Cert Secrets'}
       fieldId={'horizontal-form-secret' + configType + configName + isCa}
       key={(isCa ? 'trust-secrets' : 'cert-secrets') + configType + configName}
     >
+      <CertificateDetailsModal
+        isModalOpen={isCertDetailsModalOpen}
+        certs={certsToShow}
+        secretName={certsToShowSecret}
+        pem={sertsToShowPem}
+        onCloseModal={onCloseCertDetailsModel}
+      ></CertificateDetailsModal>
       <Select
         id={'select-secrets' + isCa + configType + configName}
         key={'key-select-secrets' + isCa + configType + configName}
@@ -636,6 +706,24 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
       >
         {secretOptions}
       </Select>
+      {selectedSecret !== null &&
+        selectedSecret.toString() !== '' &&
+        isSelectCertSecret() && (
+          <Tooltip
+            key={'tooltip-view-cert'}
+            content={
+              <div>Show cert details of {selectedSecret.toString()}</div>
+            }
+          >
+            <Button
+              variant="control"
+              aria-label="View cert"
+              onClick={showCertInfo}
+            >
+              {'\u2687'}
+            </Button>
+          </Tooltip>
+        )}
 
       <Drawer isExpanded={isDrawerExpanded} onExpand={onDrawerExpand}>
         <DrawerContent panelContent={panelContent}>
@@ -816,7 +904,7 @@ export const NamingPanel: FC<NamingPanelProps> = ({ initName, uniqueSet }) => {
 
   return (
     <>
-      <Tooltip content={<div>{toolTip}</div>}>
+      <Tooltip key={'tooltip-name'} content={<div>{toolTip}</div>}>
         <TextInput
           value={newName}
           onChange={validateName}

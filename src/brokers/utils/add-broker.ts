@@ -1,7 +1,7 @@
 import { AddBrokerResourceValues as FormState } from './import-types';
 import { K8sResourceKind, K8sResourceCommon as ArtemisCR } from '../../utils';
 import { createContext } from 'react';
-import { ConfigType } from '@app/configuration/broker-models';
+import { ConfigType } from '../../configuration/broker-models';
 import { SelectOptionObject } from '@patternfly/react-core';
 
 export enum EditorType {
@@ -725,6 +725,8 @@ const renameConfig = (
   previousName: string,
   newName: string,
 ) => {
+  // TODO make sure the rename function makes sure the names are actually
+  // unique
   const prefix =
     configType === ConfigType.connectors
       ? 'connectorConfigurations.'

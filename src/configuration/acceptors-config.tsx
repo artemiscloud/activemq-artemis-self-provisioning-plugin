@@ -76,7 +76,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
         operation: ArtemisReducerOperations.updateAcceptorFactoryClass,
         payload: {
           name: configName,
-          class: value,
+          class: value as 'invm' | 'netty',
         },
       });
     }
@@ -85,7 +85,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
         operation: ArtemisReducerOperations.updateConnectorFactoryClass,
         payload: {
           name: configName,
-          class: value,
+          class: value as 'invm' | 'netty',
         },
       });
     }

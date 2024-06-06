@@ -721,8 +721,7 @@ const renameConfig = (
   previousName: string,
   newName: string,
 ) => {
-  // TODO make sure the rename function makes sure the names are actually
-  // unique
+  // early return if the new name already exist in the list.
   const prefix =
     configType === ConfigType.connectors
       ? 'connectorConfigurations.'
@@ -1077,42 +1076,29 @@ export const getConfigSecret = (
   };
   console.log('getting secret from yaml', configName, 'idCa', isCa);
   if (configType === ConfigType.connectors) {
-    if (brokerModel.spec?.connectors?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-        if (brokerModel.spec.connectors[i].name === configName) {
-          if (isCa) {
-            if (brokerModel.spec.connectors[i].trustSecret) {
-              return newOptionObject(
-                brokerModel.spec.connectors[i].trustSecret,
-              );
-            }
-          } else if (brokerModel.spec.connectors[i].sslSecret) {
-            return newOptionObject(brokerModel.spec.connectors[i].sslSecret);
-          }
+    const connector = getConnector(brokerModel, configName);
+    if (connector) {
+      if (isCa) {
+        if (connector.trustSecret) {
+          return newOptionObject(connector.trustSecret);
         }
+      } else if (connector.sslSecret) {
+        return newOptionObject(connector.sslSecret);
       }
     }
-  } else if (configType === ConfigType.acceptors) {
-    console.log('looking for acceptor secrets');
-    if (brokerModel.spec?.acceptors?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-        console.log('acceptor ' + i + brokerModel.spec.acceptors[i].name);
-        if (brokerModel.spec.acceptors[i].name === configName) {
-          console.log('name matches');
-          if (isCa) {
-            console.log('for ca');
-            if (brokerModel.spec.acceptors[i].trustSecret) {
-              return newOptionObject(brokerModel.spec.acceptors[i].trustSecret);
-            }
-          } else if (brokerModel.spec.acceptors[i].sslSecret) {
-            console.log('for ssl' + brokerModel.spec.acceptors[i].sslSecret);
-            return newOptionObject(brokerModel.spec.acceptors[i].sslSecret);
-          }
+  }
+  if (configType === ConfigType.acceptors) {
+    const acceptor = getAcceptor(brokerModel, configName);
+    if (acceptor) {
+      if (isCa) {
+        if (acceptor.trustSecret) {
+          return newOptionObject(acceptor.trustSecret);
         }
+      } else if (acceptor.sslSecret) {
+        return newOptionObject(acceptor.sslSecret);
       }
     }
   } else {
-    console.log('console secret');
     if (isCa) {
       if (brokerModel.spec.console.trustSecret) {
         return newOptionObject(brokerModel.spec.console.trustSecret);
@@ -1158,26 +1144,45 @@ export const getConfigFactoryClass = (
   return 'netty';
 };
 
+export const getAcceptor = (cr: ArtemisCR, name: string) => {
+  if (cr.spec?.acceptors) {
+    return cr.spec.acceptors.find((acceptor) => {
+      if (acceptor.name === name) {
+        return acceptor;
+      }
+      return undefined;
+    });
+  }
+  return undefined;
+};
+
+export const getConnector = (cr: ArtemisCR, name: string) => {
+  if (cr.spec?.connectors) {
+    return cr.spec.connectors.find((connector) => {
+      if (connector.name === name) {
+        return connector;
+      }
+      return undefined;
+    });
+  }
+  return undefined;
+};
+
 export const getConfigPort = (
   brokerModel: ArtemisCR,
   configType: ConfigType,
   configName: string,
 ): number => {
   if (configType === ConfigType.connectors) {
-    if (brokerModel.spec?.connectors?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-        if (brokerModel.spec.connectors[i].name === configName) {
-          return brokerModel.spec.connectors[i].port;
-        }
-      }
+    const connector = getConnector(brokerModel, configName);
+    if (connector?.port) {
+      return connector.port;
     }
-  } else {
-    if (brokerModel.spec?.acceptors?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-        if (brokerModel.spec.acceptors[i].name === configName) {
-          return brokerModel.spec.acceptors[i].port;
-        }
-      }
+  }
+  if (configType === ConfigType.acceptors) {
+    const acceptor = getAcceptor(brokerModel, configName);
+    if (acceptor?.port) {
+      return acceptor.port;
     }
   }
   return 5555;
@@ -1189,12 +1194,9 @@ export const getConfigHost = (
   configName: string,
 ): string => {
   if (configType === ConfigType.connectors) {
-    if (brokerModel.spec?.connectors?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-        if (brokerModel.spec.connectors[i].name === configName) {
-          return brokerModel.spec.connectors[i].host;
-        }
-      }
+    const connector = getConnector(brokerModel, configName);
+    if (connector?.host) {
+      return connector.host;
     }
   }
   return 'localhost';
@@ -1206,20 +1208,15 @@ export const getConfigProtocols = (
   configName: string,
 ): string => {
   if (configType === ConfigType.connectors) {
-    if (brokerModel.spec?.connectors?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-        if (brokerModel.spec.connectors[i].name === configName) {
-          return brokerModel.spec.connectors[i].protocols;
-        }
-      }
+    const connector = getConnector(brokerModel, configName);
+    if (connector?.protocols) {
+      return connector.protocols;
     }
-  } else {
-    if (brokerModel.spec?.acceptors?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-        if (brokerModel.spec.acceptors[i].name === configName) {
-          return brokerModel.spec.acceptors[i].protocols;
-        }
-      }
+  }
+  if (configType === ConfigType.acceptors) {
+    const acceptor = getAcceptor(brokerModel, configName);
+    if (acceptor?.protocols) {
+      return acceptor.protocols;
     }
   }
   return 'ALL';
@@ -1230,20 +1227,20 @@ export const getConfigBindToAllInterfaces = (
   configType: ConfigType,
   configName: string,
 ): boolean => {
+  if (configType === ConfigType.connectors) {
+    const connector = getConnector(brokerModel, configName);
+    if (connector) {
+      return connector.bindToAllInterfaces !== undefined
+        ? connector.bindToAllInterfaces
+        : false;
+    }
+  }
   if (configType === ConfigType.acceptors) {
-    console.log('getting aceptor bindto', configName);
-    if (brokerModel.spec?.acceptors?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-        if (brokerModel.spec.acceptors[i].name === configName) {
-          console.log(
-            'found it type is',
-            typeof brokerModel.spec.acceptors[i].bindToAllInterfaces,
-          );
-          return brokerModel.spec.acceptors[i].bindToAllInterfaces
-            ? true
-            : false;
-        }
-      }
+    const acceptor = getAcceptor(brokerModel, configName);
+    if (acceptor) {
+      return acceptor.bindToAllInterfaces !== undefined
+        ? acceptor.bindToAllInterfaces
+        : false;
     }
   }
   return false;
@@ -1318,20 +1315,15 @@ export const getConfigSSLEnabled = (
   configName: string,
 ): boolean => {
   if (configType === ConfigType.connectors) {
-    if (brokerModel.spec?.connectors?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
-        if (brokerModel.spec.connectors[i].name === configName) {
-          return brokerModel.spec.connectors[i].sslEnabled ? true : false;
-        }
-      }
+    const connector = getConnector(brokerModel, configName);
+    if (connector) {
+      return connector.sslEnabled !== undefined ? connector.sslEnabled : false;
     }
-  } else {
-    if (brokerModel.spec?.acceptors?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-        if (brokerModel.spec.acceptors[i].name === configName) {
-          return brokerModel.spec.acceptors[i].sslEnabled ? true : false;
-        }
-      }
+  }
+  if (configType === ConfigType.acceptors) {
+    const acceptor = getAcceptor(brokerModel, configName);
+    if (acceptor) {
+      return acceptor.sslEnabled !== undefined ? acceptor.sslEnabled : false;
     }
   }
   return false;

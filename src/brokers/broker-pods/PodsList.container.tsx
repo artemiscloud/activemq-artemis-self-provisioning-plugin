@@ -28,6 +28,7 @@ const PodsContainer: FC = () => {
     },
     isList: true,
     namespaced: true,
+    namespace: namespace,
   });
 
   const filterBrokerPods = (pods: K8sResourceCommon[], brokerName: string) => {

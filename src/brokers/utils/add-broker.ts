@@ -264,7 +264,7 @@ type FactoryClassPayload = {
   /** the name of the element */
   name: string;
   /** the java class to set */
-  class: string;
+  class: 'invm' | 'netty';
 };
 
 interface UpdateAcceptorFactoryClassAction extends ArtemisReducerActionBase {
@@ -722,6 +722,18 @@ const renameConfig = (
   newName: string,
 ) => {
   // early return if the new name already exist in the list.
+  if (
+    configType === ConfigType.acceptors &&
+    getAcceptor(brokerModel, newName)
+  ) {
+    return;
+  }
+  if (
+    configType === ConfigType.connectors &&
+    getConnector(brokerModel, newName)
+  ) {
+    return;
+  }
   const prefix =
     configType === ConfigType.connectors
       ? 'connectorConfigurations.'
@@ -890,6 +902,19 @@ const updateConfigBindToAllInterfaces = (
       if (brokerModel.spec.acceptors[i].name === configName) {
         console.log('found update', bindToAllInterfaces);
         brokerModel.spec.acceptors[i].bindToAllInterfaces = bindToAllInterfaces;
+      }
+    }
+  }
+  if (
+    configType === ConfigType.connectors &&
+    brokerModel.spec?.connectors?.length > 0
+  ) {
+    console.log('updating bindto on connector', configName);
+    for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
+      if (brokerModel.spec.connectors[i].name === configName) {
+        console.log('found update', bindToAllInterfaces);
+        brokerModel.spec.connectors[i].bindToAllInterfaces =
+          bindToAllInterfaces;
       }
     }
   }

@@ -638,38 +638,38 @@ const generateUniqueName = (prefix: string, existing: Set<string>): string => {
   return newName;
 };
 
-const initSpec = (cr: ArtemisCR) => {
-  if (!cr.spec.connectors) {
-    cr.spec.connectors = [];
-  }
-};
-
 const addConfig = (cr: ArtemisCR, configType: ConfigType) => {
-  if (!cr.spec.brokerProperties) {
-    cr.spec.brokerProperties = [];
-  }
-
   const acceptorSet = listConfigs(configType, cr, 'set') as Set<string>;
 
   const newName = generateUniqueName(configType, acceptorSet);
 
   if (configType === ConfigType.connectors) {
-    initSpec(cr);
-    cr.spec.connectors.push({
+    const connector = {
       name: newName,
       protocols: 'ALL',
       host: 'localhost',
       port: 5555,
-    });
-  } else {
-    if (!cr.spec.acceptors) {
-      cr.spec.acceptors = [];
+    };
+    if (!cr.spec.connectors) {
+      cr.spec.connectors = [connector];
+    } else {
+      cr.spec.connectors.push(connector);
     }
-    cr.spec.acceptors.push({
+  } else {
+    const acceptor = {
       name: newName,
       protocols: 'ALL',
       port: 5555,
-    });
+    };
+    if (!cr.spec.acceptors) {
+      cr.spec.acceptors = [acceptor];
+    } else {
+      cr.spec.acceptors.push(acceptor);
+    }
+  }
+
+  if (!cr.spec.brokerProperties) {
+    cr.spec.brokerProperties = [];
   }
 
   const prefix =
@@ -700,19 +700,15 @@ const deleteConfig = (
         return !x.startsWith(configKey);
       });
     if (configType === ConfigType.connectors) {
-      if (brokerModel.spec?.connectors?.length > 0) {
+      if (brokerModel.spec?.connectors) {
         brokerModel.spec.connectors = brokerModel.spec.connectors.filter(
-          (x: { name: string }) => {
-            return x.name !== configName;
-          },
+          (connector) => connector.name !== configName,
         );
       }
     } else {
-      if (brokerModel.spec?.acceptors?.length > 0) {
+      if (brokerModel.spec?.acceptors) {
         brokerModel.spec.acceptors = brokerModel.spec.acceptors.filter(
-          (x: { name: string }) => {
-            return x.name !== configName;
-          },
+          (acceptor) => acceptor.name !== configName,
         );
       }
     }

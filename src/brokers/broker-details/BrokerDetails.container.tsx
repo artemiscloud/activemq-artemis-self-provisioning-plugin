@@ -33,6 +33,7 @@ import {
   JolokiaAddressDetails,
   JolokiaAcceptorDetails,
   JolokiaQueueDetails,
+  K8sResourceCommon,
 } from '../../utils';
 import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBreadcrumb';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -49,7 +50,7 @@ const BrokerDetailsPage: FC = () => {
     brokerName?: string;
     podName?: string;
   }>();
-  const [brokerDetails, setBrokerDetails] = useState<K8sResourceKind>({});
+  const [brokerDetails, setBrokerDetails] = useState<K8sResourceCommon>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [routes] = useK8sWatchResource<K8sResourceKind[]>({
     isList: true,
@@ -65,7 +66,7 @@ const BrokerDetailsPage: FC = () => {
     setLoading(true);
     k8sGet({ model: AMQBrokerModel, name: brokerName, ns: namespace })
       .then((broker: K8sResourceKind) => {
-        setBrokerDetails(broker);
+        setBrokerDetails(broker as K8sResourceCommon);
       })
       .catch((e) => {
         console.error(e);

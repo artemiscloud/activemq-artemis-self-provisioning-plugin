@@ -604,4 +604,202 @@ describe('test the creation broker reducer', () => {
       'connectorConfigurations.connectors0.factoryClassName=org.apache.activemq.artemis.core.remoting.impl.netty.NettyAcceptorFactory',
     );
   });
+
+  it('test activatePEMGenerationForAcceptor', () => {
+    const initialState = newArtemisCRState('namespace');
+    const stateWith1Acceptor = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    const stateWithPEM = artemisCrReducer(stateWith1Acceptor, {
+      operation: ArtemisReducerOperations.activatePEMGenerationForAcceptor,
+      payload: {
+        acceptor: 'acceptors0',
+        issuer: 'someIssuer',
+      },
+    });
+    expect(stateWithPEM.cr.spec.acceptors[0].sslEnabled).toBe(true);
+    expect(stateWithPEM.cr.spec.acceptors[0].exposeMode).toBe(
+      ExposeMode.ingress,
+    );
+    expect(stateWithPEM.cr.spec.acceptors[0].ingressHost).toBe(
+      'ing.$(ITEM_NAME).$(CR_NAME)-$(BROKER_ORDINAL).$(CR_NAMESPACE).$(INGRESS_DOMAIN)',
+    );
+    expect(stateWithPEM.cr.spec.acceptors[0].sslSecret).toBe(
+      'ex-aao-acceptors0-0-svc-ing-ptls',
+    );
+    expect(stateWithPEM.cr.spec.resourceTemplates).toHaveLength(1);
+    expect(stateWithPEM.cr.spec.resourceTemplates[0].selector.name).toBe(
+      'ex-aao' + '-' + 'acceptors0' + '-0-svc-ing',
+    );
+    expect(stateWithPEM.cr.spec.resourceTemplates[0].selector.name).toBe(
+      'ex-aao' + '-' + 'acceptors0' + '-0-svc-ing',
+    );
+    expect(
+      stateWithPEM.cr.spec.resourceTemplates[0].patch.spec.tls[0].hosts[0],
+    ).toBe(
+      'ing.' +
+        'acceptors0' +
+        '.' +
+        'ex-aao' +
+        '-0.' +
+        'namespace' +
+        '.' +
+        'apps-crc.testing',
+    );
+    // update broker name
+    const updatedBrokerName = artemisCrReducer(stateWithPEM, {
+      operation: ArtemisReducerOperations.setBrokerName,
+      payload: 'bro',
+    });
+    expect(updatedBrokerName.cr.spec.acceptors[0].sslSecret).toBe(
+      'bro-acceptors0-0-svc-ing-ptls',
+    );
+    expect(updatedBrokerName.cr.spec.resourceTemplates).toHaveLength(1);
+    expect(updatedBrokerName.cr.spec.resourceTemplates[0].selector.name).toBe(
+      'bro' + '-' + 'acceptors0' + '-0-svc-ing',
+    );
+    expect(updatedBrokerName.cr.spec.resourceTemplates[0].selector.name).toBe(
+      'bro' + '-' + 'acceptors0' + '-0-svc-ing',
+    );
+    expect(
+      updatedBrokerName.cr.spec.resourceTemplates[0].patch.spec.tls[0].hosts[0],
+    ).toBe(
+      'ing.' +
+        'acceptors0' +
+        '.' +
+        'bro' +
+        '-0.' +
+        'namespace' +
+        '.' +
+        'apps-crc.testing',
+    );
+    // update broker name
+    const updatedNamespace = artemisCrReducer(updatedBrokerName, {
+      operation: ArtemisReducerOperations.setNamespace,
+      payload: 'space',
+    });
+    expect(updatedNamespace.cr.spec.resourceTemplates).toHaveLength(1);
+    expect(
+      updatedNamespace.cr.spec.resourceTemplates[0].patch.spec.tls[0].hosts[0],
+    ).toBe(
+      'ing.' +
+        'acceptors0' +
+        '.' +
+        'bro' +
+        '-0.' +
+        'space' +
+        '.' +
+        'apps-crc.testing',
+    );
+    // update broker name
+    const updatedDomain = artemisCrReducer(updatedNamespace, {
+      operation: ArtemisReducerOperations.setIngressDomain,
+      payload: 'tttt.com',
+    });
+    expect(updatedDomain.cr.spec.resourceTemplates).toHaveLength(1);
+    expect(
+      updatedDomain.cr.spec.resourceTemplates[0].patch.spec.tls[0].hosts[0],
+    ).toBe(
+      'ing.' + 'acceptors0' + '.' + 'bro' + '-0.' + 'space' + '.' + 'tttt.com',
+    );
+    // update Acceptor name
+    const updatedAcceptorName = artemisCrReducer(updatedDomain, {
+      operation: ArtemisReducerOperations.setAcceptorName,
+      payload: {
+        oldName: 'acceptors0',
+        newName: 'bob',
+      },
+    });
+    expect(updatedAcceptorName.cr.spec.acceptors[0].sslEnabled).toBe(true);
+    expect(updatedAcceptorName.cr.spec.acceptors[0].exposeMode).toBe(
+      ExposeMode.ingress,
+    );
+    expect(updatedAcceptorName.cr.spec.acceptors[0].ingressHost).toBe(
+      'ing.$(ITEM_NAME).$(CR_NAME)-$(BROKER_ORDINAL).$(CR_NAMESPACE).$(INGRESS_DOMAIN)',
+    );
+    expect(updatedAcceptorName.cr.spec.acceptors[0].sslSecret).toBe(
+      'bro-bob-0-svc-ing-ptls',
+    );
+    expect(updatedAcceptorName.cr.spec.resourceTemplates).toHaveLength(1);
+    expect(updatedAcceptorName.cr.spec.resourceTemplates[0].selector.name).toBe(
+      'bro' + '-' + 'bob' + '-0-svc-ing',
+    );
+    expect(updatedAcceptorName.cr.spec.resourceTemplates[0].selector.name).toBe(
+      'bro' + '-' + 'bob' + '-0-svc-ing',
+    );
+    expect(
+      updatedAcceptorName.cr.spec.resourceTemplates[0].patch.spec.tls[0]
+        .hosts[0],
+    ).toBe('ing.' + 'bob' + '.' + 'bro' + '-0.' + 'space' + '.' + 'tttt.com');
+  });
+
+  it('test deletePEMGenerationForAcceptor', () => {
+    const initialState = newArtemisCRState('namespace');
+    const stateWith1Acceptor = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    const stateWithPEM = artemisCrReducer(stateWith1Acceptor, {
+      operation: ArtemisReducerOperations.activatePEMGenerationForAcceptor,
+      payload: {
+        acceptor: 'acceptors0',
+        issuer: 'someIssuer',
+      },
+    });
+    const stateWithDeletedPEM = artemisCrReducer(stateWithPEM, {
+      operation: ArtemisReducerOperations.deletePEMGenerationForAcceptor,
+      payload: 'acceptors0',
+    });
+    expect(stateWithDeletedPEM.cr.spec.acceptors[0].sslEnabled).toBe(undefined);
+    expect(stateWithDeletedPEM.cr.spec.acceptors[0].sslSecret).toBe(undefined);
+    expect(stateWithDeletedPEM.cr.spec.resourceTemplates).toBe(undefined);
+  });
+
+  it('test setAcceptorExposeMode,', () => {
+    const initialState = newArtemisCRState('namespace');
+    const stateWith1Acceptor = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    const stateExposeModeIngress = artemisCrReducer(stateWith1Acceptor, {
+      operation: ArtemisReducerOperations.setAcceptorExposeMode,
+      payload: {
+        name: 'acceptors0',
+        exposeMode: ExposeMode.ingress,
+      },
+    });
+    expect(stateExposeModeIngress.cr.spec.acceptors[0].exposeMode).toBe(
+      ExposeMode.ingress,
+    );
+  });
+
+  it('test setAcceptorIngressHost,', () => {
+    const initialState = newArtemisCRState('namespace');
+    const stateWith1Acceptor = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    const stateExposeModeIngress = artemisCrReducer(stateWith1Acceptor, {
+      operation: ArtemisReducerOperations.setAcceptorIngressHost,
+      payload: {
+        name: 'acceptors0',
+        ingressHost: 'tuytutu',
+      },
+    });
+    expect(stateExposeModeIngress.cr.spec.acceptors[0].ingressHost).toBe(
+      'tuytutu',
+    );
+  });
+
+  it('test setIsAcceptorExposed,', () => {
+    const initialState = newArtemisCRState('namespace');
+    const stateWith1Acceptor = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    const stateExposeModeIngress = artemisCrReducer(stateWith1Acceptor, {
+      operation: ArtemisReducerOperations.setIsAcceptorExposed,
+      payload: {
+        name: 'acceptors0',
+        isExposed: true,
+      },
+    });
+    expect(stateExposeModeIngress.cr.spec.acceptors[0].expose).toBe(true);
+  });
 });

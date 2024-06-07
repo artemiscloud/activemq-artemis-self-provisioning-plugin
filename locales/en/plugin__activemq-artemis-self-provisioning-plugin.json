@@ -112,5 +112,21 @@
   "extensions": "Extensions",
   "certification_details": "Certification Details",
   "from_secret": "from secret ",
-  "pem": "PEM:"
+  "pem": "PEM:",
+  "address": "Address",
+  "select_issuer": "Issuer",
+  "select_an_issuer": "Select an issuer",
+  "select_an_issuer_help": "Only issuer part of a chain of trust do qualify (i.e the issuer must have a CA). Proceed to create a new chain of trust if needed..",
+  "select_acceptor": "Acceptor",
+  "select_an_acceptor": "Select an acceptor",
+  "select_acceptor_help": "This annotation must be linked to an acceptor. Acceptors can get created in the 'Acceptors' menu.",
+  "Add an annotation": "Add an annotation",
+  "annotation modal helper": "Select an issuer to generate a cert-manager annotation.",
+  "Annotate_an_acceptor_with_an_issuer": "Cert-Manager issuer & Ingress exposure",
+  "create_new_chain_of_trust": "Create a new chain of trust",
+  "new_chain_of_trust": "Name of the issuer",
+  "new_chain_of_trust_helper": "Clicking on create will trigger the creation of 3 elements, a root issuer, a certificate signed by the root issuer, and an issuer using the certificate. The name of the issuer will correspond to the later.",
+  "select_annotation": "Choose an annotation",
+  "select_annotation_help": "Choose an annotation in the available cards. A disabled card means that the annotation is already applied onto the current acceptor.",
+  "cert_manager_annotation": "Cert-Manager issuer & Ingress exposure"
 }

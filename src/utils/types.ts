@@ -44,14 +44,37 @@ export type Console = {
   useClientAuth?: boolean;
 };
 
+export type ResourceTemplate = {
+  selector?: {
+    kind: 'Ingress';
+    name?: string;
+  };
+  annotations?: {
+    'cert-manager.io/issuer'?: string;
+  };
+  patch?: {
+    kind: 'Ingress';
+    spec: {
+      tls?: [
+        {
+          hosts?: string[];
+          secretName?: string;
+        },
+      ];
+    };
+  };
+};
+
 export type K8sResourceCommon = K8sResource & {
   spec?: {
+    ingressDomain?: string;
     connectors?: Connector[];
     acceptors?: Acceptor[];
     brokerProperties?: string[];
     adminUser?: string;
     adminPassword?: string;
     console?: Console;
+    resourceTemplates?: ResourceTemplate[];
     deploymentPlan?: {
       image: string;
       requireLogin: boolean;

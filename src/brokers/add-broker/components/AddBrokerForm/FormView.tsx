@@ -55,6 +55,7 @@ export const FormView: FC<FormViewProps> = ({
   const [notification, setNotification] = useState(defaultNotification);
 
   const formState = useContext(BrokerCreationFormState);
+  const { cr } = useContext(BrokerCreationFormState);
   const dispatch = useContext(BrokerCreationFormDispatch);
 
   useEffect(() => {
@@ -189,6 +190,22 @@ export const FormView: FC<FormViewProps> = ({
                   inputAriaLabel="number input"
                   minusBtnAriaLabel="minus"
                   plusBtnAriaLabel="plus"
+                />
+              </FormGroup>
+            </FlexItem>
+            <FlexItem>
+              <FormGroup label="ingressDomain" fieldId="horizontal-form-Domain">
+                <TextInput
+                  label="Ingress Domain"
+                  name={'ingressDomain'}
+                  id={'ingressDomain'}
+                  value={cr.spec?.ingressDomain}
+                  onChange={(v) =>
+                    dispatch({
+                      operation: ArtemisReducerOperations.setIngressDomain,
+                      payload: v,
+                    })
+                  }
                 />
               </FormGroup>
             </FlexItem>

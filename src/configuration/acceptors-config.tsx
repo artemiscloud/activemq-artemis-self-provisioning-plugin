@@ -10,6 +10,8 @@ import {
   getConfigBindToAllInterfaces,
   getConfigOtherParams,
   getConfigSSLEnabled,
+  getAcceptor,
+  ExposeMode,
 } from '../brokers/utils';
 import { FC, Fragment, useContext, useState } from 'react';
 import {
@@ -27,6 +29,9 @@ import {
   List,
   ListItem,
   SearchInput,
+  Select,
+  SelectOption,
+  SelectVariant,
   Split,
   SplitItem,
   Stack,
@@ -45,11 +50,72 @@ import {
   CertSecretSelector,
   ConfigTypeContext,
 } from './broker-models';
-import { useTranslation } from '../i18n';
+import { useTranslation } from 'react-i18next';
+import { ListAnnotations, NewAnnotationButton } from './acceptors-annotations';
 
 export type AcceptorProps = {
   configName: string;
   configType: ConfigType;
+};
+
+type SelectExposeModeProps = {
+  selectedExposeMode: string;
+  setSelectedExposeMode: (issuerName: string) => void;
+  clearExposeMode: () => void;
+};
+
+export const SelectExposeMode: FC<SelectExposeModeProps> = ({
+  selectedExposeMode: selected,
+  setSelectedExposeMode: setSelected,
+  clearExposeMode: clear,
+}) => {
+  const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+  const options = Object.values(ExposeMode).map((exposeMode) => (
+    <SelectOption key={exposeMode} value={exposeMode} />
+  ));
+
+  const onSelect = (_event: any, selection: string, isPlaceholder: any) => {
+    if (isPlaceholder) clearSelection();
+    else {
+      setSelected(selection);
+      setIsOpen(false);
+    }
+  };
+
+  const clearSelection = () => {
+    clear();
+    setIsOpen(false);
+  };
+
+  const filterMatchingOptions = (_: any, value: string) => {
+    if (!value) {
+      return options;
+    }
+
+    const input = new RegExp(value, 'i');
+    return options.filter((child) => input.test(child.props.value));
+  };
+
+  const titleId = 'typeahead-select-issuer';
+  return (
+    <FormGroup label={t('select_expose_mode')}>
+      <Select
+        variant={SelectVariant.typeahead}
+        typeAheadAriaLabel={t('select_expose_mode')}
+        onToggle={() => setIsOpen(!isOpen)}
+        onSelect={onSelect}
+        onClear={clearSelection}
+        onFilter={filterMatchingOptions}
+        selections={selected}
+        isOpen={isOpen}
+        aria-labelledby={titleId}
+        isGrouped
+      >
+        {options}
+      </Select>
+    </FormGroup>
+  );
 };
 
 //this is shared by acceptor config and connector config
@@ -329,6 +395,89 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
             </FormGroup>
           </FlexItem>
         )}
+        {configType === ConfigType.acceptors && (
+          <FlexItem>
+            <FormGroup label="Expose" fieldId="horizontal-form-expose">
+              <Checkbox
+                label="Expose"
+                isChecked={
+                  getAcceptor(cr, configName)
+                    ? getAcceptor(cr, configName).expose
+                    : false
+                }
+                name={'check-expose' + configType + configName}
+                id={'check-expose' + configType + configName}
+                onChange={(v) =>
+                  dispatch({
+                    operation: ArtemisReducerOperations.setIsAcceptorExposed,
+                    payload: {
+                      name: configName,
+                      isExposed: v,
+                    },
+                  })
+                }
+              />
+            </FormGroup>
+          </FlexItem>
+        )}
+        {configType === ConfigType.acceptors && (
+          <FlexItem>
+            <SelectExposeMode
+              selectedExposeMode={
+                getAcceptor(cr, configName)
+                  ? getAcceptor(cr, configName).exposeMode
+                  : ''
+              }
+              setSelectedExposeMode={(v) =>
+                dispatch({
+                  operation: ArtemisReducerOperations.setAcceptorExposeMode,
+                  payload: {
+                    name: configName,
+                    exposeMode: v ? (v as ExposeMode) : undefined,
+                  },
+                })
+              }
+              clearExposeMode={() =>
+                dispatch({
+                  operation: ArtemisReducerOperations.setAcceptorExposeMode,
+                  payload: {
+                    name: configName,
+                    exposeMode: undefined,
+                  },
+                })
+              }
+            />
+          </FlexItem>
+        )}
+        {configType === ConfigType.acceptors && (
+          <FlexItem>
+            <FormGroup
+              label="ingressHost"
+              fieldId="horizontal-form-ingressHost"
+            >
+              <TextInput
+                label="Ingress Host"
+                name={'ingressHost' + configType + configName}
+                id={'ingressHost' + configType + configName}
+                value={
+                  getAcceptor(cr, configName) &&
+                  getAcceptor(cr, configName).ingressHost
+                    ? getAcceptor(cr, configName).ingressHost
+                    : ''
+                }
+                onChange={(v) =>
+                  dispatch({
+                    operation: ArtemisReducerOperations.setAcceptorIngressHost,
+                    payload: {
+                      name: configName,
+                      ingressHost: v,
+                    },
+                  })
+                }
+              />
+            </FormGroup>
+          </FlexItem>
+        )}
         <FlexItem>
           <FormGroup
             label="Other parameters"
@@ -345,6 +494,16 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               name="horizontal-form-protocols"
               onChange={onOtherParamsChange}
             />
+          </FormGroup>
+        </FlexItem>
+        <FlexItem>
+          <FormGroup
+            label="Annotations"
+            isRequired
+            fieldId="horizontal-form-otherParams"
+            key={'other' + configType + configName}
+          >
+            <NewAnnotationButton acceptor={getAcceptor(cr, configName)} />
           </FormGroup>
         </FlexItem>
       </Flex>
@@ -386,6 +545,18 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
           )}
         </FlexItem>
       </Flex>
+      {configType === ConfigType.acceptors && cr.spec.resourceTemplates && (
+        <Flex>
+          <div className="pf-u-pt-xl"></div>
+          <FlexItem>
+            <FormGroup label="Annotations">
+              <Divider orientation={{ default: 'horizontal' }} />
+              <div className="pf-u-pt-xl"></div>
+              <ListAnnotations acceptor={getAcceptor(cr, configName)} />
+            </FormGroup>
+          </FlexItem>
+        </Flex>
+      )}
     </>
   );
 };

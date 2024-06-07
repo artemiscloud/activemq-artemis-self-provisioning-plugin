@@ -1,5 +1,10 @@
 import { AddBrokerResourceValues as FormState } from './import-types';
-import { K8sResourceKind, K8sResourceCommon as ArtemisCR } from '../../utils';
+import {
+  K8sResourceKind,
+  K8sResourceCommon as ArtemisCR,
+  Acceptor,
+  ResourceTemplate,
+} from '../../utils';
 import { createContext } from 'react';
 import { ConfigType } from '../../configuration/broker-models';
 import { SelectOptionObject } from '@patternfly/react-core';
@@ -57,6 +62,7 @@ export const newArtemisCRState = (namespace: string): FormState => {
     spec: {
       adminUser: 'admin',
       adminPassword: 'admin',
+      ingressDomain: 'apps-crc.testing',
       console: {
         expose: true,
       },
@@ -93,10 +99,21 @@ export const convertYamlToForm = (yamlBroker: K8sResourceKind) => {
 // Reducer
 
 export enum ArtemisReducerOperations {
+  /**
+   * Adds an issuer as an annotation to make the cert-manager operator generate
+   * the PEM certificates at runtime. Will trigger cascading effects on the CR.
+   * to unset call deleteCertManagerAnnotationIssuer
+   */
+  activatePEMGenerationForAcceptor,
   /** adds a new acceptor to the cr */
   addAcceptor,
   /** adds a or connector to the cr */
   addConnector,
+  /**
+   * Removes the issuer annotation, clears the related configuration from the
+   * acceptor.
+   */
+  deletePEMGenerationForAcceptor,
   /** decrements the total number of replicas by one */
   decrementReplicas,
   /** delete an acceptor */
@@ -107,8 +124,12 @@ export enum ArtemisReducerOperations {
   incrementReplicas,
   /** Sets if the acceptor should bind to all the interfaces or not */
   setAcceptorBindToAllInterfaces,
+  /** Exposition mode of the acceptor */
+  setAcceptorExposeMode,
   /** Renames an acceptor */
   setAcceptorName,
+  /** set the ingress Host for the acceptor */
+  setAcceptorIngressHost,
   /** Updates any other parameters */
   setAcceptorOtherParams,
   /** Updates the port */
@@ -149,6 +170,13 @@ export enum ArtemisReducerOperations {
   setConsoleSecret,
   /** set the editor to use in the UX*/
   setEditorType,
+  /**
+   * set the ingress domain (used for cert manager annotations) usually the
+   * domain name of the cluster
+   */
+  setIngressDomain,
+  /** Is this acceptor exposed */
+  setIsAcceptorExposed,
   /** updates the whole model */
   setModel,
   /** update the namespace of the CR */
@@ -157,6 +185,8 @@ export enum ArtemisReducerOperations {
   setReplicasNumber,
   /** Updates the configuration's factory Class */
   updateAcceptorFactoryClass,
+  /** Update the issuer of an annotation */
+  updateAnnotationIssuer,
   /** Updates the configuration's factory Class */
   updateConnectorFactoryClass,
 }
@@ -167,13 +197,17 @@ type ArtemisReducerActionBase = {
 };
 
 type ArtemisReducerActions =
+  | ActivatePEMGenerationForAcceptorAction
   | AddAcceptorAction
   | AddConnectorAction
   | DecrementReplicasAction
   | DeleteAcceptorAction
   | DeleteConnectorAction
+  | DeletePEMGenerationForAcceptorAction
   | IncrementReplicasAction
   | SetAcceptorBindToAllInterfacesAction
+  | SetAcceptorExposeModeAction
+  | SetAcceptorIngressHostAction
   | SetAcceptorNameAction
   | SetAcceptorOtherParamsAction
   | SetAcceptorPortAction
@@ -195,11 +229,74 @@ type ArtemisReducerActions =
   | SetConsoleSSLEnabled
   | SetConsoleSecretAction
   | SetEditorTypeAction
+  | SetIngressDomainAction
+  | SetIsAcceptorExposedAction
   | SetModelAction
   | SetNamespaceAction
   | SetReplicasNumberAction
   | UpdateAcceptorFactoryClassAction
+  | UpdateAnnotationIssuerAction
   | UpdateConnectorFactoryClassAction;
+
+interface UpdateAnnotationIssuerAction extends ArtemisReducerActionBase {
+  operation: ArtemisReducerOperations.updateAnnotationIssuer;
+  payload: {
+    /** the acceptor name is needed to recover the corresponding annotation */
+    acceptorName: string;
+    /** the new issuer name */
+    newIssuer: string;
+  };
+}
+
+interface SetAcceptorIngressHostAction extends ArtemisReducerActionBase {
+  operation: ArtemisReducerOperations.setAcceptorIngressHost;
+  payload: {
+    /** the acceptor name */
+    name: string;
+    /** the ingress host*/
+    ingressHost: string;
+  };
+}
+
+interface SetAcceptorExposeModeAction extends ArtemisReducerActionBase {
+  operation: ArtemisReducerOperations.setAcceptorExposeMode;
+  payload: {
+    /** the acceptor name */
+    name: string;
+    /** the expose mode of the acceptor */
+    exposeMode: ExposeMode | undefined;
+  };
+}
+
+interface SetIsAcceptorExposedAction extends ArtemisReducerActionBase {
+  operation: ArtemisReducerOperations.setIsAcceptorExposed;
+  payload: {
+    /** the acceptor name */
+    name: string;
+    /** true if the acceptor is exposed */
+    isExposed: boolean;
+  };
+}
+
+type ActivatePEMGenerationForAcceptorPayload = {
+  /** the name of the acceptor */
+  acceptor: string;
+  /** the name of the issuer */
+  issuer: string;
+};
+
+interface ActivatePEMGenerationForAcceptorAction
+  extends ArtemisReducerActionBase {
+  operation: ArtemisReducerOperations.activatePEMGenerationForAcceptor;
+  payload: ActivatePEMGenerationForAcceptorPayload;
+}
+
+interface DeletePEMGenerationForAcceptorAction
+  extends ArtemisReducerActionBase {
+  operation: ArtemisReducerOperations.deletePEMGenerationForAcceptor;
+  /** the acceptor name */
+  payload: string;
+}
 
 interface AddAcceptorAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.addAcceptor;
@@ -417,8 +514,8 @@ interface SetConnectorSSLEnabledAction extends ArtemisReducerActionBase {
 type SecretPayload = {
   /** the name of the configuration */
   name: string;
-  /** the secret of the configuration */
-  secret: SelectOptionObject;
+  /** the secret of the configuration, set to undefined to delete the secret*/
+  secret: SelectOptionObject | undefined;
   /** the secret is a certificate */
   isCa: boolean;
 };
@@ -450,6 +547,11 @@ interface SetReplicasNumberAction extends ArtemisReducerActionBase {
   payload: number;
 }
 
+interface SetIngressDomainAction extends ArtemisReducerActionBase {
+  operation: ArtemisReducerOperations.setIngressDomain;
+  // the domain of the cluster
+  payload: string;
+}
 /**
  *
  * The core of the reducer functionality. Switch case on the Action and apply
@@ -465,11 +567,34 @@ export const artemisCrReducer: React.Reducer<
 
   // set the individual fields
   switch (action.operation) {
+    case ArtemisReducerOperations.updateAnnotationIssuer:
+      updateAnnotationIssuer(
+        formState.cr,
+        action.payload.acceptorName,
+        action.payload.newIssuer,
+      );
+      break;
+    case ArtemisReducerOperations.setAcceptorIngressHost:
+      getAcceptor(formState.cr, action.payload.name).ingressHost =
+        action.payload.ingressHost;
+      break;
+    case ArtemisReducerOperations.setAcceptorExposeMode:
+      if (action.payload) {
+        getAcceptor(formState.cr, action.payload.name).exposeMode =
+          action.payload.exposeMode;
+      } else {
+        delete getAcceptor(formState.cr, action.payload.name).exposeMode;
+      }
+      break;
+    case ArtemisReducerOperations.setIsAcceptorExposed:
+      getAcceptor(formState.cr, action.payload.name).expose =
+        action.payload.isExposed;
+      break;
     case ArtemisReducerOperations.setEditorType:
       formState.editorType = action.payload;
       break;
     case ArtemisReducerOperations.setNamespace:
-      formState.cr.metadata.namespace = action.payload;
+      updateNamespace(formState.cr, action.payload);
       break;
     case ArtemisReducerOperations.setReplicasNumber:
       formState.cr.spec.deploymentPlan.size = action.payload;
@@ -484,7 +609,18 @@ export const artemisCrReducer: React.Reducer<
       }
       break;
     case ArtemisReducerOperations.setBrokerName:
-      formState.cr.metadata.name = action.payload;
+      updateBrokerName(formState.cr, action.payload);
+      break;
+    case ArtemisReducerOperations.activatePEMGenerationForAcceptor:
+      activatePEMGenerationForAcceptor(formState.cr, action.payload.acceptor);
+      setIssuerForAcceptor(
+        formState.cr,
+        getAcceptor(formState.cr, action.payload.acceptor),
+        action.payload.issuer,
+      );
+      break;
+    case ArtemisReducerOperations.deletePEMGenerationForAcceptor:
+      clearAcceptorCertManagerConfig(formState.cr, action.payload);
       break;
     case ArtemisReducerOperations.addAcceptor:
       addConfig(formState.cr, ConfigType.acceptors);
@@ -493,6 +629,8 @@ export const artemisCrReducer: React.Reducer<
       addConfig(formState.cr, ConfigType.connectors);
       break;
     case ArtemisReducerOperations.deleteAcceptor:
+      // before deleting an acceptor, remove any linked annotations
+      deleteCertManagerAnnotation(formState.cr, action.payload);
       deleteConfig(formState.cr, ConfigType.acceptors, action.payload);
       break;
     case ArtemisReducerOperations.deleteConnector:
@@ -502,6 +640,13 @@ export const artemisCrReducer: React.Reducer<
       renameConfig(
         formState.cr,
         ConfigType.acceptors,
+        action.payload.oldName,
+        action.payload.newName,
+      );
+      // after the renaming of an acceptor its annotation will require an update
+      // to keep being in sync
+      updateAcceptorNameInResourceTemplate(
+        formState.cr,
         action.payload.oldName,
         action.payload.newName,
       );
@@ -515,6 +660,9 @@ export const artemisCrReducer: React.Reducer<
       );
       break;
     case ArtemisReducerOperations.setAcceptorSecret:
+      // when the user sets the acceptor secret manually, remove any linked
+      // annotations
+      clearAcceptorCertManagerConfig(formState.cr, action.payload.name);
       updateConfigSecret(
         formState.cr,
         ConfigType.acceptors,
@@ -663,6 +811,9 @@ export const artemisCrReducer: React.Reducer<
     case ArtemisReducerOperations.setModel:
       setModel(formState, action.payload.model);
       break;
+    case ArtemisReducerOperations.setIngressDomain:
+      updateIngressDomain(formState.cr, action.payload);
+      break;
     default:
       throw Error('Unknown action: ' + action);
   }
@@ -671,6 +822,230 @@ export const artemisCrReducer: React.Reducer<
 };
 
 // function used by the reducer to update the state
+
+const updateAnnotationIssuer = (
+  cr: ArtemisCR,
+  acceptorName: string,
+  newIssuer: string,
+) => {
+  if (!cr.spec.resourceTemplates) {
+    return;
+  }
+  const acceptor = getAcceptor(cr, acceptorName);
+  const selector = certManagerSelector(cr, acceptor.name);
+  const rt = cr.spec.resourceTemplates.find(
+    (rt) => rt.selector?.name === selector,
+  );
+  if (rt) {
+    rt.annotations['cert-manager.io/issuer'] = newIssuer;
+  }
+};
+
+const updateIngressDomain = (cr: ArtemisCR, newName: string) => {
+  cr.spec.ingressDomain = newName;
+  // when the namespace changes, some annotations will need an update to
+  // stay in sync
+  if (!cr.spec.acceptors || !cr.spec.resourceTemplates) {
+    return;
+  }
+  cr.spec.acceptors.forEach((acceptor) => {
+    const rt = cr.spec.resourceTemplates.find(
+      (rt) => rt.selector.name === certManagerSelector(cr, acceptor.name),
+    );
+    if (!rt) {
+      return;
+    }
+    rt.patch.spec.tls[0].hosts = [certManagerTlsHost(cr, acceptor.name)];
+  });
+};
+
+const updateNamespace = (cr: ArtemisCR, newName: string) => {
+  cr.metadata.namespace = newName;
+  // when the namespace changes, some annotations will need an update to
+  // stay in sync
+  if (!cr.spec.acceptors) {
+    return;
+  }
+  cr.spec.acceptors.forEach((acceptor) => {
+    const rt = cr.spec.resourceTemplates.find(
+      (rt) => rt.selector.name === certManagerSelector(cr, acceptor.name),
+    );
+    if (!rt) {
+      return;
+    }
+    rt.patch.spec.tls[0].hosts = [certManagerTlsHost(cr, acceptor.name)];
+  });
+};
+
+const updateBrokerName = (cr: ArtemisCR, newName: string) => {
+  const prevBrokerName = cr.metadata.name;
+  cr.metadata.name = newName;
+  // when the broker name changes, some acceptors & annotations will need an
+  // update to stay in sync
+  if (!cr.spec.acceptors) {
+    return;
+  }
+  cr.spec.acceptors.forEach((acceptor) => {
+    if (acceptor.sslSecret && acceptor.sslSecret.endsWith('-ptls')) {
+      acceptor.sslSecret = certManagerSecret(cr, acceptor.name);
+    }
+    if (!cr.spec.resourceTemplates) {
+      return;
+    }
+    const outdatedSelector =
+      prevBrokerName + '-' + acceptor.name + '-0-svc-ing';
+    const rt = cr.spec.resourceTemplates.find(
+      (rt) => rt.selector?.name === outdatedSelector,
+    );
+    if (!rt) {
+      return;
+    }
+    rt.selector.name = certManagerSelector(cr, acceptor.name);
+    rt.patch.spec.tls[0] = {
+      hosts: [certManagerTlsHost(cr, acceptor.name)],
+      secretName: acceptor.sslSecret,
+    };
+  });
+};
+
+/**
+ * Configures the acceptor to accept a secret at runtime generated by an issuer.
+ * Any acceptor whos secret ends up with `-ptls` will get considered as being
+ * under cert-manager supervision regarding certs.
+ */
+const activatePEMGenerationForAcceptor = (
+  cr: ArtemisCR,
+  acceptorName: string,
+) => {
+  const acceptor = getAcceptor(cr, acceptorName);
+  if (acceptor) {
+    acceptor.sslEnabled = true;
+    acceptor.expose = true;
+    acceptor.exposeMode = ExposeMode.ingress;
+    acceptor.ingressHost =
+      'ing.$(ITEM_NAME).$(CR_NAME)-$(BROKER_ORDINAL).$(CR_NAMESPACE).$(INGRESS_DOMAIN)';
+    acceptor.sslSecret = certManagerSecret(cr, acceptor.name);
+  }
+};
+
+/**
+ * Updates the annotation corresponding to cert manager to contain the specified
+ * issuer. Creates the annotation if it was not there in the first place.
+ */
+const setIssuerForAcceptor = (
+  cr: ArtemisCR,
+  acceptor: Acceptor,
+  issuerName: string,
+) => {
+  if (!acceptor) {
+    return;
+  }
+  // in case there are no resource templates in the CR
+  if (!cr.spec.resourceTemplates) {
+    cr.spec.resourceTemplates = [];
+  }
+  // find if there is already an annotation for this acceptor
+  const selector = certManagerSelector(cr, acceptor.name);
+  const rt = cr.spec.resourceTemplates.find(
+    (rt) => rt.selector?.name === selector,
+  );
+  // either update the existing one or create a new annotation
+  if (rt) {
+    rt.annotations['cert-manager.io/issuer'] = issuerName;
+  } else {
+    cr.spec.resourceTemplates.push(
+      createCertManagerResourceTemplate(cr, acceptor, issuerName),
+    );
+  }
+};
+
+// TODO handle multiple ordinals
+const certManagerTlsHost = (cr: ArtemisCR, acceptor: string) =>
+  'ing.' +
+  acceptor +
+  '.' +
+  cr.metadata.name +
+  '-0.' +
+  cr.metadata.namespace +
+  '.' +
+  cr.spec.ingressDomain;
+
+const certManagerSelector = (cr: ArtemisCR, acceptor: string) =>
+  cr.metadata.name + '-' + acceptor + '-0-svc-ing';
+
+const certManagerSecret = (cr: ArtemisCR, acceptor: string) =>
+  cr.metadata.name + '-' + acceptor + '-0-svc-ing-ptls';
+
+/**
+ * Updates the acceptor name in the various fields of the annotation matching
+ * the previous acceptor name
+ */
+const updateAcceptorNameInResourceTemplate = (
+  cr: ArtemisCR,
+  prevName: string,
+  newName: string,
+) => {
+  // early return if there's no resource template to work on
+  if (!cr.spec.resourceTemplates) {
+    return;
+  }
+  // find a potential resourceTemplate to update
+  const rt = cr.spec.resourceTemplates.find(
+    (rt) => rt.selector?.name === certManagerSelector(cr, prevName),
+  );
+  // if there's a match update the required fields
+  if (rt) {
+    rt.selector.name = certManagerSelector(cr, newName);
+    // TODO support multiple ordinals
+    rt.patch.spec.tls[0].hosts = [certManagerTlsHost(cr, newName)];
+    rt.patch.spec.tls[0].secretName = certManagerSecret(cr, newName);
+  }
+};
+
+/**
+ * create a new cert manager resource template for a given acceptor and issuer
+ * name. The acceptor must already be configured to have its ssl secret ending
+ * in -ptls as the convention requires.
+ */
+const createCertManagerResourceTemplate = (
+  cr: ArtemisCR,
+  acceptor: Acceptor,
+  issuerName: string,
+): ResourceTemplate => {
+  // TODO support multiple ordinals
+  return {
+    selector: {
+      kind: 'Ingress',
+      name: certManagerSelector(cr, acceptor.name),
+    },
+    annotations: {
+      'cert-manager.io/issuer': issuerName,
+    },
+    patch: {
+      kind: 'Ingress',
+      spec: {
+        tls: [
+          {
+            hosts: [certManagerTlsHost(cr, acceptor.name)],
+            secretName: acceptor.sslSecret,
+          },
+        ],
+      },
+    },
+  };
+};
+
+/**
+ * remove the cert manager annotation for a given acceptor if one is found
+ */
+const deleteCertManagerAnnotation = (cr: ArtemisCR, acceptor: string) => {
+  if (!cr.spec.resourceTemplates) {
+    return;
+  }
+  cr.spec.resourceTemplates = cr.spec.resourceTemplates.filter(
+    (rt) => rt.selector.name !== certManagerSelector(cr, acceptor),
+  );
+};
 
 const generateUniqueName = (prefix: string, existing: Set<string>): string => {
   const limit = existing.size + 1;
@@ -807,16 +1182,17 @@ const renameConfig = (
           },
         );
       }
-    } else {
-      if (brokerModel.spec?.acceptors?.length > 0) {
-        brokerModel.spec.acceptors = brokerModel.spec.acceptors.map(
-          (o: { name: string }) => {
-            if (o.name === previousName) {
-              return { ...o, name: newName };
-            }
-            return o;
-          },
-        );
+    }
+    if (configType === ConfigType.acceptors) {
+      const acceptor = getAcceptor(brokerModel, previousName);
+      if (acceptor) {
+        acceptor.name = newName;
+        // if the acceptor has a secret ending in -ptls, it's a cert-manager
+        // special kind of secret and the secret name must be in sync with the
+        // acceptor name
+        if (acceptor.sslSecret && acceptor.sslSecret.endsWith('-ptls')) {
+          acceptor.sslSecret = certManagerSecret(brokerModel, acceptor.name);
+        }
       }
     }
   }
@@ -1093,21 +1469,37 @@ const updateConfigSSLEnabled = (
         }
       }
     }
-  } else {
-    if (brokerModel.spec?.acceptors?.length > 0) {
-      for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
-        if (brokerModel.spec.acceptors[i].name === configName) {
-          brokerModel.spec.acceptors[i].sslEnabled = isSSLEnabled;
-          if (!isSSLEnabled) {
-            //remove trust and ssl secrets
-            delete brokerModel.spec.acceptors[i].sslSecret;
-            delete brokerModel.spec.acceptors[i].trustSecret;
-            delete brokerModel.spec.acceptors[i].wantClientAuth;
-            delete brokerModel.spec.acceptors[i].needClientAuth;
-          }
-        }
+  }
+  if (configType === ConfigType.acceptors) {
+    const acceptor = getAcceptor(brokerModel, configName);
+    if (acceptor) {
+      acceptor.sslEnabled = isSSLEnabled;
+      if (!acceptor.sslEnabled) {
+        delete acceptor.sslSecret;
+        delete acceptor.trustSecret;
+        delete acceptor.wantClientAuth;
+        delete acceptor.needClientAuth;
+        clearAcceptorCertManagerConfig(brokerModel, acceptor.name);
       }
     }
+  }
+};
+
+const clearAcceptorCertManagerConfig = (cr: ArtemisCR, name: string) => {
+  const acceptor = getAcceptor(cr, name);
+  if (acceptor.sslSecret && acceptor.sslSecret.endsWith('-ptls')) {
+    deleteCertManagerAnnotation(cr, acceptor.name);
+    delete acceptor.sslEnabled;
+    delete acceptor.sslSecret;
+    delete acceptor.expose;
+    delete acceptor.exposeMode;
+    delete acceptor.ingressHost;
+  }
+  if (!cr.spec.resourceTemplates) {
+    return;
+  }
+  if (cr.spec.resourceTemplates.length === 0) {
+    delete cr.spec.resourceTemplates;
   }
 };
 
@@ -1242,6 +1634,39 @@ export const getAcceptor = (cr: ArtemisCR, name: string) => {
   if (cr.spec?.acceptors) {
     return cr.spec.acceptors.find((acceptor) => {
       if (acceptor.name === name) {
+        return acceptor;
+      }
+      return undefined;
+    });
+  }
+  return undefined;
+};
+
+export const getAcceptorFromCertManagerResourceTemplate = (
+  cr: ArtemisCR,
+  rt: ResourceTemplate,
+) => {
+  if (cr.spec?.acceptors) {
+    return cr.spec.acceptors.find((acceptor) => {
+      if (acceptor.sslSecret === rt.patch.spec.tls[0].secretName) {
+        return acceptor;
+      }
+      return undefined;
+    });
+  }
+  return undefined;
+};
+
+export const getCertManagerResourceTemplateFromAcceptor = (
+  cr: ArtemisCR,
+  acceptor: Acceptor,
+) => {
+  if (!acceptor) {
+    return undefined;
+  }
+  if (cr.spec?.resourceTemplates) {
+    return cr.spec.resourceTemplates.find((rt) => {
+      if (rt.patch.spec.tls[0].secretName === acceptor.sslSecret) {
         return acceptor;
       }
       return undefined;
@@ -1421,4 +1846,27 @@ export const getConfigSSLEnabled = (
     }
   }
   return false;
+};
+
+/**
+ * Updates the annotation corresponding to cert manager to contain the specified
+ * issuer. Creates the annotation if it was not there in the first place.
+ */
+export const getIssuerForAcceptor = (cr: ArtemisCR, acceptor: Acceptor) => {
+  if (!acceptor) {
+    return '';
+  }
+  // in case there are no resource templates in the CR
+  if (!cr.spec.resourceTemplates) {
+    cr.spec.resourceTemplates = [];
+  }
+  // find if there is already an annotation for this acceptor
+  const selector = certManagerSelector(cr, acceptor.name);
+  const rt = cr.spec.resourceTemplates.find(
+    (rt) => rt.selector?.name === selector,
+  );
+  if (rt) {
+    return rt.annotations['cert-manager.io/issuer'];
+  }
+  return '';
 };

@@ -51,6 +51,8 @@ import {
   BrokerCreationFormState,
   BrokerCreationFormDispatch,
   getConfigSecret,
+  getCertManagerResourceTemplateFromAcceptor,
+  getAcceptor,
 } from '../brokers/utils';
 import { AcceptorsConfigPage } from './acceptors-config';
 import { SelectOptionObject } from '@patternfly/react-core/dist/js';
@@ -185,7 +187,36 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   };
 
   const clearSelection = () => {
-    //TODO delete secret
+    if (configType === ConfigType.acceptors) {
+      dispatch({
+        operation: ArtemisReducerOperations.setAcceptorSecret,
+        payload: {
+          secret: undefined,
+          name: configName,
+          isCa: isCa,
+        },
+      });
+    }
+    if (configType === ConfigType.connectors) {
+      dispatch({
+        operation: ArtemisReducerOperations.setConnectorSecret,
+        payload: {
+          secret: undefined,
+          name: configName,
+          isCa: isCa,
+        },
+      });
+    }
+    if (configType === ConfigType.console) {
+      dispatch({
+        operation: ArtemisReducerOperations.setConsoleSecret,
+        payload: {
+          secret: undefined,
+          name: configName,
+          isCa: isCa,
+        },
+      });
+    }
     setIsOpen(false);
   };
 
@@ -234,29 +265,22 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   //Cert_annotation_key   = "cert-manager.io/issuer-name"
   //Bundle_annotation_key = "trust.cert-manager.io/hash"
   const isCertSecret = (secret: K8sResourceKind): boolean => {
-    console.log(
-      'in isCertSecret for ca?',
-      isCa,
-      'secret',
-      secret.metadata.name,
-    );
-    console.log('full secret', secret);
+    if (!secret.metadata || !secret.metadata.annotations) {
+      return false;
+    }
     if (isCa) {
       if (
         secret.metadata.annotations &&
         'trust.cert-manager.io/hash' in secret.metadata.annotations
       ) {
-        console.log('it is ca secret');
         return true;
       }
     } else if (
       secret.metadata.annotations &&
       'cert-manager.io/issuer-name' in secret.metadata.annotations
     ) {
-      console.log('it is a cert secret');
       return true;
     }
-    console.log('it is not any cert secret');
     return false;
   };
 
@@ -285,7 +309,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     certManagerSecrets: K8sResourceKind[];
     legacySecrets: K8sResourceKind[];
   } => {
-    console.log(secrets.length, 'isCa', isCa);
     const certSecrets = secrets.filter((x) => {
       return isCertSecret(x);
     });
@@ -669,6 +692,10 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     }
   };
 
+  const rt = getCertManagerResourceTemplateFromAcceptor(
+    cr,
+    getAcceptor(cr, configName),
+  );
   return (
     <FormGroup
       label={isCa ? 'Trust Secrets' : 'Cert Secrets'}
@@ -682,6 +709,13 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
         pem={sertsToShowPem}
         onCloseModal={onCloseCertDetailsModel}
       ></CertificateDetailsModal>
+      {rt && !isCa && configType === ConfigType.acceptors && (
+        <p>
+          {' '}
+          The following secret is linked to a resource template annotation,
+          updating the value will result is the annotation to be removed
+        </p>
+      )}
       <Select
         id={'select-secrets' + isCa + configType + configName}
         key={'key-select-secrets' + isCa + configType + configName}

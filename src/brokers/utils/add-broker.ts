@@ -18,6 +18,34 @@ export const BrokerCreationFormState = createContext<FormState>({});
 export const BrokerCreationFormDispatch =
   createContext<React.Dispatch<ArtemisReducerActions>>(null);
 
+const artemisCRStateMap = new Map<string, FormState>();
+
+const initialCr = (namespace: string, name: string): ArtemisCR => {
+  return {
+    apiVersion: 'broker.amq.io/v1beta1',
+    kind: 'ActiveMQArtemis',
+    metadata: {
+      name: name,
+      namespace: namespace,
+    },
+    spec: {},
+  };
+};
+
+export const getArtemisCRState = (name: string, ns: string): FormState => {
+  const key = name + ns;
+  let formState = artemisCRStateMap.get(key);
+  if (!formState) {
+    formState = {};
+    formState.shouldShowYAMLMessage = true;
+    formState.editorType = EditorType.BROKER;
+    artemisCRStateMap.set(key, formState);
+  }
+  formState.cr = initialCr(ns, name);
+
+  return formState;
+};
+
 export const newArtemisCRState = (namespace: string): FormState => {
   const initialCr: ArtemisCR = {
     apiVersion: 'broker.amq.io/v1beta1',
@@ -121,6 +149,8 @@ export enum ArtemisReducerOperations {
   setConsoleSecret,
   /** set the editor to use in the UX*/
   setEditorType,
+  /** updates the whole model */
+  setModel,
   /** update the namespace of the CR */
   setNamespace,
   /** update the total number of replicas */
@@ -165,6 +195,7 @@ type ArtemisReducerActions =
   | SetConsoleSSLEnabled
   | SetConsoleSecretAction
   | SetEditorTypeAction
+  | SetModelAction
   | SetNamespaceAction
   | SetReplicasNumberAction
   | UpdateAcceptorFactoryClassAction
@@ -267,6 +298,10 @@ type FactoryClassPayload = {
   class: 'invm' | 'netty';
 };
 
+type SetModelPayload = {
+  model: ArtemisCR;
+};
+
 interface UpdateAcceptorFactoryClassAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.updateAcceptorFactoryClass;
   payload: FactoryClassPayload;
@@ -275,6 +310,11 @@ interface UpdateAcceptorFactoryClassAction extends ArtemisReducerActionBase {
 interface UpdateConnectorFactoryClassAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.updateConnectorFactoryClass;
   payload: FactoryClassPayload;
+}
+
+interface SetModelAction extends ArtemisReducerActionBase {
+  operation: ArtemisReducerOperations.setModel;
+  payload: SetModelPayload;
 }
 
 type UpdateConnectorHostPayload = {
@@ -503,6 +543,9 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setConsoleSSLEnabled:
       formState.cr.spec.console.sslEnabled = action.payload;
+      if (!action.payload) {
+        delete formState.cr.spec.console.useClientAuth;
+      }
       break;
     case ArtemisReducerOperations.setConsoleExposeMode:
       formState.cr.spec.console.exposeMode = action.payload;
@@ -616,6 +659,9 @@ export const artemisCrReducer: React.Reducer<
         action.payload.name,
         action.payload.class,
       );
+      break;
+    case ArtemisReducerOperations.setModel:
+      setModel(formState, action.payload.model);
       break;
     default:
       throw Error('Unknown action: ' + action);
@@ -790,9 +836,15 @@ const updateConfigSecret = (
         if (brokerModel.spec.connectors[i].name === configName) {
           if (isCa) {
             if (secret) {
+              if (!brokerModel.spec.connectors[i].trustSecret) {
+                brokerModel.spec.connectors[i].needClientAuth = true;
+                brokerModel.spec.connectors[i].wantClientAuth = true;
+              }
               brokerModel.spec.connectors[i].trustSecret = secret.toString();
             } else {
               delete brokerModel.spec.connectors[i].trustSecret;
+              delete brokerModel.spec.connectors[i].needClientAuth;
+              delete brokerModel.spec.connectors[i].wantClientAuth;
             }
           } else {
             if (secret) {
@@ -813,9 +865,15 @@ const updateConfigSecret = (
           console.log('found selector, selected', secret);
           if (isCa) {
             if (secret) {
+              if (!brokerModel.spec.acceptors[i].trustSecret) {
+                brokerModel.spec.acceptors[i].needClientAuth = true;
+                brokerModel.spec.acceptors[i].wantClientAuth = true;
+              }
               brokerModel.spec.acceptors[i].trustSecret = secret.toString();
             } else {
               delete brokerModel.spec.acceptors[i].trustSecret;
+              delete brokerModel.spec.acceptors[i].needClientAuth;
+              delete brokerModel.spec.acceptors[i].wantClientAuth;
             }
           } else {
             console.log('is cert', secret);
@@ -832,9 +890,13 @@ const updateConfigSecret = (
     if (brokerModel.spec?.console) {
       if (isCa) {
         if (secret) {
+          if (!brokerModel.spec.console.trustSecret) {
+            brokerModel.spec.console.useClientAuth = true;
+          }
           brokerModel.spec.console.trustSecret = secret.toString();
         } else {
           delete brokerModel.spec.console.trustSecret;
+          delete brokerModel.spec.console.useClientAuth;
         }
       } else {
         if (secret) {
@@ -1025,6 +1087,8 @@ const updateConfigSSLEnabled = (
             //remove trust and ssl secrets
             delete brokerModel.spec.connectors[i].sslSecret;
             delete brokerModel.spec.connectors[i].trustSecret;
+            delete brokerModel.spec.connectors[i].wantClientAuth;
+            delete brokerModel.spec.connectors[i].needClientAuth;
           }
         }
       }
@@ -1038,6 +1102,8 @@ const updateConfigSSLEnabled = (
             //remove trust and ssl secrets
             delete brokerModel.spec.acceptors[i].sslSecret;
             delete brokerModel.spec.acceptors[i].trustSecret;
+            delete brokerModel.spec.acceptors[i].wantClientAuth;
+            delete brokerModel.spec.acceptors[i].needClientAuth;
           }
         }
       }
@@ -1084,8 +1150,11 @@ const updateConfigFactoryClass = (
   }
 };
 
-// Getters
+const setModel = (formState: FormState, model: ArtemisCR): void => {
+  formState.cr = model;
+};
 
+// Getters
 export const getConfigSecret = (
   brokerModel: ArtemisCR,
   configType: ConfigType,

@@ -5,18 +5,23 @@ import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from './AddBroker.component';
 import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
 import {
-  ArtemisReducerOperations,
   BrokerCreationFormState,
   BrokerCreationFormDispatch,
   newArtemisCRState,
   artemisCrReducer,
+  AddBrokerResourceValues,
 } from '../utils';
+
+export interface AddBrokerProps {
+  initialValues: AddBrokerResourceValues;
+}
 
 const AddBrokerPage: FC = () => {
   const history = useHistory();
   const { ns: namespace } = useParams<{ ns?: string }>();
 
   const defaultNotification = { title: '', variant: AlertVariant.default };
+
   const initialValues = newArtemisCRState(namespace);
 
   //states
@@ -39,15 +44,6 @@ const AddBrokerPage: FC = () => {
       });
   };
 
-  const [prevNamespace, setPrevNamespace] = useState(namespace);
-  if (prevNamespace !== namespace) {
-    dispatch({
-      operation: ArtemisReducerOperations.setNamespace,
-      payload: namespace,
-    });
-    setPrevNamespace(namespace);
-  }
-
   return (
     <BrokerCreationFormState.Provider value={brokerModel}>
       <BrokerCreationFormDispatch.Provider value={dispatch}>
@@ -55,6 +51,7 @@ const AddBrokerPage: FC = () => {
           namespace={namespace}
           notification={notification}
           onCreateBroker={k8sCreateBroker}
+          isUpdate={false}
         />
       </BrokerCreationFormDispatch.Provider>
     </BrokerCreationFormState.Provider>

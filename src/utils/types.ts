@@ -1,6 +1,7 @@
 import { ExposeMode } from '../brokers/utils';
 import { K8sResourceCommon as K8sResource } from '@openshift-console/dynamic-plugin-sdk';
 
+// Something to think about - convert crd to typecript types?
 export type Acceptor = {
   bindToAllInterfaces?: boolean;
   expose?: boolean;
@@ -12,6 +13,8 @@ export type Acceptor = {
   sslEnabled?: boolean;
   sslSecret?: string;
   trustSecret?: string;
+  needClientAuth?: boolean;
+  wantClientAuth?: boolean;
 };
 
 export type Connector = {
@@ -26,6 +29,8 @@ export type Connector = {
   sslEnabled?: boolean;
   sslSecret?: string;
   trustSecret?: string;
+  needClientAuth?: boolean;
+  wantClientAuth?: boolean;
 };
 
 export type Console = {
@@ -36,6 +41,7 @@ export type Console = {
   sslEnabled?: boolean;
   sslSecret?: string;
   trustSecret?: string;
+  useClientAuth?: boolean;
 };
 
 export type K8sResourceCommon = K8sResource & {

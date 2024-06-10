@@ -3,9 +3,6 @@ import { useHistory } from 'react-router-dom';
 import {
   Form,
   Alert,
-  Button,
-  ButtonVariant,
-  ActionGroup,
   AlertGroup,
   AlertVariant,
   StackItem,
@@ -32,6 +29,7 @@ import {
   BrokerCreationFormState,
   BrokerCreationFormDispatch,
 } from '../../../utils';
+import { BrokerActionGroup } from './ActionGroup';
 
 type FormViewProps = {
   onCreateBroker: (formValues: K8sResourceCommon) => void;
@@ -40,12 +38,14 @@ type FormViewProps = {
     variant: AlertVariant;
   };
   targetNs: string;
+  isUpdate: boolean;
 };
 
 export const FormView: FC<FormViewProps> = ({
   onCreateBroker,
   notification: serverNotification,
   targetNs,
+  isUpdate,
 }) => {
   const { t } = useTranslation();
   const history = useHistory();
@@ -114,6 +114,8 @@ export const FormView: FC<FormViewProps> = ({
     { value: '7.12', label: 'AMQ 7.12', disabled: false },
     { value: '8.0', label: 'AMQ 8.0', disabled: true },
   ];
+
+  console.log('input cr', formState.cr);
 
   const crName = formState.cr.metadata.name;
   const replicas = formState.cr.spec.deploymentPlan.size;
@@ -256,18 +258,11 @@ export const FormView: FC<FormViewProps> = ({
           )}
         </StackItem>
       </Stack>
-      <ActionGroup>
-        <Button
-          variant={ButtonVariant.primary}
-          type="submit"
-          onClick={onSubmit}
-        >
-          {t('create')}
-        </Button>
-        <Button variant={ButtonVariant.secondary} onClick={onCancel}>
-          {t('cancel')}
-        </Button>
-      </ActionGroup>
+      <BrokerActionGroup
+        isUpdate={isUpdate}
+        onSubmit={onSubmit}
+        onCancel={onCancel}
+      ></BrokerActionGroup>
     </Form>
   );
 };

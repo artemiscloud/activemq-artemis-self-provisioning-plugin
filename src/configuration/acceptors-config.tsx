@@ -401,6 +401,7 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
   const dispatch = useContext(BrokerCreationFormDispatch);
 
   const [isConfigExpanded, setIsConfigExpanded] = useState(false);
+
   const [isActionOpen, setIsActionOpen] = useState(false);
   const [isNaming, setIsNaming] = useState(false);
 

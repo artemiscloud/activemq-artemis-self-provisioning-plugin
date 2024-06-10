@@ -6,6 +6,7 @@
   "conditions": "Conditions",
   "size": "Size",
   "create": "Create",
+  "apply": "Apply",
   "edit_broker": "Edit Broker",
   "delete_broker": "Delete Broker",
   "create_resource": "Create resource",

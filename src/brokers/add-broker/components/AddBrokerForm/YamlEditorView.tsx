@@ -1,11 +1,5 @@
 import { FC, Suspense, useContext } from 'react';
-import {
-  Alert,
-  AlertVariant,
-  AlertGroup,
-  Button,
-  Page,
-} from '@patternfly/react-core';
+import { Alert, AlertVariant, AlertGroup, Page } from '@patternfly/react-core';
 import {
   CodeEditor,
   useAccessReview,
@@ -13,8 +7,14 @@ import {
 import { AMQBrokerModel, K8sResourceCommon } from '../../../../utils';
 import { Loading } from '../../../../shared-components';
 import { useTranslation } from '../../../../i18n';
-import { BrokerCreationFormState } from '../../../utils';
-//import _ from 'lodash';
+import {
+  ArtemisReducerOperations,
+  BrokerCreationFormDispatch,
+  BrokerCreationFormState,
+} from '../../../utils';
+import { BrokerActionGroup } from './ActionGroup';
+import { useHistory } from 'react-router';
+import YAML from 'yaml';
 
 export type YamlEditorViewProps = {
   onCreateBroker: (content: any) => void;
@@ -24,17 +24,20 @@ export type YamlEditorViewProps = {
     title: string;
     variant: AlertVariant;
   };
+  isUpdate: boolean;
 };
 
 const YamlEditorView: FC<YamlEditorViewProps> = ({
   onCreateBroker,
   namespace,
   notification,
+  isUpdate,
 }) => {
   const { t } = useTranslation();
+  const history = useHistory();
 
-  //  const [data, setData] = useState<K8sResourceCommon>();
   const fromState = useContext(BrokerCreationFormState);
+  const dispatch = useContext(BrokerCreationFormDispatch);
 
   const [canCreateBroker, loadingAccessReview] = useAccessReview({
     group: AMQBrokerModel.apiGroup,
@@ -48,19 +51,17 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
     onCreateBroker(yamlData);
   };
 
+  const onCancel = () => {
+    history.push('/k8s/all-namespaces/brokers');
+  };
+
   //event: contains information of changes
   //value: contains full yaml model
   const onChanges = (newValue: any, _event: any) => {
-    //yamlValue.yamlData = JSON.parse(newValue);
-    //instead of blatantly replce the whole contents
-    //compare them and only accept additive contents, or
-    // else warning and refuse to update.
-    console.log('old value:', fromState.cr);
-    console.log('new value', JSON.parse(newValue));
-    Object.assign(fromState.cr, JSON.parse(newValue));
-    //_.merge(yamlValue.yamlData, newValue);
-
-    console.log('module after merge:', fromState.cr);
+    dispatch({
+      operation: ArtemisReducerOperations.setModel,
+      payload: { model: YAML.parse(newValue) },
+    });
   };
 
   if (loadingAccessReview) return <Loading />;
@@ -83,13 +84,16 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
           )}
           <Suspense fallback={<Loading />}>
             <CodeEditor
-              value={JSON.stringify(fromState.cr, null, '  ')}
+              value={YAML.stringify(fromState.cr, null, '  ')}
               language="yaml"
-              onSave={onSave}
               onChange={onChanges}
             />
           </Suspense>
-          <Button>Save</Button>
+          <BrokerActionGroup
+            isUpdate={isUpdate}
+            onSubmit={onSave}
+            onCancel={onCancel}
+          ></BrokerActionGroup>
         </Page>
       ) : (
         <Alert

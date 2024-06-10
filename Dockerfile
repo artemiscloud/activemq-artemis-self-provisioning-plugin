@@ -46,7 +46,7 @@ express-openapi-validator \
 swagger-routes-express \
 typescript \
 validator \
-yamljs \
+yaml \
 base-64 \
 jsonwebtoken \
 dotenv \

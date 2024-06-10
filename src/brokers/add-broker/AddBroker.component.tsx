@@ -16,14 +16,14 @@ type AddBrokerProps = {
     title: string;
     variant: AlertVariant;
   };
-  isEditWorkFlow?: boolean;
+  isUpdate?: boolean;
 };
 
 const AddBroker: FC<AddBrokerProps> = ({
   onCreateBroker,
   notification,
   namespace,
-  isEditWorkFlow,
+  isUpdate,
 }) => {
   const formValues = useContext(BrokerCreationFormState);
   const dispatch = useContext(BrokerCreationFormDispatch);
@@ -39,19 +39,16 @@ const AddBroker: FC<AddBrokerProps> = ({
 
   return (
     <>
-      {!isEditWorkFlow && (
-        <>
-          <Divider />
-          <EditorToggle value={editorType} onChange={onSelectEditorType} />
-          <Divider />
-          {editorType === EditorType.BROKER && (
-            <FormView
-              onCreateBroker={onCreateBroker}
-              notification={notification}
-              targetNs={namespace}
-            />
-          )}
-        </>
+      <Divider />
+      <EditorToggle value={editorType} onChange={onSelectEditorType} />
+      <Divider />
+      {editorType === EditorType.BROKER && (
+        <FormView
+          onCreateBroker={onCreateBroker}
+          notification={notification}
+          targetNs={namespace}
+          isUpdate={isUpdate}
+        />
       )}
       {editorType === EditorType.YAML && (
         <YamlEditorView
@@ -59,6 +56,7 @@ const AddBroker: FC<AddBrokerProps> = ({
           namespace={namespace}
           initialResourceYAML={formValues.cr}
           notification={notification}
+          isUpdate={isUpdate}
         />
       )}
     </>

@@ -117,7 +117,11 @@ const BrokerDetailsPage: FC = () => {
         className="pf-c-page__main-tabs"
       >
         <div className="pf-u-mt-md pf-u-ml-md pf-u-mb-md">
-          <BrokerDetailsBreadcrumb name={brokerName} namespace={namespace} />
+          <BrokerDetailsBreadcrumb
+            name={brokerName}
+            namespace={namespace}
+            podName={podName}
+          />
           <Title headingLevel="h2">
             {t('broker')} {brokerName} {t('/')} {podName}
           </Title>

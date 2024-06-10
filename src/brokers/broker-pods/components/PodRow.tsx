@@ -38,7 +38,7 @@ export const PodRow: FC<PodRowProps> = ({
   return (
     <>
       <TableData id={columns[0].id} activeColumnIDs={activeColumnIDs}>
-        <Link to={`/ns/${namespace}/broker-pods/${brokerName}/${name}`}>
+        <Link to={`/ns/${namespace}/brokers/${brokerName}/${name}`}>
           {name}
         </Link>
       </TableData>

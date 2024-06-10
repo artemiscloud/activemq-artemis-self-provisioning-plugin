@@ -10,21 +10,19 @@ import {
   Level,
   LevelItem,
 } from '@patternfly/react-core';
-import { PreConfirmDeleteModal } from '../../brokers/view-brokers/components/PreConfirmDeleteModal/PreConfirmDeleteModal';
+import { PreConfirmDeleteModal } from '../../brokers/view-brokers/components/PreConfirmDeleteModal';
 import { useTranslation } from '../../i18n';
 import { k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import { AMQBrokerModel } from '../../utils';
 
-export type BrokerDetailsBreadcrumbProps = {
+export type BrokerPodsBreadcrumbProps = {
   name: string;
   namespace: string;
-  podName: string;
 };
 
-const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
+const BrokerPodsBreadcrumb: FC<BrokerPodsBreadcrumbProps> = ({
   name,
   namespace,
-  podName,
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -32,8 +30,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   const [_loadError, setLoadError] = useState<any>();
   const history = useHistory();
 
-  const redirectBrokerPath = `/k8s/ns/${namespace}/brokers`;
-  const redirectBrokerPodsPath = `/k8s/ns/${namespace}/brokers/${name}`;
+  const redirectPath = `/k8s/ns/${namespace}/brokers`;
 
   const onClickEditBroker = () => {
     history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
@@ -53,7 +50,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
       resource: { metadata: { name, namespace: namespace } },
     })
       .then(() => {
-        history.push(redirectBrokerPath);
+        history.push(redirectPath);
       })
       .catch((e) => {
         setLoadError(e.message);
@@ -88,13 +85,10 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
       <Level>
         <LevelItem>
           <Breadcrumb className="pf-u-mb-md">
-            <BreadcrumbItem to={redirectBrokerPath}>
-              {t('brokers')}
-            </BreadcrumbItem>
-            <BreadcrumbItem to={redirectBrokerPodsPath}>
+            <BreadcrumbItem to={redirectPath}>{t('brokers')}</BreadcrumbItem>
+            <BreadcrumbItem isActive>
               {t('broker')} {name}
             </BreadcrumbItem>
-            <BreadcrumbItem isActive>{podName}</BreadcrumbItem>
           </Breadcrumb>
         </LevelItem>
         <LevelItem>
@@ -123,4 +117,4 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   );
 };
 
-export { BrokerDetailsBreadcrumb };
+export { BrokerPodsBreadcrumb };

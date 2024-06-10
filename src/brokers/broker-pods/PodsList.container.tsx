@@ -8,7 +8,7 @@ import {
 import { AMQBrokerModel, K8sResourceKind } from '../../utils';
 import { useTranslation } from '../../i18n';
 import { PodsList } from './components/PodList';
-import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBreadcrumb';
+import { BrokerPodsBreadcrumb } from '../../shared-components/BrokerPodsBreadcrumb';
 import {
   PageSection,
   PageSectionVariants,
@@ -74,7 +74,7 @@ const PodsContainer: FC = () => {
         className="pf-c-page__main-tabs"
       >
         <div className="pf-u-mt-md pf-u-ml-md pf-u-mb-md">
-          <BrokerDetailsBreadcrumb name={name} namespace={namespace} />
+          <BrokerPodsBreadcrumb name={name} namespace={namespace} />
           <Title headingLevel="h2">
             {t('broker')} {name}
           </Title>

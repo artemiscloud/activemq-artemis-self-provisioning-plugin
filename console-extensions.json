@@ -42,8 +42,8 @@
     "properties": {
       "exact": false,
       "path": [
-        "/k8s/ns/:ns/broker-pods/:brokerName/:podName",
-        "/k8s/all-namespaces/broker-pods/:brokerName/:podName"
+        "/k8s/ns/:ns/brokers/:brokerName/:podName",
+        "/k8s/all-namespaces/brokers/:brokerName/:podName"
       ],
       "component": { "$codeRef": "BrokerDetailsPage" }
     }

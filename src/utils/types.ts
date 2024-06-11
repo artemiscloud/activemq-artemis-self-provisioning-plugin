@@ -100,3 +100,21 @@ export enum BrokerConditionTypes {
   IngressReady = 'IngressReady',
   TriggerChannelReady = 'TriggerChannelReady',
 }
+
+export type IssuerResource = K8sResource & {
+  kind: 'Issuer';
+  spec?: {
+    ca?: {
+      secretName: string;
+    };
+  };
+};
+
+export type SecretResource = K8sResource & {
+  kind: 'Secret';
+  data?: {
+    'ca.crt'?: string;
+    'tls.crt'?: string;
+    'tls.key'?: string;
+  };
+};

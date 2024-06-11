@@ -144,7 +144,7 @@ const BrokerDetailsPage: FC = () => {
             <OverviewContainer
               name={brokerName}
               namespace={namespace}
-              size={brokerDetails?.spec?.deploymentPlan?.size}
+              cr={brokerDetails}
               loading={loading}
             />
           </Tab>

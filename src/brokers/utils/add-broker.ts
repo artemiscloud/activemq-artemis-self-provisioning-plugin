@@ -1870,3 +1870,25 @@ export const getIssuerForAcceptor = (cr: ArtemisCR, acceptor: Acceptor) => {
   }
   return '';
 };
+
+export const getIssuerIngressHostForAcceptor = (
+  cr: ArtemisCR,
+  acceptor: Acceptor,
+) => {
+  if (!acceptor) {
+    return '';
+  }
+  // in case there are no resource templates in the CR
+  if (!cr.spec.resourceTemplates) {
+    cr.spec.resourceTemplates = [];
+  }
+  // find if there is already an annotation for this acceptor
+  const selector = certManagerSelector(cr, acceptor.name);
+  const rt = cr.spec.resourceTemplates.find(
+    (rt) => rt.selector?.name === selector,
+  );
+  if (rt) {
+    return rt.patch.spec.tls[0].hosts[0];
+  }
+  return '';
+};

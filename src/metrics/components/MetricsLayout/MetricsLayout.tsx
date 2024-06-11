@@ -1,5 +1,5 @@
 import { FC, ReactElement } from 'react';
-import { Grid, GridItem, PageSection } from '@patternfly/react-core';
+import { Grid, GridItem, PageSection, Title } from '@patternfly/react-core';
 import { MetricsType } from '../../utils';
 
 export type MetricsLayoutProps = {
@@ -24,6 +24,7 @@ export const MetricsLayout: FC<MetricsLayoutProps> = ({
         'pf-u-px-lg-on-xl pf-u-pt-sm-on-xl pf-u-pb-lg-on-xl pf-u-px-md pf-u-pb-md'
       }
     >
+      <Title headingLevel="h2">Metrics</Title>
       <Grid hasGutter>
         <GridItem>{metricsActions}</GridItem>
         {(() => {

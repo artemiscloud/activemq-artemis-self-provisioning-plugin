@@ -1,3 +1,8 @@
+import {
+  ArtemisReducerOperations,
+  BrokerCreationFormDispatch,
+  BrokerCreationFormState,
+} from '../../../utils';
 import { GetConfigurationPage } from '../../../../configuration/broker-models';
 import {
   Accordion,
@@ -11,7 +16,7 @@ import {
   SplitItem,
   Title,
 } from '@patternfly/react-core';
-import { FC, useState } from 'react';
+import { FC, useContext, useState } from 'react';
 
 export type BrokerIDProp = {
   brokerId: number;
@@ -87,14 +92,29 @@ export const BrokerProperties: FC<BrokerIDProp> = ({
 }) => {
   console.log('configuring broker ', crName, 'in namespace', targetNs);
 
-  const [currentConfigItem, setCurrentConfigItem] = useState('');
+  const configId = 'broker-props-' + brokerId + '-' + crName + '-' + targetNs;
+
+  const { editorActiveProperties } = useContext(BrokerCreationFormState);
+  const dispatch = useContext(BrokerCreationFormDispatch);
+
+  const currentConfigItem = editorActiveProperties.activeProperties?.get(
+    configId,
+  )
+    ? editorActiveProperties.activeProperties?.get(configId)
+    : '';
 
   const onSelectBrokerConfigItem = (
     selectedItem: any,
     selectedItemProps: any,
   ) => {
     console.log('new selection selected', selectedItem);
-    setCurrentConfigItem(selectedItemProps.itemId);
+    dispatch({
+      operation: ArtemisReducerOperations.setEditorActiveProperty,
+      payload: {
+        itemId: configId,
+        value: selectedItemProps.itemId,
+      },
+    });
   };
 
   const brokerConfigItems = [

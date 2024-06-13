@@ -571,16 +571,24 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
   configName,
 }) => {
   const { t } = useTranslation();
-  const { cr } = useContext(BrokerCreationFormState);
+  const { cr, editorActiveProperties } = useContext(BrokerCreationFormState);
   const dispatch = useContext(BrokerCreationFormDispatch);
 
-  const [isConfigExpanded, setIsConfigExpanded] = useState(false);
+  const configId = 'acceptor-config-' + configType + '-' + configName;
 
+  const isConfigExpanded =
+    editorActiveProperties.activeProperties?.get(configId);
   const [isActionOpen, setIsActionOpen] = useState(false);
   const [isNaming, setIsNaming] = useState(false);
 
   const onToggleAcceptorConfig = (expanded: boolean) => {
-    setIsConfigExpanded(expanded);
+    dispatch({
+      operation: ArtemisReducerOperations.setEditorActiveProperty,
+      payload: {
+        itemId: configId,
+        value: expanded,
+      },
+    });
   };
 
   const onSelectAction = (_event: any) => {

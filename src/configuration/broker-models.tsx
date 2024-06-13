@@ -99,6 +99,7 @@ export type CertSecretSelectorProps = {
   isCa: boolean;
   configType: ConfigType;
   configName: string;
+  canSetCustomNames?: boolean;
 };
 
 const secretGroupVersionKind = {
@@ -107,6 +108,7 @@ const secretGroupVersionKind = {
   version: 'v1',
 };
 type CreateSecretOptionsPropTypes = {
+  customOptions?: string[];
   certManagerSecrets: K8sResourceKind[];
   legacySecrets: K8sResourceKind[];
   configType: ConfigType;
@@ -114,13 +116,29 @@ type CreateSecretOptionsPropTypes = {
   isCa: boolean;
 };
 const useCreateSecretOptions = ({
+  customOptions,
   certManagerSecrets,
   legacySecrets,
   configType,
   configName,
   isCa,
 }: CreateSecretOptionsPropTypes) => {
+  const filteredCustomOptions = customOptions.filter(
+    (option) =>
+      !certManagerSecrets.find((s) => s.metadata.name.startsWith(option)) &&
+      !legacySecrets.find((s) => s.metadata.name.startsWith(option)),
+  );
   return [
+    filteredCustomOptions.length > 0 && (
+      <SelectGroup
+        label="Custom secret name"
+        key={'customOptions' + configType + configName + isCa}
+      >
+        {filteredCustomOptions.map((secret, index) => (
+          <SelectOption key={'cO' + index} value={secret} label={secret} />
+        ))}
+      </SelectGroup>
+    ),
     certManagerSecrets.length > 0 && (
       <SelectGroup
         label="Cert manager certs"
@@ -156,6 +174,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   isCa,
   configType,
   configName,
+  canSetCustomNames,
 }) => {
   console.log(
     '----> entering certSecretSelctor, type',
@@ -636,7 +655,12 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
 
   console.log('**** return group dumping statuse****');
 
+  const [customOptions, setCustomOptions] = useState<string[]>([
+    selectedSecret.toString(),
+  ]);
+
   const secretOptions = useCreateSecretOptions({
+    customOptions,
     certManagerSecrets,
     legacySecrets,
     configType,
@@ -755,6 +779,9 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
                 placeholderText="Select a Secret"
                 isGrouped
                 menuAppendTo="parent"
+                isCreatable={canSetCustomNames}
+                createText="override with custom name:"
+                onCreateOption={(v) => setCustomOptions([...customOptions, v])}
               >
                 {secretOptions}
               </Select>

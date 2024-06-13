@@ -619,6 +619,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
             isCa={false}
             configType={configType}
             configName={configName}
+            canSetCustomNames
           />
           <CertSecretSelector
             namespace={cr.metadata.namespace}

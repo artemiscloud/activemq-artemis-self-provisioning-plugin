@@ -57,6 +57,7 @@ import { SelectOptionObject } from '@patternfly/react-core/dist/js';
 import { pki } from 'node-forge';
 import base64 from 'base-64';
 import { CertificateDetailsModal } from './CertificateDetailsModal';
+import { useTranslation } from '../i18n';
 
 export const enum ConfigType {
   connectors = 'connectors',
@@ -744,12 +745,13 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
 };
 
 export const ConfigCategoryDescPage: FC<string> = (category: string) => {
+  const { t } = useTranslation();
   return (
     <Page>
       <Title headingLevel="h2">Configuring {category}</Title>
       <div className="pf-u-pt-xl"></div>
       <Divider orientation={{ default: 'horizontal' }} />
-      <Text>Choose one of the existing {category} to edit or add new one.</Text>
+      <Text>{t('choose_existing_to_edit')}</Text>
     </Page>
   );
 };
@@ -762,8 +764,9 @@ export const GetConfigurationPage: FC<BrokerConfigProps> = ({
   target,
   isPerBrokerConfig,
 }) => {
+  const { t } = useTranslation();
   if (isPerBrokerConfig) {
-    return <Text>Per Broker Config is disabled for now.</Text>;
+    return <Text>{t('broker_config_disabled')}</Text>;
   }
 
   const configType: ConfigType = target;
@@ -781,11 +784,7 @@ export const GetConfigurationPage: FC<BrokerConfigProps> = ({
       </ConfigTypeContext.Provider>
     );
   }
-  return (
-    <Text>
-      This is the broker configuration page. Select one item on the left
-    </Text>
-  );
+  return <Text>{t('broker_configuration_page')}</Text>;
 };
 
 export type AcceptorDropDownProps = {
@@ -830,10 +829,11 @@ export const AcceptorDropDown: FC<AcceptorDropDownProps> = ({
     onDelete();
   };
 
-  const acceptorActionItems = () => {
+  const AcceptorActionItems = () => {
+    const { t } = useTranslation();
     return [
       <DropdownItem key={compKey + 'ActionItems0'} onClick={onDeleteAcceptor}>
-        Delete
+        {t('delete')}
       </DropdownItem>,
     ];
   };
@@ -850,7 +850,7 @@ export const AcceptorDropDown: FC<AcceptorDropDownProps> = ({
       }
       isOpen={isAcceptorOpen}
       isPlain
-      dropdownItems={acceptorActionItems()}
+      dropdownItems={AcceptorActionItems()}
     />
   );
 };
@@ -861,6 +861,7 @@ export type NamingPanelProps = {
 };
 
 export const NamingPanel: FC<NamingPanelProps> = ({ initName, uniqueSet }) => {
+  const { t } = useTranslation();
   const configType = useContext(ConfigTypeContext);
   const dispatch = useContext(BrokerCreationFormDispatch);
   const [newName, setNewName] = useState(initName);
@@ -892,13 +893,13 @@ export const NamingPanel: FC<NamingPanelProps> = ({ initName, uniqueSet }) => {
     setNewName(value);
     if (value === '') {
       setValidateStatus(ValidatedOptions.error);
-      setTooltip("Name shouldn't be empty");
+      setTooltip(t('name_not_empty'));
     } else if (uniqueSet?.has(value)) {
       setValidateStatus(ValidatedOptions.error);
-      setTooltip('Name already exists');
+      setTooltip(t('name_already_exists'));
     } else {
       setValidateStatus(ValidatedOptions.success);
-      setTooltip('Name available');
+      setTooltip(t('name_available'));
     }
   };
 
@@ -919,7 +920,7 @@ export const NamingPanel: FC<NamingPanelProps> = ({ initName, uniqueSet }) => {
         isDisabled={validateStatus !== ValidatedOptions.success}
         onClick={handleNewName}
       >
-        ok
+        {t('ok')}
       </Button>
     </>
   );

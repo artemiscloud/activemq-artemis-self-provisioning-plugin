@@ -13,7 +13,6 @@ import {
 } from '../brokers/utils';
 import { FC, Fragment, useContext, useState } from 'react';
 import {
-  Button,
   Checkbox,
   Divider,
   Dropdown,
@@ -37,13 +36,16 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
+  Icon,
 } from '@patternfly/react-core';
+import { PlusCircleIcon } from '@patternfly/react-icons';
 import {
   ConfigType,
   NamingPanel,
   CertSecretSelector,
   ConfigTypeContext,
 } from './broker-models';
+import { useTranslation } from '../i18n';
 
 export type AcceptorProps = {
   configName: string;
@@ -397,6 +399,7 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
   configType,
   configName,
 }) => {
+  const { t } = useTranslation();
   const { cr } = useContext(BrokerCreationFormState);
   const dispatch = useContext(BrokerCreationFormDispatch);
 
@@ -438,10 +441,10 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
 
   const dropdownItems = [
     <DropdownItem key="action-rename" component="button" onClick={onRename}>
-      Rename
+      {t('rename')}
     </DropdownItem>,
     <DropdownItem key="action-delete" component="button" onClick={onDelete}>
-      Delete
+      {t('delete')}
     </DropdownItem>,
   ];
 
@@ -494,6 +497,7 @@ export type AcceptorsConfigProps = {
 };
 
 export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
+  const { t } = useTranslation();
   const fromState = useContext(BrokerCreationFormState);
   const configType = useContext(ConfigTypeContext);
   const dispatch = useContext(BrokerCreationFormDispatch);
@@ -539,12 +543,15 @@ export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
   const configToolbarItems = (
     <Fragment>
       <ToolbarItem variant="search-filter">
-        <SearchInput aria-label="search acceptors" />
+        <SearchInput
+          aria-label="search acceptors"
+          placeholder={t('search_acceptors')}
+        />
       </ToolbarItem>
       <ToolbarItem>
-        <Button variant="plain" onClick={addNewConfig}>
-          +
-        </Button>
+        <Icon size="md" onClick={addNewConfig}>
+          <PlusCircleIcon />
+        </Icon>
       </ToolbarItem>
     </Fragment>
   );

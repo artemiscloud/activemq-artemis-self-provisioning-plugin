@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import {
   CodeBlock,
   CodeBlockCode,
@@ -10,7 +11,7 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import { pki, util } from 'node-forge';
-import { FC } from 'react';
+import { useTranslation } from '../i18n';
 
 interface CertificateDetailsModalProps {
   isModalOpen: boolean;
@@ -27,6 +28,7 @@ const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
   pem,
   onCloseModal,
 }) => {
+  const { t } = useTranslation();
   const formatCertIssuer = (crt: pki.Certificate) => {
     let result = '';
     crt.issuer.attributes.forEach((attribute, i, all) => {
@@ -201,14 +203,14 @@ const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
       <DescriptionList isHorizontal key={'dl-cert-info' + order}>
         <DescriptionListGroup key={'version' + order}>
           <DescriptionListTerm>
-            <b>Version:</b>
+            <b>{t('version')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>{crt.version}</DescriptionListDescription>
         </DescriptionListGroup>
 
         <DescriptionListGroup key={'serialNumber' + order}>
           <DescriptionListTerm>
-            <b>SerialNumber:</b>
+            <b>{t('serial_number')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <code>{crt.serialNumber}</code>
@@ -217,7 +219,7 @@ const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
 
         <DescriptionListGroup key={'issuer' + order}>
           <DescriptionListTerm>
-            <b>Issuer:</b>
+            <b>{t('issuer')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <code>{formatCertIssuer(crt)}</code>
@@ -226,7 +228,7 @@ const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
 
         <DescriptionListGroup key={'issuerHash' + order}>
           <DescriptionListTerm>
-            <b>IssuerHash:</b>
+            <b>{t('issuer_hash')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <code>{crt.issuer.hash}</code>
@@ -235,20 +237,20 @@ const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
 
         <DescriptionListGroup key={'validity' + order}>
           <DescriptionListTerm>
-            <b>Validity:</b>
+            <b>{t('validity')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
-            <b>NotBefore: </b>
+            <b>{t('not_before')}</b>
             <code>{crt.validity.notBefore.toString()}</code>
             <p />
-            <b>NotAfter: </b>
+            <b>{t('not_after')}</b>
             <code>{crt.validity.notAfter.toString()}</code>
           </DescriptionListDescription>
         </DescriptionListGroup>
 
         <DescriptionListGroup key={'subject' + order}>
           <DescriptionListTerm>
-            <b>Subject:</b>
+            <b>{t('subject')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <code>{formatCertSubject(crt)}</code>
@@ -257,7 +259,7 @@ const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
 
         <DescriptionListGroup key={'subjectHash' + order}>
           <DescriptionListTerm>
-            <b>SubjectHash:</b>
+            <b>{t('subject_hash')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <code>{crt.subject.hash}</code>
@@ -266,7 +268,7 @@ const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
 
         <DescriptionListGroup key={'signatureOid' + order}>
           <DescriptionListTerm>
-            <b>SignatureOid:</b>
+            <b>{t('signature_oid')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <code>{crt.signatureOid}</code>
@@ -275,7 +277,7 @@ const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
 
         <DescriptionListGroup key={'signatue' + order}>
           <DescriptionListTerm>
-            <b>Signature:</b>
+            <b>{t('signature')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <CodeBlock
@@ -292,20 +294,23 @@ const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
 
         <DescriptionListGroup key={'siginfo' + order}>
           <DescriptionListTerm>
-            <b>Signiture info:</b>
+            <b>{t('signature_info')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
-            <b>AlgorithmOid: </b>
+            <b>{t('algorithm_oid')}</b>
             <code>{crt.siginfo.algorithmOid}</code>
             <p />
-            <b>Parameters: </b>
+            <b>{t('parameters')}</b>
             <code>{JSON.stringify(crt.siginfo.parameters)}</code>
           </DescriptionListDescription>
         </DescriptionListGroup>
 
         <DescriptionListGroup key={'extensions' + order}>
           <DescriptionListTerm>
-            <b>Extensions({crt.extensions?.length})</b>:
+            <b>
+              {t('extensions')}({crt.extensions?.length})
+            </b>
+            :
           </DescriptionListTerm>
           <DescriptionListDescription>
             <ExtensionsList crt={crt} order={order}></ExtensionsList>
@@ -314,7 +319,7 @@ const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
 
         <DescriptionListGroup key={'publickey' + order}>
           <DescriptionListTerm>
-            <b>{'PublicKey Info:'}</b>
+            <b>{t('publickey_info')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <CodeBlock
@@ -346,8 +351,8 @@ const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
   return (
     <Modal
       width="50%"
-      title={'Certification Details'}
-      description={'from secret ' + secretName}
+      title={t('certification_details')}
+      description={t('from_secret') + secretName}
       isOpen={isModalOpen}
       onClose={onCloseModal}
     >
@@ -359,7 +364,7 @@ const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
           <DescriptionList isHorizontal key={'dl-pem'}>
             <DescriptionListGroup key={'dl-group-pem-key'}>
               <DescriptionListTerm>
-                <b>{'PEM:'}</b>
+                <b>{t('pem')}</b>
               </DescriptionListTerm>
               <DescriptionListDescription>
                 <CodeBlock

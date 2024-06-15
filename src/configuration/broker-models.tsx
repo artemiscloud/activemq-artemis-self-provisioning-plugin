@@ -54,7 +54,7 @@ import {
 } from '../brokers/utils';
 import { AcceptorsConfigPage } from './acceptors-config';
 import { SelectOptionObject } from '@patternfly/react-core/dist/js';
-import { pki } from 'node-forge';
+import * as x509 from '@peculiar/x509';
 import base64 from 'base-64';
 import { CertificateDetailsModal } from './CertificateDetailsModal';
 import { useTranslation } from '../i18n';
@@ -307,7 +307,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   const drawerRef = useRef<HTMLDivElement>(null);
   const [caGenFromTlsSecret, setCaGenFromTlsSecret] = useState('');
   const [isCertDetailsModalOpen, setIsCertDetailsModalOpen] = useState(false);
-  const [certsToShow, setCertsToShow] = useState<pki.Certificate[]>([]);
+  const [certsToShow, setCertsToShow] = useState<x509.X509Certificate[]>([]);
   const [certsToShowSecret, setCertsToShowSecret] = useState<string>('');
   const [sertsToShowPem, setCertsToShowPem] = useState<string>('');
 
@@ -484,16 +484,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   const generateCaSecret = async () => {
     const tlsSecret = findSecret(caGenFromTlsSecret);
     if (tlsSecret !== null) {
-      const pem = base64.decode(tlsSecret.data['tls.crt']);
-      const caCert = pki.certificateFromPem(pem);
-      const caStore = pki.createCaStore();
-      caStore.addCertificate(caCert);
-      const capem = pki.certificateToPem(caStore.listAllCertificates()[0]);
-      console.log('\n CA cert');
-      console.log(capem);
-      const caValue = base64.encode(capem);
-      console.log('\n encoded CA');
-      console.log(caValue);
       const caSecName = 'ca-' + caGenFromTlsSecret;
       const caSecret: K8sResourceKind = {
         apiVersion: 'v1',
@@ -508,7 +498,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
           },
         },
         data: {
-          'cabundle.pem': caValue,
+          'cabundle.pem': tlsSecret.data['tls.crt'],
         },
       };
       await k8sCreate({ model: SecretModel, data: caSecret })
@@ -634,18 +624,19 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     return theSecret.length === 1;
   };
 
-  const parseCertsFromPem = (pem: string): pki.Certificate[] => {
-    const certs: pki.Certificate[] = [];
-    let certPems = pem.split('-----BEGIN CERTIFICATE-----');
+  const parseCertsFromPem = (pem: string): x509.X509Certificate[] => {
+    const certs: x509.X509Certificate[] = [];
+    let certPems = pem.split(
+      /-----BEGIN CERTIFICATE-----\n|-----END CERTIFICATE-----\n/g,
+    );
 
     certPems = certPems.filter((value) => {
       return value !== '';
     });
 
     for (let i = 0; i < certPems.length; i++) {
-      const cert = pki.certificateFromPem(
-        '-----BEGIN CERTIFICATE-----' + certPems[i],
-      );
+      const pemStr = certPems[i].replace(/\n/g, '');
+      const cert = new x509.X509Certificate(pemStr);
       certs.push(cert);
     }
     return certs;

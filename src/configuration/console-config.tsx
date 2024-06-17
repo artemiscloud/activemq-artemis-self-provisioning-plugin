@@ -1,25 +1,24 @@
 import {
   ArtemisReducerOperations,
-  BrokerCreationFormState,
   BrokerCreationFormDispatch,
+  BrokerCreationFormState,
   ExposeMode,
 } from '../brokers/utils';
+
 import {
   Checkbox,
-  Divider,
-  Flex,
-  FlexItem,
+  Form,
+  FormFieldGroup,
+  FormFieldGroupHeader,
   FormGroup,
   FormSelect,
   FormSelectOption,
-  Stack,
-  StackItem,
+  Grid,
   Switch,
 } from '@patternfly/react-core';
-
 import { FC, useContext, useState } from 'react';
-import { CertSecretSelector, ConfigType } from './broker-models';
 import { K8sResourceCommon } from '../utils';
+import { CertSecretSelector, ConfigType } from './broker-models';
 
 export type ConsoleConfigProps = {
   brokerId: number;
@@ -96,87 +95,76 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
   }
 
   return (
-    <Stack key={'stack' + brokerId}>
-      <StackItem isFilled>
-        <Flex>
-          <FlexItem>
-            <FormGroup
-              label="Expose"
-              fieldId={'console-config-expose-formgroup'}
-              key={'formgroup-console-expose'}
-            >
-              <Checkbox
-                label="Expose Console"
-                isChecked={exposeConsole}
-                name={'check-console-expose'}
-                id={'check-expose-console'}
-                onChange={setConsoleExpose}
-              />
-            </FormGroup>
-          </FlexItem>
-          <FlexItem>
-            <FormGroup
-              label="ExposeMode"
-              fieldId={'console-config-exposemode-formgroup'}
-              key={'formgroup-console-exposemode'}
-            >
-              <FormSelect
-                label="console expose mode"
-                value={exposeMode}
-                onChange={setConsoleExposeMode}
-                aria-label="formselect-expose-mode-aria-label"
-                key={'formselect-console-exposemode'}
-              >
-                {exposeModes.map((mode, index) => (
-                  <FormSelectOption
-                    key={'console-exposemode-option' + index}
-                    value={mode.value}
-                    label={mode.label}
-                  />
-                ))}
-              </FormSelect>
-            </FormGroup>
-          </FlexItem>
-        </Flex>
-        <Flex>
-          <div className="pf-u-pt-xl"></div>
-          <FlexItem>
-            <Switch
-              key={'switch-console-sslEnabled'}
-              id={'id-switch-console-sslEnabled'}
-              label="SSL Enabled for console"
-              labelOff="SSL disabled for console"
-              isChecked={isSSLEnabled}
-              onChange={handleSSLEnabled}
-              ouiaId="BasicSwitch-console-ssl"
+    <Form isHorizontal isWidthLimited key={'form' + brokerId}>
+      <Grid hasGutter md={6}>
+        <FormFieldGroup>
+          <FormGroup
+            label="Expose"
+            fieldId={'console-config-expose-formgroup'}
+            isRequired
+          >
+            <Checkbox
+              label="Expose Console"
+              isChecked={exposeConsole}
+              name={'check-console-expose'}
+              id={'check-expose-console'}
+              onChange={setConsoleExpose}
             />
-            <Divider orientation={{ default: 'horizontal' }} />
-            <div className="pf-u-pt-xl"></div>
-            {isSSLEnabled && (
-              <Flex direction={{ default: 'row' }}>
-                <FlexItem>
-                  <CertSecretSelector
-                    key={'secret-key' + ConfigType.console + 'console'}
-                    namespace={cr.metadata.namespace}
-                    isCa={false}
-                    configType={ConfigType.console}
-                    configName={'console'}
-                  />
-                </FlexItem>
-                <FlexItem>
-                  <CertSecretSelector
-                    key={'secret-ca' + ConfigType.console + 'console'}
-                    namespace={cr.metadata.namespace}
-                    isCa={true}
-                    configType={ConfigType.console}
-                    configName={'console'}
-                  />
-                </FlexItem>
-              </Flex>
-            )}
-          </FlexItem>
-        </Flex>
-      </StackItem>
-    </Stack>
+          </FormGroup>
+          <FormGroup
+            label="ExposeMode"
+            fieldId={'console-config-exposemode-formgroup'}
+          >
+            <FormSelect
+              label="console expose mode"
+              value={exposeMode}
+              onChange={setConsoleExposeMode}
+              aria-label="formselect-expose-mode-aria-label"
+            >
+              {exposeModes.map((mode, index) => (
+                <FormSelectOption
+                  key={'console-exposemode-option' + index}
+                  value={mode.value}
+                  label={mode.label}
+                />
+              ))}
+            </FormSelect>
+          </FormGroup>
+          <Switch
+            id={'id-switch-console-sslEnabled'}
+            label="SSL Enabled for console"
+            labelOff="SSL disabled for console"
+            isChecked={isSSLEnabled}
+            onChange={handleSSLEnabled}
+            ouiaId="BasicSwitch-console-ssl"
+          />
+        </FormFieldGroup>
+      </Grid>
+      {isSSLEnabled && (
+        <FormFieldGroup
+          header={
+            <FormFieldGroupHeader
+              titleText={{
+                text: 'SSL configuration',
+                id: 'field-group-configuration-ssl' + 'console',
+              }}
+            />
+          }
+        >
+          <CertSecretSelector
+            namespace={cr.metadata.namespace}
+            isCa={false}
+            configType={ConfigType.console}
+            configName={'console'}
+          />
+          <CertSecretSelector
+            namespace={cr.metadata.namespace}
+            isCa={true}
+            configType={ConfigType.console}
+            configName={'console'}
+          />
+        </FormFieldGroup>
+      )}
+    </Form>
   );
 };

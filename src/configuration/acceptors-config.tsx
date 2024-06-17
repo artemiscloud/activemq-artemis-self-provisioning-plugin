@@ -17,24 +17,13 @@ import { FC, Fragment, useContext, useState } from 'react';
 import {
   Button,
   Checkbox,
-  Divider,
-  Dropdown,
-  DropdownItem,
-  ExpandableSection,
-  Flex,
-  FlexItem,
   FormGroup,
   FormSelect,
   FormSelectOption,
-  KebabToggle,
-  List,
-  ListItem,
   SearchInput,
   Select,
   SelectOption,
   SelectVariant,
-  Split,
-  SplitItem,
   Stack,
   StackItem,
   Switch,
@@ -42,16 +31,21 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
+  Grid,
+  FormFieldGroup,
+  FormFieldGroupHeader,
+  FormFieldGroupExpandable,
 } from '@patternfly/react-core';
-import { PlusCircleIcon } from '@patternfly/react-icons';
+import { PlusCircleIcon, TrashIcon } from '@patternfly/react-icons';
 import {
   ConfigType,
-  NamingPanel,
   CertSecretSelector,
   ConfigTypeContext,
+  ConfigRenamingModal,
 } from './broker-models';
 import { useTranslation } from 'react-i18next';
 import { ListAnnotations, NewAnnotationButton } from './acceptors-annotations';
+import { Form } from '@patternfly/react-core/dist/js';
 
 export type AcceptorProps = {
   configName: string;
@@ -293,20 +287,27 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
 
   return (
     <>
-      <Flex>
-        <FlexItem>
+      <FormFieldGroup
+        header={
+          <FormFieldGroupHeader
+            titleText={{
+              text: 'Global configuration',
+              id: 'field-group-configuration' + configName,
+            }}
+          />
+        }
+      >
+        <Grid hasGutter md={6}>
           <FormGroup
             label="Factory Class"
             isRequired
             fieldId={'horizontal-form-factory-' + configType + configName}
-            key={'formgroup-factory' + configType + configName}
           >
             <FormSelect
               label="acceptorFactoryClass"
               value={selectedClass}
               onChange={onChangeClass}
               aria-label="FormSelect Input"
-              key={'select' + configType + configName}
             >
               {options.map((option, index) => (
                 <FormSelectOption
@@ -318,14 +319,11 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               ))}
             </FormSelect>
           </FormGroup>
-        </FlexItem>
-        {configType === ConfigType.connectors && (
-          <FlexItem>
+          {configType === ConfigType.connectors && (
             <FormGroup
               label="Host"
               isRequired
               fieldId={'horizontal-form-host-' + configType + configName}
-              key={'host' + configType + configName}
             >
               <TextInput
                 isDisabled={selectedClass === 'invm'}
@@ -338,14 +336,11 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
                 onChange={onHostChange}
               />
             </FormGroup>
-          </FlexItem>
-        )}
-        <FlexItem>
+          )}
           <FormGroup
             label="Port"
             isRequired
             fieldId={'horizontal-form-port-' + configType + configName}
-            key={'port' + configType + configName}
           >
             <TextInput
               isDisabled={selectedClass === 'invm'}
@@ -358,13 +353,10 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               onChange={onPortChange}
             />
           </FormGroup>
-        </FlexItem>
-        <FlexItem>
           <FormGroup
             label="Protocols"
             isRequired
             fieldId="horizontal-form-protocols"
-            key={'protocol' + configType + configName}
           >
             <TextInput
               value={protocols}
@@ -376,14 +368,11 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               onChange={onProtocolsChange}
             />
           </FormGroup>
-        </FlexItem>
-        {configType === ConfigType.acceptors && (
-          <FlexItem>
+          {configType === ConfigType.acceptors && (
             <FormGroup
               label="BindToAllInterfaces"
               isRequired
               fieldId="horizontal-form-bindToAllInterfaces"
-              key={'bindToAllInterfaces' + configType + configName}
             >
               <Checkbox
                 label="Bind to all interfaces"
@@ -393,10 +382,8 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
                 onChange={onBindToAllInterfacesChange}
               />
             </FormGroup>
-          </FlexItem>
-        )}
-        {configType === ConfigType.acceptors && (
-          <FlexItem>
+          )}
+          {configType === ConfigType.acceptors && (
             <FormGroup label="Expose" fieldId="horizontal-form-expose">
               <Checkbox
                 label="Expose"
@@ -418,10 +405,8 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
                 }
               />
             </FormGroup>
-          </FlexItem>
-        )}
-        {configType === ConfigType.acceptors && (
-          <FlexItem>
+          )}
+          {configType === ConfigType.acceptors && (
             <SelectExposeMode
               selectedExposeMode={
                 getAcceptor(cr, configName)
@@ -447,10 +432,8 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
                 })
               }
             />
-          </FlexItem>
-        )}
-        {configType === ConfigType.acceptors && (
-          <FlexItem>
+          )}
+          {configType === ConfigType.acceptors && (
             <FormGroup
               label="ingressHost"
               fieldId="horizontal-form-ingressHost"
@@ -476,14 +459,11 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
                 }
               />
             </FormGroup>
-          </FlexItem>
-        )}
-        <FlexItem>
+          )}
           <FormGroup
             label="Other parameters"
             isRequired
             fieldId="horizontal-form-otherParams"
-            key={'other' + configType + configName}
           >
             <TextInput
               value={otherParams}
@@ -495,8 +475,6 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               onChange={onOtherParamsChange}
             />
           </FormGroup>
-        </FlexItem>
-        <FlexItem>
           <FormGroup
             label="Annotations"
             isRequired
@@ -505,57 +483,60 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
           >
             <NewAnnotationButton acceptor={getAcceptor(cr, configName)} />
           </FormGroup>
-        </FlexItem>
-      </Flex>
-      <Flex>
-        <div className="pf-u-pt-xl"></div>
-        <FlexItem>
-          <Switch
-            key={'switch' + configType + configName}
-            id={'ssl-switch' + configType + configName}
-            label="SSL Enabled"
-            labelOff="SSL disabled"
-            isChecked={isSSLEnabled}
-            onChange={handleSSLEnabled}
-            ouiaId="BasicSwitch"
+          <FormGroup
+            label="Encryption"
+            fieldId="horizontal-form-Encryption"
+            isRequired
+          >
+            <Switch
+              id={'ssl-switch' + configType + configName}
+              label="SSL Enabled"
+              labelOff="SSL disabled"
+              isChecked={isSSLEnabled}
+              onChange={handleSSLEnabled}
+              ouiaId="BasicSwitch"
+            />
+          </FormGroup>
+        </Grid>
+      </FormFieldGroup>
+      {isSSLEnabled && (
+        <FormFieldGroup
+          header={
+            <FormFieldGroupHeader
+              titleText={{
+                text: 'SSL configuration',
+                id: 'field-group-configuration-ssl' + configName,
+              }}
+            />
+          }
+        >
+          <CertSecretSelector
+            namespace={cr.metadata.namespace}
+            isCa={false}
+            configType={configType}
+            configName={configName}
           />
-          <Divider orientation={{ default: 'horizontal' }} />
-          <div className="pf-u-pt-xl"></div>
-          {isSSLEnabled && (
-            <Flex direction={{ default: 'row' }}>
-              <FlexItem>
-                <CertSecretSelector
-                  key={'secret-key' + configType + configName}
-                  namespace={cr.metadata.namespace}
-                  isCa={false}
-                  configType={configType}
-                  configName={configName}
-                />
-              </FlexItem>
-              <FlexItem>
-                <CertSecretSelector
-                  key={'secret-ca' + configType + configName}
-                  namespace={cr.metadata.namespace}
-                  isCa={true}
-                  configType={configType}
-                  configName={configName}
-                />
-              </FlexItem>
-            </Flex>
-          )}
-        </FlexItem>
-      </Flex>
-      {configType === ConfigType.acceptors && cr.spec.resourceTemplates && (
-        <Flex>
-          <div className="pf-u-pt-xl"></div>
-          <FlexItem>
-            <FormGroup label="Annotations">
-              <Divider orientation={{ default: 'horizontal' }} />
-              <div className="pf-u-pt-xl"></div>
-              <ListAnnotations acceptor={getAcceptor(cr, configName)} />
-            </FormGroup>
-          </FlexItem>
-        </Flex>
+          <CertSecretSelector
+            namespace={cr.metadata.namespace}
+            isCa={true}
+            configType={configType}
+            configName={configName}
+          />
+        </FormFieldGroup>
+      )}
+      {configType === ConfigType.acceptors && (
+        <FormFieldGroup
+          header={
+            <FormFieldGroupHeader
+              titleText={{
+                text: 'Annotations',
+                id: 'field-group-configuration-annotations' + configName,
+              }}
+            />
+          }
+        >
+          <ListAnnotations acceptor={getAcceptor(cr, configName)} />
+        </FormFieldGroup>
       )}
     </>
   );
@@ -570,27 +551,7 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
   configType,
   configName,
 }) => {
-  const { t } = useTranslation();
-  const { cr } = useContext(BrokerCreationFormState);
   const dispatch = useContext(BrokerCreationFormDispatch);
-
-  const [isConfigExpanded, setIsConfigExpanded] = useState(false);
-
-  const [isActionOpen, setIsActionOpen] = useState(false);
-  const [isNaming, setIsNaming] = useState(false);
-
-  const onToggleAcceptorConfig = (expanded: boolean) => {
-    setIsConfigExpanded(expanded);
-  };
-
-  const onSelectAction = (_event: any) => {
-    setIsActionOpen(!isActionOpen);
-  };
-
-  const onToggleActions = (isOpen: boolean) => {
-    setIsActionOpen(isOpen);
-  };
-
   const onDelete = () => {
     if (configType === ConfigType.acceptors) {
       dispatch({
@@ -606,60 +567,30 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
     }
   };
 
-  const onRename = () => {
-    setIsNaming(true);
-  };
-
-  const dropdownItems = [
-    <DropdownItem key="action-rename" component="button" onClick={onRename}>
-      {t('rename')}
-    </DropdownItem>,
-    <DropdownItem key="action-delete" component="button" onClick={onDelete}>
-      {t('delete')}
-    </DropdownItem>,
-  ];
-
-  const getAcceptorNameSet = () => {
-    return listConfigs(configType, cr, 'set');
-  };
-
   return (
-    <Split>
-      <SplitItem>
-        <Dropdown
-          onSelect={onSelectAction}
-          toggle={
-            <KebabToggle onToggle={onToggleActions} id="toggle-id-actions" />
+    <FormFieldGroupExpandable
+      isExpanded
+      toggleAriaLabel="Details"
+      header={
+        <FormFieldGroupHeader
+          titleText={{
+            text: configName,
+            id: 'configName' + configName,
+          }}
+          titleDescription={configName + "'s details"}
+          actions={
+            <>
+              <ConfigRenamingModal initName={configName} />
+              <Button variant="plain" aria-label="Remove" onClick={onDelete}>
+                <TrashIcon />
+              </Button>
+            </>
           }
-          isOpen={isActionOpen}
-          isPlain
-          dropdownItems={dropdownItems}
         />
-      </SplitItem>
-      <SplitItem isFilled>
-        {isNaming && (
-          <NamingPanel
-            initName={configName}
-            uniqueSet={getAcceptorNameSet() as Set<string>}
-          />
-        )}
-        {!isNaming && (
-          <ExpandableSection
-            key={'configsection' + configType + configName}
-            toggleText={configName}
-            onToggle={onToggleAcceptorConfig}
-            isExpanded={isConfigExpanded}
-            isWidthLimited
-          >
-            <AcceptorConfigPage
-              key={'configpage' + configType + configName}
-              configType={configType}
-              configName={configName}
-            />
-          </ExpandableSection>
-        )}
-      </SplitItem>
-    </Split>
+      }
+    >
+      <AcceptorConfigPage configType={configType} configName={configName} />
+    </FormFieldGroupExpandable>
   );
 };
 
@@ -669,34 +600,12 @@ export type AcceptorsConfigProps = {
 
 export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
   const { t } = useTranslation();
-  const fromState = useContext(BrokerCreationFormState);
+  const { cr } = useContext(BrokerCreationFormState);
   const configType = useContext(ConfigTypeContext);
   const dispatch = useContext(BrokerCreationFormDispatch);
-
-  const getAcceptorsFromModel = (brokerId: number): any[] => {
-    const { cr } = fromState;
-    const acceptors = [];
-
-    let i = 0;
-    const acceptorEntries = listConfigs(configType, cr) as {
-      name: string;
-    }[];
-
-    while (i < acceptorEntries.length) {
-      const entry = acceptorEntries[i];
-
-      acceptors.push(
-        <ListItem key={entry.name + brokerId}>
-          <AcceptorConfigSection
-            configType={configType}
-            configName={entry.name}
-          />
-        </ListItem>,
-      );
-      i++;
-    }
-    return acceptors;
-  };
+  const configs = listConfigs(configType, cr) as {
+    name: string;
+  }[];
 
   const addNewConfig = () => {
     if (configType === ConfigType.acceptors) {
@@ -731,14 +640,24 @@ export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
     </Fragment>
   );
   return (
-    <Stack key={'stack' + configType}>
+    <Stack>
       <StackItem>
         <Toolbar id="toolbar-items-example">
           <ToolbarContent>{configToolbarItems}</ToolbarContent>
         </Toolbar>
       </StackItem>
       <StackItem isFilled>
-        <List isPlain>{getAcceptorsFromModel(brokerId)}</List>
+        <Form isHorizontal isWidthLimited>
+          {configs.map((config, index) => {
+            return (
+              <AcceptorConfigSection
+                key={config.name + brokerId + index}
+                configType={configType}
+                configName={config.name}
+              />
+            );
+          })}
+        </Form>
       </StackItem>
     </Stack>
   );

@@ -3,22 +3,15 @@ import {
   Card,
   CardBody,
   CardTitle,
-  Dropdown,
-  DropdownItem,
-  ExpandableSection,
   Form,
   FormFieldGroup,
+  FormFieldGroupExpandable,
   FormFieldGroupHeader,
   FormGroup,
-  KebabToggle,
-  List,
-  ListItem,
   Modal,
   ModalVariant,
   SimpleList,
   SimpleListGroup,
-  Split,
-  SplitItem,
 } from '@patternfly/react-core';
 import { CSSProperties, FC, useContext, useState } from 'react';
 import {
@@ -31,6 +24,7 @@ import {
 import { useTranslation } from '../i18n';
 import { Acceptor, ResourceTemplate } from '../utils';
 import { SelectIssuerDrawer } from './cert-manager';
+import { TrashIcon } from '@patternfly/react-icons';
 
 type WithAcceptorProps = {
   acceptor?: Acceptor;
@@ -196,76 +190,61 @@ const CertManagerAnnotation: FC<ResourceTemplateProps> = ({
     cr,
     resourceTemplate,
   );
-  const [isConfigExpanded, setIsConfigExpanded] = useState(false);
-  const [isActionOpen, setIsActionOpen] = useState(false);
-  const dropdownItems = [
-    <DropdownItem
-      key="action-delete"
-      component="button"
-      onClick={() =>
-        dispatch({
-          operation: ArtemisReducerOperations.deletePEMGenerationForAcceptor,
-          payload: acceptor.name,
-        })
+  return (
+    <FormFieldGroupExpandable
+      isExpanded
+      toggleAriaLabel="Details"
+      header={
+        <FormFieldGroupHeader
+          titleText={{
+            text: 'Cert-Manager Annotation',
+            id: 'nested-field-cert-manager-annotation-id' + acceptor.name,
+          }}
+          titleDescription="Configuration of the cert-manager annotation"
+          actions={
+            <Button
+              variant="plain"
+              aria-label="Remove"
+              onClick={() =>
+                dispatch({
+                  operation:
+                    ArtemisReducerOperations.deletePEMGenerationForAcceptor,
+                  payload: acceptor.name,
+                })
+              }
+            >
+              <TrashIcon />
+            </Button>
+          }
+        />
       }
     >
-      Delete
-    </DropdownItem>,
-  ];
-
-  return (
-    <ListItem>
-      <Split>
-        <SplitItem>
-          <Dropdown
-            onSelect={() => setIsActionOpen(!isActionOpen)}
-            toggle={
-              <KebabToggle
-                onToggle={(isOpen) => setIsActionOpen(isOpen)}
-                id="toggle-id-actions"
-              />
-            }
-            isOpen={isActionOpen}
-            isPlain
-            dropdownItems={dropdownItems}
-          />
-        </SplitItem>
-        <SplitItem isFilled>
-          <ExpandableSection
-            toggleText={'Cert-manager & ingress exposure annotation'}
-            onToggle={() => setIsConfigExpanded(!isConfigExpanded)}
-            isExpanded={isConfigExpanded}
-            isWidthLimited
-          >
-            <FormGroup label={t('select_issuer')} isRequired>
-              <SelectIssuerDrawer
-                selectedIssuer={
-                  resourceTemplate.annotations['cert-manager.io/issuer']
-                }
-                setSelectedIssuer={(issuer: string) => {
-                  dispatch({
-                    operation: ArtemisReducerOperations.updateAnnotationIssuer,
-                    payload: {
-                      acceptorName: acceptor.name,
-                      newIssuer: issuer,
-                    },
-                  });
-                }}
-                clearIssuer={() => {
-                  dispatch({
-                    operation: ArtemisReducerOperations.updateAnnotationIssuer,
-                    payload: {
-                      acceptorName: acceptor.name,
-                      newIssuer: '',
-                    },
-                  });
-                }}
-              />
-            </FormGroup>
-          </ExpandableSection>
-        </SplitItem>
-      </Split>
-    </ListItem>
+      <FormGroup label={t('select_issuer')} isRequired>
+        <SelectIssuerDrawer
+          selectedIssuer={
+            resourceTemplate.annotations['cert-manager.io/issuer']
+          }
+          setSelectedIssuer={(issuer: string) => {
+            dispatch({
+              operation: ArtemisReducerOperations.updateAnnotationIssuer,
+              payload: {
+                acceptorName: acceptor.name,
+                newIssuer: issuer,
+              },
+            });
+          }}
+          clearIssuer={() => {
+            dispatch({
+              operation: ArtemisReducerOperations.updateAnnotationIssuer,
+              payload: {
+                acceptorName: acceptor.name,
+                newIssuer: '',
+              },
+            });
+          }}
+        />
+      </FormGroup>
+    </FormFieldGroupExpandable>
   );
 };
 
@@ -311,11 +290,9 @@ export const ListAnnotations: FC<ListAnnotationsProps> = ({ acceptor }) => {
   }
   return (
     <>
-      <List isPlain>
-        {certManagerRt && (
-          <CertManagerAnnotation resourceTemplate={certManagerRt} />
-        )}
-      </List>
+      {certManagerRt && (
+        <CertManagerAnnotation resourceTemplate={certManagerRt} />
+      )}
     </>
   );
 };

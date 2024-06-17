@@ -1804,7 +1804,7 @@ export const getConfigOtherParams = (
 export const listConfigs = (
   configType: ConfigType,
   brokerModel: ArtemisCR,
-  resultType?: string,
+  resultType?: 'set' | 'list',
 ): { name: string }[] | Set<string> => {
   const acceptors = new Set<string>();
   if (configType === ConfigType.connectors) {

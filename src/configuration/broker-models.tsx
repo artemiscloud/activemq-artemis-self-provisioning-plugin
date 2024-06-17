@@ -17,7 +17,10 @@ import {
   Dropdown,
   DropdownItem,
   FormGroup,
+  InputGroup,
   KebabToggle,
+  Modal,
+  ModalVariant,
   Page,
   Select,
   SelectGroup,
@@ -53,6 +56,7 @@ import {
   getConfigSecret,
   getCertManagerResourceTemplateFromAcceptor,
   getAcceptor,
+  listConfigs,
 } from '../brokers/utils';
 import { AcceptorsConfigPage } from './acceptors-config';
 import { SelectOptionObject } from '@patternfly/react-core/dist/js';
@@ -691,11 +695,12 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
       alert('error decoding cert: ' + err.message);
     }
   };
-
+  const showCertTooltipRef = useRef<HTMLButtonElement>(null);
   const rt = getCertManagerResourceTemplateFromAcceptor(
     cr,
     getAcceptor(cr, configName),
   );
+  const stringSelectedSecret = selectedSecret ? selectedSecret.toString() : '';
   return (
     <FormGroup
       label={isCa ? 'Trust Secrets' : 'Cert Secrets'}
@@ -716,52 +721,59 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
           updating the value will result is the annotation to be removed
         </p>
       )}
-      <Select
-        id={'select-secrets' + isCa + configType + configName}
-        key={'key-select-secrets' + isCa + configType + configName}
-        variant={SelectVariant.typeahead}
-        typeAheadAriaLabel="Select a secret"
-        onToggle={onToggle}
-        onSelect={onSelect}
-        onClear={clearSelection}
-        selections={selectedSecret}
-        isOpen={isOpen}
-        aria-labelledby={'grouped-typeahead-select-id'}
-        placeholderText="Select a Secret"
-        isGrouped
-      >
-        {secretOptions}
-      </Select>
-      {selectedSecret !== null &&
-        selectedSecret.toString() !== '' &&
-        isSelectCertSecret() && (
-          <Tooltip
-            key={'tooltip-view-cert'}
-            content={
-              <div>Show cert details of {selectedSecret.toString()}</div>
-            }
-          >
-            <Button
-              variant="control"
-              aria-label="View cert"
-              onClick={showCertInfo}
-            >
-              {'\u2687'}
-            </Button>
-          </Tooltip>
-        )}
-
+      <Tooltip
+        content={
+          <>
+            {stringSelectedSecret ? (
+              <div>Show cert details of {stringSelectedSecret}</div>
+            ) : (
+              <div>Select a secret to see its details</div>
+            )}
+          </>
+        }
+        reference={showCertTooltipRef}
+      />
       <Drawer isExpanded={isDrawerExpanded} onExpand={onDrawerExpand}>
         <DrawerContent panelContent={panelContent}>
           <DrawerContentBody>
-            <Button
-              isDisabled={isSecretGenerating}
-              variant="secondary"
-              onClick={onCreateTestCert}
-              isLoading={isSecretGenerating}
-            >
-              {certGenMessage}
-            </Button>
+            <InputGroup>
+              <Select
+                id={'select-secrets' + isCa + configType + configName}
+                key={'key-select-secrets' + isCa + configType + configName}
+                variant={SelectVariant.typeahead}
+                typeAheadAriaLabel="Select a secret"
+                onToggle={onToggle}
+                onSelect={onSelect}
+                onClear={clearSelection}
+                selections={selectedSecret}
+                isOpen={isOpen}
+                aria-labelledby={'grouped-typeahead-select-id'}
+                placeholderText="Select a Secret"
+                isGrouped
+                menuAppendTo="parent"
+              >
+                {secretOptions}
+              </Select>
+              <Button
+                variant="control"
+                aria-label="View cert"
+                onClick={showCertInfo}
+                ref={showCertTooltipRef}
+                isDisabled={
+                  stringSelectedSecret === '' || !isSelectCertSecret()
+                }
+              >
+                {'\u2687'}
+              </Button>
+              <Button
+                isDisabled={isSecretGenerating}
+                variant="secondary"
+                onClick={onCreateTestCert}
+                isLoading={isSecretGenerating}
+              >
+                {certGenMessage}
+              </Button>
+            </InputGroup>
           </DrawerContentBody>
         </DrawerContent>
       </Drawer>
@@ -880,18 +892,21 @@ export const AcceptorDropDown: FC<AcceptorDropDownProps> = ({
   );
 };
 
-export type NamingPanelProps = {
+export type ConfigRenamingModalProps = {
   initName: string;
-  uniqueSet?: Set<string>;
 };
 
-export const NamingPanel: FC<NamingPanelProps> = ({ initName, uniqueSet }) => {
+export const ConfigRenamingModal: FC<ConfigRenamingModalProps> = ({
+  initName,
+}) => {
   const { t } = useTranslation();
   const configType = useContext(ConfigTypeContext);
   const dispatch = useContext(BrokerCreationFormDispatch);
   const [newName, setNewName] = useState(initName);
   const [toolTip, setTooltip] = useState('');
   const [validateStatus, setValidateStatus] = useState(null);
+  const { cr } = useContext(BrokerCreationFormState);
+  const uniqueSet = listConfigs(configType, cr, 'set') as Set<string>;
 
   const handleNewName = () => {
     if (configType === ConfigType.acceptors) {
@@ -919,18 +934,40 @@ export const NamingPanel: FC<NamingPanelProps> = ({ initName, uniqueSet }) => {
     if (value === '') {
       setValidateStatus(ValidatedOptions.error);
       setTooltip(t('name_not_empty'));
-    } else if (uniqueSet?.has(value)) {
+      return false;
+    }
+    if (uniqueSet?.has(value)) {
       setValidateStatus(ValidatedOptions.error);
       setTooltip(t('name_already_exists'));
-    } else {
-      setValidateStatus(ValidatedOptions.success);
-      setTooltip(t('name_available'));
+      return false;
     }
+    setValidateStatus(ValidatedOptions.success);
+    setTooltip(t('name_available'));
+    return true;
   };
 
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <>
-      <Tooltip key={'tooltip-name'} content={<div>{toolTip}</div>}>
+      <Modal
+        variant={ModalVariant.small}
+        title="Rename"
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        actions={[
+          <Button
+            key="confirm"
+            variant="primary"
+            onClick={handleNewName}
+            isDisabled={validateStatus !== ValidatedOptions.success}
+          >
+            Confirm
+          </Button>,
+          <Button key="cancel" variant="link" onClick={() => setIsOpen(false)}>
+            Cancel
+          </Button>,
+        ]}
+      >
         <TextInput
           value={newName}
           onChange={validateName}
@@ -939,13 +976,10 @@ export const NamingPanel: FC<NamingPanelProps> = ({ initName, uniqueSet }) => {
           type="text"
           aria-label="name input panel"
         />
-      </Tooltip>
-      <Button
-        variant="plain"
-        isDisabled={validateStatus !== ValidatedOptions.success}
-        onClick={handleNewName}
-      >
-        {t('ok')}
+        <p>{toolTip}</p>
+      </Modal>
+      <Button variant="plain" onClick={() => setIsOpen(true)}>
+        {t('rename')}
       </Button>
     </>
   );

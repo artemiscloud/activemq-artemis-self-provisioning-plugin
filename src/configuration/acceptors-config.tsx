@@ -15,6 +15,7 @@ import {
 } from '../brokers/utils';
 import { FC, Fragment, useContext, useState } from 'react';
 import {
+  Button,
   Checkbox,
   Divider,
   Dropdown,
@@ -41,7 +42,6 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  Icon,
 } from '@patternfly/react-core';
 import { PlusCircleIcon } from '@patternfly/react-icons';
 import {
@@ -720,9 +720,13 @@ export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
         />
       </ToolbarItem>
       <ToolbarItem>
-        <Icon size="md" onClick={addNewConfig}>
-          <PlusCircleIcon />
-        </Icon>
+        <Button
+          variant="plain"
+          aria-label="Add new acceptors"
+          onClick={addNewConfig}
+        >
+          <PlusCircleIcon size="md" />
+        </Button>
       </ToolbarItem>
     </Fragment>
   );

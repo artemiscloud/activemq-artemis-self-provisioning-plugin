@@ -1,4 +1,4 @@
-import { SelectOptionObject } from '@patternfly/react-core';
+import { SelectOptionObject, getUniqueId } from '@patternfly/react-core';
 import {
   ArtemisReducerOperations,
   EditorType,
@@ -801,5 +801,89 @@ describe('test the creation broker reducer', () => {
       },
     });
     expect(stateExposeModeIngress.cr.spec.acceptors[0].expose).toBe(true);
+  });
+
+  it('test updateEditorState', () => {
+    const initialState = newArtemisCRState('namespace');
+    const itemId0 = getUniqueId('str');
+    const state1 = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.setEditorActiveProperty,
+      payload: {
+        itemId: itemId0,
+        value: 'some state',
+      },
+    });
+
+    const itemId1 = getUniqueId('str1');
+    const state2 = artemisCrReducer(state1, {
+      operation: ArtemisReducerOperations.setEditorActiveProperty,
+      payload: {
+        itemId: itemId1,
+        value: true,
+      },
+    });
+
+    expect(state2.editorActiveProperties.activeProperties.get(itemId0)).toEqual(
+      'some state',
+    );
+    expect(state2.editorActiveProperties.activeProperties.get(itemId1)).toBe(
+      true,
+    );
+
+    const itemId2 = getUniqueId('str2');
+    const state3 = artemisCrReducer(state2, {
+      operation: ArtemisReducerOperations.setEditorActiveProperty,
+      payload: {
+        itemId: itemId2,
+        value: 'some new state',
+      },
+    });
+
+    const itemId3 = getUniqueId('str3');
+    const state4 = artemisCrReducer(state3, {
+      operation: ArtemisReducerOperations.setEditorActiveProperty,
+      payload: {
+        itemId: itemId3,
+        value: false,
+      },
+    });
+    expect(state4.editorActiveProperties.activeProperties.get(itemId2)).toEqual(
+      'some new state',
+    );
+    expect(state4.editorActiveProperties.activeProperties.get(itemId3)).toBe(
+      false,
+    );
+
+    const itemId4 = getUniqueId('str4');
+
+    let state5 = artemisCrReducer(state4, {
+      operation: ArtemisReducerOperations.setEditorActiveProperty,
+      payload: {
+        itemId: itemId4,
+        value: 'another state',
+      },
+    });
+
+    const itemId5 = getUniqueId('str5');
+
+    state5 = artemisCrReducer(state5, {
+      operation: ArtemisReducerOperations.setEditorActiveProperty,
+      payload: {
+        itemId: itemId5,
+        value: true,
+      },
+    });
+    expect(state5.editorActiveProperties.activeProperties.get(itemId2)).toEqual(
+      'some new state',
+    );
+    expect(state5.editorActiveProperties.activeProperties.get(itemId4)).toBe(
+      'another state',
+    );
+    expect(state5.editorActiveProperties.activeProperties.get(itemId5)).toEqual(
+      true,
+    );
+    expect(state5.editorActiveProperties.activeProperties.get(itemId1)).toBe(
+      true,
+    );
   });
 });

@@ -1,4 +1,7 @@
-import { AddBrokerResourceValues as FormState } from './import-types';
+import {
+  EditorActiveProperties,
+  AddBrokerResourceValues as FormState,
+} from './import-types';
 import {
   K8sResourceKind,
   K8sResourceCommon as ArtemisCR,
@@ -44,6 +47,9 @@ export const getArtemisCRState = (name: string, ns: string): FormState => {
     formState = {};
     formState.shouldShowYAMLMessage = true;
     formState.editorType = EditorType.BROKER;
+    formState.editorActiveProperties = {
+      activeProperties: new Map<string, any>(),
+    };
     artemisCRStateMap.set(key, formState);
   }
   formState.cr = initialCr(ns, name);
@@ -52,7 +58,7 @@ export const getArtemisCRState = (name: string, ns: string): FormState => {
 };
 
 export const newArtemisCRState = (namespace: string): FormState => {
-  const initialCr: ArtemisCR = {
+  const initCr: ArtemisCR = {
     apiVersion: 'broker.amq.io/v1beta1',
     kind: 'ActiveMQArtemis',
     metadata: {
@@ -77,7 +83,10 @@ export const newArtemisCRState = (namespace: string): FormState => {
   return {
     shouldShowYAMLMessage: true,
     editorType: EditorType.BROKER,
-    cr: initialCr,
+    cr: initCr,
+    editorActiveProperties: {
+      activeProperties: new Map<string, any>(),
+    },
   };
 };
 
@@ -189,6 +198,8 @@ export enum ArtemisReducerOperations {
   updateAnnotationIssuer,
   /** Updates the configuration's factory Class */
   updateConnectorFactoryClass,
+  /** updates the current state item */
+  setEditorActiveProperty,
 }
 
 type ArtemisReducerActionBase = {
@@ -236,7 +247,8 @@ type ArtemisReducerActions =
   | SetReplicasNumberAction
   | UpdateAcceptorFactoryClassAction
   | UpdateAnnotationIssuerAction
-  | UpdateConnectorFactoryClassAction;
+  | UpdateConnectorFactoryClassAction
+  | UpdateEditorStateAction;
 
 interface UpdateAnnotationIssuerAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.updateAnnotationIssuer;
@@ -395,6 +407,11 @@ type FactoryClassPayload = {
   class: 'invm' | 'netty';
 };
 
+type EditorActivePropertyPayload = {
+  itemId: string;
+  value: any;
+};
+
 type SetModelPayload = {
   model: ArtemisCR;
 };
@@ -409,6 +426,10 @@ interface UpdateConnectorFactoryClassAction extends ArtemisReducerActionBase {
   payload: FactoryClassPayload;
 }
 
+interface UpdateEditorStateAction extends ArtemisReducerActionBase {
+  operation: ArtemisReducerOperations.setEditorActiveProperty;
+  payload: EditorActivePropertyPayload;
+}
 interface SetModelAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setModel;
   payload: SetModelPayload;
@@ -806,6 +827,13 @@ export const artemisCrReducer: React.Reducer<
         ConfigType.connectors,
         action.payload.name,
         action.payload.class,
+      );
+      break;
+    case ArtemisReducerOperations.setEditorActiveProperty:
+      setEditorActiveProperty(
+        formState.editorActiveProperties,
+        action.payload.itemId,
+        action.payload.value,
       );
       break;
     case ArtemisReducerOperations.setModel:
@@ -1540,6 +1568,14 @@ const updateConfigFactoryClass = (
       }
     }
   }
+};
+
+const setEditorActiveProperty = (
+  state: EditorActiveProperties,
+  itemId: string,
+  value: any,
+): void => {
+  state.activeProperties.set(itemId, value);
 };
 
 const setModel = (formState: FormState, model: ArtemisCR): void => {

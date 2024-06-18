@@ -1475,11 +1475,11 @@ const updateConfigSSLEnabled = (
     if (acceptor) {
       acceptor.sslEnabled = isSSLEnabled;
       if (!acceptor.sslEnabled) {
+        clearAcceptorCertManagerConfig(brokerModel, acceptor.name);
         delete acceptor.sslSecret;
         delete acceptor.trustSecret;
         delete acceptor.wantClientAuth;
         delete acceptor.needClientAuth;
-        clearAcceptorCertManagerConfig(brokerModel, acceptor.name);
       }
     }
   }

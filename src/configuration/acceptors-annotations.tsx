@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonVariant,
   Card,
   CardBody,
   CardTitle,
@@ -35,7 +36,7 @@ interface AddIssuerAnnotationModalProps extends WithAcceptorProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AddAnnotationModal: FC<AddIssuerAnnotationModalProps> = ({
+const AddPresetModal: FC<AddIssuerAnnotationModalProps> = ({
   isModalOpen,
   setIsModalOpen,
   acceptor: initialAcceptor,
@@ -180,9 +181,7 @@ type ResourceTemplateProps = {
   resourceTemplate: ResourceTemplate;
 };
 
-const CertManagerAnnotation: FC<ResourceTemplateProps> = ({
-  resourceTemplate,
-}) => {
+const CertManagerPreset: FC<ResourceTemplateProps> = ({ resourceTemplate }) => {
   const { cr } = useContext(BrokerCreationFormState);
   const { t } = useTranslation();
   const dispatch = useContext(BrokerCreationFormDispatch);
@@ -197,10 +196,10 @@ const CertManagerAnnotation: FC<ResourceTemplateProps> = ({
       header={
         <FormFieldGroupHeader
           titleText={{
-            text: 'Cert-Manager Annotation',
+            text: 'Cert-Manager issuer & Ingress exposure',
             id: 'nested-field-cert-manager-annotation-id' + acceptor.name,
           }}
-          titleDescription="Configuration of the cert-manager annotation"
+          titleDescription="Configuration items for the preset"
           actions={
             <Button
               variant="plain"
@@ -248,38 +247,34 @@ const CertManagerAnnotation: FC<ResourceTemplateProps> = ({
   );
 };
 
-type NewAnnotationCardsProps = {
+type PreconfigurationButtonProps = {
   acceptor: Acceptor;
 };
-/**
- * Displays a card per available annotation for the given acceptor;
- * If the annotation is already applied, the card gets disabled and is in the
- * "selected" mode.
- */
-export const NewAnnotationButton: FC<NewAnnotationCardsProps> = ({
-  acceptor,
-}) => {
-  const [showIssuerAnnotationModal, setShowIssuerAnnotationModal] =
-    useState(false);
+
+export const PresetButton: FC<PreconfigurationButtonProps> = ({ acceptor }) => {
+  const [showPresetModal, setShowPresetModal] = useState(false);
   return (
     <>
-      <AddAnnotationModal
-        isModalOpen={showIssuerAnnotationModal}
-        setIsModalOpen={setShowIssuerAnnotationModal}
+      <AddPresetModal
+        isModalOpen={showPresetModal}
+        setIsModalOpen={setShowPresetModal}
         acceptor={acceptor}
       />
-      <Button onClick={() => setShowIssuerAnnotationModal(true)}>
-        Add an annotation
+      <Button
+        variant={ButtonVariant.link}
+        onClick={() => setShowPresetModal(true)}
+      >
+        Apply preset
       </Button>
     </>
   );
 };
 
-type ListAnnotationsProps = {
+type ListPresetsProps = {
   acceptor: Acceptor;
 };
 
-export const ListAnnotations: FC<ListAnnotationsProps> = ({ acceptor }) => {
+export const ListPresets: FC<ListPresetsProps> = ({ acceptor }) => {
   const { cr } = useContext(BrokerCreationFormState);
   const certManagerRt = getCertManagerResourceTemplateFromAcceptor(
     cr,
@@ -290,9 +285,7 @@ export const ListAnnotations: FC<ListAnnotationsProps> = ({ acceptor }) => {
   }
   return (
     <>
-      {certManagerRt && (
-        <CertManagerAnnotation resourceTemplate={certManagerRt} />
-      )}
+      {certManagerRt && <CertManagerPreset resourceTemplate={certManagerRt} />}
     </>
   );
 };

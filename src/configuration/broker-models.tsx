@@ -1,9 +1,7 @@
 import {
-  CertIssuerModel,
-  CertModel,
-  K8sResourceKind,
-  SecretModel,
-} from '../utils';
+  k8sCreate,
+  useK8sWatchResource,
+} from '@openshift-console/dynamic-plugin-sdk';
 import {
   Button,
   Divider,
@@ -34,6 +32,9 @@ import {
   Tooltip,
   ValidatedOptions,
 } from '@patternfly/react-core';
+import { SelectOptionObject } from '@patternfly/react-core/dist/js';
+import * as x509 from '@peculiar/x509';
+import base64 from 'base-64';
 import {
   FC,
   PropsWithChildren,
@@ -45,25 +46,24 @@ import {
   useState,
 } from 'react';
 import {
-  k8sCreate,
-  useK8sWatchResource,
-} from '@openshift-console/dynamic-plugin-sdk';
-import { ConsoleConfigPage } from './console-config';
-import {
   ArtemisReducerOperations,
-  BrokerCreationFormState,
   BrokerCreationFormDispatch,
-  getConfigSecret,
-  getCertManagerResourceTemplateFromAcceptor,
+  BrokerCreationFormState,
   getAcceptor,
+  getCertManagerResourceTemplateFromAcceptor,
+  getConfigSecret,
   listConfigs,
 } from '../brokers/utils';
-import { AcceptorsConfigPage } from './acceptors-config';
-import { SelectOptionObject } from '@patternfly/react-core/dist/js';
-import * as x509 from '@peculiar/x509';
-import base64 from 'base-64';
-import { CertificateDetailsModal } from './CertificateDetailsModal';
 import { useTranslation } from '../i18n';
+import {
+  CertIssuerModel,
+  CertModel,
+  K8sResourceKind,
+  SecretModel,
+} from '../utils';
+import { CertificateDetailsModal } from './CertificateDetailsModal';
+import { AcceptorsConfigPage, PresetAlertPopover } from './acceptors-config';
+import { ConsoleConfigPage } from './console-config';
 
 export const enum ConfigType {
   connectors = 'connectors',
@@ -706,6 +706,17 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
       label={isCa ? 'Trust Secrets' : 'Cert Secrets'}
       fieldId={'horizontal-form-secret' + configType + configName + isCa}
       key={(isCa ? 'trust-secrets' : 'cert-secrets') + configType + configName}
+      labelIcon={
+        <>
+          {rt && !isCa && configType === ConfigType.acceptors && (
+            <PresetAlertPopover
+              configName={configName}
+              configType={configType}
+              kind="warning"
+            />
+          )}
+        </>
+      }
     >
       <CertificateDetailsModal
         isModalOpen={isCertDetailsModalOpen}
@@ -714,13 +725,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
         pem={sertsToShowPem}
         onCloseModal={onCloseCertDetailsModel}
       ></CertificateDetailsModal>
-      {rt && !isCa && configType === ConfigType.acceptors && (
-        <p>
-          {' '}
-          The following secret is linked to a resource template annotation,
-          updating the value will result is the annotation to be removed
-        </p>
-      )}
       <Tooltip
         content={
           <>

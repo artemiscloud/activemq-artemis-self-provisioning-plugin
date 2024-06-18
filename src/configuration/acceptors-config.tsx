@@ -1,25 +1,15 @@
 import {
-  ArtemisReducerOperations,
-  BrokerCreationFormState,
-  BrokerCreationFormDispatch,
-  getConfigPort,
-  getConfigFactoryClass,
-  listConfigs,
-  getConfigHost,
-  getConfigProtocols,
-  getConfigBindToAllInterfaces,
-  getConfigOtherParams,
-  getConfigSSLEnabled,
-  getAcceptor,
-  ExposeMode,
-} from '../brokers/utils';
-import { FC, Fragment, useContext, useState } from 'react';
-import {
+  Alert,
   Button,
   Checkbox,
+  FormFieldGroup,
+  FormFieldGroupExpandable,
+  FormFieldGroupHeader,
   FormGroup,
   FormSelect,
   FormSelectOption,
+  Grid,
+  Popover,
   SearchInput,
   Select,
   SelectOption,
@@ -31,21 +21,106 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  Grid,
-  FormFieldGroup,
-  FormFieldGroupHeader,
-  FormFieldGroupExpandable,
 } from '@patternfly/react-core';
-import { PlusCircleIcon, TrashIcon } from '@patternfly/react-icons';
-import {
-  ConfigType,
-  CertSecretSelector,
-  ConfigTypeContext,
-  ConfigRenamingModal,
-} from './broker-models';
-import { useTranslation } from 'react-i18next';
-import { ListAnnotations, NewAnnotationButton } from './acceptors-annotations';
 import { Form } from '@patternfly/react-core/dist/js';
+import {
+  BellIcon,
+  PlusCircleIcon,
+  TrashIcon,
+  WarningTriangleIcon,
+} from '@patternfly/react-icons';
+import { FC, Fragment, useContext, useState } from 'react';
+import {
+  ArtemisReducerOperations,
+  BrokerCreationFormDispatch,
+  BrokerCreationFormState,
+  ExposeMode,
+  getAcceptor,
+  getCertManagerResourceTemplateFromAcceptor,
+  getConfigBindToAllInterfaces,
+  getConfigFactoryClass,
+  getConfigHost,
+  getConfigOtherParams,
+  getConfigPort,
+  getConfigProtocols,
+  getConfigSSLEnabled,
+  listConfigs,
+} from '../brokers/utils';
+import { useTranslation } from '../i18n';
+import { ListPresets, PresetButton } from './acceptors-annotations';
+import {
+  CertSecretSelector,
+  ConfigRenamingModal,
+  ConfigType,
+  ConfigTypeContext,
+} from './broker-models';
+
+type PresetCautionProps = {
+  configType: ConfigType;
+  configName: string;
+  kind: 'caution' | 'warning';
+};
+
+export const PresetAlertPopover: FC<PresetCautionProps> = ({
+  configType,
+  configName,
+  kind,
+}) => {
+  const { cr } = useContext(BrokerCreationFormState);
+  const { t } = useTranslation();
+  const hasCertManagerPreset =
+    configType === ConfigType.acceptors
+      ? getCertManagerResourceTemplateFromAcceptor(
+          cr,
+          getAcceptor(cr, configName),
+        ) !== undefined
+      : false;
+
+  if (!hasCertManagerPreset) {
+    return <></>;
+  }
+
+  return (
+    <Popover
+      headerContent={
+        <>
+          {kind === 'caution' ? (
+            <Alert
+              variant="default"
+              title={t('preset_caution')}
+              isPlain
+              isInline
+            />
+          ) : (
+            <Alert
+              variant="warning"
+              title={t('preset_warning')}
+              isPlain
+              isInline
+            />
+          )}
+        </>
+      }
+      bodyContent=""
+    >
+      <button
+        type="button"
+        aria-label="More info for name field"
+        onClick={(e) => e.preventDefault()}
+        aria-describedby="simple-form-name-01"
+        className="pf-c-form__group-label-help"
+      >
+        <>
+          {kind === 'caution' ? (
+            <BellIcon noVerticalAlign />
+          ) : (
+            <WarningTriangleIcon noVerticalAlign />
+          )}
+        </>
+      </button>
+    </Popover>
+  );
+};
 
 export type AcceptorProps = {
   configName: string;
@@ -56,12 +131,16 @@ type SelectExposeModeProps = {
   selectedExposeMode: string;
   setSelectedExposeMode: (issuerName: string) => void;
   clearExposeMode: () => void;
+  configName: string;
+  configType: ConfigType;
 };
 
 export const SelectExposeMode: FC<SelectExposeModeProps> = ({
   selectedExposeMode: selected,
   setSelectedExposeMode: setSelected,
   clearExposeMode: clear,
+  configName,
+  configType,
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -93,7 +172,16 @@ export const SelectExposeMode: FC<SelectExposeModeProps> = ({
 
   const titleId = 'typeahead-select-issuer';
   return (
-    <FormGroup label={t('select_expose_mode')}>
+    <FormGroup
+      label={t('select_expose_mode')}
+      labelIcon={
+        <PresetAlertPopover
+          configName={configName}
+          configType={configType}
+          kind="caution"
+        />
+      }
+    >
       <Select
         variant={SelectVariant.typeahead}
         typeAheadAriaLabel={t('select_expose_mode')}
@@ -285,6 +373,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
     { value: 'invm', label: 'InVM', disabled: false },
   ];
 
+  const { t } = useTranslation();
   return (
     <>
       <FormFieldGroup
@@ -298,6 +387,102 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
         }
       >
         <Grid hasGutter md={6}>
+          {configType === ConfigType.acceptors && (
+            <FormGroup
+              label="BindToAllInterfaces"
+              fieldId="horizontal-form-bindToAllInterfaces"
+            >
+              <Checkbox
+                label="Bind to all interfaces"
+                isChecked={bindToAllInterfaces}
+                name={'check-bindToAllInterfaces' + configType + configName}
+                id={'check-bindToAllInterfaces' + configType + configName}
+                onChange={onBindToAllInterfacesChange}
+              />
+            </FormGroup>
+          )}
+          <FormGroup
+            label="Encryption"
+            fieldId="horizontal-form-Enicryption"
+            labelIcon={
+              <PresetAlertPopover
+                configName={configName}
+                configType={configType}
+                kind="warning"
+              />
+            }
+          >
+            <Switch
+              id={'ssl-switch' + configType + configName}
+              label="SSL Enabled"
+              labelOff="SSL disabled"
+              isChecked={isSSLEnabled}
+              onChange={handleSSLEnabled}
+              ouiaId="BasicSwitch"
+            />
+          </FormGroup>
+          {configType === ConfigType.acceptors && (
+            <FormGroup
+              label="Expose"
+              fieldId="horizontal-form-expose"
+              labelIcon={
+                <PresetAlertPopover
+                  configName={configName}
+                  configType={configType}
+                  kind="caution"
+                />
+              }
+            >
+              <Checkbox
+                label="Expose"
+                isChecked={
+                  getAcceptor(cr, configName)
+                    ? getAcceptor(cr, configName).expose
+                    : false
+                }
+                name={'check-expose' + configType + configName}
+                id={'check-expose' + configType + configName}
+                onChange={(v) =>
+                  dispatch({
+                    operation: ArtemisReducerOperations.setIsAcceptorExposed,
+                    payload: {
+                      name: configName,
+                      isExposed: v,
+                    },
+                  })
+                }
+              />
+            </FormGroup>
+          )}
+          {configType === ConfigType.acceptors && (
+            <SelectExposeMode
+              configName={configName}
+              configType={configType}
+              selectedExposeMode={
+                getAcceptor(cr, configName)
+                  ? getAcceptor(cr, configName).exposeMode
+                  : ''
+              }
+              setSelectedExposeMode={(v) =>
+                dispatch({
+                  operation: ArtemisReducerOperations.setAcceptorExposeMode,
+                  payload: {
+                    name: configName,
+                    exposeMode: v ? (v as ExposeMode) : undefined,
+                  },
+                })
+              }
+              clearExposeMode={() =>
+                dispatch({
+                  operation: ArtemisReducerOperations.setAcceptorExposeMode,
+                  payload: {
+                    name: configName,
+                    exposeMode: undefined,
+                  },
+                })
+              }
+            />
+          )}
           <FormGroup
             label="Factory Class"
             isRequired
@@ -337,6 +522,40 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               />
             </FormGroup>
           )}
+          {configType === ConfigType.acceptors && (
+            <FormGroup
+              label={t('ingressHost')}
+              fieldId="horizontal-form-ingressHost"
+              labelIcon={
+                <PresetAlertPopover
+                  configName={configName}
+                  configType={configType}
+                  kind="caution"
+                />
+              }
+            >
+              <TextInput
+                label={t('ingressHost')}
+                name={'ingressHost' + configType + configName}
+                id={'ingressHost' + configType + configName}
+                value={
+                  getAcceptor(cr, configName) &&
+                  getAcceptor(cr, configName).ingressHost
+                    ? getAcceptor(cr, configName).ingressHost
+                    : ''
+                }
+                onChange={(v) =>
+                  dispatch({
+                    operation: ArtemisReducerOperations.setAcceptorIngressHost,
+                    payload: {
+                      name: configName,
+                      ingressHost: v,
+                    },
+                  })
+                }
+              />
+            </FormGroup>
+          )}
           <FormGroup
             label="Port"
             isRequired
@@ -368,101 +587,8 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               onChange={onProtocolsChange}
             />
           </FormGroup>
-          {configType === ConfigType.acceptors && (
-            <FormGroup
-              label="BindToAllInterfaces"
-              isRequired
-              fieldId="horizontal-form-bindToAllInterfaces"
-            >
-              <Checkbox
-                label="Bind to all interfaces"
-                isChecked={bindToAllInterfaces}
-                name={'check-bindToAllInterfaces' + configType + configName}
-                id={'check-bindToAllInterfaces' + configType + configName}
-                onChange={onBindToAllInterfacesChange}
-              />
-            </FormGroup>
-          )}
-          {configType === ConfigType.acceptors && (
-            <FormGroup label="Expose" fieldId="horizontal-form-expose">
-              <Checkbox
-                label="Expose"
-                isChecked={
-                  getAcceptor(cr, configName)
-                    ? getAcceptor(cr, configName).expose
-                    : false
-                }
-                name={'check-expose' + configType + configName}
-                id={'check-expose' + configType + configName}
-                onChange={(v) =>
-                  dispatch({
-                    operation: ArtemisReducerOperations.setIsAcceptorExposed,
-                    payload: {
-                      name: configName,
-                      isExposed: v,
-                    },
-                  })
-                }
-              />
-            </FormGroup>
-          )}
-          {configType === ConfigType.acceptors && (
-            <SelectExposeMode
-              selectedExposeMode={
-                getAcceptor(cr, configName)
-                  ? getAcceptor(cr, configName).exposeMode
-                  : ''
-              }
-              setSelectedExposeMode={(v) =>
-                dispatch({
-                  operation: ArtemisReducerOperations.setAcceptorExposeMode,
-                  payload: {
-                    name: configName,
-                    exposeMode: v ? (v as ExposeMode) : undefined,
-                  },
-                })
-              }
-              clearExposeMode={() =>
-                dispatch({
-                  operation: ArtemisReducerOperations.setAcceptorExposeMode,
-                  payload: {
-                    name: configName,
-                    exposeMode: undefined,
-                  },
-                })
-              }
-            />
-          )}
-          {configType === ConfigType.acceptors && (
-            <FormGroup
-              label="ingressHost"
-              fieldId="horizontal-form-ingressHost"
-            >
-              <TextInput
-                label="Ingress Host"
-                name={'ingressHost' + configType + configName}
-                id={'ingressHost' + configType + configName}
-                value={
-                  getAcceptor(cr, configName) &&
-                  getAcceptor(cr, configName).ingressHost
-                    ? getAcceptor(cr, configName).ingressHost
-                    : ''
-                }
-                onChange={(v) =>
-                  dispatch({
-                    operation: ArtemisReducerOperations.setAcceptorIngressHost,
-                    payload: {
-                      name: configName,
-                      ingressHost: v,
-                    },
-                  })
-                }
-              />
-            </FormGroup>
-          )}
           <FormGroup
             label="Other parameters"
-            isRequired
             fieldId="horizontal-form-otherParams"
           >
             <TextInput
@@ -473,28 +599,6 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               aria-describedby="horizontal-form-protocols-helper"
               name="horizontal-form-protocols"
               onChange={onOtherParamsChange}
-            />
-          </FormGroup>
-          <FormGroup
-            label="Annotations"
-            isRequired
-            fieldId="horizontal-form-otherParams"
-            key={'other' + configType + configName}
-          >
-            <NewAnnotationButton acceptor={getAcceptor(cr, configName)} />
-          </FormGroup>
-          <FormGroup
-            label="Encryption"
-            fieldId="horizontal-form-Encryption"
-            isRequired
-          >
-            <Switch
-              id={'ssl-switch' + configType + configName}
-              label="SSL Enabled"
-              labelOff="SSL disabled"
-              isChecked={isSSLEnabled}
-              onChange={handleSSLEnabled}
-              ouiaId="BasicSwitch"
             />
           </FormGroup>
         </Grid>
@@ -524,18 +628,18 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
           />
         </FormFieldGroup>
       )}
-      {configType === ConfigType.acceptors && (
+      {configType === ConfigType.acceptors && cr.spec.resourceTemplates && (
         <FormFieldGroup
           header={
             <FormFieldGroupHeader
               titleText={{
-                text: 'Annotations',
+                text: 'Presets',
                 id: 'field-group-configuration-annotations' + configName,
               }}
             />
           }
         >
-          <ListAnnotations acceptor={getAcceptor(cr, configName)} />
+          <ListPresets acceptor={getAcceptor(cr, configName)} />
         </FormFieldGroup>
       )}
     </>
@@ -567,6 +671,7 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
     }
   };
 
+  const { cr } = useContext(BrokerCreationFormState);
   return (
     <FormFieldGroupExpandable
       isExpanded
@@ -580,6 +685,9 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
           titleDescription={configName + "'s details"}
           actions={
             <>
+              {configType === ConfigType.acceptors && (
+                <PresetButton acceptor={getAcceptor(cr, configName)} />
+              )}
               <ConfigRenamingModal initName={configName} />
               <Button variant="plain" aria-label="Remove" onClick={onDelete}>
                 <TrashIcon />

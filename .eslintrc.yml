@@ -28,6 +28,11 @@ rules:
   react/no-unescaped-entities: 'off'
   react/prop-types: 'off'
   unused-imports/no-unused-imports-ts: 2
+  no-console: 'error'
 settings:
   react:
     version: detect
+overrides:
+  - files: ['./src/openapi/*']
+    rules:
+      no-console: 'off'

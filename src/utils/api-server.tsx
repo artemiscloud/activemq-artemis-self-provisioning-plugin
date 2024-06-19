@@ -289,7 +289,6 @@ export const FetchAttr: FC<DisplayDetailsType> = ({
   const attributeValue = isSuccesReadAttribute
     ? JSON.stringify(attribute[0].value)
     : '';
-  console.log('MBEAN ', attribute ? attribute[0].request.mbean : '');
 
   return (
     <>

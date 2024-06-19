@@ -1217,7 +1217,6 @@ const updateConfigSecret = (
   configName: string,
   isCa: boolean,
 ) => {
-  console.log('updating model with secret', secret);
   if (configType === ConfigType.connectors) {
     if (brokerModel.spec?.connectors?.length > 0) {
       for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
@@ -1245,12 +1244,9 @@ const updateConfigSecret = (
       }
     }
   } else if (configType === ConfigType.acceptors) {
-    console.log('upate for acceptor', configName);
     if (brokerModel.spec?.acceptors?.length > 0) {
-      console.log('has some acceptor already');
       for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
         if (brokerModel.spec.acceptors[i].name === configName) {
-          console.log('found selector, selected', secret);
           if (isCa) {
             if (secret) {
               if (!brokerModel.spec.acceptors[i].trustSecret) {
@@ -1264,7 +1260,6 @@ const updateConfigSecret = (
               delete brokerModel.spec.acceptors[i].wantClientAuth;
             }
           } else {
-            console.log('is cert', secret);
             if (secret) {
               brokerModel.spec.acceptors[i].sslSecret = secret.toString();
             } else {
@@ -1342,15 +1337,12 @@ const updateConfigBindToAllInterfaces = (
   configName: string,
   bindToAllInterfaces: boolean,
 ): void => {
-  console.log('calling update bindto', configName, 'type', configType);
   if (
     configType === ConfigType.acceptors &&
     brokerModel.spec?.acceptors?.length > 0
   ) {
-    console.log('updating bindto on acceptor', configName);
     for (let i = 0; i < brokerModel.spec.acceptors.length; i++) {
       if (brokerModel.spec.acceptors[i].name === configName) {
-        console.log('found update', bindToAllInterfaces);
         brokerModel.spec.acceptors[i].bindToAllInterfaces = bindToAllInterfaces;
       }
     }
@@ -1359,10 +1351,8 @@ const updateConfigBindToAllInterfaces = (
     configType === ConfigType.connectors &&
     brokerModel.spec?.connectors?.length > 0
   ) {
-    console.log('updating bindto on connector', configName);
     for (let i = 0; i < brokerModel.spec.connectors.length; i++) {
       if (brokerModel.spec.connectors[i].name === configName) {
-        console.log('found update', bindToAllInterfaces);
         brokerModel.spec.connectors[i].bindToAllInterfaces =
           bindToAllInterfaces;
       }
@@ -1558,7 +1548,6 @@ export const getConfigSecret = (
       },
     };
   };
-  console.log('getting secret from yaml', configName, 'idCa', isCa);
   if (configType === ConfigType.connectors) {
     const connector = getConnector(brokerModel, configName);
     if (connector) {
@@ -1591,7 +1580,6 @@ export const getConfigSecret = (
       return newOptionObject(brokerModel.spec.console.sslSecret);
     }
   }
-  console.log('nothing found');
   return '';
 };
 

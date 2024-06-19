@@ -114,8 +114,6 @@ export const FormView: FC<FormViewProps> = ({
     { value: '8.0', label: 'AMQ 8.0', disabled: true },
   ];
 
-  console.log('input cr', formState.cr);
-
   const crName = formState.cr.metadata.name;
   const replicas = formState.cr.spec.deploymentPlan.size;
   return (

@@ -42,7 +42,6 @@ const UpdateBrokerPage: FC = () => {
       })
       .catch((e) => {
         setNotification({ title: e.message, variant: AlertVariant.danger });
-        console.error(e);
       });
   };
 
@@ -59,7 +58,6 @@ const UpdateBrokerPage: FC = () => {
       })
       .catch((e) => {
         setNotification({ title: e.message, variant: AlertVariant.danger });
-        console.error(e);
       })
       .finally(() => {
         setLoading(false);

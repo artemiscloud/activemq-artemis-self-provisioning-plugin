@@ -9,6 +9,7 @@ import {
   Checkbox,
   Form,
   FormFieldGroup,
+  FormFieldGroupExpandable,
   FormFieldGroupHeader,
   FormGroup,
   FormSelect,
@@ -96,50 +97,62 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
 
   return (
     <Form isHorizontal isWidthLimited key={'form' + brokerId}>
-      <Grid hasGutter md={6}>
-        <FormFieldGroup>
-          <FormGroup
-            label="Expose"
-            fieldId={'console-config-expose-formgroup'}
-            isRequired
-          >
-            <Checkbox
-              label="Expose Console"
-              isChecked={exposeConsole}
-              name={'check-console-expose'}
-              id={'check-expose-console'}
-              onChange={setConsoleExpose}
-            />
-          </FormGroup>
-          <FormGroup
-            label="ExposeMode"
-            fieldId={'console-config-exposemode-formgroup'}
-          >
-            <FormSelect
-              label="console expose mode"
-              value={exposeMode}
-              onChange={setConsoleExposeMode}
-              aria-label="formselect-expose-mode-aria-label"
-            >
-              {exposeModes.map((mode, index) => (
-                <FormSelectOption
-                  key={'console-exposemode-option' + index}
-                  value={mode.value}
-                  label={mode.label}
-                />
-              ))}
-            </FormSelect>
-          </FormGroup>
-          <Switch
-            id={'id-switch-console-sslEnabled'}
-            label="SSL Enabled for console"
-            labelOff="SSL disabled for console"
-            isChecked={isSSLEnabled}
-            onChange={handleSSLEnabled}
-            ouiaId="BasicSwitch-console-ssl"
+      <FormFieldGroupExpandable
+        isExpanded
+        header={
+          <FormFieldGroupHeader
+            titleText={{
+              text: 'Console configuration',
+              id: 'field-group-consoleconfig' + 'console',
+            }}
           />
-        </FormFieldGroup>
-      </Grid>
+        }
+      >
+        <Grid hasGutter md={6}>
+          <FormFieldGroup>
+            <FormGroup
+              label="Expose"
+              fieldId={'console-config-expose-formgroup'}
+              isRequired
+            >
+              <Checkbox
+                label="Expose Console"
+                isChecked={exposeConsole}
+                name={'check-console-expose'}
+                id={'check-expose-console'}
+                onChange={setConsoleExpose}
+              />
+            </FormGroup>
+            <FormGroup
+              label="ExposeMode"
+              fieldId={'console-config-exposemode-formgroup'}
+            >
+              <FormSelect
+                label="console expose mode"
+                value={exposeMode}
+                onChange={setConsoleExposeMode}
+                aria-label="formselect-expose-mode-aria-label"
+              >
+                {exposeModes.map((mode, index) => (
+                  <FormSelectOption
+                    key={'console-exposemode-option' + index}
+                    value={mode.value}
+                    label={mode.label}
+                  />
+                ))}
+              </FormSelect>
+            </FormGroup>
+            <Switch
+              id={'id-switch-console-sslEnabled'}
+              label="SSL Enabled for console"
+              labelOff="SSL disabled for console"
+              isChecked={isSSLEnabled}
+              onChange={handleSSLEnabled}
+              ouiaId="BasicSwitch-console-ssl"
+            />
+          </FormFieldGroup>
+        </Grid>
+      </FormFieldGroupExpandable>
       {isSSLEnabled && (
         <FormFieldGroup
           header={

@@ -1,7 +1,12 @@
 import {
+  ActionGroup,
   Alert,
   Button,
   Checkbox,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
   FormFieldGroup,
   FormFieldGroupExpandable,
   FormFieldGroupHeader,
@@ -10,25 +15,20 @@ import {
   FormSelectOption,
   Grid,
   Popover,
-  SearchInput,
   Select,
   SelectOption,
   SelectVariant,
-  Stack,
-  StackItem,
   Switch,
   TextInput,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
+  Title,
 } from '@patternfly/react-core';
 import { Form } from '@patternfly/react-core/dist/js';
 import {
   BellIcon,
-  PlusCircleIcon,
+  CubesIcon,
   WarningTriangleIcon,
 } from '@patternfly/react-icons';
-import { FC, Fragment, useContext, useState } from 'react';
+import { FC, useContext, useState } from 'react';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
@@ -710,13 +710,12 @@ export type AcceptorsConfigProps = {
 };
 
 export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
-  const { t } = useTranslation();
   const { cr } = useContext(BrokerCreationFormState);
   const configType = useContext(ConfigTypeContext);
-  const dispatch = useContext(BrokerCreationFormDispatch);
   const configs = listConfigs(configType, cr) as {
     name: string;
   }[];
+  const dispatch = useContext(BrokerCreationFormDispatch);
 
   const addNewConfig = () => {
     if (configType === ConfigType.acceptors) {
@@ -731,45 +730,42 @@ export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
     }
   };
 
-  const configToolbarItems = (
-    <Fragment>
-      <ToolbarItem variant="search-filter">
-        <SearchInput
-          aria-label="search acceptors"
-          placeholder={t('search_acceptors')}
-        />
-      </ToolbarItem>
-      <ToolbarItem>
-        <Button
-          variant="plain"
-          aria-label="Add new acceptors"
-          onClick={addNewConfig}
-        >
-          <PlusCircleIcon size="md" />
+  const name = configType === ConfigType.acceptors ? 'acceptor' : 'connector';
+  const pronoun = configType === ConfigType.acceptors ? 'an' : 'a';
+  if (configs.length === 0) {
+    return (
+      <EmptyState variant={EmptyStateVariant.small}>
+        <EmptyStateIcon icon={CubesIcon} />
+        <Title headingLevel="h4" size="lg">
+          No {name} configured
+        </Title>
+        <EmptyStateBody>
+          There's no {name} in your configuration, to add one click on the
+          button below.{' '}
+        </EmptyStateBody>
+        <Button variant="primary" onClick={addNewConfig}>
+          Add {pronoun} {name}
         </Button>
-      </ToolbarItem>
-    </Fragment>
-  );
+      </EmptyState>
+    );
+  }
+
   return (
-    <Stack>
-      <StackItem>
-        <Toolbar id="toolbar-items-example">
-          <ToolbarContent>{configToolbarItems}</ToolbarContent>
-        </Toolbar>
-      </StackItem>
-      <StackItem isFilled>
-        <Form isHorizontal isWidthLimited>
-          {configs.map((config, index) => {
-            return (
-              <AcceptorConfigSection
-                key={config.name + brokerId + index}
-                configType={configType}
-                configName={config.name}
-              />
-            );
-          })}
-        </Form>
-      </StackItem>
-    </Stack>
+    <Form isHorizontal isWidthLimited>
+      {configs.map((config, index) => {
+        return (
+          <AcceptorConfigSection
+            key={config.name + brokerId + index}
+            configType={configType}
+            configName={config.name}
+          />
+        );
+      })}
+      <ActionGroup>
+        <Button variant="primary" onClick={addNewConfig}>
+          Add {pronoun} {name}
+        </Button>
+      </ActionGroup>
+    </Form>
   );
 };

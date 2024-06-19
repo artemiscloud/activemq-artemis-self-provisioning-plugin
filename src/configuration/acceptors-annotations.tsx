@@ -25,7 +25,7 @@ import {
 import { useTranslation } from '../i18n';
 import { Acceptor, ResourceTemplate } from '../utils';
 import { SelectIssuerDrawer } from './cert-manager';
-import { TrashIcon } from '@patternfly/react-icons';
+import { ConfirmDeleteModal } from './confirmation-modal';
 
 type WithAcceptorProps = {
   acceptor?: Acceptor;
@@ -201,19 +201,16 @@ const CertManagerPreset: FC<ResourceTemplateProps> = ({ resourceTemplate }) => {
           }}
           titleDescription="Configuration items for the preset"
           actions={
-            <Button
-              variant="plain"
-              aria-label="Remove"
-              onClick={() =>
+            <ConfirmDeleteModal
+              subject="preset"
+              action={() =>
                 dispatch({
                   operation:
                     ArtemisReducerOperations.deletePEMGenerationForAcceptor,
                   payload: acceptor.name,
                 })
               }
-            >
-              <TrashIcon />
-            </Button>
+            />
           }
         />
       }

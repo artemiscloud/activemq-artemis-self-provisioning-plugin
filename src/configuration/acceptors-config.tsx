@@ -26,7 +26,6 @@ import { Form } from '@patternfly/react-core/dist/js';
 import {
   BellIcon,
   PlusCircleIcon,
-  TrashIcon,
   WarningTriangleIcon,
 } from '@patternfly/react-icons';
 import { FC, Fragment, useContext, useState } from 'react';
@@ -54,6 +53,7 @@ import {
   ConfigType,
   ConfigTypeContext,
 } from './broker-models';
+import { ConfirmDeleteModal } from './confirmation-modal';
 
 type PresetCautionProps = {
   configType: ConfigType;
@@ -689,9 +689,12 @@ export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
                 <PresetButton acceptor={getAcceptor(cr, configName)} />
               )}
               <ConfigRenamingModal initName={configName} />
-              <Button variant="plain" aria-label="Remove" onClick={onDelete}>
-                <TrashIcon />
-              </Button>
+              <ConfirmDeleteModal
+                subject={
+                  configType === ConfigType.acceptors ? 'acceptor' : 'connector'
+                }
+                action={onDelete}
+              />
             </>
           }
         />

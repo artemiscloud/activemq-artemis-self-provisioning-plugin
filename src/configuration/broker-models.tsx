@@ -82,7 +82,6 @@ export const BrokerComponentConfig: FC<
     <Stack>
       <StackItem>
         <Title headingLevel="h2">{category}</Title>
-        <Divider orientation={{ default: 'horizontal' }} />
       </StackItem>
       <StackItem isFilled>{children}</StackItem>
     </Stack>
@@ -90,6 +89,7 @@ export const BrokerComponentConfig: FC<
 };
 
 export type BrokerConfigProps = {
+  brokerId: number;
   target: any;
   isPerBrokerConfig: boolean;
 };
@@ -802,6 +802,7 @@ export const ConfigTypeContext = createContext<ConfigType>(
 );
 
 export const GetConfigurationPage: FC<BrokerConfigProps> = ({
+  brokerId,
   target,
   isPerBrokerConfig,
 }) => {
@@ -815,13 +816,11 @@ export const GetConfigurationPage: FC<BrokerConfigProps> = ({
   if (target) {
     return (
       <ConfigTypeContext.Provider value={configType}>
-        <BrokerComponentConfig key={'brokerconfig' + target} category={target}>
-          {target === 'console' ? (
-            <ConsoleConfigPage brokerId={0} />
-          ) : (
-            <AcceptorsConfigPage brokerId={0} />
-          )}
-        </BrokerComponentConfig>
+        {target === 'console' ? (
+          <ConsoleConfigPage brokerId={brokerId} />
+        ) : (
+          <AcceptorsConfigPage brokerId={brokerId} />
+        )}
       </ConfigTypeContext.Provider>
     );
   }

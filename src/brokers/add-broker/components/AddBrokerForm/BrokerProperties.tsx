@@ -1,17 +1,18 @@
-import { GetConfigurationPage } from '../../../../configuration/broker-models';
+import {
+  ConfigType,
+  GetConfigurationPage,
+} from '../../../../configuration/broker-models';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionToggle,
-  Divider,
-  SimpleList,
-  SimpleListItem,
+  JumpLinks,
+  JumpLinksItem,
   Split,
   SplitItem,
-  Title,
 } from '@patternfly/react-core';
-import { FC, useState } from 'react';
+import { CSSProperties, FC, useState } from 'react';
 
 export type BrokerIDProp = {
   brokerId: number;
@@ -87,61 +88,54 @@ export const BrokerProperties: FC<BrokerIDProp> = ({
 }) => {
   console.log('configuring broker ', crName, 'in namespace', targetNs);
 
-  const [currentConfigItem, setCurrentConfigItem] = useState('');
-
-  const onSelectBrokerConfigItem = (
-    selectedItem: any,
-    selectedItemProps: any,
-  ) => {
-    console.log('new selection selected', selectedItem);
-    setCurrentConfigItem(selectedItemProps.itemId);
-  };
-
-  const brokerConfigItems = [
-    <SimpleListItem key={'acceptors' + brokerId} itemId="acceptors">
-      <Title headingLevel="h4" key="title.acceptors">
-        Acceptors
-      </Title>
-    </SimpleListItem>,
-    <SimpleListItem key={'connectors' + brokerId} itemId="connectors">
-      <Title headingLevel="h4" key="title.connectors">
-        Connectors
-      </Title>
-    </SimpleListItem>,
-    <SimpleListItem key={'console' + brokerId} itemId="console">
-      <Title headingLevel="h4" key="title.console">
-        Console
-      </Title>
-    </SimpleListItem>,
-  ];
+  const [currentConfigItem, setCurrentConfigItem] = useState<ConfigType>(
+    ConfigType.acceptors,
+  );
 
   return (
-    <Split hasGutter key={'split.config.broker' + brokerId}>
-      <SplitItem key={'splititem.config.broker' + brokerId}>
-        <SimpleList
-          onSelect={onSelectBrokerConfigItem}
-          aria-label="Broker Config List"
-          key={'config.broker.container.' + brokerId}
-        >
-          {brokerConfigItems}
-        </SimpleList>
+    <Split hasGutter>
+      <SplitItem>
+        <JumpLinks isVertical aria-label="Broker Config List">
+          <JumpLinksItem
+            onClick={() => setCurrentConfigItem(ConfigType.acceptors)}
+            isActive={currentConfigItem === ConfigType.acceptors}
+            style={
+              {
+                'list-style': 'none' /* reset to patternfly default value*/,
+              } as CSSProperties
+            }
+          >
+            Acceptors
+          </JumpLinksItem>
+          <JumpLinksItem
+            onClick={() => setCurrentConfigItem(ConfigType.connectors)}
+            isActive={currentConfigItem === ConfigType.connectors}
+            style={
+              {
+                'list-style': 'none' /* reset to patternfly default value*/,
+              } as CSSProperties
+            }
+          >
+            Connectors
+          </JumpLinksItem>
+          <JumpLinksItem
+            onClick={() => setCurrentConfigItem(ConfigType.console)}
+            isActive={currentConfigItem === ConfigType.console}
+            style={
+              {
+                'list-style': 'none' /* reset to patternfly default value*/,
+              } as CSSProperties
+            }
+          >
+            Console
+          </JumpLinksItem>
+        </JumpLinks>
       </SplitItem>
-      <Divider
-        orientation={{
-          default: 'vertical',
-        }}
-        inset={{
-          default: 'insetMd',
-          md: 'insetNone',
-          lg: 'insetSm',
-          xl: 'insetXs',
-        }}
-      />
-      <SplitItem isFilled key={'splititem.config.broker.details' + brokerId}>
+      <SplitItem>
         <GetConfigurationPage
-          key={'getconfigurationpage.config.broker' + brokerId}
           target={currentConfigItem}
           isPerBrokerConfig={perBrokerProperties}
+          brokerId={brokerId}
         />
       </SplitItem>
     </Split>

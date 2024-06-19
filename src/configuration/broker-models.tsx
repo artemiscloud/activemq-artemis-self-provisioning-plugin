@@ -197,30 +197,15 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   configName,
   canSetCustomNames,
 }) => {
-  console.log(
-    '----> entering certSecretSelctor, type',
-    configType,
-    'name',
-    configName,
-    'ca',
-    isCa,
-    'ns',
-    namespace,
-  );
   const { cr } = useContext(BrokerCreationFormState);
   const dispatch = useContext(BrokerCreationFormDispatch);
 
-  const [secrets, loaded, loadError] = useK8sWatchResource<K8sResourceKind[]>({
+  const [secrets, loaded, _loadError] = useK8sWatchResource<K8sResourceKind[]>({
     isList: true,
     groupVersionKind: secretGroupVersionKind,
     namespaced: true,
     namespace: namespace,
   });
-
-  console.log('secret loading status', loaded, loadError);
-  if (loaded) {
-    console.log('loaded number', secrets.length);
-  }
 
   const selectedSecret = getConfigSecret(cr, configType, configName, isCa);
 
@@ -329,7 +314,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   };
 
   const hasKey = (data: any, key: string): boolean => {
-    console.log('check key in data ' + typeof data);
     if (data instanceof Object) {
       return key in data;
     }
@@ -393,7 +377,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     namespace: 'cert-manager',
   });
 
-  console.log('watching issuers');
   const [certIssuers] = useK8sWatchResource<K8sResourceKind[]>({
     isList: true,
     groupVersionKind: {
@@ -405,7 +388,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     namespace: namespace,
   });
 
-  console.log('watching certs');
   const [certs] = useK8sWatchResource<K8sResourceKind[]>({
     isList: true,
     groupVersionKind: {
@@ -425,12 +407,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     setIsDrawerExpanded(false);
   };
 
-  console.log(
-    '....creating panelconetnt',
-    typeof certGenInfo,
-    'current cert gen info',
-    certGenInfo,
-  );
   const panelContent = (
     <DrawerPanelContent>
       <DrawerHead key={'drawerHead' + configType + configName + isCa}>
@@ -459,12 +435,9 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   };
 
   const createSelfSigningIssuer = async (issuerName: string) => {
-    console.log('creating issuer', certIssuers?.length);
     if (certIssuers?.length > 0) {
       for (let i = 0; i < certIssuers.length; i++) {
-        console.log('checking issuer: ', certIssuers[i]);
         if (certIssuers[i].metadata.name === issuerName) {
-          console.log('issuer already there');
           return true;
         }
       }
@@ -481,7 +454,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
       },
     };
 
-    console.log('now createing issuer...', content);
     return await k8sCreate({ model: CertIssuerModel, data: content });
   };
 
@@ -522,25 +494,15 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
       },
     };
 
-    return await k8sCreate({ model: CertModel, data: content }).then(
-      (result) => {
-        console.log(result);
-        return { certName: certName, secretName: certName + '-secret' };
-      },
-    );
+    return await k8sCreate({ model: CertModel, data: content }).then(() => {
+      return { certName: certName, secretName: certName + '-secret' };
+    });
   };
 
   const findSecret = (secName: string): K8sResourceKind => {
     let result: K8sResourceKind = null;
     for (let i = 0; i < secrets.length; i++) {
-      console.log(
-        '+checking sec',
-        secrets[i].metadata.name,
-        'against',
-        secName,
-      );
       if (secrets[i].metadata.name === secName) {
-        console.log('found');
         result = secrets[i];
         break;
       }
@@ -569,8 +531,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
         },
       };
       await k8sCreate({ model: SecretModel, data: caSecret })
-        .then((result) => {
-          console.log(result);
+        .then(() => {
           succeededSecretGen(
             'CA Secret:' +
               caSecName +
@@ -645,13 +606,11 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     setCertGenMessage('Creating issuer');
 
     createSelfSigningIssuer('issuer-amq-spp-test')
-      .then((result) => {
+      .then(() => {
         //Create self-signed cert
-        console.log(result);
         setCertGenMessage('Creating cert');
         createSelfSignedCert('cert-amq-spp-test')
           .then((result) => {
-            console.log(result);
             if (isCa) {
               setCaGenFromTlsSecret(result.secretName);
             } else {
@@ -663,7 +622,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
           });
       })
       .catch((e) => {
-        console.log('===failed to create issuer', e);
         failedSecretGen(e.message);
       });
   };
@@ -674,12 +632,9 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     }
   }, [caGenFromTlsSecret, secrets, loaded]);
 
-  console.log('**** return group dumping statuse****');
-
   const [customOptions, setCustomOptions] = useState<string[]>([
     selectedSecret.toString(),
   ]);
-
   const secretOptions = useCreateSecretOptions({
     customOptions,
     certManagerSecrets,
@@ -724,7 +679,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     let pem: string;
     try {
       if (isCa) {
-        console.log('showing ca cert', theSecret[0]);
         Object.keys(theSecret[0].data).forEach((key) => {
           pem = base64.decode(theSecret[0].data[key]);
         });

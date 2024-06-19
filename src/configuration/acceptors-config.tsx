@@ -313,20 +313,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
     }
   };
 
-  const onBindToAllInterfacesChange = (
-    checked: boolean,
-    event: React.FormEvent<HTMLInputElement>,
-  ) => {
-    const target = event.currentTarget;
-    const name = target.name;
-    console.log(
-      'binding to chamged, name: ',
-      name,
-      'checked',
-      checked,
-      'current',
-      bindToAllInterfaces,
-    );
+  const onBindToAllInterfacesChange = (checked: boolean) => {
     if (configType === ConfigType.acceptors) {
       dispatch({
         operation: ArtemisReducerOperations.setAcceptorBindToAllInterfaces,

@@ -15,6 +15,7 @@ import {
   PageSection,
   PageSectionVariants,
   Spinner,
+  Alert,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
 import {
@@ -52,6 +53,7 @@ const BrokerDetailsPage: FC = () => {
   }>();
   const [brokerDetails, setBrokerDetails] = useState<K8sResourceCommon>({});
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
   const [routes] = useK8sWatchResource<K8sResourceKind[]>({
     isList: true,
     groupVersionKind: {
@@ -74,7 +76,7 @@ const BrokerDetailsPage: FC = () => {
         setBrokerDetails(broker as K8sResourceCommon);
       })
       .catch((e) => {
-        console.error(e);
+        setError(e.message);
       })
       .finally(() => {
         setLoading(false);
@@ -136,6 +138,7 @@ const BrokerDetailsPage: FC = () => {
             {t('broker')} {brokerName} {t('/')} {podName}
           </Title>
         </div>
+        {error && <Alert variant="danger" title={error} />}
         <Tabs activeKey={activeTabKey} onSelect={handleTabSelect}>
           <Tab
             eventKey={'overview'}

@@ -31,7 +31,6 @@ const BrokersContainer: FC = () => {
       })
       .catch((e) => {
         setLoadError(e.message);
-        console.error('Brokers not found');
       })
       .finally(() => {
         setLoading(true);
@@ -53,9 +52,8 @@ const BrokersContainer: FC = () => {
       model: AMQBrokerModel,
       resource: { ...selectedBroker },
     })
-      .then((res) => {
+      .then(() => {
         fetchK8sListItems();
-        console.log(res);
       })
       .catch((e) => {
         setLoadError(e.message);

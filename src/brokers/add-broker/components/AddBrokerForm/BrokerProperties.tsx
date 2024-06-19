@@ -83,11 +83,7 @@ export const BrokerPropertiesList: FC<BrokerReplicasProp> = ({
 export const BrokerProperties: FC<BrokerIDProp> = ({
   brokerId,
   perBrokerProperties,
-  crName,
-  targetNs,
 }) => {
-  console.log('configuring broker ', crName, 'in namespace', targetNs);
-
   const [currentConfigItem, setCurrentConfigItem] = useState<ConfigType>(
     ConfigType.acceptors,
   );

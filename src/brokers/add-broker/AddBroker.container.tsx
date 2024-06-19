@@ -41,7 +41,6 @@ const AddBrokerPage: FC = () => {
       })
       .catch((e) => {
         setNotification({ title: e.message, variant: AlertVariant.danger });
-        console.error(e);
       });
   };
 

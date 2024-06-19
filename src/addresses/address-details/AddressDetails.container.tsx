@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AddressDetailsBreadcrumb } from '../../shared-components/AddressDetailsBreadcrumb/AddressDetailsBreadcrumb';
 import {
+  Alert,
   PageSection,
   PageSectionVariants,
   Title,
@@ -38,6 +39,7 @@ const AddressDetailsPage: FC = () => {
   const [brokerDetails, setBrokerDetails] = useState<K8sResourceKind>({});
   const [_loading, setLoading] = useState<boolean>(true);
   const [isFirstMount, setIsFirstMount] = useState(true);
+  const [error, setError] = useState<string>('');
   const [routes] = useK8sWatchResource<K8sResourceKind[]>({
     isList: true,
     groupVersionKind: {
@@ -55,7 +57,7 @@ const AddressDetailsPage: FC = () => {
         setBrokerDetails(broker);
       })
       .catch((e) => {
-        console.error(e);
+        setError(e.message);
       })
       .finally(() => {
         setLoading(false);
@@ -115,6 +117,7 @@ const AddressDetailsPage: FC = () => {
               {t('address')} {name}
             </Title>
           </div>
+          {error && <Alert variant="danger" title={error} />}
           <AddressDetails name={name} />
         </PageSection>
       </AuthContext.Provider>

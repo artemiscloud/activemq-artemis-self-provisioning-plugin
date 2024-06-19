@@ -84,7 +84,6 @@ const PodsList: FC<PodsListProps> = ({
 }) => {
   const { t } = useTranslation();
   const [data, filteredData, onFilterChange] = useListPageFilter(brokerPods);
-  console.log('brokerpods', brokerPods);
 
   return (
     <>

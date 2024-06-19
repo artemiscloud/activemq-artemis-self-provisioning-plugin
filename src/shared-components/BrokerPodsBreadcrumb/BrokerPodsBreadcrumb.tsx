@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
+  Button,
   Dropdown,
   DropdownItem,
   DropdownPosition,
@@ -85,7 +86,11 @@ const BrokerPodsBreadcrumb: FC<BrokerPodsBreadcrumbProps> = ({
       <Level>
         <LevelItem>
           <Breadcrumb className="pf-u-mb-md">
-            <BreadcrumbItem to={redirectPath}>{t('brokers')}</BreadcrumbItem>
+            <BreadcrumbItem>
+              <Button variant="link" onClick={() => history.push(redirectPath)}>
+                {t('brokers')}
+              </Button>
+            </BreadcrumbItem>
             <BreadcrumbItem isActive>
               {t('broker')} {name}
             </BreadcrumbItem>

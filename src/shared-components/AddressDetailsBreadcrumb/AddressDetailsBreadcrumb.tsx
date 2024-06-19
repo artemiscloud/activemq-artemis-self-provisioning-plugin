@@ -2,10 +2,12 @@ import { FC } from 'react';
 import {
   Breadcrumb,
   BreadcrumbItem,
+  Button,
   Level,
   LevelItem,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
+import { useHistory } from 'react-router';
 
 export type AddressBreadcrumbProps = {
   name: string;
@@ -26,22 +28,43 @@ const AddressDetailsBreadcrumb: FC<AddressBreadcrumbProps> = ({
   const redirectBrokerPodsPath = `/k8s/ns/${namespace}/brokers/${brokerName}`;
   const redirectBrokerDetailsPath = `/k8s/ns/${namespace}/brokers/${brokerName}/${podName}`;
   const redirectAddressPath = `/k8s/ns/${namespace}/brokers/${brokerName}/${podName}?tab=addresses`;
+  const history = useHistory();
 
   return (
     <Level>
       <LevelItem>
         <Breadcrumb className="pf-u-mb-md">
-          <BreadcrumbItem to={redirectBrokerPath}>
-            {t('brokers')}
+          <BreadcrumbItem>
+            <Button
+              variant="link"
+              onClick={() => history.push(redirectBrokerPath)}
+            >
+              {t('brokers')}
+            </Button>
           </BreadcrumbItem>
-          <BreadcrumbItem to={redirectBrokerPodsPath}>
-            {t('broker')} {brokerName}
+          <BreadcrumbItem>
+            <Button
+              variant="link"
+              onClick={() => history.push(redirectBrokerPodsPath)}
+            >
+              {t('broker')} {brokerName}
+            </Button>
           </BreadcrumbItem>
-          <BreadcrumbItem to={redirectBrokerDetailsPath}>
-            {podName}
+          <BreadcrumbItem>
+            <Button
+              variant="link"
+              onClick={() => history.push(redirectBrokerDetailsPath)}
+            >
+              {podName}
+            </Button>
           </BreadcrumbItem>
-          <BreadcrumbItem to={redirectAddressPath}>
-            {t('addresses')}
+          <BreadcrumbItem>
+            <Button
+              variant="link"
+              onClick={() => history.push(redirectAddressPath)}
+            >
+              {t('addresses')}
+            </Button>
           </BreadcrumbItem>
           <BreadcrumbItem isActive>
             {t('address')} {name}

@@ -126,13 +126,13 @@ const BrokerDetailsPage: FC = () => {
         padding={{ default: 'noPadding' }}
         className="pf-c-page__main-tabs"
       >
-        <div className="pf-u-mt-md pf-u-ml-md pf-u-mb-md">
+        <div className="pf-u-mt-md pf-u-mb-md">
           <BrokerDetailsBreadcrumb
             name={brokerName}
             namespace={namespace}
             podName={podName}
           />
-          <Title headingLevel="h2">
+          <Title headingLevel="h2" className="pf-u-ml-md">
             {t('broker')} {brokerName} {t('/')} {podName}
           </Title>
         </div>

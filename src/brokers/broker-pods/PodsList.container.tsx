@@ -2,18 +2,22 @@ import { FC, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   K8sResourceCommon,
-  k8sGet,
   useK8sWatchResource,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { AMQBrokerModel, K8sResourceKind } from '../../utils';
+import { K8sResourceKind } from '../../utils';
 import { useTranslation } from '../../i18n';
 import { PodsList } from './components/PodList';
 import { BrokerPodsBreadcrumb } from '../../shared-components/BrokerPodsBreadcrumb';
 import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
   PageSection,
   PageSectionVariants,
+  Spinner,
   Title,
 } from '@patternfly/react-core';
+import { ErrorCircleOIcon, SearchIcon } from '@patternfly/react-icons';
 
 const PodsContainer: FC = () => {
   //states
@@ -47,25 +51,6 @@ const PodsContainer: FC = () => {
     }
   }, [pods, name, loaded, loadError]);
 
-  useEffect(() => {
-    k8sGetBroker();
-  }, [namespace, name]);
-
-  const k8sGetBroker = () => {
-    setLoading(true);
-    k8sGet({ model: AMQBrokerModel, name, ns: namespace })
-      .then((brokerPods: K8sResourceKind) => {
-        setBrokerPods([brokerPods]);
-      })
-      .catch((e) => {
-        console.error(e);
-        console.error('Pods not found');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
   return (
     <>
       <PageSection
@@ -79,7 +64,33 @@ const PodsContainer: FC = () => {
             {t('broker')} {name}
           </Title>
         </div>
-        {!loading && brokerPods.length > 0 && (
+        {loadError && (
+          <EmptyState>
+            <EmptyStateIcon icon={ErrorCircleOIcon} />
+            <Title size="lg" headingLevel="h4">
+              Error while retrieving the pods list.
+            </Title>
+            <EmptyStateBody>No results match.</EmptyStateBody>
+          </EmptyState>
+        )}
+        {loading && !loadError && (
+          <EmptyState>
+            <EmptyStateIcon variant="container" component={Spinner} />
+            <Title size="lg" headingLevel="h4">
+              Loading
+            </Title>
+          </EmptyState>
+        )}
+        {!loading && !loadError && brokerPods.length === 0 && (
+          <EmptyState>
+            <EmptyStateIcon icon={SearchIcon} />
+            <Title size="lg" headingLevel="h4">
+              No results found. Check the status of the deployment.
+            </Title>
+            <EmptyStateBody>No results match.</EmptyStateBody>
+          </EmptyState>
+        )}
+        {!loading && !loadError && brokerPods.length > 0 && (
           <PodsList
             brokerPods={brokerPods}
             loadError={loadError}

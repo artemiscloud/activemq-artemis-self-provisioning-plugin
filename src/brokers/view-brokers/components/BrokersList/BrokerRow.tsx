@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   RowProps,
@@ -14,6 +14,82 @@ import {
   getConditionString,
 } from '../../../../utils';
 import { useTranslation } from '../../../../i18n';
+import {
+  Button,
+  DescriptionList,
+  DescriptionListDescription,
+  DescriptionListGroup,
+  DescriptionListTerm,
+  Divider,
+  Modal,
+  ModalVariant,
+} from '@patternfly/react-core';
+import { K8sResourceCondition } from '@app/k8s';
+
+type ConditionModalProps = {
+  status: K8sResourceCommon['status'];
+};
+const ConditionModal: FC<ConditionModalProps> = ({ status }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const conditions = status?.conditions
+    ? (status.conditions as K8sResourceCondition[])
+    : undefined;
+  if (!conditions) {
+    return <>-</>;
+  }
+  return (
+    <>
+      <Button variant="link" onClick={() => setIsOpen(true)}>
+        {status ? getConditionString(status?.conditions) : '-'}
+      </Button>
+      <Modal
+        bodyAriaLabel="Status report"
+        tabIndex={0}
+        variant={ModalVariant.medium}
+        title="Status report"
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      >
+        <DescriptionList>
+          {conditions.map((condition, index) => {
+            return (
+              <DescriptionListGroup key={condition.lastTransitionTime}>
+                {index > 0 && <Divider />}
+                <DescriptionListTerm>
+                  Condition at {condition.lastTransitionTime}
+                </DescriptionListTerm>
+                <DescriptionListDescription>
+                  <DescriptionList columnModifier={{ lg: '2Col' }}>
+                    <DescriptionListTerm>status</DescriptionListTerm>
+                    <DescriptionListDescription>
+                      {condition.status}
+                    </DescriptionListDescription>
+                    <DescriptionListTerm>type</DescriptionListTerm>
+                    <DescriptionListDescription>
+                      {condition.type}
+                    </DescriptionListDescription>
+                    <DescriptionListTerm>reason</DescriptionListTerm>
+                    <DescriptionListDescription>
+                      {condition.reason}
+                    </DescriptionListDescription>
+                    {condition.message !== '' && (
+                      <>
+                        <DescriptionListTerm>message</DescriptionListTerm>
+                        <DescriptionListDescription>
+                          {condition.message}
+                        </DescriptionListDescription>
+                      </>
+                    )}
+                  </DescriptionList>
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            );
+          })}
+        </DescriptionList>
+      </Modal>
+    </>
+  );
+};
 
 export type BrokerRowProps = RowProps<K8sResourceCommon> & {
   columns: TableColumn<K8sResourceCommon>[];
@@ -60,7 +136,7 @@ export const BrokerRow: FC<BrokerRowProps> = ({
         {(readyCondition && readyCondition.status) || '-'}
       </TableData>
       <TableData id={columns[2].id} activeColumnIDs={activeColumnIDs}>
-        {status ? getConditionString(status?.conditions) : '-'}
+        <ConditionModal status={status} />
       </TableData>
       <TableData id={columns[3].id} activeColumnIDs={activeColumnIDs}>
         {size}

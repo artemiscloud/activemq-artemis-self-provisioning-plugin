@@ -73,9 +73,9 @@ const PodsContainer: FC = () => {
         padding={{ default: 'noPadding' }}
         className="pf-c-page__main-tabs"
       >
-        <div className="pf-u-mt-md pf-u-ml-md pf-u-mb-md">
+        <div className="pf-u-mt-md pf-u-mb-md">
           <BrokerPodsBreadcrumb name={name} namespace={namespace} />
-          <Title headingLevel="h2">
+          <Title headingLevel="h2" className="pf-u-ml-md">
             {t('broker')} {name}
           </Title>
         </div>

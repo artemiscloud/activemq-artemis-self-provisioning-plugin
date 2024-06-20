@@ -24,7 +24,9 @@ export const MetricsLayout: FC<MetricsLayoutProps> = ({
         'pf-u-px-lg-on-xl pf-u-pt-sm-on-xl pf-u-pb-lg-on-xl pf-u-px-md pf-u-pb-md'
       }
     >
-      <Title headingLevel="h2">Metrics</Title>
+      <Title headingLevel="h2" className="pf-u-ml-sm pf-u-mb-md">
+        Metrics
+      </Title>
       <Grid hasGutter>
         <GridItem>{metricsActions}</GridItem>
         {(() => {

@@ -128,6 +128,12 @@ const useCreateSecretOptions = ({
       !certManagerSecrets.find((s) => s.metadata.name.startsWith(option)) &&
       !legacySecrets.find((s) => s.metadata.name.startsWith(option)),
   );
+  const ptlsSecrets = certManagerSecrets.filter((secret) => {
+    return secret.metadata.name.endsWith('-ptls');
+  });
+  const nonptlsSecrets = certManagerSecrets.filter((secret) => {
+    return !secret.metadata.name.endsWith('-ptls');
+  });
   return [
     filteredCustomOptions.length > 0 && (
       <SelectGroup
@@ -139,12 +145,12 @@ const useCreateSecretOptions = ({
         ))}
       </SelectGroup>
     ),
-    certManagerSecrets.length > 0 && (
+    nonptlsSecrets.length > 0 && (
       <SelectGroup
         label="Cert manager certs"
         key={'cert-manager-certs' + configType + configName + isCa}
       >
-        {certManagerSecrets.map((secret, index) => (
+        {nonptlsSecrets.map((secret, index) => (
           <SelectOption
             key={'cm' + index}
             value={secret.metadata.name}
@@ -161,6 +167,21 @@ const useCreateSecretOptions = ({
         {legacySecrets.map((secret, index) => (
           <SelectOption
             key={'lg' + index}
+            value={secret.metadata.name}
+            label={secret.metadata.name}
+          />
+        ))}
+      </SelectGroup>
+    ),
+    ptlsSecrets.length > 0 && (
+      <SelectGroup
+        label="Reserved -plts secrets"
+        key={'reserved-certs' + configType + configName + isCa}
+      >
+        {ptlsSecrets.map((secret, index) => (
+          <SelectOption
+            isDisabled
+            key={'cm' + index}
             value={secret.metadata.name}
             label={secret.metadata.name}
           />

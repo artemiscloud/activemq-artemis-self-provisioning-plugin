@@ -447,7 +447,7 @@ type OtherParamsPayload = {
   /** the name of the configuration */
   name: string;
   /** a comma separated list of extra parameters */
-  otherParams: string;
+  otherParams: Map<string, string>;
 };
 
 interface SetAcceptorOtherParamsAction extends ArtemisReducerActionBase {
@@ -1399,21 +1399,8 @@ const updateConfigOtherParams = (
   brokerModel: ArtemisCR,
   configType: ConfigType,
   configName: string,
-  otherParams: string,
+  paramMap: Map<string, string>,
 ): void => {
-  const getOtherParamsMap = (otherParams: string): Map<string, string> => {
-    const pMap = new Map<string, string>();
-    const params = otherParams.split(',');
-    if (params?.length > 0) {
-      params.forEach((p) => {
-        const [pk, pv] = p.split('=');
-        if (pk && pv) {
-          pMap.set(pk, pv);
-        }
-      });
-    }
-    return pMap;
-  };
   const isOtherParam = (pname: string): boolean => {
     return (
       pname !== 'port' &&
@@ -1425,7 +1412,6 @@ const updateConfigOtherParams = (
     );
   };
   //const paramSet = new Set<string>(otherParams.split(','));
-  const paramMap = getOtherParamsMap(otherParams);
   const paramPrefix = getConfigParamKey(configType, configName);
   if (brokerModel.spec?.brokerProperties?.length > 0) {
     //update
@@ -1788,29 +1774,29 @@ const getConfigParamKey = (
 };
 
 export const getConfigOtherParams = (
-  brokerModel: ArtemisCR,
+  cr: ArtemisCR,
   configType: ConfigType,
   configName: string,
-): string => {
-  const params: string[] = [];
-  if (brokerModel.spec?.brokerProperties?.length > 0) {
-    for (let i = 0; i < brokerModel.spec.brokerProperties.length; i++) {
-      const paramKey = getConfigParamKey(configType, configName);
-      if (brokerModel.spec.brokerProperties[i].startsWith(paramKey)) {
-        const portKey = paramKey + 'port=';
-        const protKey = paramKey + 'protocols=';
-        if (
-          !brokerModel.spec.brokerProperties[i].startsWith(portKey) &&
-          !brokerModel.spec.brokerProperties[i].startsWith(protKey)
-        ) {
-          const fields = brokerModel.spec.brokerProperties[i].split('=', 2);
-          const pName = fields[0].split('.')[3];
-          params.push(pName + '=' + fields[1]);
-        }
-      }
-    }
+): Map<string, string> => {
+  const ret = new Map<string, string>();
+  if (cr.spec?.brokerProperties?.length > 0) {
+    const paramKey = getConfigParamKey(configType, configName);
+    const portKey = paramKey + 'port=';
+    const protocolsKey = paramKey + 'protocols=';
+    cr.spec.brokerProperties
+      .filter(
+        (property) =>
+          property.startsWith(paramKey) &&
+          !property.startsWith(portKey) &&
+          !property.startsWith(protocolsKey),
+      )
+      .forEach((property) => {
+        const fields = property.split('=', 2);
+        const pName = fields[0].split('.')[3];
+        ret.set(pName, fields[1]);
+      });
   }
-  return params.toString();
+  return ret;
 };
 
 export const listConfigs = (

@@ -186,7 +186,10 @@ describe('test the creation broker reducer', () => {
       operation: ArtemisReducerOperations.setAcceptorOtherParams,
       payload: {
         name: 'acceptors0',
-        otherParams: 'aKey=aValue,bKey=bValue',
+        otherParams: new Map<string, string>([
+          ['aKey', 'aValue'],
+          ['bKey', 'bValue'],
+        ]),
       },
     });
     expect(newState2.cr.spec.brokerProperties).toContain(
@@ -199,7 +202,7 @@ describe('test the creation broker reducer', () => {
       operation: ArtemisReducerOperations.setAcceptorOtherParams,
       payload: {
         name: 'acceptors0',
-        otherParams: 'aKey=aValue',
+        otherParams: new Map<string, string>([['aKey', 'aValue']]),
       },
     });
     expect(newState3.cr.spec.brokerProperties).toContain(
@@ -377,7 +380,10 @@ describe('test the creation broker reducer', () => {
       operation: ArtemisReducerOperations.setConnectorOtherParams,
       payload: {
         name: 'connectors0',
-        otherParams: 'aKey=aValue,bKey=bValue',
+        otherParams: new Map<string, string>([
+          ['aKey', 'aValue'],
+          ['bKey', 'bValue'],
+        ]),
       },
     });
     expect(newState2.cr.spec.brokerProperties).toContain(
@@ -390,7 +396,7 @@ describe('test the creation broker reducer', () => {
       operation: ArtemisReducerOperations.setConnectorOtherParams,
       payload: {
         name: 'connectors0',
-        otherParams: 'aKey=aValue',
+        otherParams: new Map<string, string>([['aKey', 'aValue']]),
       },
     });
     expect(newState3.cr.spec.brokerProperties).toContain(

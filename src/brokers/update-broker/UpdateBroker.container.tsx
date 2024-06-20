@@ -19,8 +19,6 @@ const UpdateBrokerPage: FC = () => {
 
   //states
   const [notification, setNotification] = useState(defaultNotification);
-  //  const [initialBrokerValue, setInitialBrokerValue] =
-  //    useState<K8sResourceCommon>({});
   const [loading, setLoading] = useState<boolean>(false);
 
   const crState = getArtemisCRState(name, namespace);
@@ -82,7 +80,6 @@ const UpdateBrokerPage: FC = () => {
     <BrokerCreationFormState.Provider value={brokerModel}>
       <BrokerCreationFormDispatch.Provider value={dispatch}>
         <AddBroker
-          namespace={namespace}
           notification={notification}
           onCreateBroker={k8sUpdateBroker}
           isUpdate={true}

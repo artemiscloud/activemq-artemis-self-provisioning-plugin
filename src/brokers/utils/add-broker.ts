@@ -663,6 +663,15 @@ export const artemisCrReducer: React.Reducer<
       // when the user sets the acceptor secret manually, remove any linked
       // annotations
       clearAcceptorCertManagerConfig(formState.cr, action.payload.name);
+      // if a cert-manager config was cleared, the sslEnabled flag was set to
+      // false, but the user wants to change the secret so reactivate the
+      // ssEnabled flag to true.
+      updateConfigSSLEnabled(
+        formState.cr,
+        ConfigType.acceptors,
+        action.payload.name,
+        true,
+      );
       updateConfigSecret(
         formState.cr,
         ConfigType.acceptors,

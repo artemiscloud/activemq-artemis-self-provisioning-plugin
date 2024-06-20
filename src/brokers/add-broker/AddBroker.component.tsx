@@ -11,7 +11,6 @@ import {
 
 type AddBrokerProps = {
   onCreateBroker: (data?: K8sResourceCommon) => void;
-  namespace: string;
   notification: {
     title: string;
     variant: AlertVariant;
@@ -22,7 +21,6 @@ type AddBrokerProps = {
 const AddBroker: FC<AddBrokerProps> = ({
   onCreateBroker,
   notification,
-  namespace,
   isUpdate,
 }) => {
   const formValues = useContext(BrokerCreationFormState);
@@ -46,14 +44,12 @@ const AddBroker: FC<AddBrokerProps> = ({
         <FormView
           onCreateBroker={onCreateBroker}
           notification={notification}
-          targetNs={namespace}
           isUpdate={isUpdate}
         />
       )}
       {editorType === EditorType.YAML && (
         <YamlEditorView
           onCreateBroker={onCreateBroker}
-          namespace={namespace}
           initialResourceYAML={formValues.cr}
           notification={notification}
           isUpdate={isUpdate}

@@ -18,7 +18,6 @@ import YAML from 'yaml';
 
 export type YamlEditorViewProps = {
   onCreateBroker: (content: any) => void;
-  namespace: string;
   initialResourceYAML: K8sResourceCommon;
   notification: {
     title: string;
@@ -29,7 +28,6 @@ export type YamlEditorViewProps = {
 
 const YamlEditorView: FC<YamlEditorViewProps> = ({
   onCreateBroker,
-  namespace,
   notification,
   isUpdate,
 }) => {
@@ -37,6 +35,7 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
   const history = useHistory();
 
   const fromState = useContext(BrokerCreationFormState);
+  const namespace = fromState.cr.metadata.namespace;
   const dispatch = useContext(BrokerCreationFormDispatch);
 
   const [canCreateBroker, loadingAccessReview] = useAccessReview({

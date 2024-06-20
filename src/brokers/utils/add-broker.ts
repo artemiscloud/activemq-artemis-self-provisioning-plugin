@@ -866,6 +866,9 @@ const updateNamespace = (cr: ArtemisCR, newName: string) => {
   if (!cr.spec.acceptors) {
     return;
   }
+  if (!cr.spec.resourceTemplates) {
+    return;
+  }
   cr.spec.acceptors.forEach((acceptor) => {
     const rt = cr.spec.resourceTemplates.find(
       (rt) => rt.selector.name === certManagerSelector(cr, acceptor.name),

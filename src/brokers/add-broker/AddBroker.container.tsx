@@ -10,6 +10,7 @@ import {
   newArtemisCRState,
   artemisCrReducer,
   AddBrokerResourceValues,
+  ArtemisReducerOperations,
 } from '../utils';
 
 export interface AddBrokerProps {
@@ -44,11 +45,19 @@ const AddBrokerPage: FC = () => {
       });
   };
 
+  const [prevNamespace, setPrevNamespace] = useState(namespace);
+  if (prevNamespace !== namespace) {
+    dispatch({
+      operation: ArtemisReducerOperations.setNamespace,
+      payload: namespace,
+    });
+    setPrevNamespace(namespace);
+  }
+
   return (
     <BrokerCreationFormState.Provider value={brokerModel}>
       <BrokerCreationFormDispatch.Provider value={dispatch}>
         <AddBroker
-          namespace={namespace}
           notification={notification}
           onCreateBroker={k8sCreateBroker}
           isUpdate={false}

@@ -37,14 +37,12 @@ type FormViewProps = {
     title: string;
     variant: AlertVariant;
   };
-  targetNs: string;
   isUpdate: boolean;
 };
 
 export const FormView: FC<FormViewProps> = ({
   onCreateBroker,
   notification: serverNotification,
-  targetNs,
   isUpdate,
 }) => {
   const { t } = useTranslation();
@@ -56,6 +54,7 @@ export const FormView: FC<FormViewProps> = ({
 
   const formState = useContext(BrokerCreationFormState);
   const { cr } = useContext(BrokerCreationFormState);
+  const targetNs = cr.metadata.namespace;
   const dispatch = useContext(BrokerCreationFormDispatch);
 
   useEffect(() => {

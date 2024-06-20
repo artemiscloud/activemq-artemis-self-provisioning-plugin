@@ -139,7 +139,7 @@ const ConnectivityHelper: FC<IssuerSecretsDownloaderProps> = ({ cr }) => {
         .reduce((acc, hasGeneratedSecrets) => acc || hasGeneratedSecrets)
     : false;
   if (!oneAcceptorHasGeneratedSecrets) {
-    return <>bou</>;
+    return <></>;
   }
   return (
     <>

@@ -39,7 +39,6 @@ import {
   getConfigBindToAllInterfaces,
   getConfigFactoryClass,
   getConfigHost,
-  getConfigOtherParams,
   getConfigPort,
   getConfigProtocols,
   getConfigSSLEnabled,
@@ -54,6 +53,7 @@ import {
   ConfigTypeContext,
 } from './broker-models';
 import { ConfirmDeleteModal } from './confirmation-modal';
+import { OtherParameters } from './other-parameters';
 
 type PresetCautionProps = {
   configType: ConfigType;
@@ -212,7 +212,6 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
   const port = getConfigPort(cr, configType, configName);
   const host = getConfigHost(cr, configType, configName);
   const protocols = getConfigProtocols(cr, configType, configName);
-  const otherParams = getConfigOtherParams(cr, configType, configName);
   const isSSLEnabled = getConfigSSLEnabled(cr, configType, configName);
   const bindToAllInterfaces = getConfigBindToAllInterfaces(
     cr,
@@ -288,26 +287,6 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
         payload: {
           configName: configName,
           protocols: prot,
-        },
-      });
-    }
-  };
-  const onOtherParamsChange = (params: string) => {
-    if (configType === ConfigType.acceptors) {
-      dispatch({
-        operation: ArtemisReducerOperations.setAcceptorOtherParams,
-        payload: {
-          name: configName,
-          otherParams: params,
-        },
-      });
-    }
-    if (configType === ConfigType.connectors) {
-      dispatch({
-        operation: ArtemisReducerOperations.setConnectorOtherParams,
-        payload: {
-          name: configName,
-          otherParams: params,
         },
       });
     }
@@ -587,21 +566,19 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               onChange={onProtocolsChange}
             />
           </FormGroup>
-          <FormGroup
-            label="Other parameters"
-            fieldId="horizontal-form-otherParams"
-          >
-            <TextInput
-              value={otherParams}
-              isRequired
-              type="text"
-              id="horizontal-form-protocols"
-              aria-describedby="horizontal-form-protocols-helper"
-              name="horizontal-form-protocols"
-              onChange={onOtherParamsChange}
-            />
-          </FormGroup>
         </Grid>
+      </FormFieldGroup>
+      <FormFieldGroup
+        header={
+          <FormFieldGroupHeader
+            titleText={{
+              text: 'Other parameters',
+              id: 'field-group-configuration' + configName,
+            }}
+          />
+        }
+      >
+        <OtherParameters configName={configName} configType={configType} />
       </FormFieldGroup>
       {isSSLEnabled && (
         <FormFieldGroup

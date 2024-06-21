@@ -201,68 +201,76 @@ const BrokerDetailsPage: FC = () => {
           >
             <AddressContainer />
           </Tab>
-          <Tab
-            eventKey={'jolokiaTestPanel'}
-            title={
-              <TabTitleText>
-                {t('check-jolokia ')}
+          {process.env.NODE_ENV === 'development' && (
+            <Tab
+              eventKey={'jolokiaTestPanel'}
+              title={
+                <TabTitleText>
+                  {t('check-jolokia ')}
 
-                {isLoading && (
-                  <Spinner size="sm" aria-label="connecting to jolokia" />
-                )}
-                {isSucces && <GreenCheckCircleIcon title="Jolokia connected" />}
-                {isError && (
-                  <RedExclamationCircleIcon title="Jolokia connection failed" />
-                )}
-              </TabTitleText>
-            }
-          >
-            <JolokiaTestPanel />
-            <br />
-          </Tab>
-          <Tab
-            eventKey={'jolokia-details'}
-            title={
-              <TabTitleText>
-                {t('-jolokia-details')}
+                  {isLoading && (
+                    <Spinner size="sm" aria-label="connecting to jolokia" />
+                  )}
+                  {isSucces && (
+                    <GreenCheckCircleIcon title="Jolokia connected" />
+                  )}
+                  {isError && (
+                    <RedExclamationCircleIcon title="Jolokia connection failed" />
+                  )}
+                </TabTitleText>
+              }
+            >
+              <JolokiaTestPanel />
+              <br />
+            </Tab>
+          )}
+          {process.env.NODE_ENV === 'development' && (
+            <Tab
+              eventKey={'jolokia-details'}
+              title={
+                <TabTitleText>
+                  {t('-jolokia-details')}
 
-                {isLoading && (
-                  <Spinner size="sm" aria-label="connecting to jolokia" />
-                )}
-                {isSucces && <GreenCheckCircleIcon title="Jolokia connected" />}
-                {isError && (
-                  <RedExclamationCircleIcon title="Jolokia connection failed" />
-                )}
-              </TabTitleText>
-            }
-          >
-            <Tabs defaultActiveKey={0}>
-              <Tab
-                eventKey={0}
-                title={<TabTitleText>{t('broker')}</TabTitleText>}
-              >
-                <JolokiaBrokerDetails />
-              </Tab>
-              <Tab
-                eventKey={1}
-                title={<TabTitleText>{t('addresses')}</TabTitleText>}
-              >
-                <JolokiaAddressDetails />
-              </Tab>
-              <Tab
-                eventKey={2}
-                title={<TabTitleText>{t('acceptors')}</TabTitleText>}
-              >
-                <JolokiaAcceptorDetails />
-              </Tab>
-              <Tab
-                eventKey={3}
-                title={<TabTitleText>{t('queues')}</TabTitleText>}
-              >
-                <JolokiaQueueDetails />
-              </Tab>
-            </Tabs>
-          </Tab>
+                  {isLoading && (
+                    <Spinner size="sm" aria-label="connecting to jolokia" />
+                  )}
+                  {isSucces && (
+                    <GreenCheckCircleIcon title="Jolokia connected" />
+                  )}
+                  {isError && (
+                    <RedExclamationCircleIcon title="Jolokia connection failed" />
+                  )}
+                </TabTitleText>
+              }
+            >
+              <Tabs defaultActiveKey={0}>
+                <Tab
+                  eventKey={0}
+                  title={<TabTitleText>{t('broker')}</TabTitleText>}
+                >
+                  <JolokiaBrokerDetails />
+                </Tab>
+                <Tab
+                  eventKey={1}
+                  title={<TabTitleText>{t('addresses')}</TabTitleText>}
+                >
+                  <JolokiaAddressDetails />
+                </Tab>
+                <Tab
+                  eventKey={2}
+                  title={<TabTitleText>{t('acceptors')}</TabTitleText>}
+                >
+                  <JolokiaAcceptorDetails />
+                </Tab>
+                <Tab
+                  eventKey={3}
+                  title={<TabTitleText>{t('queues')}</TabTitleText>}
+                >
+                  <JolokiaQueueDetails />
+                </Tab>
+              </Tabs>
+            </Tab>
+          )}
         </Tabs>
       </PageSection>
     </AuthContext.Provider>

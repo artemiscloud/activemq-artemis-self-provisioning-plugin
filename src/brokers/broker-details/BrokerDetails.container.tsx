@@ -16,6 +16,12 @@ import {
   PageSectionVariants,
   Spinner,
   Alert,
+  Modal,
+  ModalVariant,
+  Button,
+  Text,
+  TextContent,
+  TextVariants,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
 import {
@@ -54,6 +60,7 @@ const BrokerDetailsPage: FC = () => {
   const [brokerDetails, setBrokerDetails] = useState<K8sResourceCommon>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
   const [routes] = useK8sWatchResource<K8sResourceKind[]>({
     isList: true,
     groupVersionKind: {
@@ -87,6 +94,15 @@ const BrokerDetailsPage: FC = () => {
     k8sGetBroker();
   }, []);
 
+  const handleModalToggle = () => {
+    setIsErrorModalOpen(!isErrorModalOpen);
+  };
+
+  const handleTryAgain = () => {
+    setIsErrorModalOpen(false);
+    window.location.reload();
+  };
+
   const handleTabSelect = (_event: any, eventKey: string | number) => {
     searchParams.set('tab', eventKey.toString());
     history.push({ search: searchParams.toString() });
@@ -109,20 +125,33 @@ const BrokerDetailsPage: FC = () => {
     setPrevIsLoading(isLoading);
   }
   if (notify) {
-    if (isSucces) {
-      // TODO maybe use the OpenShift console notification system to let the
-      // user know that the login was a success?
-      alert(
-        'login successful ' + brokerDetails?.metadata?.name + ' token ' + token,
-      );
-    } else {
-      alert('login failed');
+    if (isError) {
+      setIsErrorModalOpen(true);
     }
     setNotify(false);
   }
 
   return (
     <AuthContext.Provider value={token}>
+      <Modal
+        variant={ModalVariant.small}
+        title={t('login_failed')}
+        titleIconVariant="danger"
+        isOpen={isErrorModalOpen}
+        onClose={handleModalToggle}
+        actions={[
+          <Button key="confirm" variant="primary" onClick={handleTryAgain}>
+            {t('try_again')}
+          </Button>,
+          <Button key="cancel" variant="link" onClick={handleModalToggle}>
+            {t('cancel')}
+          </Button>,
+        ]}
+      >
+        <TextContent>
+          <Text component={TextVariants.h6}>{t('login_failed_message')}</Text>
+        </TextContent>
+      </Modal>
       <PageSection
         variant={PageSectionVariants.light}
         padding={{ default: 'noPadding' }}

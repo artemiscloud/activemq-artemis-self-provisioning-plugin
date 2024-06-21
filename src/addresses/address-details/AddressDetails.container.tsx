@@ -3,8 +3,14 @@ import { useParams } from 'react-router-dom';
 import { AddressDetailsBreadcrumb } from '../../shared-components/AddressDetailsBreadcrumb/AddressDetailsBreadcrumb';
 import {
   Alert,
+  Button,
+  Modal,
+  ModalVariant,
   PageSection,
   PageSectionVariants,
+  Text,
+  TextContent,
+  TextVariants,
   Title,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
@@ -40,6 +46,7 @@ const AddressDetailsPage: FC = () => {
   const [_loading, setLoading] = useState<boolean>(true);
   const [isFirstMount, setIsFirstMount] = useState(true);
   const [error, setError] = useState<string>('');
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
   const [routes] = useK8sWatchResource<K8sResourceKind[]>({
     isList: true,
     groupVersionKind: {
@@ -64,6 +71,15 @@ const AddressDetailsPage: FC = () => {
       });
   };
 
+  const handleModalToggle = () => {
+    setIsErrorModalOpen(!isErrorModalOpen);
+  };
+
+  const handleTryAgain = () => {
+    setIsErrorModalOpen(false);
+    window.location.reload();
+  };
+
   if (isFirstMount) {
     k8sGetBroker();
     setIsFirstMount(false);
@@ -71,7 +87,7 @@ const AddressDetailsPage: FC = () => {
 
   const podOrdinal = parseInt(podName.replace(brokerName + '-ss-', ''));
 
-  const { token, isSucces, isLoading, source } = useJolokiaLogin(
+  const { token, isError, isLoading, source } = useJolokiaLogin(
     brokerDetails,
     routes,
     podOrdinal,
@@ -86,42 +102,53 @@ const AddressDetailsPage: FC = () => {
     setPrevIsLoading(isLoading);
   }
   if (notify) {
-    if (isSucces) {
-      // TODO maybe use the OpenShift console notification system to let the
-      // user know that the login was a success?
-      alert(
-        'login successful ' + brokerDetails?.metadata?.name + ' token ' + token,
-      );
-    } else {
-      alert('login failed');
+    if (isError) {
+      setIsErrorModalOpen(true);
     }
     setNotify(false);
   }
 
   return (
-    <>
-      <AuthContext.Provider value={token}>
-        <PageSection
-          variant={PageSectionVariants.light}
-          padding={{ default: 'noPadding' }}
-          className="pf-c-page__main-tabs"
-        >
-          <div className="pf-u-mt-md pf-u-ml-md pf-u-mb-md">
-            <AddressDetailsBreadcrumb
-              name={name}
-              namespace={namespace}
-              brokerName={brokerName}
-              podName={podName}
-            />
-            <Title headingLevel="h2">
-              {t('address')} {name}
-            </Title>
-          </div>
-          {error && <Alert variant="danger" title={error} />}
-          <AddressDetails name={name} />
-        </PageSection>
-      </AuthContext.Provider>
-    </>
+    <AuthContext.Provider value={token}>
+      <Modal
+        variant={ModalVariant.small}
+        title={t('login_failed')}
+        titleIconVariant="danger"
+        isOpen={isErrorModalOpen}
+        onClose={handleModalToggle}
+        actions={[
+          <Button key="confirm" variant="primary" onClick={handleTryAgain}>
+            {t('try_again')}
+          </Button>,
+          <Button key="cancel" variant="link" onClick={handleModalToggle}>
+            {t('cancel')}
+          </Button>,
+        ]}
+      >
+        <TextContent>
+          <Text component={TextVariants.h6}>{t('login_failed_message')}</Text>
+        </TextContent>
+      </Modal>
+      <PageSection
+        variant={PageSectionVariants.light}
+        padding={{ default: 'noPadding' }}
+        className="pf-c-page__main-tabs"
+      >
+        <div className="pf-u-mt-md pf-u-ml-md pf-u-mb-md">
+          <AddressDetailsBreadcrumb
+            name={name}
+            namespace={namespace}
+            brokerName={brokerName}
+            podName={podName}
+          />
+          <Title headingLevel="h2">
+            {t('address')} {name}
+          </Title>
+        </div>
+        {error && <Alert variant="danger" title={error} />}
+        <AddressDetails name={name} />
+      </PageSection>
+    </AuthContext.Provider>
   );
 };
 

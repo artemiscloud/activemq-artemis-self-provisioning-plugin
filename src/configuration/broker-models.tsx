@@ -3,6 +3,7 @@ import {
   useK8sWatchResource,
 } from '@openshift-console/dynamic-plugin-sdk';
 import {
+  Alert,
   Button,
   Divider,
   Drawer,
@@ -64,6 +65,7 @@ import {
 import { CertificateDetailsModal } from './CertificateDetailsModal';
 import { AcceptorsConfigPage, PresetAlertPopover } from './acceptors-config';
 import { ConsoleConfigPage } from './console-config';
+import { t } from 'i18next';
 
 export const enum ConfigType {
   connectors = 'connectors',
@@ -674,7 +676,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
       return value.metadata.name === selectedSecret.toString();
     });
     if (theSecret.length !== 1) {
-      alert('only support tls format secret from cert-manager');
+      <Alert variant="info" title={t('show_cert_info')} />;
     }
     let pem: string;
     try {
@@ -691,7 +693,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
       setCertsToShowPem(pem);
       setIsCertDetailsModalOpen(true);
     } catch (err) {
-      alert('error decoding cert: ' + err.message);
+      <Alert variant="danger" title={err.message} />;
     }
   };
   const showCertTooltipRef = useRef<HTMLButtonElement>(null);

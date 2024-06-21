@@ -29,6 +29,7 @@ rules:
   react/prop-types: 'off'
   unused-imports/no-unused-imports-ts: 2
   no-console: 'error'
+  no-alert: 'error'
 settings:
   react:
     version: detect

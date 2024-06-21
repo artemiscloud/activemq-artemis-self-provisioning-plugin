@@ -113,7 +113,6 @@
   "certification_details": "Certification Details",
   "from_secret": "from secret ",
   "pem": "PEM:",
-  "address": "Address",
   "select_issuer": "Issuer",
   "select_an_issuer": "Select an issuer",
   "select_an_issuer_help": "Only issuer part of a chain of trust do qualify (i.e the issuer must have a CA). Proceed to create a new chain of trust if needed..",
@@ -132,5 +131,9 @@
   "preset_warning": "This setting is linked to a preset, updating the value will result in the preset to be removed",
   "preset_caution": "This setting is linked to a preset, proceed with caution",
   "ingressHost": "Ingress Host",
-  "select_expose_mode": "Expose Mode"
+  "select_expose_mode": "Expose Mode",
+  "try_again": "Try again",
+  "login_failed": "Login Failed",
+  "login_failed_message": "Token invalid. Please check your credentials and try again.",
+  "show_cert_info": "only support tls format secret from cert-manager"
 }

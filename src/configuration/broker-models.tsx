@@ -33,6 +33,7 @@ import {
   Tooltip,
   ValidatedOptions,
 } from '@patternfly/react-core';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 import { SelectOptionObject } from '@patternfly/react-core/dist/js';
 import * as x509 from '@peculiar/x509';
 import base64 from 'base-64';
@@ -763,7 +764,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
                 {secretOptions}
               </Select>
               <Button
-                variant="control"
+                variant="secondary"
                 aria-label="View cert"
                 onClick={showCertInfo}
                 ref={showCertTooltipRef}
@@ -771,7 +772,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
                   stringSelectedSecret === '' || !isSelectCertSecret()
                 }
               >
-                {'\u2687'}
+                <InfoCircleIcon size="sm" />
               </Button>
               <Button
                 isDisabled={isSecretGenerating}

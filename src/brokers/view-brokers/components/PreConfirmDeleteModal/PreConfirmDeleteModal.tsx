@@ -33,7 +33,7 @@ const PreConfirmDeleteModal: FC<PreConfirmDeleteModalProps> = ({
       isOpen={isModalOpen}
       onClose={onOpenModal}
       actions={[
-        <Button key="delete" variant="primary" onClick={onDeleteButtonClick}>
+        <Button key="delete" variant="danger" onClick={onDeleteButtonClick}>
           {t('delete')}
         </Button>,
         <Button key="cancel" variant="link" onClick={onOpenModal}>

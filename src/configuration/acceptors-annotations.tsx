@@ -27,7 +27,7 @@ import { Acceptor, ResourceTemplate } from '../utils';
 import { SelectIssuerDrawer } from './cert-manager';
 import { ConfirmDeleteModal } from './confirmation-modal';
 
-type WithAcceptorProps = {
+export type WithAcceptorProps = {
   acceptor?: Acceptor;
 };
 
@@ -91,10 +91,10 @@ const AddPresetModal: FC<AddIssuerAnnotationModalProps> = ({
           onClick={createAnnotation}
           isDisabled={selectedIssuer === '' || selectedAcceptor === ''}
         >
-          Confirm
+          {t('confirm')}
         </Button>,
         <Button key="cancel" variant="link" onClick={handleModalToggle}>
-          Cancel
+          {t('cancel')}
         </Button>,
       ]}
     >
@@ -249,6 +249,7 @@ type PreconfigurationButtonProps = {
 };
 
 export const PresetButton: FC<PreconfigurationButtonProps> = ({ acceptor }) => {
+  const { t } = useTranslation();
   const [showPresetModal, setShowPresetModal] = useState(false);
   return (
     <>
@@ -261,7 +262,7 @@ export const PresetButton: FC<PreconfigurationButtonProps> = ({ acceptor }) => {
         variant={ButtonVariant.link}
         onClick={() => setShowPresetModal(true)}
       >
-        Apply preset
+        {t('apply_preset')}
       </Button>
     </>
   );

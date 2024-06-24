@@ -194,7 +194,7 @@ export const SelectIssuerDrawer: FC<SelectIssuerDrawerProps> = ({
                       }}
                     />
                     <Button onClick={triggerChainOfTrustCreation}>
-                      create
+                      {t('create')}
                     </Button>
                   </InputGroup>
                 </FormGroup>

@@ -968,10 +968,10 @@ export const ConfigRenamingModal: FC<ConfigRenamingModalProps> = ({
             onClick={handleNewName}
             isDisabled={validateStatus !== ValidatedOptions.success}
           >
-            Confirm
+            {t('confirm')}
           </Button>,
           <Button key="cancel" variant="link" onClick={() => setIsOpen(false)}>
-            Cancel
+            {t('cancel')}
           </Button>,
         ]}
       >

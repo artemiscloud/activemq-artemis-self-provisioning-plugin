@@ -1,6 +1,14 @@
-import { Button, Modal, ModalVariant } from '@patternfly/react-core';
-import { ExclamationTriangleIcon, TrashIcon } from '@patternfly/react-icons';
+import {
+  Button,
+  Modal,
+  ModalVariant,
+  TextContent,
+  Text,
+  TextVariants,
+} from '@patternfly/react-core';
+import { TrashIcon } from '@patternfly/react-icons';
 import { FC, useState } from 'react';
+import { useTranslation } from '../i18n';
 
 type ConfirmDeleteProps = {
   subject: string;
@@ -11,16 +19,14 @@ export const ConfirmDeleteModal: FC<ConfirmDeleteProps> = ({
   subject,
   action,
 }) => {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <>
       <Modal
         variant={ModalVariant.small}
-        header={
-          <p>
-            <ExclamationTriangleIcon /> Permanently delete the {' ' + subject}
-          </p>
-        }
+        title={t('delete_instance_title', { subject })}
+        titleIconVariant="warning"
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         actions={[
@@ -35,18 +41,22 @@ export const ConfirmDeleteModal: FC<ConfirmDeleteProps> = ({
               }
             }}
           >
-            Delete
+            {t('delete')}
           </Button>,
           <Button
             key="cancel"
             variant="link"
             onClick={() => setIsModalOpen(false)}
           >
-            Cancel
+            {t('cancel')}
           </Button>,
         ]}
       >
-        The associated configuration will be lost.
+        <TextContent>
+          <Text component={TextVariants.h6}>
+            {t('preconfirm_delete_acceptor_message')}
+          </Text>
+        </TextContent>
       </Modal>
       <Button
         variant="plain"

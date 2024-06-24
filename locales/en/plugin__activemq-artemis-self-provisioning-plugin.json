@@ -135,5 +135,9 @@
   "try_again": "Try again",
   "login_failed": "Login Failed",
   "login_failed_message": "Token invalid. Please check your credentials and try again.",
-  "show_cert_info": "only support tls format secret from cert-manager"
+  "show_cert_info": "only support tls format secret from cert-manager",
+  "delete_instance_title": "Permanently delete the {{subject}}",
+  "preconfirm_delete_acceptor_message": "The associated configuration will be lost.",
+  "apply_preset": "Apply preset",
+  "confirm": "Confirm"
 }

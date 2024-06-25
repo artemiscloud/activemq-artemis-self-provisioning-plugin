@@ -1,6 +1,6 @@
 # ActiveMQ Artemis Self Provisioning Plugin
 
-This project is a ActiveMQ Artemis Self Provisioning Plugin to the Administrator perspective in OpenShift console. It requires OpenShift 4.10 to use.
+This project is a ActiveMQ Artemis Self Provisioning Plugin to the Administrator perspective in OpenShift console. It requires OpenShift `4.14` to use.
 
 ## Local development
 
@@ -94,10 +94,7 @@ In one terminal window, run:
 3. `yarn build-dev`
 4. `yarn run start`
 
-Note: `yarn run start` starts the plugin in http mode.
-if you want the plugin to run in https mode, run
-
-`yarn run start-tls`
+Note: `yarn run start` starts the plugin in https mode by default.
 
 In another terminal window, run:
 
@@ -114,8 +111,6 @@ If you want the console to run in `https` mode, run:
 
 This command will run the console in `https` mode on port 9442.
 The console url is <https://localhost:9442>
-
-Note: Running console in `https` mode requires the plugin running in `https` mode too.
 
 The console in https mode requires a private key and a server certificate that are generated
 with openssl command. They are located under `console-cert` directory. The domain.key is the
@@ -156,7 +151,7 @@ The optional `-i <image>` (or `--image <image>`) argument allows you to pass in 
 `quay.io/artemiscloud/activemq-artemis-self-provisioning-plugin:latest` is deployed. for example:
 
 ```sh
-./deploy-plugin.sh -i quay.io/<repo>/activemq-artemis-self-provisioning-plugin:1.0.1
+./deploy-plugin.sh -i quay.io/<repo-username>/activemq-artemis-self-provisioning-plugin:1.0.1
 ```
 
 The optional `-n` (or `--nossl`) argument disables the https and makes the plugin run in http mode on port 9001.

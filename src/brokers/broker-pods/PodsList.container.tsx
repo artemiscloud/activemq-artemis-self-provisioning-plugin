@@ -1,5 +1,4 @@
 import { FC, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import {
   K8sResourceCommon,
   useK8sWatchResource,
@@ -18,6 +17,7 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { ErrorCircleOIcon, SearchIcon } from '@patternfly/react-icons';
+import { useParams } from 'react-router-dom-v5-compat';
 
 const PodsContainer: FC = () => {
   //states

@@ -7,7 +7,7 @@ import {
   LevelItem,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 export type AddressBreadcrumbProps = {
   name: string;
@@ -28,24 +28,21 @@ const AddressDetailsBreadcrumb: FC<AddressBreadcrumbProps> = ({
   const redirectBrokerPodsPath = `/k8s/ns/${namespace}/brokers/${brokerName}`;
   const redirectBrokerDetailsPath = `/k8s/ns/${namespace}/brokers/${brokerName}/${podName}`;
   const redirectAddressPath = `/k8s/ns/${namespace}/brokers/${brokerName}/${podName}?tab=addresses`;
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <Level>
       <LevelItem>
         <Breadcrumb className="pf-u-mb-md">
           <BreadcrumbItem>
-            <Button
-              variant="link"
-              onClick={() => history.push(redirectBrokerPath)}
-            >
+            <Button variant="link" onClick={() => navigate(redirectBrokerPath)}>
               {t('brokers')}
             </Button>
           </BreadcrumbItem>
           <BreadcrumbItem>
             <Button
               variant="link"
-              onClick={() => history.push(redirectBrokerPodsPath)}
+              onClick={() => navigate(redirectBrokerPodsPath)}
             >
               {t('broker')} {brokerName}
             </Button>
@@ -53,7 +50,7 @@ const AddressDetailsBreadcrumb: FC<AddressBreadcrumbProps> = ({
           <BreadcrumbItem>
             <Button
               variant="link"
-              onClick={() => history.push(redirectBrokerDetailsPath)}
+              onClick={() => navigate(redirectBrokerDetailsPath)}
             >
               {podName}
             </Button>
@@ -61,7 +58,7 @@ const AddressDetailsBreadcrumb: FC<AddressBreadcrumbProps> = ({
           <BreadcrumbItem>
             <Button
               variant="link"
-              onClick={() => history.push(redirectAddressPath)}
+              onClick={() => navigate(redirectAddressPath)}
             >
               {t('addresses')}
             </Button>

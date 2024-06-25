@@ -1,5 +1,4 @@
 import { FC, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,6 +14,7 @@ import { PreConfirmDeleteModal } from '../../brokers/view-brokers/components/Pre
 import { useTranslation } from '../../i18n';
 import { k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import { AMQBrokerModel } from '../../utils';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 export type BrokerDetailsBreadcrumbProps = {
   name: string;
@@ -31,13 +31,13 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [_loadError, setLoadError] = useState<any>();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const redirectBrokerPath = `/k8s/ns/${namespace}/brokers`;
   const redirectBrokerPodsPath = `/k8s/ns/${namespace}/brokers/${name}`;
 
   const onClickEditBroker = () => {
-    history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
+    navigate(`/k8s/ns/${namespace}/edit-broker/${name}`);
   };
 
   const onClickDeleteBroker = () => {
@@ -54,7 +54,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
       resource: { metadata: { name, namespace: namespace } },
     })
       .then(() => {
-        history.push(redirectBrokerPath);
+        navigate(redirectBrokerPath);
       })
       .catch((e) => {
         setLoadError(e.message);
@@ -92,7 +92,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
             <BreadcrumbItem>
               <Button
                 variant="link"
-                onClick={() => history.push(redirectBrokerPath)}
+                onClick={() => navigate(redirectBrokerPath)}
               >
                 {t('brokers')}
               </Button>
@@ -100,7 +100,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
             <BreadcrumbItem>
               <Button
                 variant="link"
-                onClick={() => history.push(redirectBrokerPodsPath)}
+                onClick={() => navigate(redirectBrokerPodsPath)}
               >
                 {t('broker')} {name}
               </Button>

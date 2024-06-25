@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { Link } from 'react-router-dom';
 import {
   RowProps,
   TableData,
@@ -7,6 +6,7 @@ import {
   Timestamp,
 } from '@openshift-console/dynamic-plugin-sdk';
 import { K8sResourceCommon } from '../../../utils';
+import { Link } from 'react-router-dom-v5-compat';
 
 export type PodRowProps = RowProps<K8sResourceCommon> & {
   columns: TableColumn<K8sResourceCommon>[];

@@ -7,7 +7,7 @@ import {
 import { Address } from '../openapi/jolokia/requests';
 import { useJolokiaServiceReadAddressAttributes } from '../openapi/jolokia/queries';
 import { AuthContext } from '../utils';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom-v5-compat';
 
 export type AddressRowProps = RowProps<Address> & {
   columns: TableColumn<Address>[];

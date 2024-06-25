@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useReducer } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom-v5-compat';
 import { k8sGet, k8sUpdate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from '../add-broker/AddBroker.component';

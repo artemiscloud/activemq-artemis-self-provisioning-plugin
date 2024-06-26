@@ -45,7 +45,7 @@ jobs:
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: quay.io/${{ secrets.QUAY_NAMESPACE }}/${{env.IMAGE_NAME}}
+          image: ${{ env.IMAGE_NAME }}
           tags: dev.latest ${{ steps.vars.outputs.image_tag }}
           platforms: linux/amd64, linux/arm64
           context: .

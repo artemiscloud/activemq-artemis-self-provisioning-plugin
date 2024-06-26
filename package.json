@@ -1,6 +1,6 @@
 {
   "name": "activemq-artemis-self-provisioning-plugin",
-  "version": "v0.1.0",
+  "version": "0.1.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -142,7 +142,7 @@
   },
   "consolePlugin": {
     "name": "activemq-artemis-self-provisioning-plugin",
-    "version": "v0.1.0",
+    "version": "0.1.0",
     "displayName": "Artemis Self Provisioning Plugin",
     "description": "Artemis Self Provisioning Plugin",
     "exposedModules": {

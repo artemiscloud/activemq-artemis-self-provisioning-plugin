@@ -32,27 +32,27 @@ jobs:
 
       - name: Set outputs
         id: vars
-        run: | 
+        run: |
          echo "image_tag=$(git describe --exact-match --tags | sed 's/v//')" >> $GITHUB_OUTPUT
       - name: Check outputs
-        run: | 
+        run: |
          echo ${{ steps.vars.outputs.image_tag }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
-      - name: Build the image 
+      - name: Build the image
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ env.IMAGE_NAME }}
-          tags: dev.latest ${{ steps.vars.outputs.image_tag }}
+          tags: latest ${{ steps.vars.outputs.image_tag }}
           platforms: linux/amd64, linux/arm64
           context: .
           dockerfiles: |
             ./Dockerfile
 
-      - name: Push the dev image to quay.io
+      - name: Push the image to quay.io
         id: push-to-quay
         uses: redhat-actions/push-to-registry@v2
         with:

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Flex, Radio } from '@patternfly/react-core';
 import { useTranslation } from '../../../../i18n';
-import { EditorType } from '../../../utils/add-broker';
+import { EditorType } from '../../../../reducers/7.12/reducer';
 
 type EditorToggleProps = {
   value: EditorType;

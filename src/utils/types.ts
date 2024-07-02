@@ -1,4 +1,4 @@
-import { ExposeMode } from '../brokers/utils';
+import { ExposeMode } from '../reducers/7.12/reducer';
 import { K8sResourceCommon as K8sResource } from '@openshift-console/dynamic-plugin-sdk';
 
 // Something to think about - convert crd to typecript types?

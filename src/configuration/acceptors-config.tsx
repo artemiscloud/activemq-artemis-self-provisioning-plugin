@@ -43,7 +43,7 @@ import {
   getConfigProtocols,
   getConfigSSLEnabled,
   listConfigs,
-} from '../brokers/utils';
+} from '../reducers/7.12/reducer';
 import { useTranslation } from '../i18n';
 import { ListPresets, PresetButton } from './acceptors-annotations';
 import {

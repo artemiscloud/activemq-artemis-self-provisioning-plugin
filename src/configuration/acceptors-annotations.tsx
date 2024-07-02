@@ -21,7 +21,7 @@ import {
   BrokerCreationFormState,
   getAcceptorFromCertManagerResourceTemplate,
   getCertManagerResourceTemplateFromAcceptor,
-} from '../brokers/utils';
+} from '../reducers/7.12/reducer';
 import { useTranslation } from '../i18n';
 import { Acceptor, ResourceTemplate } from '../utils';
 import { SelectIssuerDrawer } from './cert-manager';

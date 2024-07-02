@@ -26,7 +26,7 @@ import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
-} from '../../../utils';
+} from '../../../../reducers/7.12/reducer';
 import { BrokerProperties, BrokerPropertiesList } from './BrokerProperties';
 
 type FormViewProps = {

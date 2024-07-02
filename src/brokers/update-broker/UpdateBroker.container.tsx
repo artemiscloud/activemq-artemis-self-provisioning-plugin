@@ -11,7 +11,7 @@ import {
   BrokerCreationFormState,
   artemisCrReducer,
   getArtemisCRState,
-} from '../utils/add-broker';
+} from '../../reducers/7.12/reducer';
 
 const UpdateBrokerPage: FC = () => {
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();

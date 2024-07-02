@@ -11,7 +11,7 @@ import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
-} from '../../../utils';
+} from '../../../../reducers/7.12/reducer';
 import { BrokerActionGroup } from './ActionGroup';
 import { useHistory } from 'react-router';
 import YAML from 'yaml';

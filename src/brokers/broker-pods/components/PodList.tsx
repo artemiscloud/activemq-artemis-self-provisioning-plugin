@@ -8,12 +8,12 @@ import {
   TableColumn,
 } from '@openshift-console/dynamic-plugin-sdk';
 import { useTranslation } from '../../../i18n';
-import { K8sResourceCommon } from '../../../utils';
+import { BrokerCR } from '../../../utils';
 import { PodRow } from './PodRow';
 
 type PodsTableProps = {
-  data: K8sResourceCommon[];
-  unfilteredData: K8sResourceCommon[];
+  data: BrokerCR[];
+  unfilteredData: BrokerCR[];
   loaded: boolean;
   loadError: any;
   brokerName: string;
@@ -26,7 +26,7 @@ const PodsTable: FC<PodsTableProps> = ({
   loadError,
   brokerName,
 }) => {
-  const columns: TableColumn<K8sResourceCommon>[] = [
+  const columns: TableColumn<BrokerCR>[] = [
     {
       title: 'Name',
       id: 'name',
@@ -50,7 +50,7 @@ const PodsTable: FC<PodsTableProps> = ({
   ];
 
   return (
-    <VirtualizedTable<K8sResourceCommon>
+    <VirtualizedTable<BrokerCR>
       data={data}
       unfilteredData={unfilteredData}
       loaded={loaded}
@@ -70,7 +70,7 @@ const PodsTable: FC<PodsTableProps> = ({
 };
 
 export type PodsListProps = {
-  brokerPods: K8sResourceCommon[];
+  brokerPods: BrokerCR[];
   loaded: boolean;
   loadError: any;
   brokerName: string;

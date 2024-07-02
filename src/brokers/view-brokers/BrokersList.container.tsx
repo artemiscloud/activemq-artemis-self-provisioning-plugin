@@ -1,11 +1,7 @@
 import { useEffect, useState, FC } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { k8sListItems, k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
-import {
-  AMQBrokerModel,
-  K8sResourceKind,
-  K8sResourceCommon,
-} from '../../utils';
+import { AMQBrokerModel, K8sResourceKind, BrokerCR } from '../../utils';
 import { BrokersList } from './components/BrokersList';
 import { PreConfirmDeleteModal } from './components/PreConfirmDeleteModal';
 
@@ -41,7 +37,7 @@ const BrokersContainer: FC = () => {
     fetchK8sListItems();
   }, [namespace]);
 
-  const onEditBroker = (broker: K8sResourceCommon) => {
+  const onEditBroker = (broker: BrokerCR) => {
     const namespace = broker.metadata.namespace;
     const name = broker.metadata.name;
     history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
@@ -63,7 +59,7 @@ const BrokersContainer: FC = () => {
       });
   };
 
-  const onOpenModal = (broker?: K8sResourceCommon) => {
+  const onOpenModal = (broker?: BrokerCR) => {
     setSelectedBroker(broker);
     setIsModalOpen(!isModalOpen);
   };

@@ -65,7 +65,7 @@ export type ResourceTemplate = {
   };
 };
 
-export type K8sResourceCommon = K8sResource & {
+export type BrokerCR = K8sResource & {
   spec?: {
     ingressDomain?: string;
     connectors?: Connector[];
@@ -89,7 +89,7 @@ export type K8sResourceCommon = K8sResource & {
   status?: { [key: string]: any };
 };
 
-export type K8sResourceKind = K8sResourceCommon & {
+export type K8sResourceKind = BrokerCR & {
   data?: { [key: string]: any };
 };
 

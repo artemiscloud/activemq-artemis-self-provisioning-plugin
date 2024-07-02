@@ -29,12 +29,12 @@ import { Loading } from '../../../../shared-components';
 import {
   Acceptor,
   IssuerResource,
-  K8sResourceCommon,
+  BrokerCR,
   SecretResource,
 } from '../../../../utils';
 
 const useGetIssuerCa = (
-  cr: K8sResourceCommon,
+  cr: BrokerCR,
   acceptor: Acceptor,
 ): [string, boolean, string] => {
   const acceptorIssuer = getIssuerForAcceptor(cr, acceptor);
@@ -55,7 +55,7 @@ const useGetIssuerCa = (
   return [secret, loadedIssuers, loadErrorIssuers];
 };
 
-const useGetTlsSecret = (cr: K8sResourceCommon, acceptor: Acceptor) => {
+const useGetTlsSecret = (cr: BrokerCR, acceptor: Acceptor) => {
   const [secretName, hasSecretName] = useGetIssuerCa(cr, acceptor);
   const [secret] = useK8sWatchResource<SecretResource>({
     groupVersionKind: {
@@ -94,11 +94,11 @@ const SecretDownloadLink: FC<SecretDownloaLinkProps> = ({ secret }) => {
 };
 
 type IssuerSecretsDownloaderProps = {
-  cr: K8sResourceCommon;
+  cr: BrokerCR;
 };
 
 type HelperConnectAcceptorProps = {
-  cr: K8sResourceCommon;
+  cr: BrokerCR;
   acceptor: Acceptor;
 };
 
@@ -230,7 +230,7 @@ const ConnectivityHelper: FC<IssuerSecretsDownloaderProps> = ({ cr }) => {
 export type OverviewContainerProps = {
   namespace: string;
   name: string;
-  cr: K8sResourceCommon;
+  cr: BrokerCR;
   loading: boolean;
 };
 

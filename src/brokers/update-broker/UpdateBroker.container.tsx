@@ -4,14 +4,14 @@ import { k8sGet, k8sUpdate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from '../add-broker/AddBroker.component';
 import { Loading } from '../../shared-components';
-import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
+import { AMQBrokerModel, BrokerCR } from '../../utils';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
   artemisCrReducer,
   getArtemisCRState,
-} from '../utils/add-broker';
+} from '../../reducers/7.12/reducer';
 
 const UpdateBrokerPage: FC = () => {
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
@@ -25,14 +25,14 @@ const UpdateBrokerPage: FC = () => {
 
   const [brokerModel, dispatch] = useReducer(artemisCrReducer, crState);
 
-  const k8sUpdateBroker = (content: K8sResourceCommon) => {
+  const k8sUpdateBroker = (content: BrokerCR) => {
     k8sUpdate({
       model: AMQBrokerModel,
       data: content,
       ns: namespace,
       name: name,
     })
-      .then((response: K8sResourceCommon) => {
+      .then((response: BrokerCR) => {
         const name = response.metadata.name;
         const resourceVersion = response.metadata.resourceVersion;
         setNotification({
@@ -48,7 +48,7 @@ const UpdateBrokerPage: FC = () => {
   const k8sGetBroker = () => {
     setLoading(true);
     k8sGet({ model: AMQBrokerModel, name, ns: namespace })
-      .then((broker: K8sResourceCommon) => {
+      .then((broker: BrokerCR) => {
         dispatch({
           operation: ArtemisReducerOperations.setModel,
           payload: {

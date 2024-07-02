@@ -1,15 +1,11 @@
 import { FC } from 'react';
 import { Configuration } from './Configuration.component';
-import {
-  K8sResourceCommon,
-  getCondition,
-  BrokerConditionTypes,
-} from '../utils';
+import { BrokerCR, getCondition, BrokerConditionTypes } from '../utils';
 import { Loading } from '../shared-components';
 import { useTranslation } from '../i18n';
 
 export type ConfigurationContainerProps = {
-  configurationSettings: K8sResourceCommon;
+  configurationSettings: BrokerCR;
   loading: boolean;
 };
 

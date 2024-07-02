@@ -24,27 +24,25 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
+import { ConfigurationContainer, OverviewContainer } from './components';
+import { AMQBrokerModel, BrokerCR } from '../../utils';
 import {
-  ClientsContainer,
-  ConfigurationContainer,
-  AddressContainer,
-  OverviewContainer,
-} from './components';
-import {
-  AMQBrokerModel,
-  JolokiaTestPanel,
-  useJolokiaLogin,
   AuthContext,
-  getApiServerBaseUrl,
-  JolokiaBrokerDetails,
-  JolokiaAddressDetails,
-  JolokiaAcceptorDetails,
-  JolokiaQueueDetails,
-  K8sResourceCommon,
-} from '../../utils';
-import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBreadcrumb';
+  useGetApiServerBaseUrl,
+  useJolokiaLogin,
+} from '../../jolokia/customHooks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OpenAPI as OpenAPIConfig } from '../../openapi/jolokia/requests/core/OpenAPI';
+import { ClientsContainer } from './components/Clients';
+import { AddressContainer } from './components/Addresses/Address.container';
+import { BrokerDetailsBreadcrumb } from './components/BrokerDetailsBreadcrumb';
+import {
+  JolokiaAcceptorDetails,
+  JolokiaAddressDetails,
+  JolokiaBrokerDetails,
+  JolokiaQueueDetails,
+  JolokiaTestPanel,
+} from './components/JolokiaDevComponents';
 
 const BrokerDetailsPage: FC = () => {
   const { t } = useTranslation();
@@ -57,7 +55,7 @@ const BrokerDetailsPage: FC = () => {
     brokerName?: string;
     podName?: string;
   }>();
-  const [brokerDetails, setBrokerDetails] = useState<K8sResourceCommon>({});
+  const [brokerDetails, setBrokerDetails] = useState<BrokerCR>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
@@ -80,7 +78,7 @@ const BrokerDetailsPage: FC = () => {
     setLoading(true);
     k8sGet({ model: AMQBrokerModel, name: brokerName, ns: namespace })
       .then((broker: K8sResourceKind) => {
-        setBrokerDetails(broker as K8sResourceCommon);
+        setBrokerDetails(broker as BrokerCR);
       })
       .catch((e) => {
         setError(e.message);
@@ -278,7 +276,7 @@ const BrokerDetailsPage: FC = () => {
 };
 
 const App: FC = () => {
-  OpenAPIConfig.BASE = getApiServerBaseUrl();
+  OpenAPIConfig.BASE = useGetApiServerBaseUrl();
   const querClient = new QueryClient();
   return (
     <QueryClientProvider client={querClient}>

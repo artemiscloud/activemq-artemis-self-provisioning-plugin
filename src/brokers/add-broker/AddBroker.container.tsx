@@ -3,15 +3,15 @@ import { useHistory, useParams } from 'react-router-dom';
 import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from './AddBroker.component';
-import { AMQBrokerModel, K8sResourceCommon } from '../../utils';
+import { AMQBrokerModel, BrokerCR } from '../../utils';
 import {
   BrokerCreationFormState,
   BrokerCreationFormDispatch,
   newArtemisCRState,
   artemisCrReducer,
-  AddBrokerResourceValues,
   ArtemisReducerOperations,
-} from '../utils';
+} from '../../reducers/7.12/reducer';
+import { AddBrokerResourceValues } from '../../reducers/7.12/import-types';
 
 export interface AddBrokerProps {
   initialValues: AddBrokerResourceValues;
@@ -33,7 +33,7 @@ const AddBrokerPage: FC = () => {
     history.push('/k8s/all-namespaces/brokers');
   };
 
-  const k8sCreateBroker = (content: K8sResourceCommon) => {
+  const k8sCreateBroker = (content: BrokerCR) => {
     k8sCreate({ model: AMQBrokerModel, data: content })
       .then(() => {
         setNotification(defaultNotification);

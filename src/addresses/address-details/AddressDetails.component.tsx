@@ -13,9 +13,9 @@ import {
   ToolbarItem,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
-import { AuthContext } from '../../utils';
 import { useJolokiaServiceReadAddressAttributes } from '../../openapi/jolokia/queries';
 import { AddressDetailsRow } from './AddressDetailsRow';
+import { AuthContext } from '../../jolokia/customHooks';
 
 type AddressDetailsTableProps = {
   name: string;

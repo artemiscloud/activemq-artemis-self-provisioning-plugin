@@ -1,7 +1,7 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { MemoryRouter } from 'react-router-dom';
 import { BrokersList } from './BrokersList';
-import { K8sResourceCommon } from '../../../../utils';
+import { BrokerCR } from '../../../../utils';
 
 export default {
   title: 'Components/Brokers',
@@ -11,7 +11,7 @@ export default {
   },
 } as ComponentMeta<typeof BrokersList>;
 
-const brokers: K8sResourceCommon[] = [
+const brokers: BrokerCR[] = [
   {
     apiVersion: 'broker.amq.io/v1beta1',
     kind: 'ActiveMQArtemis',

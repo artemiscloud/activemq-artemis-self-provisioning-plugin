@@ -1,6 +1,5 @@
 import { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { AddressDetailsBreadcrumb } from '../../shared-components/AddressDetailsBreadcrumb/AddressDetailsBreadcrumb';
 import {
   Alert,
   Button,
@@ -14,12 +13,7 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
-import {
-  AMQBrokerModel,
-  AuthContext,
-  getApiServerBaseUrl,
-  useJolokiaLogin,
-} from '../../utils';
+import { AMQBrokerModel } from '../../utils';
 import {
   K8sResourceKind,
   k8sGet,
@@ -28,6 +22,12 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OpenAPI as OpenAPIConfig } from '../../openapi/jolokia/requests/core/OpenAPI';
 import { AddressDetails } from './AddressDetails.component';
+import { AddressDetailsBreadcrumb } from './AddressDetailsBreadcrumb/AddressDetailsBreadcrumb';
+import {
+  AuthContext,
+  useGetApiServerBaseUrl,
+  useJolokiaLogin,
+} from '../../jolokia/customHooks';
 
 const AddressDetailsPage: FC = () => {
   const { t } = useTranslation();
@@ -153,7 +153,7 @@ const AddressDetailsPage: FC = () => {
 };
 
 const App: FC = () => {
-  OpenAPIConfig.BASE = getApiServerBaseUrl();
+  OpenAPIConfig.BASE = useGetApiServerBaseUrl();
   const querClient = new QueryClient();
   return (
     <QueryClientProvider client={querClient}>

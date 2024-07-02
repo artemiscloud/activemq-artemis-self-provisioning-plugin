@@ -8,7 +8,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { ActionsColumn, IAction } from '@patternfly/react-table';
 import {
-  K8sResourceCommon,
+  BrokerCR,
   BrokerConditionTypes,
   getCondition,
   getConditionString,
@@ -27,7 +27,7 @@ import {
 import { K8sResourceCondition } from '@app/k8s';
 
 type ConditionModalProps = {
-  status: K8sResourceCommon['status'];
+  status: BrokerCR['status'];
 };
 const ConditionModal: FC<ConditionModalProps> = ({ status }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -91,10 +91,10 @@ const ConditionModal: FC<ConditionModalProps> = ({ status }) => {
   );
 };
 
-export type BrokerRowProps = RowProps<K8sResourceCommon> & {
-  columns: TableColumn<K8sResourceCommon>[];
-  onEditBroker: (broker: K8sResourceCommon) => void;
-  onOpenModal: (broker: K8sResourceCommon) => void;
+export type BrokerRowProps = RowProps<BrokerCR> & {
+  columns: TableColumn<BrokerCR>[];
+  onEditBroker: (broker: BrokerCR) => void;
+  onOpenModal: (broker: BrokerCR) => void;
 };
 
 export const BrokerRow: FC<BrokerRowProps> = ({

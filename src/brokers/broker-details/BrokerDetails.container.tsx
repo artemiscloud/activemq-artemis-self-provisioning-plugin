@@ -24,12 +24,7 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
-import {
-  ClientsContainer,
-  ConfigurationContainer,
-  AddressContainer,
-  OverviewContainer,
-} from './components';
+import { OverviewContainer } from './components';
 import {
   AMQBrokerModel,
   JolokiaTestPanel,
@@ -45,6 +40,9 @@ import {
 import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBreadcrumb';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OpenAPI as OpenAPIConfig } from '../../openapi/jolokia/requests/core/OpenAPI';
+import { ClientsContainer } from './components/Clients';
+import { AddressContainer } from './components/Addresses/Address.container';
+import { ConfigurationContainer } from './components/Configuration';
 
 const BrokerDetailsPage: FC = () => {
   const { t } = useTranslation();

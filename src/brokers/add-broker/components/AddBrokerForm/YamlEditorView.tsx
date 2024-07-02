@@ -4,7 +4,7 @@ import {
   CodeEditor,
   useAccessReview,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { AMQBrokerModel, K8sResourceCommon } from '../../../../utils';
+import { AMQBrokerModel, BrokerCR } from '../../../../utils';
 import { Loading } from '../../../../shared-components';
 import { useTranslation } from '../../../../i18n';
 import {
@@ -18,7 +18,7 @@ import YAML from 'yaml';
 
 export type YamlEditorViewProps = {
   onCreateBroker: (content: any) => void;
-  initialResourceYAML: K8sResourceCommon;
+  initialResourceYAML: BrokerCR;
   notification: {
     title: string;
     variant: AlertVariant;
@@ -46,7 +46,7 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
   });
 
   const onSave = () => {
-    const yamlData: K8sResourceCommon = fromState.cr;
+    const yamlData: BrokerCR = fromState.cr;
     onCreateBroker(yamlData);
   };
 

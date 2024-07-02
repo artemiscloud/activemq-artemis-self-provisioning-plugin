@@ -10,14 +10,14 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { BrokerRow, BrokerRowProps } from './BrokerRow';
 import { useTranslation } from '../../../../i18n';
-import { K8sResourceCommon } from '../../../../utils';
+import { BrokerCR } from '../../../../utils';
 
 type BrokersTableProps = Pick<
   BrokerRowProps,
   'onOpenModal' | 'onEditBroker'
 > & {
-  data: K8sResourceCommon[];
-  unfilteredData: K8sResourceCommon[];
+  data: BrokerCR[];
+  unfilteredData: BrokerCR[];
   loaded: boolean;
   loadError: any;
 };
@@ -32,7 +32,7 @@ const BrokersTable: FC<BrokersTableProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const columns: TableColumn<K8sResourceCommon>[] = [
+  const columns: TableColumn<BrokerCR>[] = [
     {
       title: t('name'),
       id: 'name',
@@ -60,7 +60,7 @@ const BrokersTable: FC<BrokersTableProps> = ({
   ];
 
   return (
-    <VirtualizedTable<K8sResourceCommon>
+    <VirtualizedTable<BrokerCR>
       data={data}
       unfilteredData={unfilteredData}
       loaded={loaded}
@@ -84,7 +84,7 @@ export type BrokersListProps = Pick<
   BrokerRowProps,
   'onOpenModal' | 'onEditBroker'
 > & {
-  brokers: K8sResourceCommon[];
+  brokers: BrokerCR[];
   loaded: boolean;
   loadError: any;
   namespace: string;

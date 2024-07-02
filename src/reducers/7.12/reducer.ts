@@ -1,7 +1,7 @@
 import { AddBrokerResourceValues as FormState } from './import-types';
 import {
   K8sResourceKind,
-  K8sResourceCommon as ArtemisCR,
+  BrokerCR,
   Acceptor,
   ResourceTemplate,
 } from '../../utils';
@@ -25,7 +25,7 @@ export const BrokerCreationFormDispatch =
 
 const artemisCRStateMap = new Map<string, FormState>();
 
-const initialCr = (namespace: string, name: string): ArtemisCR => {
+const initialCr = (namespace: string, name: string): BrokerCR => {
   return {
     apiVersion: 'broker.amq.io/v1beta1',
     kind: 'ActiveMQArtemis',
@@ -52,7 +52,7 @@ export const getArtemisCRState = (name: string, ns: string): FormState => {
 };
 
 export const newArtemisCRState = (namespace: string): FormState => {
-  const initialCr: ArtemisCR = {
+  const initialCr: BrokerCR = {
     apiVersion: 'broker.amq.io/v1beta1',
     kind: 'ActiveMQArtemis',
     metadata: {
@@ -410,7 +410,7 @@ interface UpdateConnectorFactoryClassAction extends ArtemisReducerActionBase {
 interface SetModelAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setModel;
   payload: {
-    model: ArtemisCR;
+    model: BrokerCR;
   };
 }
 
@@ -858,7 +858,7 @@ export const artemisCrReducer: React.Reducer<
 // function used by the reducer to update the state
 
 const updateAnnotationIssuer = (
-  cr: ArtemisCR,
+  cr: BrokerCR,
   acceptorName: string,
   newIssuer: string,
 ) => {
@@ -875,7 +875,7 @@ const updateAnnotationIssuer = (
   }
 };
 
-const updateIngressDomain = (cr: ArtemisCR, newName: string) => {
+const updateIngressDomain = (cr: BrokerCR, newName: string) => {
   cr.spec.ingressDomain = newName;
   // when the namespace changes, some annotations will need an update to
   // stay in sync
@@ -893,7 +893,7 @@ const updateIngressDomain = (cr: ArtemisCR, newName: string) => {
   });
 };
 
-const updateNamespace = (cr: ArtemisCR, newName: string) => {
+const updateNamespace = (cr: BrokerCR, newName: string) => {
   cr.metadata.namespace = newName;
   // when the namespace changes, some annotations will need an update to
   // stay in sync
@@ -914,7 +914,7 @@ const updateNamespace = (cr: ArtemisCR, newName: string) => {
   });
 };
 
-const updateBrokerName = (cr: ArtemisCR, newName: string) => {
+const updateBrokerName = (cr: BrokerCR, newName: string) => {
   const prevBrokerName = cr.metadata.name;
   cr.metadata.name = newName;
   // when the broker name changes, some acceptors & annotations will need an
@@ -951,7 +951,7 @@ const updateBrokerName = (cr: ArtemisCR, newName: string) => {
  * under cert-manager supervision regarding certs.
  */
 const activatePEMGenerationForAcceptor = (
-  cr: ArtemisCR,
+  cr: BrokerCR,
   acceptorName: string,
 ) => {
   const acceptor = getAcceptor(cr, acceptorName);
@@ -970,7 +970,7 @@ const activatePEMGenerationForAcceptor = (
  * issuer. Creates the annotation if it was not there in the first place.
  */
 const setIssuerForAcceptor = (
-  cr: ArtemisCR,
+  cr: BrokerCR,
   acceptor: Acceptor,
   issuerName: string,
 ) => {
@@ -997,7 +997,7 @@ const setIssuerForAcceptor = (
 };
 
 // TODO handle multiple ordinals
-const certManagerTlsHost = (cr: ArtemisCR, acceptor: string) =>
+const certManagerTlsHost = (cr: BrokerCR, acceptor: string) =>
   'ing.' +
   acceptor +
   '.' +
@@ -1007,10 +1007,10 @@ const certManagerTlsHost = (cr: ArtemisCR, acceptor: string) =>
   '.' +
   cr.spec.ingressDomain;
 
-const certManagerSelector = (cr: ArtemisCR, acceptor: string) =>
+const certManagerSelector = (cr: BrokerCR, acceptor: string) =>
   cr.metadata.name + '-' + acceptor + '-0-svc-ing';
 
-const certManagerSecret = (cr: ArtemisCR, acceptor: string) =>
+const certManagerSecret = (cr: BrokerCR, acceptor: string) =>
   cr.metadata.name + '-' + acceptor + '-0-svc-ing-ptls';
 
 /**
@@ -1018,7 +1018,7 @@ const certManagerSecret = (cr: ArtemisCR, acceptor: string) =>
  * the previous acceptor name
  */
 const updateAcceptorNameInResourceTemplate = (
-  cr: ArtemisCR,
+  cr: BrokerCR,
   prevName: string,
   newName: string,
 ) => {
@@ -1045,7 +1045,7 @@ const updateAcceptorNameInResourceTemplate = (
  * in -ptls as the convention requires.
  */
 const createCertManagerResourceTemplate = (
-  cr: ArtemisCR,
+  cr: BrokerCR,
   acceptor: Acceptor,
   issuerName: string,
 ): ResourceTemplate => {
@@ -1075,7 +1075,7 @@ const createCertManagerResourceTemplate = (
 /**
  * remove the cert manager annotation for a given acceptor if one is found
  */
-const deleteCertManagerAnnotation = (cr: ArtemisCR, acceptor: string) => {
+const deleteCertManagerAnnotation = (cr: BrokerCR, acceptor: string) => {
   if (!cr.spec.resourceTemplates) {
     return;
   }
@@ -1096,7 +1096,7 @@ const generateUniqueName = (prefix: string, existing: Set<string>): string => {
   return newName;
 };
 
-const addConfig = (cr: ArtemisCR, configType: ConfigType) => {
+const addConfig = (cr: BrokerCR, configType: ConfigType) => {
   const acceptorSet = listConfigs(configType, cr, 'set') as Set<string>;
 
   const newName = generateUniqueName(configType, acceptorSet);
@@ -1143,7 +1143,7 @@ const addConfig = (cr: ArtemisCR, configType: ConfigType) => {
 };
 
 const deleteConfig = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
 ) => {
@@ -1174,7 +1174,7 @@ const deleteConfig = (
 };
 
 const renameConfig = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   previousName: string,
   newName: string,
@@ -1236,7 +1236,7 @@ const renameConfig = (
 };
 
 const updateConfigSecret = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   secret: SelectOptionObject,
   configName: string,
@@ -1318,7 +1318,7 @@ const updateConfigSecret = (
 };
 
 const updateConfigPort = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
   port: number,
@@ -1343,7 +1343,7 @@ const updateConfigPort = (
 };
 
 const updateConnectorHost = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   connectorName: string,
   host: string,
 ): void => {
@@ -1357,7 +1357,7 @@ const updateConnectorHost = (
 };
 
 const updateConfigBindToAllInterfaces = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
   bindToAllInterfaces: boolean,
@@ -1386,7 +1386,7 @@ const updateConfigBindToAllInterfaces = (
 };
 
 const updateConfigProtocols = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
   protocols: string,
@@ -1411,7 +1411,7 @@ const updateConfigProtocols = (
 };
 
 const updateConfigOtherParams = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
   paramMap: Map<string, string>,
@@ -1462,7 +1462,7 @@ const updateConfigOtherParams = (
 };
 
 const updateConfigSSLEnabled = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
   isSSLEnabled: boolean,
@@ -1498,7 +1498,7 @@ const updateConfigSSLEnabled = (
   }
 };
 
-const clearAcceptorCertManagerConfig = (cr: ArtemisCR, name: string) => {
+const clearAcceptorCertManagerConfig = (cr: BrokerCR, name: string) => {
   const acceptor = getAcceptor(cr, name);
   if (acceptor.sslSecret && acceptor.sslSecret.endsWith('-ptls')) {
     deleteCertManagerAnnotation(cr, acceptor.name);
@@ -1517,7 +1517,7 @@ const clearAcceptorCertManagerConfig = (cr: ArtemisCR, name: string) => {
 };
 
 const updateConfigFactoryClass = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
   selectedClass: string,
@@ -1555,13 +1555,13 @@ const updateConfigFactoryClass = (
   }
 };
 
-const setModel = (formState: FormState, model: ArtemisCR): void => {
+const setModel = (formState: FormState, model: BrokerCR): void => {
   formState.cr = model;
 };
 
 // Getters
 export const getConfigSecret = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
   isCa: boolean,
@@ -1609,7 +1609,7 @@ export const getConfigSecret = (
 };
 
 export const getConfigFactoryClass = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
 ): string => {
@@ -1641,7 +1641,7 @@ export const getConfigFactoryClass = (
   return 'netty';
 };
 
-export const getAcceptor = (cr: ArtemisCR, name: string) => {
+export const getAcceptor = (cr: BrokerCR, name: string) => {
   if (cr.spec?.acceptors) {
     return cr.spec.acceptors.find((acceptor) => {
       if (acceptor.name === name) {
@@ -1654,7 +1654,7 @@ export const getAcceptor = (cr: ArtemisCR, name: string) => {
 };
 
 export const getAcceptorFromCertManagerResourceTemplate = (
-  cr: ArtemisCR,
+  cr: BrokerCR,
   rt: ResourceTemplate,
 ) => {
   if (cr.spec?.acceptors) {
@@ -1669,7 +1669,7 @@ export const getAcceptorFromCertManagerResourceTemplate = (
 };
 
 export const getCertManagerResourceTemplateFromAcceptor = (
-  cr: ArtemisCR,
+  cr: BrokerCR,
   acceptor: Acceptor,
 ) => {
   if (!acceptor) {
@@ -1686,7 +1686,7 @@ export const getCertManagerResourceTemplateFromAcceptor = (
   return undefined;
 };
 
-export const getConnector = (cr: ArtemisCR, name: string) => {
+export const getConnector = (cr: BrokerCR, name: string) => {
   if (cr.spec?.connectors) {
     return cr.spec.connectors.find((connector) => {
       if (connector.name === name) {
@@ -1699,7 +1699,7 @@ export const getConnector = (cr: ArtemisCR, name: string) => {
 };
 
 export const getConfigPort = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
 ): number => {
@@ -1719,7 +1719,7 @@ export const getConfigPort = (
 };
 
 export const getConfigHost = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
 ): string => {
@@ -1733,7 +1733,7 @@ export const getConfigHost = (
 };
 
 export const getConfigProtocols = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
 ): string => {
@@ -1753,7 +1753,7 @@ export const getConfigProtocols = (
 };
 
 export const getConfigBindToAllInterfaces = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
 ): boolean => {
@@ -1787,7 +1787,7 @@ const getConfigParamKey = (
 };
 
 export const getConfigOtherParams = (
-  cr: ArtemisCR,
+  cr: BrokerCR,
   configType: ConfigType,
   configName: string,
 ): Map<string, string> => {
@@ -1814,7 +1814,7 @@ export const getConfigOtherParams = (
 
 export const listConfigs = (
   configType: ConfigType,
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   resultType?: 'set' | 'list',
 ): { name: string }[] | Set<string> => {
   const acceptors = new Set<string>();
@@ -1840,7 +1840,7 @@ export const listConfigs = (
 };
 
 export const getConfigSSLEnabled = (
-  brokerModel: ArtemisCR,
+  brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
 ): boolean => {
@@ -1863,7 +1863,7 @@ export const getConfigSSLEnabled = (
  * Updates the annotation corresponding to cert manager to contain the specified
  * issuer. Creates the annotation if it was not there in the first place.
  */
-export const getIssuerForAcceptor = (cr: ArtemisCR, acceptor: Acceptor) => {
+export const getIssuerForAcceptor = (cr: BrokerCR, acceptor: Acceptor) => {
   if (!acceptor) {
     return '';
   }
@@ -1883,7 +1883,7 @@ export const getIssuerForAcceptor = (cr: ArtemisCR, acceptor: Acceptor) => {
 };
 
 export const getIssuerIngressHostForAcceptor = (
-  cr: ArtemisCR,
+  cr: BrokerCR,
   acceptor: Acceptor,
 ) => {
   if (!acceptor) {

@@ -18,7 +18,7 @@ import {
   Switch,
 } from '@patternfly/react-core';
 import { FC, useContext, useState } from 'react';
-import { K8sResourceCommon } from '../utils';
+import { BrokerCR } from '../utils';
 import { CertSecretSelector, ConfigType } from './broker-models';
 
 export type ConsoleConfigProps = {
@@ -29,14 +29,14 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
   const { cr } = useContext(BrokerCreationFormState);
   const dispatch = useContext(BrokerCreationFormDispatch);
 
-  const GetConsoleSSLEnabled = (brokerModel: K8sResourceCommon): boolean => {
+  const GetConsoleSSLEnabled = (brokerModel: BrokerCR): boolean => {
     if (brokerModel.spec?.console) {
       return brokerModel.spec.console.sslEnabled ? true : false;
     }
     return false;
   };
 
-  const GetConsoleExposeMode = (brokerModel: K8sResourceCommon): ExposeMode => {
+  const GetConsoleExposeMode = (brokerModel: BrokerCR): ExposeMode => {
     if (brokerModel.spec?.console) {
       return brokerModel.spec.console.exposeMode
         ? brokerModel.spec.console.exposeMode
@@ -45,7 +45,7 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
     return ExposeMode.route;
   };
 
-  const GetConsoleExpose = (brokerModel: K8sResourceCommon): boolean => {
+  const GetConsoleExpose = (brokerModel: BrokerCR): boolean => {
     if (brokerModel.spec?.console) {
       return brokerModel.spec.console.expose
         ? brokerModel.spec.console.expose

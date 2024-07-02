@@ -24,7 +24,6 @@ import {
   getIssuerForAcceptor,
   getIssuerIngressHostForAcceptor,
 } from '../../../../reducers/7.12/reducer';
-import { Metrics } from '../../../../metrics';
 import { Loading } from '../../../../shared-components';
 import {
   Acceptor,
@@ -32,6 +31,7 @@ import {
   BrokerCR,
   SecretResource,
 } from '../../../../utils';
+import { Metrics } from './Metrics';
 
 const useGetIssuerCa = (
   cr: BrokerCR,

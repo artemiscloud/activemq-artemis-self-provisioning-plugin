@@ -1,9 +1,9 @@
-import { useTranslation } from '../i18n';
+import { useTranslation } from '../../../../i18n';
 import {
   TableColumn,
   VirtualizedTable,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { Address } from '../openapi/jolokia/requests';
+import { Address } from '../../../../openapi/jolokia/requests';
 import { AddressRow } from './AddressRow';
 import {
   Page,

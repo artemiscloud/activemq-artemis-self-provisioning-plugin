@@ -1,7 +1,7 @@
 import { FC, useContext } from 'react';
 import { Addresses } from './Address.component';
-import { AuthContext } from '../utils';
-import { useJolokiaServiceGetAddresses } from '../openapi/jolokia/queries';
+import { AuthContext } from '../../../../utils';
+import { useJolokiaServiceGetAddresses } from '../../../../openapi/jolokia/queries';
 
 const AddressContainer: FC = () => {
   const authToken = useContext(AuthContext);

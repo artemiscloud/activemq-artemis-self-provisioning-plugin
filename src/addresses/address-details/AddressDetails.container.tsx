@@ -1,6 +1,5 @@
 import { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { AddressDetailsBreadcrumb } from '../../shared-components/AddressDetailsBreadcrumb/AddressDetailsBreadcrumb';
 import {
   Alert,
   Button,
@@ -28,6 +27,7 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OpenAPI as OpenAPIConfig } from '../../openapi/jolokia/requests/core/OpenAPI';
 import { AddressDetails } from './AddressDetails.component';
+import { AddressDetailsBreadcrumb } from './AddressDetailsBreadcrumb/AddressDetailsBreadcrumb';
 
 const AddressDetailsPage: FC = () => {
   const { t } = useTranslation();

@@ -1,4 +1,4 @@
-import { screen, fireEvent, render, waitForI18n } from '../../test-utils';
+import { screen, fireEvent, render, waitForI18n } from '../../../../test-utils';
 import { BrokerDetailsBreadcrumb } from './BrokerDetailsBreadcrumb';
 import { MemoryRouter } from 'react-router-dom';
 

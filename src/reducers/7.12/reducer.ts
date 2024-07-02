@@ -6,8 +6,8 @@ import {
   ResourceTemplate,
 } from '../../utils';
 import { createContext } from 'react';
-import { ConfigType } from '../../configuration/broker-models';
 import { SelectOptionObject } from '@patternfly/react-core';
+import { ConfigType } from '../../shared-components/FormView/BrokerProperties/ConfigurationPage/ConfigurationPage';
 
 export enum EditorType {
   BROKER = 'broker',

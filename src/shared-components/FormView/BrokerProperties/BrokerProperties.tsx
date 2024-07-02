@@ -1,8 +1,4 @@
 import {
-  ConfigType,
-  GetConfigurationPage,
-} from '../../../../configuration/broker-models';
-import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -13,6 +9,10 @@ import {
   SplitItem,
 } from '@patternfly/react-core';
 import { CSSProperties, FC, useState } from 'react';
+import {
+  ConfigType,
+  GetConfigurationPage,
+} from './ConfigurationPage/ConfigurationPage';
 
 export type BrokerIDProp = {
   brokerId: number;

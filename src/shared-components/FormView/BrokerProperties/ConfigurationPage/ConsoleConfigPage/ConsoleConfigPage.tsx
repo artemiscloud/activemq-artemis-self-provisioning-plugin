@@ -3,7 +3,7 @@ import {
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
   ExposeMode,
-} from '../reducers/7.12/reducer';
+} from '../../../../../reducers/7.12/reducer';
 
 import {
   Checkbox,
@@ -18,8 +18,9 @@ import {
   Switch,
 } from '@patternfly/react-core';
 import { FC, useContext, useState } from 'react';
-import { BrokerCR } from '../utils';
-import { CertSecretSelector, ConfigType } from './broker-models';
+import { BrokerCR } from '../../../../../utils';
+import { ConfigType } from '../ConfigurationPage';
+import { CertSecretSelector } from '../CertSecretSelector/CertSecretSelector';
 
 export type ConsoleConfigProps = {
   brokerId: number;

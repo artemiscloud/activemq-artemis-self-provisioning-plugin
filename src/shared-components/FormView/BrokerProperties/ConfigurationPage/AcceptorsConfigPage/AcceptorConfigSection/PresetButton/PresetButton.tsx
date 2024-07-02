@@ -6,7 +6,6 @@ import {
   CardTitle,
   Form,
   FormFieldGroup,
-  FormFieldGroupExpandable,
   FormFieldGroupHeader,
   FormGroup,
   Modal,
@@ -15,17 +14,19 @@ import {
   SimpleListGroup,
 } from '@patternfly/react-core';
 import { CSSProperties, FC, useContext, useState } from 'react';
+
+import { useTranslation } from '../../../../../../../i18n';
+import { Acceptor } from '../../../../../../../utils';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
-  getAcceptorFromCertManagerResourceTemplate,
   getCertManagerResourceTemplateFromAcceptor,
-} from '../reducers/7.12/reducer';
-import { useTranslation } from '../i18n';
-import { Acceptor, ResourceTemplate } from '../utils';
-import { SelectIssuerDrawer } from './cert-manager';
-import { ConfirmDeleteModal } from './confirmation-modal';
+} from '../../../../../../../reducers/7.12/reducer';
+import { SelectIssuerDrawer } from '../SelectIssuerDrawer/SelectIssuerDrawer';
+type PreconfigurationButtonProps = {
+  acceptor: Acceptor;
+};
 
 export type WithAcceptorProps = {
   acceptor?: Acceptor;
@@ -177,77 +178,6 @@ const AddPresetModal: FC<AddIssuerAnnotationModalProps> = ({
   );
 };
 
-type ResourceTemplateProps = {
-  resourceTemplate: ResourceTemplate;
-};
-
-const CertManagerPreset: FC<ResourceTemplateProps> = ({ resourceTemplate }) => {
-  const { cr } = useContext(BrokerCreationFormState);
-  const { t } = useTranslation();
-  const dispatch = useContext(BrokerCreationFormDispatch);
-  const acceptor = getAcceptorFromCertManagerResourceTemplate(
-    cr,
-    resourceTemplate,
-  );
-  return (
-    <FormFieldGroupExpandable
-      isExpanded
-      toggleAriaLabel="Details"
-      header={
-        <FormFieldGroupHeader
-          titleText={{
-            text: 'Cert-Manager issuer & Ingress exposure',
-            id: 'nested-field-cert-manager-annotation-id' + acceptor.name,
-          }}
-          titleDescription="Configuration items for the preset"
-          actions={
-            <ConfirmDeleteModal
-              subject="preset"
-              action={() =>
-                dispatch({
-                  operation:
-                    ArtemisReducerOperations.deletePEMGenerationForAcceptor,
-                  payload: acceptor.name,
-                })
-              }
-            />
-          }
-        />
-      }
-    >
-      <FormGroup label={t('select_issuer')} isRequired>
-        <SelectIssuerDrawer
-          selectedIssuer={
-            resourceTemplate.annotations['cert-manager.io/issuer']
-          }
-          setSelectedIssuer={(issuer: string) => {
-            dispatch({
-              operation: ArtemisReducerOperations.updateAnnotationIssuer,
-              payload: {
-                acceptorName: acceptor.name,
-                newIssuer: issuer,
-              },
-            });
-          }}
-          clearIssuer={() => {
-            dispatch({
-              operation: ArtemisReducerOperations.updateAnnotationIssuer,
-              payload: {
-                acceptorName: acceptor.name,
-                newIssuer: '',
-              },
-            });
-          }}
-        />
-      </FormGroup>
-    </FormFieldGroupExpandable>
-  );
-};
-
-type PreconfigurationButtonProps = {
-  acceptor: Acceptor;
-};
-
 export const PresetButton: FC<PreconfigurationButtonProps> = ({ acceptor }) => {
   const { t } = useTranslation();
   const [showPresetModal, setShowPresetModal] = useState(false);
@@ -264,26 +194,6 @@ export const PresetButton: FC<PreconfigurationButtonProps> = ({ acceptor }) => {
       >
         {t('apply_preset')}
       </Button>
-    </>
-  );
-};
-
-type ListPresetsProps = {
-  acceptor: Acceptor;
-};
-
-export const ListPresets: FC<ListPresetsProps> = ({ acceptor }) => {
-  const { cr } = useContext(BrokerCreationFormState);
-  const certManagerRt = getCertManagerResourceTemplateFromAcceptor(
-    cr,
-    acceptor,
-  );
-  if (!certManagerRt) {
-    return <></>;
-  }
-  return (
-    <>
-      {certManagerRt && <CertManagerPreset resourceTemplate={certManagerRt} />}
     </>
   );
 };

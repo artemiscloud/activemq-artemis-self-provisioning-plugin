@@ -1,203 +1,39 @@
 import {
-  ActionGroup,
-  Alert,
-  Button,
   Checkbox,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  EmptyStateVariant,
   FormFieldGroup,
-  FormFieldGroupExpandable,
   FormFieldGroupHeader,
   FormGroup,
   FormSelect,
   FormSelectOption,
   Grid,
-  Popover,
-  Select,
-  SelectOption,
-  SelectVariant,
   Switch,
   TextInput,
-  Title,
 } from '@patternfly/react-core';
-import { Form } from '@patternfly/react-core/dist/js';
-import {
-  BellIcon,
-  CubesIcon,
-  WarningTriangleIcon,
-} from '@patternfly/react-icons';
-import { FC, useContext, useState } from 'react';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
   ExposeMode,
   getAcceptor,
-  getCertManagerResourceTemplateFromAcceptor,
   getConfigBindToAllInterfaces,
   getConfigFactoryClass,
   getConfigHost,
   getConfigPort,
   getConfigProtocols,
   getConfigSSLEnabled,
-  listConfigs,
-} from '../reducers/7.12/reducer';
-import { useTranslation } from '../i18n';
-import { ListPresets, PresetButton } from './acceptors-annotations';
-import {
-  CertSecretSelector,
-  ConfigRenamingModal,
-  ConfigType,
-  ConfigTypeContext,
-} from './broker-models';
-import { ConfirmDeleteModal } from './confirmation-modal';
-import { OtherParameters } from './other-parameters';
+} from '../../../../../../../reducers/7.12/reducer';
+import { FC, useContext } from 'react';
+import { ConfigType } from '../../../ConfigurationPage';
+import { useTranslation } from '../../../../../../../i18n';
+import { PresetAlertPopover } from './PresetAlertPopover/PresetAlertPopover';
+import { SelectExposeMode } from './SelectExposeMode/SelectExposeMode';
+import { OtherParameters } from './OtherParameters/OtherParameters';
+import { ListPresets } from './ListPresets/ListPresets';
+import { CertSecretSelector } from '../../../CertSecretSelector/CertSecretSelector';
 
-type PresetCautionProps = {
-  configType: ConfigType;
-  configName: string;
-  kind: 'caution' | 'warning';
-};
-
-export const PresetAlertPopover: FC<PresetCautionProps> = ({
-  configType,
-  configName,
-  kind,
-}) => {
-  const { cr } = useContext(BrokerCreationFormState);
-  const { t } = useTranslation();
-  const hasCertManagerPreset =
-    configType === ConfigType.acceptors
-      ? getCertManagerResourceTemplateFromAcceptor(
-          cr,
-          getAcceptor(cr, configName),
-        ) !== undefined
-      : false;
-
-  if (!hasCertManagerPreset) {
-    return <></>;
-  }
-
-  return (
-    <Popover
-      headerContent={
-        <>
-          {kind === 'caution' ? (
-            <Alert
-              variant="default"
-              title={t('preset_caution')}
-              isPlain
-              isInline
-            />
-          ) : (
-            <Alert
-              variant="warning"
-              title={t('preset_warning')}
-              isPlain
-              isInline
-            />
-          )}
-        </>
-      }
-      bodyContent=""
-    >
-      <button
-        type="button"
-        aria-label="More info for name field"
-        onClick={(e) => e.preventDefault()}
-        aria-describedby="simple-form-name-01"
-        className="pf-c-form__group-label-help"
-      >
-        <>
-          {kind === 'caution' ? (
-            <BellIcon noVerticalAlign />
-          ) : (
-            <WarningTriangleIcon noVerticalAlign />
-          )}
-        </>
-      </button>
-    </Popover>
-  );
-};
-
-export type AcceptorProps = {
+type AcceptorProps = {
   configName: string;
   configType: ConfigType;
-};
-
-type SelectExposeModeProps = {
-  selectedExposeMode: string;
-  setSelectedExposeMode: (issuerName: string) => void;
-  clearExposeMode: () => void;
-  configName: string;
-  configType: ConfigType;
-};
-
-export const SelectExposeMode: FC<SelectExposeModeProps> = ({
-  selectedExposeMode: selected,
-  setSelectedExposeMode: setSelected,
-  clearExposeMode: clear,
-  configName,
-  configType,
-}) => {
-  const { t } = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
-  const options = Object.values(ExposeMode).map((exposeMode) => (
-    <SelectOption key={exposeMode} value={exposeMode} />
-  ));
-
-  const onSelect = (_event: any, selection: string, isPlaceholder: any) => {
-    if (isPlaceholder) clearSelection();
-    else {
-      setSelected(selection);
-      setIsOpen(false);
-    }
-  };
-
-  const clearSelection = () => {
-    clear();
-    setIsOpen(false);
-  };
-
-  const filterMatchingOptions = (_: any, value: string) => {
-    if (!value) {
-      return options;
-    }
-
-    const input = new RegExp(value, 'i');
-    return options.filter((child) => input.test(child.props.value));
-  };
-
-  const titleId = 'typeahead-select-issuer';
-  return (
-    <FormGroup
-      label={t('select_expose_mode')}
-      labelIcon={
-        <PresetAlertPopover
-          configName={configName}
-          configType={configType}
-          kind="caution"
-        />
-      }
-    >
-      <Select
-        variant={SelectVariant.typeahead}
-        typeAheadAriaLabel={t('select_expose_mode')}
-        onToggle={() => setIsOpen(!isOpen)}
-        onSelect={onSelect}
-        onClear={clearSelection}
-        onFilter={filterMatchingOptions}
-        selections={selected}
-        isOpen={isOpen}
-        aria-labelledby={titleId}
-        isGrouped
-      >
-        {options}
-      </Select>
-    </FormGroup>
-  );
 };
 
 //this is shared by acceptor config and connector config
@@ -608,129 +444,5 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
         </FormFieldGroup>
       )}
     </>
-  );
-};
-
-export type AcceptorConfigSectionProps = {
-  configType: ConfigType;
-  configName: string;
-};
-
-export const AcceptorConfigSection: FC<AcceptorConfigSectionProps> = ({
-  configType,
-  configName,
-}) => {
-  const dispatch = useContext(BrokerCreationFormDispatch);
-  const onDelete = () => {
-    if (configType === ConfigType.acceptors) {
-      dispatch({
-        operation: ArtemisReducerOperations.deleteAcceptor,
-        payload: configName,
-      });
-    }
-    if (configType === ConfigType.connectors) {
-      dispatch({
-        operation: ArtemisReducerOperations.deleteConnector,
-        payload: configName,
-      });
-    }
-  };
-
-  const { cr } = useContext(BrokerCreationFormState);
-  return (
-    <FormFieldGroupExpandable
-      isExpanded
-      toggleAriaLabel="Details"
-      header={
-        <FormFieldGroupHeader
-          titleText={{
-            text: configName,
-            id: 'configName' + configName,
-          }}
-          titleDescription={configName + "'s details"}
-          actions={
-            <>
-              {configType === ConfigType.acceptors && (
-                <PresetButton acceptor={getAcceptor(cr, configName)} />
-              )}
-              <ConfigRenamingModal initName={configName} />
-              <ConfirmDeleteModal
-                subject={
-                  configType === ConfigType.acceptors ? 'acceptor' : 'connector'
-                }
-                action={onDelete}
-              />
-            </>
-          }
-        />
-      }
-    >
-      <AcceptorConfigPage configType={configType} configName={configName} />
-    </FormFieldGroupExpandable>
-  );
-};
-
-export type AcceptorsConfigProps = {
-  brokerId: number;
-};
-
-export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
-  const { cr } = useContext(BrokerCreationFormState);
-  const configType = useContext(ConfigTypeContext);
-  const configs = listConfigs(configType, cr) as {
-    name: string;
-  }[];
-  const dispatch = useContext(BrokerCreationFormDispatch);
-
-  const addNewConfig = () => {
-    if (configType === ConfigType.acceptors) {
-      dispatch({
-        operation: ArtemisReducerOperations.addAcceptor,
-      });
-    }
-    if (configType === ConfigType.connectors) {
-      dispatch({
-        operation: ArtemisReducerOperations.addConnector,
-      });
-    }
-  };
-
-  const name = configType === ConfigType.acceptors ? 'acceptor' : 'connector';
-  const pronoun = configType === ConfigType.acceptors ? 'an' : 'a';
-  if (configs.length === 0) {
-    return (
-      <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={CubesIcon} />
-        <Title headingLevel="h4" size="lg">
-          No {name} configured
-        </Title>
-        <EmptyStateBody>
-          There's no {name} in your configuration, to add one click on the
-          button below.{' '}
-        </EmptyStateBody>
-        <Button variant="primary" onClick={addNewConfig}>
-          Add {pronoun} {name}
-        </Button>
-      </EmptyState>
-    );
-  }
-
-  return (
-    <Form isHorizontal isWidthLimited>
-      {configs.map((config, index) => {
-        return (
-          <AcceptorConfigSection
-            key={config.name + brokerId + index}
-            configType={configType}
-            configName={config.name}
-          />
-        );
-      })}
-      <ActionGroup>
-        <Button variant="primary" onClick={addNewConfig}>
-          Add {pronoun} {name}
-        </Button>
-      </ActionGroup>
-    </Form>
   );
 };

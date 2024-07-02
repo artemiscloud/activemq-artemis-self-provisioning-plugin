@@ -8,7 +8,7 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import { useTranslation } from '../i18n';
+import { useTranslation } from '../../../../../../i18n';
 import x509, { TextConverter, TextObject } from '@peculiar/x509';
 import { FC, useEffect, useState } from 'react';
 import { AsnConvert } from '@peculiar/asn1-schema';
@@ -262,7 +262,7 @@ interface CertificateDetailsModalProps {
   onCloseModal: () => void;
 }
 
-const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
+export const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
   isModalOpen,
   certs,
   secretName,
@@ -309,5 +309,3 @@ const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
     </Modal>
   );
 };
-
-export { CertificateDetailsModal };

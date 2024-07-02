@@ -1,5 +1,5 @@
+import { YamlEditorView } from '../../../../shared-components/YamlEditorView/YamlEditorView';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { YamlEditorView } from './YamlEditorView';
 
 export default {
   title: 'Components/AddBrokerForm',

@@ -1,13 +1,15 @@
 import { FC, useContext } from 'react';
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant, Divider } from '@patternfly/react-core';
-import { YamlEditorView, EditorToggle, FormView } from './components';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
   EditorType,
 } from '../../reducers/7.12/reducer';
+import { FormView } from '../../shared-components/FormView/FormView';
+import { YamlEditorView } from '../../shared-components/YamlEditorView/YamlEditorView';
+import { EditorToggle } from './components/EditorToggle';
 
 type AddBrokerProps = {
   onCreateBroker: (data?: K8sResourceCommon) => void;

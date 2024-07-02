@@ -1,18 +1,25 @@
 import { FC, Suspense, useContext } from 'react';
-import { Alert, AlertVariant, AlertGroup, Page } from '@patternfly/react-core';
+import {
+  Alert,
+  AlertVariant,
+  AlertGroup,
+  Page,
+  ActionGroup,
+  Button,
+  ButtonVariant,
+} from '@patternfly/react-core';
 import {
   CodeEditor,
   useAccessReview,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { AMQBrokerModel, BrokerCR } from '../../../../utils';
-import { Loading } from '../../../../shared-components';
-import { useTranslation } from '../../../../i18n';
+import { AMQBrokerModel, BrokerCR } from '../../utils';
+import { Loading } from '../../shared-components';
+import { useTranslation } from '../../i18n';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
-} from '../../../../reducers/7.12/reducer';
-import { BrokerActionGroup } from './ActionGroup';
+} from '../../reducers/7.12/reducer';
 import { useHistory } from 'react-router';
 import YAML from 'yaml';
 
@@ -24,6 +31,31 @@ export type YamlEditorViewProps = {
     variant: AlertVariant;
   };
   isUpdate: boolean;
+};
+
+interface BrokerActionGroupProps {
+  isUpdate: boolean;
+  onSubmit: () => void;
+  onCancel: () => void;
+}
+
+const BrokerActionGroup: FC<BrokerActionGroupProps> = ({
+  isUpdate,
+  onSubmit,
+  onCancel,
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <ActionGroup>
+      <Button variant={ButtonVariant.primary} type="submit" onClick={onSubmit}>
+        {isUpdate ? t('apply') : t('create')}
+      </Button>
+      <Button variant={ButtonVariant.secondary} onClick={onCancel}>
+        {t('cancel')}
+      </Button>
+    </ActionGroup>
+  );
 };
 
 const YamlEditorView: FC<YamlEditorViewProps> = ({

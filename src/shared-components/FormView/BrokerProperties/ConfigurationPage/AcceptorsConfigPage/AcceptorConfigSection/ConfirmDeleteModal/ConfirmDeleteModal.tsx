@@ -8,7 +8,7 @@ import {
 } from '@patternfly/react-core';
 import { TrashIcon } from '@patternfly/react-icons';
 import { FC, useState } from 'react';
-import { useTranslation } from '../i18n';
+import { useTranslation } from '../../../../../../../i18n';
 
 type ConfirmDeleteProps = {
   subject: string;

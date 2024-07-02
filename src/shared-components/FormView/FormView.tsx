@@ -21,13 +21,16 @@ import {
 } from '@patternfly/react-core';
 import { FC, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useTranslation } from '../../../../i18n';
+import { useTranslation } from '../../i18n';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
-} from '../../../../reducers/7.12/reducer';
-import { BrokerProperties, BrokerPropertiesList } from './BrokerProperties';
+} from '../../reducers/7.12/reducer';
+import {
+  BrokerProperties,
+  BrokerPropertiesList,
+} from './BrokerProperties/BrokerProperties';
 
 type FormViewProps = {
   onCreateBroker: (formValues: K8sResourceCommon) => void;

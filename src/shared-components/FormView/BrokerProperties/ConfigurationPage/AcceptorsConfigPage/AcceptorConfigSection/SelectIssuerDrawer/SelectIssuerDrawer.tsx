@@ -1,6 +1,10 @@
-import { useTranslation } from '../i18n';
-import { BrokerCreationFormState } from '../reducers/7.12/reducer';
-import { CertIssuerModel, CertModel, IssuerResource } from '../utils';
+import { useTranslation } from '../../../../../../../i18n';
+import { BrokerCreationFormState } from '../../../../../../../reducers/7.12/reducer';
+import {
+  CertIssuerModel,
+  CertModel,
+  IssuerResource,
+} from '../../../../../../../utils';
 import {
   RedExclamationCircleIcon,
   k8sCreate,

@@ -1,52 +1,4 @@
-import {
-  k8sCreate,
-  useK8sWatchResource,
-} from '@openshift-console/dynamic-plugin-sdk';
-import {
-  Alert,
-  Button,
-  Divider,
-  Drawer,
-  DrawerActions,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerContentBody,
-  DrawerHead,
-  DrawerPanelContent,
-  Dropdown,
-  DropdownItem,
-  FormGroup,
-  InputGroup,
-  KebabToggle,
-  Modal,
-  ModalVariant,
-  Page,
-  Select,
-  SelectGroup,
-  SelectOption,
-  SelectVariant,
-  Stack,
-  StackItem,
-  Text,
-  TextInput,
-  Title,
-  Tooltip,
-  ValidatedOptions,
-} from '@patternfly/react-core';
-import { InfoCircleIcon } from '@patternfly/react-icons';
-import { SelectOptionObject } from '@patternfly/react-core/dist/js';
-import * as x509 from '@peculiar/x509';
-import base64 from 'base-64';
-import {
-  FC,
-  PropsWithChildren,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { FC, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
@@ -54,70 +6,50 @@ import {
   getAcceptor,
   getCertManagerResourceTemplateFromAcceptor,
   getConfigSecret,
-  listConfigs,
-} from '../reducers/7.12/reducer';
-import { useTranslation } from '../i18n';
+} from '../../../../../reducers/7.12/reducer';
 import {
   CertIssuerModel,
   CertModel,
   K8sResourceKind,
   SecretModel,
-} from '../utils';
-import { CertificateDetailsModal } from './CertificateDetailsModal';
-import { AcceptorsConfigPage, PresetAlertPopover } from './acceptors-config';
-import { ConsoleConfigPage } from './console-config';
+} from '../../../../../utils';
+import {
+  k8sCreate,
+  useK8sWatchResource,
+} from '@openshift-console/dynamic-plugin-sdk';
+import * as x509 from '@peculiar/x509';
+import {
+  Alert,
+  Button,
+  Drawer,
+  DrawerActions,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerContentBody,
+  DrawerHead,
+  DrawerPanelContent,
+  FormGroup,
+  InputGroup,
+  Select,
+  SelectGroup,
+  SelectOption,
+  SelectOptionObject,
+  SelectVariant,
+  Tooltip,
+} from '@patternfly/react-core';
 import { t } from 'i18next';
-
-export const enum ConfigType {
-  connectors = 'connectors',
-  acceptors = 'acceptors',
-  console = 'console',
-}
-
-export type BrokerComponentConfigProps = {
-  category: string;
-};
-
-export const BrokerComponentConfig: FC<
-  PropsWithChildren<BrokerComponentConfigProps>
-> = ({ category, children }) => {
-  return (
-    <Stack>
-      <StackItem>
-        <Title headingLevel="h2">{category}</Title>
-      </StackItem>
-      <StackItem isFilled>{children}</StackItem>
-    </Stack>
-  );
-};
-
-export type BrokerConfigProps = {
-  brokerId: number;
-  target: any;
-  isPerBrokerConfig: boolean;
-};
-
-export type CertSecretSelectorProps = {
-  namespace: string;
-  isCa: boolean;
-  configType: ConfigType;
-  configName: string;
-  canSetCustomNames?: boolean;
-};
+import base64 from 'base-64';
+import { InfoCircleIcon } from '@patternfly/react-icons';
+import { CertificateDetailsModal } from './CertificateDetailsModal/CertificateDetailsModal';
+import { PresetAlertPopover } from '../AcceptorsConfigPage/AcceptorConfigSection/AcceptorConfigPage/PresetAlertPopover/PresetAlertPopover';
+import { ConfigType } from '../ConfigurationPage';
 
 const secretGroupVersionKind = {
   group: 'core',
   kind: 'Secret',
   version: 'v1',
 };
-type CreateSecretOptionsPropTypes = {
-  customOptions?: string[];
-  certManagerSecrets: K8sResourceKind[];
-  legacySecrets: K8sResourceKind[];
-  configType: ConfigType;
-  configName: string;
-  isCa: boolean;
-};
+
 const useCreateSecretOptions = ({
   customOptions,
   certManagerSecrets,
@@ -193,6 +125,23 @@ const useCreateSecretOptions = ({
     ),
   ];
 };
+
+type CreateSecretOptionsPropTypes = {
+  customOptions?: string[];
+  certManagerSecrets: K8sResourceKind[];
+  legacySecrets: K8sResourceKind[];
+  configType: ConfigType;
+  configName: string;
+  isCa: boolean;
+};
+type CertSecretSelectorProps = {
+  namespace: string;
+  isCa: boolean;
+  configType: ConfigType;
+  configName: string;
+  canSetCustomNames?: boolean;
+};
+
 export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   namespace,
   isCa,
@@ -787,208 +736,5 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
         </DrawerContent>
       </Drawer>
     </FormGroup>
-  );
-};
-
-export const ConfigCategoryDescPage: FC<string> = (category: string) => {
-  const { t } = useTranslation();
-  return (
-    <Page>
-      <Title headingLevel="h2">Configuring {category}</Title>
-      <div className="pf-u-pt-xl"></div>
-      <Divider orientation={{ default: 'horizontal' }} />
-      <Text>{t('choose_existing_to_edit')}</Text>
-    </Page>
-  );
-};
-
-export const ConfigTypeContext = createContext<ConfigType>(
-  ConfigType.acceptors,
-);
-
-export const GetConfigurationPage: FC<BrokerConfigProps> = ({
-  brokerId,
-  target,
-  isPerBrokerConfig,
-}) => {
-  const { t } = useTranslation();
-  if (isPerBrokerConfig) {
-    return <Text>{t('broker_config_disabled')}</Text>;
-  }
-
-  const configType: ConfigType = target;
-
-  if (target) {
-    return (
-      <ConfigTypeContext.Provider value={configType}>
-        {target === 'console' ? (
-          <ConsoleConfigPage brokerId={brokerId} />
-        ) : (
-          <AcceptorsConfigPage brokerId={brokerId} />
-        )}
-      </ConfigTypeContext.Provider>
-    );
-  }
-  return <Text>{t('broker_configuration_page')}</Text>;
-};
-
-export type AcceptorDropDownProps = {
-  compKey: string;
-  compType: ConfigType;
-  brokerId: number;
-  configName: string;
-  onDelete: () => void;
-};
-
-export const AcceptorDropDown: FC<AcceptorDropDownProps> = ({
-  compKey,
-  compType,
-  brokerId,
-  configName,
-  onDelete,
-}) => {
-  const [isAcceptorOpen, setIsAcceptorOpen] = useState(false);
-  const dispatch = useContext(BrokerCreationFormDispatch);
-
-  const onToggleAcceptor = (isOpen: boolean) => {
-    setIsAcceptorOpen(isOpen);
-  };
-
-  const onDeleteAcceptorSelect = () => {
-    setIsAcceptorOpen(!isAcceptorOpen);
-  };
-
-  const onDeleteAcceptor = (_event: MouseEvent) => {
-    if (compType === ConfigType.acceptors) {
-      dispatch({
-        operation: ArtemisReducerOperations.deleteAcceptor,
-        payload: configName,
-      });
-    }
-    if (compType === ConfigType.connectors) {
-      dispatch({
-        operation: ArtemisReducerOperations.deleteConnector,
-        payload: configName,
-      });
-    }
-    onDelete();
-  };
-
-  const AcceptorActionItems = () => {
-    const { t } = useTranslation();
-    return [
-      <DropdownItem key={compKey + 'ActionItems0'} onClick={onDeleteAcceptor}>
-        {t('delete')}
-      </DropdownItem>,
-    ];
-  };
-
-  return (
-    <Dropdown
-      key={compKey + 'Dropdown'}
-      onSelect={onDeleteAcceptorSelect}
-      toggle={
-        <KebabToggle
-          key={'Acceptors.' + brokerId + '.' + configName}
-          onToggle={onToggleAcceptor}
-        />
-      }
-      isOpen={isAcceptorOpen}
-      isPlain
-      dropdownItems={AcceptorActionItems()}
-    />
-  );
-};
-
-export type ConfigRenamingModalProps = {
-  initName: string;
-};
-
-export const ConfigRenamingModal: FC<ConfigRenamingModalProps> = ({
-  initName,
-}) => {
-  const { t } = useTranslation();
-  const configType = useContext(ConfigTypeContext);
-  const dispatch = useContext(BrokerCreationFormDispatch);
-  const [newName, setNewName] = useState(initName);
-  const [toolTip, setTooltip] = useState('');
-  const [validateStatus, setValidateStatus] = useState(null);
-  const { cr } = useContext(BrokerCreationFormState);
-  const uniqueSet = listConfigs(configType, cr, 'set') as Set<string>;
-
-  const handleNewName = () => {
-    if (configType === ConfigType.acceptors) {
-      dispatch({
-        operation: ArtemisReducerOperations.setAcceptorName,
-        payload: {
-          oldName: initName,
-          newName: newName,
-        },
-      });
-    }
-    if (configType === ConfigType.connectors) {
-      dispatch({
-        operation: ArtemisReducerOperations.setConnectorName,
-        payload: {
-          oldName: initName,
-          newName: newName,
-        },
-      });
-    }
-  };
-
-  const validateName = (value: string) => {
-    setNewName(value);
-    if (value === '') {
-      setValidateStatus(ValidatedOptions.error);
-      setTooltip(t('name_not_empty'));
-      return false;
-    }
-    if (uniqueSet?.has(value)) {
-      setValidateStatus(ValidatedOptions.error);
-      setTooltip(t('name_already_exists'));
-      return false;
-    }
-    setValidateStatus(ValidatedOptions.success);
-    setTooltip(t('name_available'));
-    return true;
-  };
-
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <>
-      <Modal
-        variant={ModalVariant.small}
-        title="Rename"
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        actions={[
-          <Button
-            key="confirm"
-            variant="primary"
-            onClick={handleNewName}
-            isDisabled={validateStatus !== ValidatedOptions.success}
-          >
-            {t('confirm')}
-          </Button>,
-          <Button key="cancel" variant="link" onClick={() => setIsOpen(false)}>
-            {t('cancel')}
-          </Button>,
-        ]}
-      >
-        <TextInput
-          value={newName}
-          onChange={validateName}
-          isRequired
-          validated={validateStatus}
-          type="text"
-          aria-label="name input panel"
-        />
-        <p>{toolTip}</p>
-      </Modal>
-      <Button variant="plain" onClick={() => setIsOpen(true)}>
-        {t('rename')}
-      </Button>
-    </>
   );
 };

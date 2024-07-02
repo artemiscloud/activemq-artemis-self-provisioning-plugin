@@ -3,9 +3,8 @@ import {
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
   getConfigOtherParams,
-} from '../reducers/7.12/reducer';
+} from '../../../../../../../../reducers/7.12/reducer';
 import { FC, useContext, useState } from 'react';
-import { ConfigType } from './broker-models';
 import {
   Button,
   InputGroup,
@@ -13,6 +12,7 @@ import {
   TextInput,
 } from '@patternfly/react-core';
 import { TrashIcon } from '@patternfly/react-icons';
+import { ConfigType } from '../../../../ConfigurationPage';
 
 type ParamProps = {
   paramKey: string;

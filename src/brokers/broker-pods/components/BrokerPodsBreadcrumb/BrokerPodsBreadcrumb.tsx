@@ -11,21 +11,19 @@ import {
   Level,
   LevelItem,
 } from '@patternfly/react-core';
-import { PreConfirmDeleteModal } from '../../brokers/view-brokers/components/PreConfirmDeleteModal/PreConfirmDeleteModal';
-import { useTranslation } from '../../i18n';
+import { PreConfirmDeleteModal } from '../../../view-brokers/components/PreConfirmDeleteModal';
+import { useTranslation } from '../../../../i18n';
 import { k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
-import { AMQBrokerModel } from '../../utils';
+import { AMQBrokerModel } from '../../../../utils';
 
-export type BrokerDetailsBreadcrumbProps = {
+export type BrokerPodsBreadcrumbProps = {
   name: string;
   namespace: string;
-  podName: string;
 };
 
-const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
+const BrokerPodsBreadcrumb: FC<BrokerPodsBreadcrumbProps> = ({
   name,
   namespace,
-  podName,
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -33,8 +31,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   const [_loadError, setLoadError] = useState<any>();
   const history = useHistory();
 
-  const redirectBrokerPath = `/k8s/ns/${namespace}/brokers`;
-  const redirectBrokerPodsPath = `/k8s/ns/${namespace}/brokers/${name}`;
+  const redirectPath = `/k8s/ns/${namespace}/brokers`;
 
   const onClickEditBroker = () => {
     history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
@@ -54,7 +51,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
       resource: { metadata: { name, namespace: namespace } },
     })
       .then(() => {
-        history.push(redirectBrokerPath);
+        history.push(redirectPath);
       })
       .catch((e) => {
         setLoadError(e.message);
@@ -90,22 +87,13 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
         <LevelItem>
           <Breadcrumb className="pf-u-mb-md">
             <BreadcrumbItem>
-              <Button
-                variant="link"
-                onClick={() => history.push(redirectBrokerPath)}
-              >
+              <Button variant="link" onClick={() => history.push(redirectPath)}>
                 {t('brokers')}
               </Button>
             </BreadcrumbItem>
-            <BreadcrumbItem>
-              <Button
-                variant="link"
-                onClick={() => history.push(redirectBrokerPodsPath)}
-              >
-                {t('broker')} {name}
-              </Button>
+            <BreadcrumbItem isActive>
+              {t('broker')} {name}
             </BreadcrumbItem>
-            <BreadcrumbItem isActive>{podName}</BreadcrumbItem>
           </Breadcrumb>
         </LevelItem>
         <LevelItem>
@@ -134,4 +122,4 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   );
 };
 
-export { BrokerDetailsBreadcrumb };
+export { BrokerPodsBreadcrumb };

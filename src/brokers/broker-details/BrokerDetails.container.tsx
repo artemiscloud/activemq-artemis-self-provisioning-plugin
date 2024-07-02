@@ -37,11 +37,11 @@ import {
   JolokiaQueueDetails,
   BrokerCR,
 } from '../../utils';
-import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBreadcrumb';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OpenAPI as OpenAPIConfig } from '../../openapi/jolokia/requests/core/OpenAPI';
 import { ClientsContainer } from './components/Clients';
 import { AddressContainer } from './components/Addresses/Address.container';
+import { BrokerDetailsBreadcrumb } from './components/BrokerDetailsBreadcrumb';
 
 const BrokerDetailsPage: FC = () => {
   const { t } = useTranslation();

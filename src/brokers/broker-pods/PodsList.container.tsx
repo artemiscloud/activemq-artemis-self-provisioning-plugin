@@ -7,7 +7,6 @@ import {
 import { K8sResourceKind } from '../../utils';
 import { useTranslation } from '../../i18n';
 import { PodsList } from './components/PodList';
-import { BrokerPodsBreadcrumb } from '../../shared-components/BrokerPodsBreadcrumb';
 import {
   EmptyState,
   EmptyStateBody,
@@ -18,6 +17,7 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { ErrorCircleOIcon, SearchIcon } from '@patternfly/react-icons';
+import { BrokerPodsBreadcrumb } from './components/BrokerPodsBreadcrumb';
 
 const PodsContainer: FC = () => {
   //states
@@ -50,7 +50,6 @@ const PodsContainer: FC = () => {
       setBrokerPods(filteredPods);
     }
   }, [pods, name, loaded, loadError]);
-
 
   return (
     <>

@@ -1,11 +1,8 @@
 import { FC } from 'react';
 import { Card, CardActions, CardHeader } from '@patternfly/react-core';
-import {
-  DropdownWithToggle,
-  IDropdownOption,
-} from '../../../../../../../shared-components';
 import { useTranslation } from '../../../../../../../i18n';
 import { MetricsType } from '../../utils';
+import { DropdownWithToggle, IDropdownOption } from '../DropDownWithToggle';
 
 export type MetricsActionsProps = {
   pollingTime: string;

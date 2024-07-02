@@ -23,7 +23,7 @@ import { FC, useState } from 'react';
 import {
   getIssuerForAcceptor,
   getIssuerIngressHostForAcceptor,
-} from '../../../../brokers/utils';
+} from '../../../../reducers/7.12/reducer';
 import { Metrics } from '../../../../metrics';
 import { Loading } from '../../../../shared-components';
 import {

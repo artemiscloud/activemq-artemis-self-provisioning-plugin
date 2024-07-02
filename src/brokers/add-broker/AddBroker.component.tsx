@@ -4,10 +4,10 @@ import { AlertVariant, Divider } from '@patternfly/react-core';
 import { YamlEditorView, EditorToggle, FormView } from './components';
 import {
   ArtemisReducerOperations,
-  BrokerCreationFormState,
   BrokerCreationFormDispatch,
+  BrokerCreationFormState,
   EditorType,
-} from '../utils';
+} from '../../reducers/7.12/reducer';
 
 type AddBrokerProps = {
   onCreateBroker: (data?: K8sResourceCommon) => void;

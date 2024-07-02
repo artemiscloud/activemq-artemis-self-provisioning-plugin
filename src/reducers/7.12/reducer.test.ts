@@ -5,7 +5,7 @@ import {
   ExposeMode,
   artemisCrReducer,
   newArtemisCRState,
-} from './add-broker';
+} from './reducer';
 
 describe('test the creation broker reducer', () => {
   const newOptionObject = (value: string): SelectOptionObject => {

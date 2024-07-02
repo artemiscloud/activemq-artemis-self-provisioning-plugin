@@ -9,9 +9,9 @@ import {
   BrokerCreationFormDispatch,
   newArtemisCRState,
   artemisCrReducer,
-  AddBrokerResourceValues,
   ArtemisReducerOperations,
-} from '../utils';
+} from '../../reducers/7.12/reducer';
+import { AddBrokerResourceValues } from '../../reducers/7.12/import-types';
 
 export interface AddBrokerProps {
   initialValues: AddBrokerResourceValues;

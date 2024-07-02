@@ -1,5 +1,5 @@
 import { useTranslation } from '../i18n';
-import { BrokerCreationFormState } from '../brokers/utils';
+import { BrokerCreationFormState } from '../reducers/7.12/reducer';
 import { CertIssuerModel, CertModel, IssuerResource } from '../utils';
 import {
   RedExclamationCircleIcon,

@@ -1,5 +1,5 @@
 import { K8sResourceCommon } from '../../utils';
-import { EditorType } from './add-broker';
+import { EditorType } from './reducer';
 
 export interface AddBrokerResourceValues {
   shouldShowYAMLMessage?: boolean;

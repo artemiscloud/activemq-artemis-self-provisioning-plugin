@@ -278,17 +278,15 @@ interface SetIsAcceptorExposedAction extends ArtemisReducerActionBase {
   };
 }
 
-type ActivatePEMGenerationForAcceptorPayload = {
-  /** the name of the acceptor */
-  acceptor: string;
-  /** the name of the issuer */
-  issuer: string;
-};
-
 interface ActivatePEMGenerationForAcceptorAction
   extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.activatePEMGenerationForAcceptor;
-  payload: ActivatePEMGenerationForAcceptorPayload;
+  payload: {
+    /** the name of the acceptor */
+    acceptor: string;
+    /** the name of the issuer */
+    issuer: string;
+  };
 }
 
 interface DeletePEMGenerationForAcceptorAction
@@ -332,17 +330,15 @@ interface SetBrokerNameAction extends ArtemisReducerActionBase {
   payload: string;
 }
 
-type ConsoleCredentialsPayload = {
-  /** the username to login to the console */
-  adminUser: string;
-  /** the password to login to the console */
-  adminPassword: string;
-};
-
 interface SetConsoleCredentialsAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setConsoleCredentials;
   /** the new credentials */
-  payload: ConsoleCredentialsPayload;
+  payload: {
+    /** the username to login to the console */
+    adminUser: string;
+    /** the password to login to the console */
+    adminPassword: string;
+  };
 }
 
 interface SetConsoleExposeAction extends ArtemisReducerActionBase {
@@ -369,170 +365,199 @@ interface SetEditorTypeAction extends ArtemisReducerActionBase {
   payload: EditorType;
 }
 
-type BindToAllInterfacesPayload = {
-  /** name of the element to update */
-  name: string;
-  /** bind to all the interfaces or not*/
-  bindToAllInterfaces: boolean;
-};
-
 interface SetAcceptorBindToAllInterfacesAction
   extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setAcceptorBindToAllInterfaces;
-  payload: BindToAllInterfacesPayload;
+  payload: {
+    /** name of the element to update */
+    name: string;
+    /** bind to all the interfaces or not*/
+    bindToAllInterfaces: boolean;
+  };
 }
 
 interface SetConnectorBindToAllInterfacesAction
   extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setConnectorBindToAllInterfaces;
-  payload: BindToAllInterfacesPayload;
+  payload: {
+    /** name of the element to update */
+    name: string;
+    /** bind to all the interfaces or not*/
+    bindToAllInterfaces: boolean;
+  };
 }
-
-type FactoryClassPayload = {
-  /** the name of the element */
-  name: string;
-  /** the java class to set */
-  class: 'invm' | 'netty';
-};
-
-type SetModelPayload = {
-  model: ArtemisCR;
-};
 
 interface UpdateAcceptorFactoryClassAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.updateAcceptorFactoryClass;
-  payload: FactoryClassPayload;
+  payload: {
+    /** the name of the element */
+    name: string;
+    /** the java class to set */
+    class: 'invm' | 'netty';
+  };
 }
 
 interface UpdateConnectorFactoryClassAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.updateConnectorFactoryClass;
-  payload: FactoryClassPayload;
+  payload: {
+    /** the name of the element */
+    name: string;
+    /** the java class to set */
+    class: 'invm' | 'netty';
+  };
 }
 
 interface SetModelAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setModel;
-  payload: SetModelPayload;
+  payload: {
+    model: ArtemisCR;
+  };
 }
-
-type UpdateConnectorHostPayload = {
-  /** the name of the configuration */
-  connectorName: string;
-  /** the new host of the configuration */
-  host: string;
-};
 
 interface SetConnectorHostAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setConnectorHost;
-  payload: UpdateConnectorHostPayload;
+  payload: {
+    /** the name of the configuration */
+    connectorName: string;
+    /** the new host of the configuration */
+    host: string;
+  };
 }
-
-type RenamePayload = {
-  /** the name of the element */
-  oldName: string;
-  /** the new name of the element */
-  newName: string;
-};
 
 interface SetAcceptorNameAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setAcceptorName;
-  payload: RenamePayload;
+  payload: {
+    /** the name of the element */
+    oldName: string;
+    /** the new name of the element */
+    newName: string;
+  };
 }
 
 interface SetConnectorNameAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setConnectorName;
-  payload: RenamePayload;
+  payload: {
+    /** the name of the element */
+    oldName: string;
+    /** the new name of the element */
+    newName: string;
+  };
 }
-
-type OtherParamsPayload = {
-  /** the name of the configuration */
-  name: string;
-  /** a comma separated list of extra parameters */
-  otherParams: Map<string, string>;
-};
 
 interface SetAcceptorOtherParamsAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setAcceptorOtherParams;
-  payload: OtherParamsPayload;
+  payload: {
+    /** the name of the configuration */
+    name: string;
+    /** a comma separated list of extra parameters */
+    otherParams: Map<string, string>;
+  };
 }
 
 interface SetConnectorOtherParamsAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setConnectorOtherParams;
-  payload: OtherParamsPayload;
+  payload: {
+    /** the name of the configuration */
+    name: string;
+    /** a comma separated list of extra parameters */
+    otherParams: Map<string, string>;
+  };
 }
-
-type PortPayload = {
-  /** the name of the configuration */
-  name: string;
-  /** the new port of the configuration */
-  port: number;
-};
 
 interface SetAcceptorPortAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setAcceptorPort;
-  payload: PortPayload;
+  payload: {
+    /** the name of the configuration */
+    name: string;
+    /** the new port of the configuration */
+    port: number;
+  };
 }
 
 interface SetConnectorPortAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setConnectorPort;
-  payload: PortPayload;
+  payload: {
+    /** the name of the configuration */
+    name: string;
+    /** the new port of the configuration */
+    port: number;
+  };
 }
-
-type ProtocolsPayload = {
-  /** the name of the configuration */
-  configName: string;
-  /** A comma separated list of protocols */
-  protocols: string;
-};
 
 interface SetAcceptorProtocolsAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setAcceptorProtocols;
-  payload: ProtocolsPayload;
+  payload: {
+    /** the name of the configuration */
+    configName: string;
+    /** A comma separated list of protocols */
+    protocols: string;
+  };
 }
 
 interface SetConnectorProtocolsAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setConnectorProtocols;
-  payload: ProtocolsPayload;
+  payload: {
+    /** the name of the configuration */
+    configName: string;
+    /** A comma separated list of protocols */
+    protocols: string;
+  };
 }
-
-type SSLEnabledPayload = {
-  /** the name of the element */
-  name: string;
-  /** if ssl is enabled or not */
-  sslEnabled: boolean;
-};
 
 interface SetAcceptorSSLEnabledAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setAcceptorSSLEnabled;
-  payload: SSLEnabledPayload;
+  payload: {
+    /** the name of the element */
+    name: string;
+    /** if ssl is enabled or not */
+    sslEnabled: boolean;
+  };
 }
 
 interface SetConnectorSSLEnabledAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setConnectorSSLEnabled;
-  payload: SSLEnabledPayload;
+  payload: {
+    /** the name of the element */
+    name: string;
+    /** if ssl is enabled or not */
+    sslEnabled: boolean;
+  };
 }
-
-type SecretPayload = {
-  /** the name of the configuration */
-  name: string;
-  /** the secret of the configuration, set to undefined to delete the secret*/
-  secret: SelectOptionObject | undefined;
-  /** the secret is a certificate */
-  isCa: boolean;
-};
 
 interface SetAcceptorSecretAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setAcceptorSecret;
-  payload: SecretPayload;
+  payload: {
+    /** the name of the configuration */
+    name: string;
+    /** the secret of the configuration, set to undefined to delete the secret*/
+    secret: SelectOptionObject | undefined;
+    /** the secret is a certificate */
+    isCa: boolean;
+  };
 }
 
 interface SetConnectorSecretAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setConnectorSecret;
-  payload: SecretPayload;
+  payload: {
+    /** the name of the configuration */
+    name: string;
+    /** the secret of the configuration, set to undefined to delete the secret*/
+    secret: SelectOptionObject | undefined;
+    /** the secret is a certificate */
+    isCa: boolean;
+  };
 }
 
 interface SetConsoleSecretAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setConsoleSecret;
-  payload: SecretPayload;
+  payload: {
+    /** the name of the configuration */
+    name: string;
+    /** the secret of the configuration, set to undefined to delete the secret*/
+    secret: SelectOptionObject | undefined;
+    /** the secret is a certificate */
+    isCa: boolean;
+  };
 }
 
 interface SetNamespaceAction extends ArtemisReducerActionBase {

@@ -25,7 +25,6 @@ import {
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n';
 import {
-  ClientsContainer,
   ConfigurationContainer,
   AddressContainer,
   OverviewContainer,
@@ -45,6 +44,7 @@ import {
 import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBreadcrumb';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OpenAPI as OpenAPIConfig } from '../../openapi/jolokia/requests/core/OpenAPI';
+import { ClientsContainer } from './components/Clients';
 
 const BrokerDetailsPage: FC = () => {
   const { t } = useTranslation();

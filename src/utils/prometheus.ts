@@ -9,31 +9,6 @@ const w = d * 7;
 const units: { [key: string]: number } = { w, d, h, m, s };
 
 /**
- * Converts a duration in milliseconds to a Prometheus time duration string like "1h 10m"
- * @param {number} ms - Time duration in milliseconds
- * @returns {string} The duration converted to a Prometheus time duration string
- * @example
- * ```
- * formatPrometheusDuration(65000) // Returns "1m 5s"
- * ```
- */
-export const formatPrometheusDuration = (ms: number) => {
-  if (!_.isFinite(ms) || ms < 0) {
-    return '';
-  }
-  let remaining = ms;
-  let str = '';
-  _.each(units, (factor: number, unit: string) => {
-    const n = Math.floor(remaining / factor);
-    if (n > 0) {
-      str += `${n}${unit} `;
-      remaining -= n * factor;
-    }
-  });
-  return _.trim(str);
-};
-
-/**
  * Converts a Prometheus time duration like "1h 10m 23s" to milliseconds
  * @param {string} duration - Prometheus time duration string
  * @returns {number} The duration converted to a Prometheus time duration string or 0 if the duration could not be parsed

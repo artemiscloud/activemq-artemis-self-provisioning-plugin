@@ -40,7 +40,7 @@ import {
   JolokiaAddressDetails,
   JolokiaAcceptorDetails,
   JolokiaQueueDetails,
-  K8sResourceCommon,
+  BrokerCR,
 } from '../../utils';
 import { BrokerDetailsBreadcrumb } from '../../shared-components/BrokerDetailsBreadcrumb';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -57,7 +57,7 @@ const BrokerDetailsPage: FC = () => {
     brokerName?: string;
     podName?: string;
   }>();
-  const [brokerDetails, setBrokerDetails] = useState<K8sResourceCommon>({});
+  const [brokerDetails, setBrokerDetails] = useState<BrokerCR>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
@@ -80,7 +80,7 @@ const BrokerDetailsPage: FC = () => {
     setLoading(true);
     k8sGet({ model: AMQBrokerModel, name: brokerName, ns: namespace })
       .then((broker: K8sResourceKind) => {
-        setBrokerDetails(broker as K8sResourceCommon);
+        setBrokerDetails(broker as BrokerCR);
       })
       .catch((e) => {
         setError(e.message);

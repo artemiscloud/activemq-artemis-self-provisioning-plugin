@@ -12,7 +12,7 @@ import {
   CodeEditor,
   useAccessReview,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { AMQBrokerModel, BrokerCR } from '../../utils';
+import { AMQBrokerModel, BrokerCR } from '../../k8s';
 import { Loading } from '../../shared-components';
 import { useTranslation } from '../../i18n';
 import {

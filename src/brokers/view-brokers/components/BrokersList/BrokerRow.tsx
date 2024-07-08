@@ -10,9 +10,8 @@ import { ActionsColumn, IAction } from '@patternfly/react-table';
 import {
   BrokerCR,
   BrokerConditionTypes,
-  getCondition,
-  getConditionString,
-} from '../../../../utils';
+  K8sResourceConditionStatus,
+} from '../../../../k8s';
 import { useTranslation } from '../../../../i18n';
 import {
   Button,
@@ -26,9 +25,16 @@ import {
 } from '@patternfly/react-core';
 import { K8sResourceCondition } from '@app/k8s';
 
+const getConditionOKCount = (conditions: K8sResourceCondition[]): number =>
+  conditions.filter((c) => c.status === K8sResourceConditionStatus.True).length;
+
+const getConditionString = (conditions: K8sResourceCondition[]): string =>
+  `${getConditionOKCount(conditions)} OK / ${conditions.length}`;
+
 type ConditionModalProps = {
   status: BrokerCR['status'];
 };
+
 const ConditionModal: FC<ConditionModalProps> = ({ status }) => {
   const [isOpen, setIsOpen] = useState(false);
   const conditions = status?.conditions
@@ -113,7 +119,9 @@ export const BrokerRow: FC<BrokerRowProps> = ({
   const size = obj.spec?.deploymentPlan?.size;
 
   const readyCondition = status
-    ? getCondition(obj.status.conditions, BrokerConditionTypes.Ready)
+    ? obj.status.conditions.find(
+        (c: K8sResourceCondition) => c.type === BrokerConditionTypes.Ready,
+      )
     : null;
 
   const rowActions: IAction[] = [

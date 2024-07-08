@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 //import { CardBrokerCPUUsageMetrics } from './CardBrokerCPUUsageMetrics';
-import { parsePrometheusDuration } from '../../../../../../../utils';
+import { parsePrometheusDuration } from '../../../../Overview/Metrics/utils';
 import { getMaxSamplesForSpan, valueFormatter } from '../../utils';
 import { useFetchCpuUsageMetrics } from '../../hooks';
 import { useTranslation } from '../../../../../../../i18n';

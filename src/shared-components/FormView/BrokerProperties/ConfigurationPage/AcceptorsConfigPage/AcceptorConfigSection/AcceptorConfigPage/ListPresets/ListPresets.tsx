@@ -6,7 +6,7 @@ import {
 import { FC, useContext } from 'react';
 
 import { useTranslation } from '../../../../../../../../i18n';
-import { Acceptor } from '../../../../../../../../utils';
+import { Acceptor } from '../../../../../../../../k8s';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
@@ -14,7 +14,7 @@ import {
   getAcceptorFromCertManagerResourceTemplate,
   getCertManagerResourceTemplateFromAcceptor,
 } from '../../../../../../../../reducers/7.12/reducer';
-import { ResourceTemplate } from '../../../../../../../../utils';
+import { ResourceTemplate } from '../../../../../../../../k8s';
 import { SelectIssuerDrawer } from '../../SelectIssuerDrawer/SelectIssuerDrawer';
 import { ConfirmDeleteModal } from '../../ConfirmDeleteModal/ConfirmDeleteModal';
 type ResourceTemplateProps = {

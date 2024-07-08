@@ -8,7 +8,7 @@ import {
   TableColumn,
 } from '@openshift-console/dynamic-plugin-sdk';
 import { useTranslation } from '../../../i18n';
-import { BrokerCR } from '../../../utils';
+import { BrokerCR } from '../../../k8s';
 import { PodRow } from './PodRow';
 
 type PodsTableProps = {

@@ -16,7 +16,7 @@ import {
 import { CSSProperties, FC, useContext, useState } from 'react';
 
 import { useTranslation } from '../../../../../../../i18n';
-import { Acceptor } from '../../../../../../../utils';
+import { Acceptor } from '../../../../../../../k8s';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,

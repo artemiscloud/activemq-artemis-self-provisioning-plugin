@@ -30,7 +30,7 @@ import {
   IssuerResource,
   BrokerCR,
   SecretResource,
-} from '../../../../utils';
+} from '../../../../k8s/types';
 import { Metrics } from './Metrics';
 
 const useGetIssuerCa = (

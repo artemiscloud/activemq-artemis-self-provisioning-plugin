@@ -2,9 +2,9 @@ import { FC } from 'react';
 import { Configuration } from './Configuration.component';
 import {
   BrokerCR,
-  getCondition,
   BrokerConditionTypes,
-} from '../../../../utils';
+  K8sResourceCondition,
+} from '../../../../k8s';
 import { Loading } from '../../../../shared-components';
 import { useTranslation } from '../../../../i18n';
 
@@ -22,9 +22,8 @@ const ConfigurationContainer: FC<ConfigurationContainerProps> = ({
   if (loading) return <Loading />;
 
   const readyCondition = configurationSettings?.status
-    ? getCondition(
-        configurationSettings?.status.conditions,
-        BrokerConditionTypes.Ready,
+    ? configurationSettings?.status.conditions.find(
+        (c: K8sResourceCondition) => c.type === BrokerConditionTypes.Ready,
       )
     : null;
 

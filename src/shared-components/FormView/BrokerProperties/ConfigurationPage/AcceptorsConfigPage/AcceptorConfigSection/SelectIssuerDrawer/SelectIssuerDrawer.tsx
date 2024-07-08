@@ -4,7 +4,7 @@ import {
   CertIssuerModel,
   CertModel,
   IssuerResource,
-} from '../../../../../../../utils';
+} from '../../../../../../../k8s';
 import {
   RedExclamationCircleIcon,
   k8sCreate,

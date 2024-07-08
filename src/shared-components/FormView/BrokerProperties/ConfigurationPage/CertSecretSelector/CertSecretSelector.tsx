@@ -12,7 +12,7 @@ import {
   CertModel,
   K8sResourceKind,
   SecretModel,
-} from '../../../../../utils';
+} from '../../../../../k8s';
 import {
   k8sCreate,
   useK8sWatchResource,

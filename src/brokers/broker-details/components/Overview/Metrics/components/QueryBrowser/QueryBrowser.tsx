@@ -17,7 +17,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { ChartSkeletonLoader } from '../ChartSkeletonLoader/ChartSkeletonLoader';
 import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData/EmptyStateNoMetricsData';
-import { chartHeight, chartPadding } from '../../../../../../../utils';
+import { chartHeight, chartPadding } from '../../../../../../../constants';
 import { useChartWidth } from '../../hooks/useChartWidth';
 import { useTranslation } from '../../../../../../../i18n';
 import {

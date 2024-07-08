@@ -4,7 +4,7 @@ import {
   K8sResourceCommon,
   useK8sWatchResource,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { K8sResourceKind } from '../../utils';
+import { K8sResourceKind } from '../../k8s';
 import { useTranslation } from '../../i18n';
 import { PodsList } from './components/PodList';
 import {

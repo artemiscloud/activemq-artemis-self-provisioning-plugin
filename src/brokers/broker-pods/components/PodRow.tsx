@@ -6,7 +6,7 @@ import {
   TableColumn,
   Timestamp,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { BrokerCR } from '../../../utils';
+import { BrokerCR } from '../../../k8s';
 
 export type PodRowProps = RowProps<BrokerCR> & {
   columns: TableColumn<BrokerCR>[];

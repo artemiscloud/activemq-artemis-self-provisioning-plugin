@@ -1,5 +1,4 @@
 import { FC, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import {
   Alert,
   Button,
@@ -28,6 +27,7 @@ import {
   useGetApiServerBaseUrl,
   useJolokiaLogin,
 } from '../../jolokia/customHooks';
+import { useParams } from 'react-router-dom-v5-compat';
 
 const AddressDetailsPage: FC = () => {
   const { t } = useTranslation();

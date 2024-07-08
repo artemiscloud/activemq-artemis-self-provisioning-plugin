@@ -20,8 +20,8 @@ import {
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
 } from '../../reducers/7.12/reducer';
-import { useHistory } from 'react-router';
 import YAML from 'yaml';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 export type YamlEditorViewProps = {
   onCreateBroker: (content: any) => void;
@@ -64,7 +64,7 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
   isUpdate,
 }) => {
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const fromState = useContext(BrokerCreationFormState);
   const namespace = fromState.cr.metadata.namespace;
@@ -83,7 +83,7 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
   };
 
   const onCancel = () => {
-    history.push('/k8s/all-namespaces/brokers');
+    navigate('/k8s/all-namespaces/brokers');
   };
 
   //event: contains information of changes

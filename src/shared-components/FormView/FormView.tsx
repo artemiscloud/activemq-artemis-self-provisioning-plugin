@@ -20,7 +20,6 @@ import {
   TextInput,
 } from '@patternfly/react-core';
 import { FC, useContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useTranslation } from '../../i18n';
 import {
   ArtemisReducerOperations,
@@ -31,6 +30,7 @@ import {
   BrokerProperties,
   BrokerPropertiesList,
 } from './BrokerProperties/BrokerProperties';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 type FormViewProps = {
   onCreateBroker: (formValues: K8sResourceCommon) => void;
@@ -47,7 +47,7 @@ export const FormView: FC<FormViewProps> = ({
   isUpdate,
 }) => {
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const defaultNotification = { title: '', variant: AlertVariant.default };
 
   //states
@@ -82,12 +82,12 @@ export const FormView: FC<FormViewProps> = ({
     const isValid = validateFormFields(formState.cr);
     if (isValid) {
       onCreateBroker(formState.cr);
-      history.push('/k8s/all-namespaces/brokers');
+      navigate('/k8s/all-namespaces/brokers');
     }
   };
 
   const onCancel = () => {
-    history.push('/k8s/all-namespaces/brokers');
+    navigate('/k8s/all-namespaces/brokers');
   };
 
   const handleNameChange = (name: string) => {

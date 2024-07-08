@@ -1,5 +1,4 @@
 import { FC, useState, useEffect, useReducer } from 'react';
-import { useParams } from 'react-router-dom';
 import { k8sGet, k8sUpdate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from '../add-broker/AddBroker.component';
@@ -12,6 +11,7 @@ import {
   artemisCrReducer,
   getArtemisCRState,
 } from '../../reducers/7.12/reducer';
+import { useParams } from 'react-router-dom-v5-compat';
 
 const UpdateBrokerPage: FC = () => {
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();

@@ -1,5 +1,4 @@
 import { FC, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,6 +14,7 @@ import { PreConfirmDeleteModal } from '../../../view-brokers/components/PreConfi
 import { useTranslation } from '../../../../i18n';
 import { k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import { AMQBrokerModel } from '../../../../k8s';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 export type BrokerPodsBreadcrumbProps = {
   name: string;
@@ -29,12 +29,12 @@ const BrokerPodsBreadcrumb: FC<BrokerPodsBreadcrumbProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [_loadError, setLoadError] = useState<any>();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const redirectPath = `/k8s/ns/${namespace}/brokers`;
 
   const onClickEditBroker = () => {
-    history.push(`/k8s/ns/${namespace}/edit-broker/${name}`);
+    navigate(`/k8s/ns/${namespace}/edit-broker/${name}`);
   };
 
   const onClickDeleteBroker = () => {
@@ -51,7 +51,7 @@ const BrokerPodsBreadcrumb: FC<BrokerPodsBreadcrumbProps> = ({
       resource: { metadata: { name, namespace: namespace } },
     })
       .then(() => {
-        history.push(redirectPath);
+        navigate(redirectPath);
       })
       .catch((e) => {
         setLoadError(e.message);
@@ -87,7 +87,7 @@ const BrokerPodsBreadcrumb: FC<BrokerPodsBreadcrumbProps> = ({
         <LevelItem>
           <Breadcrumb className="pf-u-mb-md">
             <BreadcrumbItem>
-              <Button variant="link" onClick={() => history.push(redirectPath)}>
+              <Button variant="link" onClick={() => navigate(redirectPath)}>
                 {t('brokers')}
               </Button>
             </BreadcrumbItem>

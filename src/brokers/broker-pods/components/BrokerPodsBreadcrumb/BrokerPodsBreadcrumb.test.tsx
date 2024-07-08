@@ -1,6 +1,6 @@
+import { MemoryRouter } from 'react-router-dom-v5-compat';
 import { screen, fireEvent, render, waitForI18n } from '../../../../test-utils';
 import { BrokerPodsBreadcrumb } from './BrokerPodsBreadcrumb';
-import { MemoryRouter } from 'react-router-dom';
 
 describe('BrokerPodsBreadcrumb', () => {
   const name = 'test-1';

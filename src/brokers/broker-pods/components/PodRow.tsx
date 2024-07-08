@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { Link } from 'react-router-dom';
 import {
   RowProps,
   TableData,
@@ -7,20 +6,15 @@ import {
   Timestamp,
 } from '@openshift-console/dynamic-plugin-sdk';
 import { BrokerCR } from '../../../k8s';
+import { Link } from 'react-router-dom-v5-compat';
 
 export type PodRowProps = RowProps<BrokerCR> & {
   columns: TableColumn<BrokerCR>[];
-  brokerName: string;
 };
 
-export const PodRow: FC<PodRowProps> = ({
-  obj,
-  activeColumnIDs,
-  columns,
-  brokerName,
-}) => {
+export const PodRow: FC<PodRowProps> = ({ obj, activeColumnIDs, columns }) => {
   const {
-    metadata: { name, namespace, creationTimestamp },
+    metadata: { name, creationTimestamp },
     status,
   } = obj;
 
@@ -38,9 +32,7 @@ export const PodRow: FC<PodRowProps> = ({
   return (
     <>
       <TableData id={columns[0].id} activeColumnIDs={activeColumnIDs}>
-        <Link to={`/ns/${namespace}/brokers/${brokerName}/${name}`}>
-          {name}
-        </Link>
+        <Link to={name}> {name} </Link>
       </TableData>
       <TableData id={columns[1].id} activeColumnIDs={activeColumnIDs}>
         {status?.phase || '-'}

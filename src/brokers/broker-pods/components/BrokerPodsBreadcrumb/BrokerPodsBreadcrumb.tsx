@@ -14,7 +14,7 @@ import {
 import { PreConfirmDeleteModal } from '../../../view-brokers/components/PreConfirmDeleteModal';
 import { useTranslation } from '../../../../i18n';
 import { k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
-import { AMQBrokerModel } from '../../../../utils';
+import { AMQBrokerModel } from '../../../../k8s';
 
 export type BrokerPodsBreadcrumbProps = {
   name: string;

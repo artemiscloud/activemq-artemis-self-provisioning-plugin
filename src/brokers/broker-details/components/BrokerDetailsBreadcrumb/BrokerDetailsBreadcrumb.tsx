@@ -13,7 +13,7 @@ import {
 } from '@patternfly/react-core';
 import { useTranslation } from '../../../../i18n';
 import { k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
-import { AMQBrokerModel } from '../../../../utils';
+import { AMQBrokerModel } from '../../../../k8s';
 import { PreConfirmDeleteModal } from '../../../view-brokers/components';
 
 export type BrokerDetailsBreadcrumbProps = {

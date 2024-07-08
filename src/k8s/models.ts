@@ -7,7 +7,7 @@ import {
   CERT_VERSION,
   SECRET_APIGROUP,
   SECRET_VERSION,
-} from './constants';
+} from '../constants/constants';
 
 export const AMQBrokerModel: K8sModel = {
   apiGroup: AMQ_BROKER_APIGROUP,

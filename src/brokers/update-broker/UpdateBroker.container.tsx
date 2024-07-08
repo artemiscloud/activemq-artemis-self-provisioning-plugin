@@ -4,7 +4,7 @@ import { k8sGet, k8sUpdate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from '../add-broker/AddBroker.component';
 import { Loading } from '../../shared-components';
-import { AMQBrokerModel, BrokerCR } from '../../utils';
+import { AMQBrokerModel, BrokerCR } from '../../k8s';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,

@@ -5,7 +5,7 @@ import {
   CardBrokerCPUUsageMetricsContainer,
   MetricsActions,
 } from './components';
-import { parsePrometheusDuration } from '../../../../../utils';
+import { parsePrometheusDuration } from '../Metrics/utils';
 import { MetricsType } from './utils';
 import { MetricsLayout } from './components/MetricsLayout/MetricsLayout';
 

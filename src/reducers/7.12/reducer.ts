@@ -4,7 +4,7 @@ import {
   BrokerCR,
   Acceptor,
   ResourceTemplate,
-} from '../../utils';
+} from '../../k8s';
 import { createContext } from 'react';
 import { SelectOptionObject } from '@patternfly/react-core';
 import { ConfigType } from '../../shared-components/FormView/BrokerProperties/ConfigurationPage/ConfigurationPage';

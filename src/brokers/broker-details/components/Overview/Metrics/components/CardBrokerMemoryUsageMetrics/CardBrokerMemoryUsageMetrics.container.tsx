@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useMemo, useCallback } from 'react';
-import { parsePrometheusDuration } from '../../../../../../../utils';
+import { parsePrometheusDuration } from '../../../Metrics/utils';
 import {
   ByteDataTypes,
   GraphSeries,

@@ -1,5 +1,4 @@
 import { FC, useState } from 'react';
-import { Link } from 'react-router-dom';
 import {
   RowProps,
   TableData,
@@ -24,6 +23,7 @@ import {
   ModalVariant,
 } from '@patternfly/react-core';
 import { K8sResourceCondition } from '@app/k8s';
+import { Link } from 'react-router-dom-v5-compat';
 
 const getConditionOKCount = (conditions: K8sResourceCondition[]): number =>
   conditions.filter((c) => c.status === K8sResourceConditionStatus.True).length;
@@ -138,7 +138,7 @@ export const BrokerRow: FC<BrokerRowProps> = ({
   return (
     <>
       <TableData id={columns[0].id} activeColumnIDs={activeColumnIDs}>
-        <Link to={`/ns/${namespace}/brokers/${name}`}>{name}</Link>
+        <Link to={`/k8s/ns/${namespace}/brokers/${name}`}>{name}</Link>
       </TableData>
       <TableData id={columns[1].id} activeColumnIDs={activeColumnIDs}>
         {(readyCondition && readyCondition.status) || '-'}

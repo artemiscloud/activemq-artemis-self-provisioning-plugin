@@ -7,7 +7,7 @@ import {
 import { Address } from '../../../../openapi/jolokia/requests';
 import { useJolokiaServiceReadAddressAttributes } from '../../../../openapi/jolokia/queries';
 import { AuthContext } from '../../../../jolokia/customHooks';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom-v5-compat';
 
 export type AddressRowProps = RowProps<Address> & {
   columns: TableColumn<Address>[];
@@ -19,15 +19,6 @@ export const AddressRow: FC<AddressRowProps> = ({
   columns,
 }) => {
   const { name } = obj;
-  const {
-    ns: namespace,
-    brokerName,
-    podName,
-  } = useParams<{
-    ns?: string;
-    brokerName?: string;
-    podName?: string;
-  }>();
   const authToken = useContext(AuthContext);
   const { data: routingTypes, isSuccess } =
     useJolokiaServiceReadAddressAttributes({
@@ -39,11 +30,7 @@ export const AddressRow: FC<AddressRowProps> = ({
   return (
     <>
       <TableData id={columns[0].id} activeColumnIDs={activeColumnIDs}>
-        <Link
-          to={`/ns/${namespace}/brokers/${brokerName}/${podName}/address/${name}`}
-        >
-          {name}
-        </Link>
+        <Link to={`address/${name}`}>{name}</Link>
       </TableData>
       <TableData id={columns[1].id} activeColumnIDs={activeColumnIDs}>
         {isSuccess

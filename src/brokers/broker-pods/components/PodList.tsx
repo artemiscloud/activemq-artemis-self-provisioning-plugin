@@ -16,7 +16,6 @@ type PodsTableProps = {
   unfilteredData: BrokerCR[];
   loaded: boolean;
   loadError: any;
-  brokerName: string;
 };
 
 const PodsTable: FC<PodsTableProps> = ({
@@ -24,7 +23,6 @@ const PodsTable: FC<PodsTableProps> = ({
   unfilteredData,
   loaded,
   loadError,
-  brokerName,
 }) => {
   const columns: TableColumn<BrokerCR>[] = [
     {
@@ -62,7 +60,6 @@ const PodsTable: FC<PodsTableProps> = ({
           rowData={rowData}
           activeColumnIDs={activeColumnIDs}
           columns={columns}
-          brokerName={brokerName}
         />
       )}
     />
@@ -73,15 +70,9 @@ export type PodsListProps = {
   brokerPods: BrokerCR[];
   loaded: boolean;
   loadError: any;
-  brokerName: string;
 };
 
-const PodsList: FC<PodsListProps> = ({
-  brokerPods,
-  loaded,
-  loadError,
-  brokerName,
-}) => {
+const PodsList: FC<PodsListProps> = ({ brokerPods, loaded, loadError }) => {
   const { t } = useTranslation();
   const [data, filteredData, onFilterChange] = useListPageFilter(brokerPods);
 
@@ -99,7 +90,6 @@ const PodsList: FC<PodsListProps> = ({
           unfilteredData={data}
           loaded={loaded}
           loadError={loadError}
-          brokerName={brokerName}
         />
       </ListPageBody>
     </>

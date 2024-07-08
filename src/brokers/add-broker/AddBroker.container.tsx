@@ -1,5 +1,4 @@
 import { FC, useReducer, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
 import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from './AddBroker.component';
@@ -12,13 +11,14 @@ import {
   ArtemisReducerOperations,
 } from '../../reducers/7.12/reducer';
 import { AddBrokerResourceValues } from '../../reducers/7.12/import-types';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
 export interface AddBrokerProps {
   initialValues: AddBrokerResourceValues;
 }
 
 const AddBrokerPage: FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { ns: namespace } = useParams<{ ns?: string }>();
 
   const defaultNotification = { title: '', variant: AlertVariant.default };
@@ -30,7 +30,7 @@ const AddBrokerPage: FC = () => {
   const [notification, setNotification] = useState(defaultNotification);
 
   const handleRedirect = () => {
-    history.push('/k8s/all-namespaces/brokers');
+    navigate('/k8s/all-namespaces/brokers');
   };
 
   const k8sCreateBroker = (content: BrokerCR) => {

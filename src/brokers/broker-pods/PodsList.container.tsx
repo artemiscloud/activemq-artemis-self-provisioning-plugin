@@ -1,5 +1,4 @@
 import { FC, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import {
   K8sResourceCommon,
   useK8sWatchResource,
@@ -18,6 +17,7 @@ import {
 } from '@patternfly/react-core';
 import { ErrorCircleOIcon, SearchIcon } from '@patternfly/react-icons';
 import { BrokerPodsBreadcrumb } from './components/BrokerPodsBreadcrumb';
+import { useParams } from 'react-router-dom-v5-compat';
 
 const PodsContainer: FC = () => {
   //states
@@ -95,7 +95,6 @@ const PodsContainer: FC = () => {
             brokerPods={brokerPods}
             loadError={loadError}
             loaded={!loading}
-            brokerName={name}
           />
         )}
       </PageSection>

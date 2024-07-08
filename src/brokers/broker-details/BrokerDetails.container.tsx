@@ -6,7 +6,6 @@ import {
   k8sGet,
   useK8sWatchResource,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { useParams, useLocation, useHistory } from 'react-router-dom';
 import {
   Tabs,
   Tab,
@@ -44,6 +43,11 @@ import {
   JolokiaTestPanel,
 } from './components/JolokiaDevComponents';
 import { OverviewContainer } from './components';
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom-v5-compat';
 
 const BrokerDetailsPage: FC = () => {
   const { t } = useTranslation();
@@ -71,7 +75,7 @@ const BrokerDetailsPage: FC = () => {
   });
 
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
   const activeTabKey = searchParams.get('tab') || 'overview';
 
@@ -104,7 +108,7 @@ const BrokerDetailsPage: FC = () => {
 
   const handleTabSelect = (_event: any, eventKey: string | number) => {
     searchParams.set('tab', eventKey.toString());
-    history.push({ search: searchParams.toString() });
+    navigate({ search: searchParams.toString() });
   };
 
   const podOrdinal = parseInt(podName.replace(brokerName + '-ss-', ''));

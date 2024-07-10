@@ -1,8 +1,5 @@
 import {
-  Split,
-  SplitItem,
   Title,
-  Button,
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
@@ -35,18 +32,9 @@ const Configuration: React.FC<ConfigurationProps> = ({
 
   return (
     <PageSection>
-      <Split
-        hasGutter={true}
-        component={'div'}
-        className="pf-u-align-items-center"
-      >
-        <SplitItem isFilled={true}>
-          <Title headingLevel="h1">{t('settings')}</Title>
-        </SplitItem>
-        <SplitItem>
-          <Button variant="primary">{t('edit_settings')}</Button>
-        </SplitItem>
-      </Split>
+      <Title headingLevel="h1" className="pf-u-pb-md">
+        {t('settings')}
+      </Title>
       <DescriptionList
         isHorizontal
         horizontalTermWidthModifier={{

@@ -2,8 +2,12 @@
 
 set -euo pipefail
 
-CONSOLE_IMAGE=${CONSOLE_IMAGE:="quay.io/openshift/origin-console:4.14.0"}
+CONSOLE_IMAGE=${CONSOLE_IMAGE:="quay.io/openshift/origin-console:latest"}
 CONSOLE_PORT=${CONSOLE_PORT:=9442}
+CONSOLE_IMAGE_PLATFORM=${CONSOLE_IMAGE_PLATFORM:="linux/amd64"}
+
+# Plugin metadata is declared in package.json
+PLUGIN_NAME=${npm_package_consolePlugin_name}
 
 echo "Starting local OpenShift console in https mode..."
 
@@ -22,6 +26,7 @@ BRIDGE_K8S_MODE_OFF_CLUSTER_ALERTMANAGER=$(oc -n openshift-config-managed get co
 set -e
 BRIDGE_K8S_AUTH_BEARER_TOKEN=$(oc whoami --show-token 2>/dev/null)
 BRIDGE_USER_SETTINGS_LOCATION="localstorage"
+BRIDGE_I18N_NAMESPACES="plugin__${PLUGIN_NAME}"
 
 # Don't fail if the cluster doesn't have gitops.
 set +e
@@ -34,27 +39,19 @@ fi
 echo "API Server: $BRIDGE_K8S_MODE_OFF_CLUSTER_ENDPOINT"
 echo "Console Image: $CONSOLE_IMAGE"
 echo "Console URL: https://localhost:${CONSOLE_PORT}"
+echo "Console Platform: $CONSOLE_IMAGE_PLATFORM"
 
 # Prefer podman if installed. Otherwise, fall back to docker.
 if [ -x "$(command -v podman)" ]; then
     if [ "$(uname -s)" = "Linux" ]; then
-        echo "Starting on linux with podman"
         # Use host networking on Linux since host.containers.internal is unreachable in some environments.
-        BRIDGE_PLUGINS="${npm_package_consolePlugin_name}=https://localhost:9443"
-        echo "bridge plugins: $BRIDGE_PLUGINS"
-        FLAG=$(set | grep BRIDGE)
-        echo "running podman with opts:"
-        echo "${FLAG}"
-        podman run --pull always -v ./console-cert:/console-cert:z --rm --network=host --env-file <(set | grep BRIDGE) $CONSOLE_IMAGE
+        BRIDGE_PLUGINS="${PLUGIN_NAME}=https://localhost:9443"
+        podman run --pull always --platform $CONSOLE_IMAGE_PLATFORM --rm -v ./console-cert:/console-cert:z --rm --network=host --env-file <(set | grep BRIDGE) $CONSOLE_IMAGE
     else
-        echo "Starting on $(uname -s) with podman"
         BRIDGE_PLUGINS="${npm_package_consolePlugin_name}=https://host.containers.internal:9443"
-        echo "bridge plugins: $BRIDGE_PLUGINS"
-        FLAG=$(set | grep BRIDGE)
-        echo "running podman with opts:"
-        echo "${FLAG}"
-        podman run --pull always -v ./console-cert:/console-cert:z --rm -p "$CONSOLE_PORT":9442 --env-file <(set | grep BRIDGE) $CONSOLE_IMAGE
+        podman run --pull always --platform $CONSOLE_IMAGE_PLATFORM --rm -v ./console-cert:/console-cert:z --rm -p "$CONSOLE_PORT":9442 --env-file <(set | grep BRIDGE) $CONSOLE_IMAGE
     fi
 else
-    echo "Cannot find podman to run"
+    BRIDGE_PLUGINS="${PLUGIN_NAME}=https://host.containers.internal:9443"
+    docker run --pull always --platform $CONSOLE_IMAGE_PLATFORM --rm -p "$CONSOLE_PORT":9442 --env-file <(set | grep BRIDGE) $CONSOLE_IMAGE
 fi

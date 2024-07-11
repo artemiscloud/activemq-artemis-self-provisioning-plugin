@@ -24,14 +24,14 @@ import {
   getIssuerForAcceptor,
   getIssuerIngressHostForAcceptor,
 } from '../../../../reducers/7.12/reducer';
-import { Loading } from '../../../../shared-components';
+import { Loading } from '../../../../shared-components/Loading/Loading';
 import {
   Acceptor,
   IssuerResource,
   BrokerCR,
   SecretResource,
 } from '../../../../k8s/types';
-import { Metrics } from './Metrics';
+import { Metrics } from './Metrics/Metrics';
 
 const useGetIssuerCa = (
   cr: BrokerCR,

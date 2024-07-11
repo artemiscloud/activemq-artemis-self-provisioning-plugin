@@ -1,7 +1,7 @@
 import { Popover } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import { FC } from 'react';
-import { useTranslation } from '../../../../../../../i18n';
+import { useTranslation } from '../../../../../../../i18n/i18n';
 
 type ChartPopoverProps = {
   title: string;

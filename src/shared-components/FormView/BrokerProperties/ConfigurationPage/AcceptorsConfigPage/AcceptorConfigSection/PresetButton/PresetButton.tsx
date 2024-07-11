@@ -15,8 +15,8 @@ import {
 } from '@patternfly/react-core';
 import { CSSProperties, FC, useContext, useState } from 'react';
 
-import { useTranslation } from '../../../../../../../i18n';
-import { Acceptor } from '../../../../../../../k8s';
+import { useTranslation } from '../../../../../../../i18n/i18n';
+import { Acceptor } from '../../../../../../../k8s/types';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,

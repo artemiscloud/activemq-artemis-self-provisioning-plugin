@@ -9,7 +9,7 @@ import {
 } from '../../reducers/7.12/reducer';
 import { FormView } from '../../shared-components/FormView/FormView';
 import { YamlEditorView } from '../../shared-components/YamlEditorView/YamlEditorView';
-import { EditorToggle } from './components/EditorToggle';
+import { EditorToggle } from './components/EditorToggle/EditorToggle';
 
 type AddBrokerProps = {
   onCreateBroker: (data?: K8sResourceCommon) => void;

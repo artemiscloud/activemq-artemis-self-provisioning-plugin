@@ -4,7 +4,9 @@
     "properties": {
       "exact": true,
       "path": ["/k8s/ns/:ns/brokers", "/k8s/all-namespaces/brokers"],
-      "component": { "$codeRef": "BrokersPage" }
+      "brokersContainer": {
+        "$codeRef": "BrokersListContainer.BrokersContainer"
+      }
     }
   },
   {
@@ -12,7 +14,7 @@
     "properties": {
       "exact": true,
       "path": ["/k8s/ns/:ns/add-broker", "/k8s/all-namespaces/add-broker"],
-      "component": { "$codeRef": "AddBrokerPage" }
+      "addBrokerPage": { "$codeRef": "AddBrokerContainer.AddBrokerPage" }
     }
   },
   {
@@ -23,7 +25,7 @@
         "/k8s/ns/:ns/edit-broker/:name",
         "/k8s/all-namespaces/edit-broker/:name"
       ],
-      "component": { "$codeRef": "UpdateBrokerPage" }
+      "updateBrokerContainer": { "$codeRef": "UpdateBrokerContainer" }
     }
   },
   {
@@ -34,7 +36,7 @@
         "/k8s/ns/:ns/brokers/:name",
         "/k8s/all-namespaces/brokers/:name"
       ],
-      "component": { "$codeRef": "PodsListPage" }
+      "podsContainer": { "$codeRef": "PodsListContainer" }
     }
   },
   {
@@ -45,7 +47,10 @@
         "/k8s/ns/:ns/brokers/:brokerName/:podName",
         "/k8s/all-namespaces/brokers/:brokerName/:podName"
       ],
-      "component": { "$codeRef": "BrokerDetailsPage" }
+      "brokerDetailsPage": {
+        "$codeRef": "BrokerDetailsContainer"
+      },
+      "app": { "$codeRef": "BrokerDetailsContainer.App" }
     }
   },
   {
@@ -56,7 +61,10 @@
         "/k8s/ns/:ns/brokers/:brokerName/:podName/address/:name",
         "/k8s/all-namespaces/brokers/:brokerName/:podName/address/:name"
       ],
-      "component": { "$codeRef": "AddressDetailsPage" }
+      "addressDetailsPage": {
+        "$codeRef": "AddressDetailsContainer"
+      },
+      "app": { "$codeRef": "AddressDetailsContainer.App" }
     }
   },
   {

@@ -6,7 +6,7 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
-import { useTranslation } from '../../../../../../../i18n';
+import { useTranslation } from '../../../../../../../i18n/i18n';
 
 export const EmptyStateNoMetricsData: FunctionComponent = () => {
   const { t } = useTranslation();

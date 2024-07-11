@@ -1,6 +1,6 @@
 import { render, waitForI18n } from '../../../../../../../test-utils';
 import { MetricsLayout } from '../MetricsLayout/MetricsLayout';
-import { MetricsType } from '../../utils';
+import { MetricsType } from '../../utils/types';
 
 describe('MetricsLayout', () => {
   const mockMetricsMemoryUsage = <div>Mock Memory Usage</div>;

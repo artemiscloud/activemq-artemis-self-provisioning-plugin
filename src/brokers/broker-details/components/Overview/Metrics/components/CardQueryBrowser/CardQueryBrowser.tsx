@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { Card, CardBody } from '@patternfly/react-core';
-import { ChartTitle } from '../ChartTitle';
-import { CardBodyLoading } from '../CardBodyLoading';
-import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData';
+import { ChartTitle } from '../ChartTitle/ChartTitle';
+import { CardBodyLoading } from '../CardBodyLoading/CardBodyLoading';
+import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData/EmptyStateNoMetricsData';
 import { QueryBrowser, QueryBrowserProps } from '../QueryBrowser/QueryBrowser';
 
 export type CardQueryBrowserProps = QueryBrowserProps & {

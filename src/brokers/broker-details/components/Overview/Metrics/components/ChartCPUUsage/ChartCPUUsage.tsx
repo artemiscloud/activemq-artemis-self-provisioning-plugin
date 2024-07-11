@@ -17,21 +17,22 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { ChartSkeletonLoader } from '../ChartSkeletonLoader/ChartSkeletonLoader';
 import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData/EmptyStateNoMetricsData';
-import { chartHeight, chartPadding } from '../../../../../../../constants';
-import { useChartWidth } from '../../hooks/useChartWidth';
-import { useTranslation } from '../../../../../../../i18n';
 import {
-  chartTheme,
-  valueFormatter,
+  chartHeight,
+  chartPadding,
+} from '../../../../../../../constants/constants';
+import { useChartWidth } from '../../hooks/useChartWidth';
+import { useTranslation } from '../../../../../../../i18n/i18n';
+import { chartTheme } from '../../utils/chart-theme';
+import { valueFormatter, xAxisTickFormat } from '../../utils/format';
+import {
   AxisDomain,
   FormatSeriesTitle,
   GraphSeries,
   GraphDataPoint,
-  // getXDomain,
   Series,
-  formatSeriesValues,
-  xAxisTickFormat,
-} from '../../utils';
+} from '../../utils/types';
+import { formatSeriesValues } from '../../utils/format';
 
 const colors = chartTheme.line.colorScale;
 

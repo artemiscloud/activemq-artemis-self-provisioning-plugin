@@ -17,23 +17,24 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { ChartSkeletonLoader } from '../ChartSkeletonLoader/ChartSkeletonLoader';
 import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData/EmptyStateNoMetricsData';
-import { chartHeight, chartPadding } from '../../../../../../../constants';
-import { useChartWidth } from '../../hooks/useChartWidth';
-import { useTranslation } from '../../../../../../../i18n';
 import {
-  chartTheme,
+  chartHeight,
+  chartPadding,
+} from '../../../../../../../constants/constants';
+import { useChartWidth } from '../../hooks/useChartWidth';
+import { useTranslation } from '../../../../../../../i18n/i18n';
+import {
   ByteDataTypes,
-  processFrame,
-  humanizeBinaryBytes,
-  AxisDomain,
-  FormatSeriesTitle,
   GraphSeries,
-  GraphDataPoint,
-  // getXDomain,
+  AxisDomain,
   Series,
-  formatSeriesValues,
-  xAxisTickFormat,
-} from '../../utils';
+  FormatSeriesTitle,
+  GraphDataPoint,
+} from '../../utils/types';
+import { chartTheme } from '../../utils/chart-theme';
+import { processFrame } from '../../utils/data-utils';
+import { humanizeBinaryBytes } from '../../utils/units';
+import { formatSeriesValues, xAxisTickFormat } from '../../utils/format';
 
 const colors = chartTheme.line.colorScale;
 

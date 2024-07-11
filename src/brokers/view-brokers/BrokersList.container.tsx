@@ -1,11 +1,12 @@
 import { useEffect, useState, FC } from 'react';
 import { k8sListItems, k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
-import { AMQBrokerModel, K8sResourceKind, BrokerCR } from '../../k8s';
-import { BrokersList } from './components/BrokersList';
-import { PreConfirmDeleteModal } from './components/PreConfirmDeleteModal';
+import { AMQBrokerModel } from '../../k8s/models';
+import { K8sResourceKind, BrokerCR } from '../../k8s/types';
+import { BrokersList } from './components/BrokersList/BrokersList';
+import { PreConfirmDeleteModal } from './components/PreConfirmDeleteModal/PreConfirmDeleteModal';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
-const BrokersContainer: FC = () => {
+export const BrokersContainer: FC = () => {
   const navigate = useNavigate();
   const { ns: namespace } = useParams<{ ns?: string }>();
 
@@ -83,5 +84,3 @@ const BrokersContainer: FC = () => {
     </>
   );
 };
-
-export default BrokersContainer;

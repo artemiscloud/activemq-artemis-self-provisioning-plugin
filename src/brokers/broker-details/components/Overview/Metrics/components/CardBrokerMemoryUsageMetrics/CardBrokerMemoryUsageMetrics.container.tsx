@@ -1,14 +1,11 @@
 import { FC, useState, useEffect, useMemo, useCallback } from 'react';
-import { parsePrometheusDuration } from '../../../Metrics/utils';
-import {
-  ByteDataTypes,
-  GraphSeries,
-  getMaxSamplesForSpan,
-  humanizeBinaryBytes,
-  processFrame,
-} from '../../utils';
-import { useFetchMemoryUsageMetrics } from '../../hooks';
-import { useTranslation } from '../../../../../../../i18n';
+import { parsePrometheusDuration } from '../../../Metrics/utils/prometheus';
+import { ByteDataTypes, GraphSeries } from '../../utils/types';
+import { getMaxSamplesForSpan } from '../../utils/format';
+import { humanizeBinaryBytes } from '../../utils/units';
+import { processFrame } from '../../utils/data-utils';
+import { useFetchMemoryUsageMetrics } from '../../hooks/useFetchMemoryUsageMetrics';
+import { useTranslation } from '../../../../../../../i18n/i18n';
 import { CardQueryBrowser } from '../CardQueryBrowser/CardQueryBrowser';
 
 export type CardBrokerMemoryUsageMetricsContainerProps = {

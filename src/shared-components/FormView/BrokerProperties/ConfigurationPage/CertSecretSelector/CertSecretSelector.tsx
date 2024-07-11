@@ -10,9 +10,9 @@ import {
 import {
   CertIssuerModel,
   CertModel,
-  K8sResourceKind,
   SecretModel,
-} from '../../../../../k8s';
+} from '../../../../../k8s/models';
+import { K8sResourceKind } from '../../../../../k8s/types';
 import {
   k8sCreate,
   useK8sWatchResource,

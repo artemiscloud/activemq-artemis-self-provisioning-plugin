@@ -11,8 +11,8 @@ import {
   TextVariants,
   Title,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../i18n';
-import { AMQBrokerModel } from '../../k8s';
+import { useTranslation } from '../../i18n/i18n';
+import { AMQBrokerModel } from '../../k8s/models';
 import {
   K8sResourceKind,
   k8sGet,
@@ -152,7 +152,7 @@ const AddressDetailsPage: FC = () => {
   );
 };
 
-const App: FC = () => {
+export const App: FC = () => {
   OpenAPIConfig.BASE = useGetApiServerBaseUrl();
   const querClient = new QueryClient();
   return (
@@ -162,4 +162,4 @@ const App: FC = () => {
   );
 };
 
-export default App;
+export default AddressDetailsPage;

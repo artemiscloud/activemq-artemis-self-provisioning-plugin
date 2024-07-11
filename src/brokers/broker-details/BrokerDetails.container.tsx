@@ -22,8 +22,9 @@ import {
   TextContent,
   TextVariants,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../i18n';
-import { AMQBrokerModel, BrokerCR } from '../../k8s';
+import { useTranslation } from '../../i18n/i18n';
+import { AMQBrokerModel } from '../../k8s/models';
+import { BrokerCR } from '../../k8s/types';
 import {
   AuthContext,
   useGetApiServerBaseUrl,
@@ -31,10 +32,10 @@ import {
 } from '../../jolokia/customHooks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OpenAPI as OpenAPIConfig } from '../../openapi/jolokia/requests/core/OpenAPI';
-import { ClientsContainer } from './components/Clients';
+import { ClientsContainer } from './components/Clients/Clients.container';
 import { AddressContainer } from './components/Addresses/Address.container';
-import { ConfigurationContainer } from './components/Configuration';
-import { BrokerDetailsBreadcrumb } from './components/BrokerDetailsBreadcrumb';
+import { ConfigurationContainer } from './components/Configuration/Configuration.container';
+import { BrokerDetailsBreadcrumb } from './components/BrokerDetailsBreadcrumb/BrokerDetailsBreadcrumb';
 import {
   JolokiaAcceptorDetails,
   JolokiaAddressDetails,
@@ -42,7 +43,7 @@ import {
   JolokiaQueueDetails,
   JolokiaTestPanel,
 } from './components/JolokiaDevComponents';
-import { OverviewContainer } from './components';
+import { OverviewContainer } from './components/Overview/Overview.container';
 import {
   useLocation,
   useNavigate,
@@ -280,7 +281,7 @@ const BrokerDetailsPage: FC = () => {
   );
 };
 
-const App: FC = () => {
+export const App: FC = () => {
   OpenAPIConfig.BASE = useGetApiServerBaseUrl();
   const querClient = new QueryClient();
   return (
@@ -290,4 +291,4 @@ const App: FC = () => {
   );
 };
 
-export default App;
+export default BrokerDetailsPage;

@@ -7,8 +7,8 @@ import {
   ListPageFilter,
   TableColumn,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { useTranslation } from '../../../i18n';
-import { BrokerCR } from '../../../k8s';
+import { useTranslation } from '../../../i18n/i18n';
+import { BrokerCR } from '../../../k8s/types';
 import { PodRow } from './PodRow';
 
 type PodsTableProps = {

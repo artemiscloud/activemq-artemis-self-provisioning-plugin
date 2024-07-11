@@ -3,8 +3,8 @@ import {
   K8sResourceCommon,
   useK8sWatchResource,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { K8sResourceKind } from '../../k8s';
-import { useTranslation } from '../../i18n';
+import { K8sResourceKind } from '../../k8s/types';
+import { useTranslation } from '../../i18n/i18n';
 import { PodsList } from './components/PodList';
 import {
   EmptyState,
@@ -16,7 +16,7 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { ErrorCircleOIcon, SearchIcon } from '@patternfly/react-icons';
-import { BrokerPodsBreadcrumb } from './components/BrokerPodsBreadcrumb';
+import { BrokerPodsBreadcrumb } from './components/BrokerPodsBreadcrumb/BrokerPodsBreadcrumb';
 import { useParams } from 'react-router-dom-v5-compat';
 
 const PodsContainer: FC = () => {

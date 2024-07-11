@@ -2,11 +2,11 @@ import { FC, useCallback, useState } from 'react';
 import {
   CardBrokerMemoryUsageMetricsContainer,
   CardBrokerMemoryUsageMetricsContainerProps,
-  CardBrokerCPUUsageMetricsContainer,
-  MetricsActions,
-} from './components';
-import { parsePrometheusDuration } from '../Metrics/utils';
-import { MetricsType } from './utils';
+} from './components/CardBrokerMemoryUsageMetrics/CardBrokerMemoryUsageMetrics.container';
+import { CardBrokerCPUUsageMetricsContainer } from './components/CardBrokerCPUUsageMetrics/CardBrokerCPUUsageMetrics.container';
+import { MetricsActions } from './components/MetricsActions/MetricsActions';
+import { parsePrometheusDuration } from '../Metrics/utils/prometheus';
+import { MetricsType } from './utils/types';
 import { MetricsLayout } from './components/MetricsLayout/MetricsLayout';
 
 export type MetricsProps = CardBrokerMemoryUsageMetricsContainerProps;

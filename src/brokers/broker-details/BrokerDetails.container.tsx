@@ -49,7 +49,7 @@ import {
   useParams,
 } from 'react-router-dom-v5-compat';
 
-const BrokerDetailsPage: FC = () => {
+export const BrokerDetailsPage: FC = () => {
   const { t } = useTranslation();
   const {
     ns: namespace,
@@ -280,7 +280,7 @@ const BrokerDetailsPage: FC = () => {
   );
 };
 
-const App: FC = () => {
+export const App: FC = () => {
   OpenAPIConfig.BASE = useGetApiServerBaseUrl();
   const querClient = new QueryClient();
   return (
@@ -289,5 +289,3 @@ const App: FC = () => {
     </QueryClientProvider>
   );
 };
-
-export default App;

@@ -19,7 +19,7 @@ import { ErrorCircleOIcon, SearchIcon } from '@patternfly/react-icons';
 import { BrokerPodsBreadcrumb } from './components/BrokerPodsBreadcrumb';
 import { useParams } from 'react-router-dom-v5-compat';
 
-const PodsContainer: FC = () => {
+export const PodsContainer: FC = () => {
   //states
   const { t } = useTranslation();
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
@@ -101,5 +101,3 @@ const PodsContainer: FC = () => {
     </>
   );
 };
-
-export default PodsContainer;

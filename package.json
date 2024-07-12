@@ -130,12 +130,12 @@
     "displayName": "Artemis Self Provisioning Plugin",
     "description": "Artemis Self Provisioning Plugin",
     "exposedModules": {
-      "BrokersPage": "./brokers/view-brokers",
-      "AddBrokerPage": "./brokers/add-broker",
-      "UpdateBrokerPage": "./brokers/update-broker",
-      "PodsListPage": "./brokers/broker-pods",
-      "BrokerDetailsPage": "./brokers/broker-details",
-      "AddressDetailsPage": "./addresses/address-details"
+      "BrokersListContainer": "./brokers/view-brokers/BrokersList.container",
+      "AddBrokerContainer": "./brokers/add-broker/AddBroker.container",
+      "UpdateBrokerContainer": "./brokers/update-broker/UpdateBroker.container",
+      "PodsListContainer": "./brokers/broker-pods/PodsList.container",
+      "BrokerDetailsContainer": "./brokers/broker-details/BrokerDetails.container",
+      "AddressDetailsContainer": "./addresses/address-details/AddressDetails.container"
     },
     "dependencies": {
       "@console/pluginAPI": "*"

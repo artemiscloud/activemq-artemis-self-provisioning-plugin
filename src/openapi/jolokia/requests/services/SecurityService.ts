@@ -16,7 +16,7 @@ export class SecurityService {
    * it back to the client. If it fails it returns a error.
    *
    * Once authenticated, the client can access the
-   * apis defined in this file. With each request the client must include a valid jwt token in a http header named `jolokia-session-id`. The api-server will validate the token before processing a request is and rejects the request if the token is not valid.
+   * apis defined in this file. With each request the client must include a valid jwt token in a http header named `jolokia-session-id`. The src will validate the token before processing a request is and rejects the request if the token is not valid.
    *
    * @param requestBody
    * @returns LoginResponse Success

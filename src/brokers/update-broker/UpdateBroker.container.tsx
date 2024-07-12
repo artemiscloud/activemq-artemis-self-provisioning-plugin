@@ -13,7 +13,7 @@ import {
 } from '../../reducers/7.12/reducer';
 import { useParams } from 'react-router-dom-v5-compat';
 
-const UpdateBrokerPage: FC = () => {
+export const UpdateBrokerPage: FC = () => {
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
   const defaultNotification = { title: '', variant: AlertVariant.default };
 
@@ -86,5 +86,3 @@ const UpdateBrokerPage: FC = () => {
     </BrokerCreationFormState.Provider>
   );
 };
-
-export default UpdateBrokerPage;

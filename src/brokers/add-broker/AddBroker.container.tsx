@@ -17,7 +17,7 @@ export interface AddBrokerProps {
   initialValues: AddBrokerResourceValues;
 }
 
-const AddBrokerPage: FC = () => {
+export const AddBrokerPage: FC = () => {
   const navigate = useNavigate();
   const { ns: namespace } = useParams<{ ns?: string }>();
 
@@ -65,5 +65,3 @@ const AddBrokerPage: FC = () => {
     </BrokerCreationFormState.Provider>
   );
 };
-
-export default AddBrokerPage;

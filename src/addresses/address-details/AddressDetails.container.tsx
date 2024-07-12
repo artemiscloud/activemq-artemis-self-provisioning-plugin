@@ -29,7 +29,7 @@ import {
 } from '../../jolokia/customHooks';
 import { useParams } from 'react-router-dom-v5-compat';
 
-const AddressDetailsPage: FC = () => {
+export const AddressDetailsPage: FC = () => {
   const { t } = useTranslation();
   const {
     name,
@@ -152,7 +152,7 @@ const AddressDetailsPage: FC = () => {
   );
 };
 
-const App: FC = () => {
+export const App: FC = () => {
   OpenAPIConfig.BASE = useGetApiServerBaseUrl();
   const querClient = new QueryClient();
   return (
@@ -161,5 +161,3 @@ const App: FC = () => {
     </QueryClientProvider>
   );
 };
-
-export default App;

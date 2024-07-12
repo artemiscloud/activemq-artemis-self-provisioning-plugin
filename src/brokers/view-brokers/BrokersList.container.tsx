@@ -5,7 +5,7 @@ import { BrokersList } from './components/BrokersList';
 import { PreConfirmDeleteModal } from './components/PreConfirmDeleteModal';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
-const BrokersContainer: FC = () => {
+export const BrokersContainer: FC = () => {
   const navigate = useNavigate();
   const { ns: namespace } = useParams<{ ns?: string }>();
 
@@ -83,5 +83,3 @@ const BrokersContainer: FC = () => {
     </>
   );
 };
-
-export default BrokersContainer;

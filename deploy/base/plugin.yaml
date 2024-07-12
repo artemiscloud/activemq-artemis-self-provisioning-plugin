@@ -19,6 +19,6 @@ spec:
       endpoint:
         type: Service
         service:
-          name: activemq-artemis-self-provisioning-plugin
-          namespace: activemq-artemis-self-provisioning-plugin
+          name: activemq-artemis-jolokia-api-server
+          namespace: activemq-artemis-jolokia-api-server
           port: 9443

@@ -74,14 +74,8 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
     setIsOpen(isOpen);
   };
 
-  const onFocus = () => {
-    const element = document.getElementById('toggle-kebab');
-    element.focus();
-  };
-
   const onSelect = () => {
     setIsOpen(false);
-    onFocus();
   };
 
   return (

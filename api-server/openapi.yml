@@ -13,12 +13,12 @@ info:
     to get access to the [management api](https://github.com/apache/activemq-artemis/blob/main/docs/user-manual/management.adoc#the-management-api) of a broker instance via 
     its [jolokia](https://jolokia.org/) endpoint.
 
-    ### How to add new apis to the api-server
+    ### How to add new apis to the src
 
     The api server uses [openapi](https://www.openapis.org/) to define
-    its apis. All the apis are defined in the file [openapi.yml](api-server/config/openapi.yml).
+    its apis. All the apis are defined in the file [openapi.yml](src/config/openapi.yml).
 
-    To add a new api first open the [openapi.yml](api-server/config/openapi.yml)
+    To add a new api first open the [openapi.yml](src/config/openapi.yml)
     and add a new api definition, for example:
 
     ```yaml
@@ -53,7 +53,7 @@ info:
     Next step is add the implmentation.
 
     Find a place to write your implementation. Your code should be 
-    placed in the `api-server/api/controllers` directory. Either create
+    placed in the `src/api/controllers` directory. Either create
     a new `.ts` file or use an existing one.
 
     The following code shows a sample implementation:
@@ -110,7 +110,7 @@ paths:
         apis defined in this file. With each request the client
         must include a valid jwt token in a http header
         named `jolokia-session-id`.
-        The api-server will validate the token before processing a request is
+        The src will validate the token before processing a request is
         and rejects the request if the token is not valid.
       tags:
         - security

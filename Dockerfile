@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/nodejs-20:latest AS BUILD_IMAGE
+FROM registry.access.redhat.com/ubi8/nodejs-16:latest AS build
 
 ### BEGIN REMOTE SOURCE
 # Use the COPY instruction only inside the REMOTE SOURCE block
@@ -20,48 +20,14 @@ RUN mkdir -p /usr/src/
 RUN cp -r $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app /usr/src/
 WORKDIR /usr/src/app
 
-## Install dependencies
-RUN yarn install  --network-timeout 1000000
+RUN yarn install && yarn build
 
-## Build application
-RUN yarn build
-RUN yarn build-server
+FROM registry.access.redhat.com/ubi8/nginx-120:latest
 
-FROM registry.access.redhat.com/ubi8/nodejs-20-minimal:latest
-
-USER root
-
-WORKDIR /app
-
-COPY --from=BUILD_IMAGE /usr/src/app/dist /usr/share/amq-spp/dist
-COPY --from=BUILD_IMAGE /usr/src/app/.env /usr/share/amq-spp/.env
-COPY --from=BUILD_IMAGE /usr/src/app/server /usr/share/amq-spp/server
-
-WORKDIR /usr/share/amq-spp
-
-RUN npm install connect \
-cors \
-express \
-express-openapi-validator \
-swagger-routes-express \
-typescript \
-validator \
-yaml \
-base-64 \
-jsonwebtoken \
-dotenv \
-express-rate-limit \
-node-fetch@2 \
-@peculiar/x509
-
-RUN echo "node /usr/share/amq-spp/server/app.js /usr/share/amq-spp/dist" > run.sh
-RUN chmod +x run.sh
-
+COPY --from=build /usr/src/app/dist /usr/share/nginx/html
 USER 1001
 
-ENV NODE_ENV=production
-
-CMD ["node", "server/app.js", "dist"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
 
 ## Labels
 LABEL name="artemiscloud/activemq-artemis-self-provisioning-plugin"

@@ -12,7 +12,7 @@ module.exports = {
     'react-i18next': '<rootDir>/__mocks__/react-i18next.ts',
   },
   modulePaths: ['<rootDir>'],
-  roots: ['<rootDir>/src', '<rootDir>/api-server'],
+  roots: ['<rootDir>/src'],
   setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
 
   coveragePathIgnorePatterns: [

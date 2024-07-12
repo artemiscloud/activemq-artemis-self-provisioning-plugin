@@ -5,11 +5,13 @@ This project is a ActiveMQ Artemis Self Provisioning Plugin to the Administrator
 ## Local development
 
 To be able to run the local development environment you need to:
-* have access to a local or remote OpenShift cluster
-* have the operator installed on the cluster
-* have the cert-manager operator installed on the cluster
-* have the plugin running
-* have the console running
+
+- have access to a local or remote OpenShift cluster
+- have the operator installed on the cluster
+- have the cert-manager operator installed on the cluster
+- have the jolokia-api-server running
+- have the plugin running
+- have the console running
 
 ### Setting up an OpenShift cluster
 
@@ -24,8 +26,8 @@ https://access.redhat.com/documentation/en-us/red_hat_openshift_local/2.34/html-
 
 > [!WARNING]
 > If you're encountering an issue where `crc` gets stuck in the step `Waiting
-> for kube-apiserver availability` or `Waiting until the user's pull secret is
-> written to the instance disk...` [you might
+for kube-apiserver availability` or `Waiting until the user's pull secret is
+written to the instance disk...` [you might
 > need](https://github.com/crc-org/crc/issues/4110) to
 > configure the network as local: `crc config set network-mode user`
 
@@ -35,10 +37,10 @@ Once your environment is set up you simply need to `crc start` your cluster.
 
 Depending on the remote or local env:
 
-* `oc login -u kubeadmin
+- `oc login -u kubeadmin
 https://api.ci-ln-x671mxk-76ef8.origin-ci-int-aws.dev.rhcloud.com:6443` (to
-adapt depending on your cluster address)
-* `oc login -u kubeadmin https://api.crc.testing:6443`
+  adapt depending on your cluster address)
+- `oc login -u kubeadmin https://api.crc.testing:6443`
 
 ### Installing the operator
 
@@ -48,8 +50,9 @@ get the operator from the operatorHub or from the upstream repo.
 #### From the operatorHub
 
 Navigate to the operatorHub on the console and search for: `Red Hat Integration
+
 - AMQ Broker for RHEL 8 (Multiarch)` After installation the wait for the
-operator container to be up and running.
+  operator container to be up and running.
 
 > [!WARNING]
 > If you're running into an issue where the operatorHub is not accessible, try
@@ -87,14 +90,25 @@ Navigate to the operatorHub on the console and search for `Cert-manager`.
 
 ### Running the plugin
 
+#### start the jolokia api-server
+
+In one terminal start the jolokia-api-server, [follow the
+readme](https://github.com/lavocatt/activemq-artemis-jolokia-api-server/blob/main/README.md)
+on the project to know what to do.
+
+#### start the webpack server
+
 In one terminal window, run:
 
 1. `yarn install`
-2. `yarn build-server`
-3. `yarn build-dev`
-4. `yarn run start`
+2. `yarn start`
 
-Note: `yarn run start` starts the plugin in https mode by default.
+Note: `yarn run start` starts the plugin in http mode.
+if you want the plugin to run in https mode, run
+
+`yarn run start-tls`
+
+#### start the console
 
 In another terminal window, run:
 
@@ -111,6 +125,8 @@ If you want the console to run in `https` mode, run:
 
 This command will run the console in `https` mode on port 9442.
 The console url is <https://localhost:9442>
+
+Note: Running console in `https` mode requires the plugin running in `https` mode too.
 
 The console in https mode requires a private key and a server certificate that are generated
 with openssl command. They are located under `console-cert` directory. The domain.key is the
@@ -139,7 +155,15 @@ for details.
 
 ## Deployment on cluster
 
+### deploy the jolokia api-server
+
+[Follow the
+readme](https://github.com/lavocatt/activemq-artemis-jolokia-api-server/blob/main/README.md)
+on the project to know what to do.
+
 You can deploy the plugin to a cluster by running this following command:
+
+### deploy the plugin
 
 ```sh
 ./deploy-plugin.sh [-i <image> -n]
@@ -170,9 +194,10 @@ To undeploy the plugin, run
 ./undeploy-plugin.sh
 ```
 
-## About the api-server
+## Keep in sync the jolokia api-server markdown file
 
-The plugin uses a api server as a backend service to get access broker's jolokia
-endpoint. The source code is in `api-server` directory.
-
-Please read [api.md](api.md) for details.
+The codegen relies on the jolokia api-server's openapi definition to work. The
+project keeps a copy of the version of the api server it is compatible with
+under `api-server/openapi.yml`.
+This files needs to be kept in sync when upgrades on the api-server are
+performed.

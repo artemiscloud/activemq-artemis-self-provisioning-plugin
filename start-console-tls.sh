@@ -45,13 +45,13 @@ echo "Console Platform: $CONSOLE_IMAGE_PLATFORM"
 if [ -x "$(command -v podman)" ]; then
     if [ "$(uname -s)" = "Linux" ]; then
         # Use host networking on Linux since host.containers.internal is unreachable in some environments.
-        BRIDGE_PLUGINS="${PLUGIN_NAME}=https://localhost:9443"
+        BRIDGE_PLUGINS="${PLUGIN_NAME}=https://localhost:9444"
         podman run --pull always --platform $CONSOLE_IMAGE_PLATFORM --rm -v ./console-cert:/console-cert:z --rm --network=host --env-file <(set | grep BRIDGE) $CONSOLE_IMAGE
     else
-        BRIDGE_PLUGINS="${npm_package_consolePlugin_name}=https://host.containers.internal:9443"
+        BRIDGE_PLUGINS="${npm_package_consolePlugin_name}=https://host.containers.internal:9444"
         podman run --pull always --platform $CONSOLE_IMAGE_PLATFORM --rm -v ./console-cert:/console-cert:z --rm -p "$CONSOLE_PORT":9442 --env-file <(set | grep BRIDGE) $CONSOLE_IMAGE
     fi
 else
-    BRIDGE_PLUGINS="${PLUGIN_NAME}=https://host.containers.internal:9443"
+    BRIDGE_PLUGINS="${PLUGIN_NAME}=https://host.containers.internal:9444"
     docker run --pull always --platform $CONSOLE_IMAGE_PLATFORM --rm -p "$CONSOLE_PORT":9442 --env-file <(set | grep BRIDGE) $CONSOLE_IMAGE
 fi

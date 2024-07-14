@@ -1,4 +1,4 @@
-import { useTranslation } from '../../../../../../../i18n';
+import { useTranslation } from '../../../../../../../i18n/i18n';
 import { BrokerCreationFormState } from '../../../../../../../reducers/7.12/reducer';
 import {
   CertIssuerModel,

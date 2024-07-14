@@ -11,7 +11,7 @@ import {
   TextVariants,
   Title,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../i18n';
+import { useTranslation } from '../../i18n/i18n';
 import { AMQBrokerModel } from '../../k8s';
 import {
   K8sResourceKind,

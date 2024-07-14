@@ -1,8 +1,8 @@
 import { useEffect, useState, FC } from 'react';
 import { k8sListItems, k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import { AMQBrokerModel, K8sResourceKind, BrokerCR } from '../../k8s';
-import { BrokersList } from './components/BrokersList';
-import { PreConfirmDeleteModal } from './components/PreConfirmDeleteModal';
+import { BrokersList } from './components/BrokersList/BrokersList';
+import { PreConfirmDeleteModal } from './components/PreConfirmDeleteModal/PreConfirmDeleteModal';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
 export const BrokersContainer: FC = () => {

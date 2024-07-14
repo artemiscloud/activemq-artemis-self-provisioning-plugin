@@ -24,7 +24,7 @@ import {
   getIssuerForAcceptor,
   getIssuerIngressHostForAcceptor,
 } from '../../../../reducers/7.12/reducer';
-import { Loading } from '../../../../shared-components';
+import { Loading } from '../../../../shared-components/Loading/Loading';
 import {
   Acceptor,
   IssuerResource,

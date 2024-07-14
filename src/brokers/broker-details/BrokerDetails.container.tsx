@@ -22,7 +22,7 @@ import {
   TextContent,
   TextVariants,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../i18n';
+import { useTranslation } from '../../i18n/i18n';
 import { AMQBrokerModel, BrokerCR } from '../../k8s';
 import {
   AuthContext,
@@ -31,10 +31,10 @@ import {
 } from '../../jolokia/customHooks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OpenAPI as OpenAPIConfig } from '../../openapi/jolokia/requests/core/OpenAPI';
-import { ClientsContainer } from './components/Clients';
+import { ClientsContainer } from './components/Clients/Clients.container';
 import { AddressContainer } from './components/Addresses/Address.container';
-import { ConfigurationContainer } from './components/Configuration';
-import { BrokerDetailsBreadcrumb } from './components/BrokerDetailsBreadcrumb';
+import { ConfigurationContainer } from './components/Configuration/Configuration.container';
+import { BrokerDetailsBreadcrumb } from './components/BrokerDetailsBreadcrumb/BrokerDetailsBreadcrumb';
 import {
   JolokiaAcceptorDetails,
   JolokiaAddressDetails,
@@ -42,7 +42,7 @@ import {
   JolokiaQueueDetails,
   JolokiaTestPanel,
 } from './components/JolokiaDevComponents';
-import { OverviewContainer } from './components';
+import { OverviewContainer } from './components/Overview/Overview.container';
 import {
   useLocation,
   useNavigate,

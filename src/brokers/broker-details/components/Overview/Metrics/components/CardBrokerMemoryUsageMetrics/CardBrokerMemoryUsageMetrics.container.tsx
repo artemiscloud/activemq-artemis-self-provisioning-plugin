@@ -8,7 +8,7 @@ import {
   processFrame,
 } from '../../utils';
 import { useFetchMemoryUsageMetrics } from '../../hooks';
-import { useTranslation } from '../../../../../../../i18n';
+import { useTranslation } from '../../../../../../../i18n/i18n';
 import { CardQueryBrowser } from '../CardQueryBrowser/CardQueryBrowser';
 
 export type CardBrokerMemoryUsageMetricsContainerProps = {

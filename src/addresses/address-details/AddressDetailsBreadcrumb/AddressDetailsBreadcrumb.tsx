@@ -6,7 +6,7 @@ import {
   Level,
   LevelItem,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../../i18n';
+import { useTranslation } from '../../../i18n/i18n';
 import { useNavigate } from 'react-router-dom-v5-compat';
 
 export type AddressBreadcrumbProps = {

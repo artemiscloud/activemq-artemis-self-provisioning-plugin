@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { parsePrometheusDuration } from '../../../../Overview/Metrics/utils';
 import { getMaxSamplesForSpan, valueFormatter } from '../../utils';
 import { useFetchCpuUsageMetrics } from '../../hooks';
-import { useTranslation } from '../../../../../../../i18n';
+import { useTranslation } from '../../../../../../../i18n/i18n';
 import { CardQueryBrowser } from '../CardQueryBrowser/CardQueryBrowser';
 //import { MetricsType } from '../../utils';
 

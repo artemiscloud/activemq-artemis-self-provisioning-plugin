@@ -12,7 +12,7 @@ import {
   Toolbar,
   ToolbarItem,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../i18n';
+import { useTranslation } from '../../i18n/i18n';
 import { useJolokiaServiceReadAddressAttributes } from '../../openapi/jolokia/queries';
 import { AddressDetailsRow } from './AddressDetailsRow';
 import { AuthContext } from '../../jolokia/customHooks';

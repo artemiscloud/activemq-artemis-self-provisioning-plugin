@@ -2,7 +2,7 @@ import { FC, useState, useEffect, useReducer } from 'react';
 import { k8sGet, k8sUpdate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from '../add-broker/AddBroker.component';
-import { Loading } from '../../shared-components';
+import { Loading } from '../../shared-components/Loading/Loading';
 import { AMQBrokerModel, BrokerCR } from '../../k8s';
 import {
   ArtemisReducerOperations,

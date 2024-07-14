@@ -6,7 +6,7 @@ import {
   RenderOptions,
   render,
 } from '@testing-library/react';
-import I18nProvider from './i18n';
+import I18nProvider from './i18n/i18nProvider';
 
 const suspenseTestId = 'i18n-suspense';
 

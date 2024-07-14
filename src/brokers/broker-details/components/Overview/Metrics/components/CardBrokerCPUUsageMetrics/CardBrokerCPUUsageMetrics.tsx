@@ -4,7 +4,7 @@ import {
   ChartCPUUsage,
   ChartCPUUsageProps,
 } from '../ChartCPUUsage/ChartCPUUsage';
-import { useTranslation } from '../../../../../../../i18n';
+import { useTranslation } from '../../../../../../../i18n/i18n';
 import { CardBodyLoading } from '../CardBodyLoading/CardBodyLoading';
 import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData/EmptyStateNoMetricsData';
 import { ChartTitle } from '../ChartTitle';

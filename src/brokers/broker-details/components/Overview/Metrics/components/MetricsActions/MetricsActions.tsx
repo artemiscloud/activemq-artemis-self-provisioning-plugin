@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Card, CardActions, CardHeader } from '@patternfly/react-core';
-import { useTranslation } from '../../../../../../../i18n';
+import { useTranslation } from '../../../../../../../i18n/i18n';
 import { MetricsType } from '../../utils';
 import { DropdownWithToggle, IDropdownOption } from '../DropDownWithToggle';
 

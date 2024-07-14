@@ -12,7 +12,7 @@ import {
   BrokerCreationFormState,
   listConfigs,
 } from '../../../../../../../reducers/7.12/reducer';
-import { useTranslation } from '../../../../../../../i18n';
+import { useTranslation } from '../../../../../../../i18n/i18n';
 import { ConfigType, ConfigTypeContext } from '../../../ConfigurationPage';
 export type ConfigRenamingModalProps = {
   initName: string;

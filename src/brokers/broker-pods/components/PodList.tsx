@@ -7,7 +7,7 @@ import {
   ListPageFilter,
   TableColumn,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { useTranslation } from '../../../i18n';
+import { useTranslation } from '../../../i18n/i18n';
 import { BrokerCR } from '../../../k8s';
 import { PodRow } from './PodRow';
 

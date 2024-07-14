@@ -7,7 +7,7 @@ import {
   PageSection,
 } from '@patternfly/react-core';
 import { Timestamp } from '@openshift-console/dynamic-plugin-sdk';
-import { useTranslation } from '../../../../i18n';
+import { useTranslation } from '../../../../i18n/i18n';
 
 export type ConfigurationProps = {
   name: string;

@@ -11,7 +11,7 @@ import {
   BrokerConditionTypes,
   K8sResourceConditionStatus,
 } from '../../../../k8s';
-import { useTranslation } from '../../../../i18n';
+import { useTranslation } from '../../../../i18n/i18n';
 import {
   Button,
   DescriptionList,

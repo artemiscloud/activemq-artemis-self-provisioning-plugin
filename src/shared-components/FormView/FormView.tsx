@@ -20,7 +20,7 @@ import {
   TextInput,
 } from '@patternfly/react-core';
 import { FC, useContext, useEffect, useState } from 'react';
-import { useTranslation } from '../../i18n';
+import { useTranslation } from '../../i18n/i18n';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,

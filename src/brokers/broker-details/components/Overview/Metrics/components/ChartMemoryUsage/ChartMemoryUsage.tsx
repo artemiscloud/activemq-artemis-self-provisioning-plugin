@@ -23,20 +23,18 @@ import {
 } from '../../../../../../../constants/constants';
 import { useChartWidth } from '../../hooks/useChartWidth';
 import { useTranslation } from '../../../../../../../i18n/i18n';
+import { chartTheme } from '../../utils/chart-theme';
+import { formatSeriesValues, xAxisTickFormat } from '../../utils/format';
+import { humanizeBinaryBytes } from '../../utils/units';
 import {
-  chartTheme,
   ByteDataTypes,
-  processFrame,
-  humanizeBinaryBytes,
   AxisDomain,
   FormatSeriesTitle,
   GraphSeries,
   GraphDataPoint,
-  // getXDomain,
   Series,
-  formatSeriesValues,
-  xAxisTickFormat,
-} from '../../utils';
+} from '../../utils/types';
+import { processFrame } from '../../utils/data-utils';
 
 const colors = chartTheme.line.colorScale;
 

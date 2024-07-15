@@ -1,13 +1,10 @@
 import { FC, useState, useEffect, useMemo, useCallback } from 'react';
-import { parsePrometheusDuration } from '../../../Metrics/utils';
-import {
-  ByteDataTypes,
-  GraphSeries,
-  getMaxSamplesForSpan,
-  humanizeBinaryBytes,
-  processFrame,
-} from '../../utils';
-import { useFetchMemoryUsageMetrics } from '../../hooks';
+import { parsePrometheusDuration } from '../../../Metrics/utils/prometheus';
+import { getMaxSamplesForSpan } from '../../utils/format';
+import { humanizeBinaryBytes } from '../../utils/units';
+import { ByteDataTypes, GraphSeries } from '../../utils/types';
+import { processFrame } from '../../utils/data-utils';
+import { useFetchMemoryUsageMetrics } from '../../hooks/useFetchMemoryUsageMetrics';
 import { useTranslation } from '../../../../../../../i18n/i18n';
 import { CardQueryBrowser } from '../CardQueryBrowser/CardQueryBrowser';
 

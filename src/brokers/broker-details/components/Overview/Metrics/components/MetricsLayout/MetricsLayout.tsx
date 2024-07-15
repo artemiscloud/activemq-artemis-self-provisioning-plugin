@@ -1,6 +1,6 @@
 import { FC, ReactElement } from 'react';
 import { Grid, GridItem, PageSection, Title } from '@patternfly/react-core';
-import { MetricsType } from '../../utils';
+import { MetricsType } from '../../utils/types';
 
 export type MetricsLayoutProps = {
   metricsMemoryUsage?: ReactElement;

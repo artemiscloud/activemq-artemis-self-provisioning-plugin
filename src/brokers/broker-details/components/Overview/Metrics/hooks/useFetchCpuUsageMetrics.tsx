@@ -3,7 +3,7 @@ import {
   usePrometheusPoll,
   PrometheusEndpoint,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { QueryInput } from '../utils';
+import { QueryInput } from '../utils/types';
 
 export const cpuUsageQuery = (
   name: string,

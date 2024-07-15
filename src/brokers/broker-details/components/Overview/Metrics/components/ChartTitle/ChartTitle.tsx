@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { CardTitle } from '@patternfly/react-core';
-import { ChartPopover } from '../ChartPopover';
+import { ChartPopover } from '../ChartPopover/ChartPopover';
 
 export type ChartTitleProps = {
   title: string;

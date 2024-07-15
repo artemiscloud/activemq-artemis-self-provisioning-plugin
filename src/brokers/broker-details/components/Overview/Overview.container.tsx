@@ -31,7 +31,7 @@ import {
   BrokerCR,
   SecretResource,
 } from '../../../../k8s/types';
-import { Metrics } from './Metrics';
+import { Metrics } from './Metrics/Metrics';
 
 const useGetIssuerCa = (
   cr: BrokerCR,

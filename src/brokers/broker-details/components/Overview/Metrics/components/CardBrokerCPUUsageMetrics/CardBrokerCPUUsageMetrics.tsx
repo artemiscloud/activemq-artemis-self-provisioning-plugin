@@ -7,7 +7,7 @@ import {
 import { useTranslation } from '../../../../../../../i18n/i18n';
 import { CardBodyLoading } from '../CardBodyLoading/CardBodyLoading';
 import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData/EmptyStateNoMetricsData';
-import { ChartTitle } from '../ChartTitle';
+import { ChartTitle } from '../ChartTitle/ChartTitle';
 
 export type CardBrokerCPUUsageMetricsProps = ChartCPUUsageProps & {
   isInitialLoading: boolean;

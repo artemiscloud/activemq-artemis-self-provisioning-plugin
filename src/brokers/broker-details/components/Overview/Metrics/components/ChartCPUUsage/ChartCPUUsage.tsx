@@ -23,18 +23,19 @@ import {
 } from '../../../../../../../constants/constants';
 import { useChartWidth } from '../../hooks/useChartWidth';
 import { useTranslation } from '../../../../../../../i18n/i18n';
+import { chartTheme } from '../../utils/chart-theme';
 import {
-  chartTheme,
   valueFormatter,
+  formatSeriesValues,
+  xAxisTickFormat,
+} from '../../utils/format';
+import {
   AxisDomain,
   FormatSeriesTitle,
   GraphSeries,
   GraphDataPoint,
-  // getXDomain,
   Series,
-  formatSeriesValues,
-  xAxisTickFormat,
-} from '../../utils';
+} from '../../utils/types';
 
 const colors = chartTheme.line.colorScale;
 

@@ -10,7 +10,7 @@ import {
   BrokerCR,
   BrokerConditionTypes,
   K8sResourceConditionStatus,
-} from '../../../../k8s';
+} from '../../../../k8s/types';
 import { useTranslation } from '../../../../i18n/i18n';
 import {
   Button,
@@ -22,7 +22,7 @@ import {
   Modal,
   ModalVariant,
 } from '@patternfly/react-core';
-import { K8sResourceCondition } from '@app/k8s';
+import { K8sResourceCondition } from '@app/k8s/types';
 import { Link } from 'react-router-dom-v5-compat';
 
 const getConditionOKCount = (conditions: K8sResourceCondition[]): number =>

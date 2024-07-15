@@ -4,7 +4,7 @@ import {
   BrokerCR,
   BrokerConditionTypes,
   K8sResourceCondition,
-} from '../../../../k8s';
+} from '../../../../k8s/types';
 import { Loading } from '../../../../shared-components/Loading/Loading';
 import { useTranslation } from '../../../../i18n/i18n';
 

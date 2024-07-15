@@ -13,7 +13,7 @@ import {
 import { PreConfirmDeleteModal } from '../../../view-brokers/components/PreConfirmDeleteModal/PreConfirmDeleteModal';
 import { useTranslation } from '../../../../i18n/i18n';
 import { k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
-import { AMQBrokerModel } from '../../../../k8s';
+import { AMQBrokerModel } from '../../../../k8s/models';
 import { useNavigate } from 'react-router-dom-v5-compat';
 
 export type BrokerPodsBreadcrumbProps = {

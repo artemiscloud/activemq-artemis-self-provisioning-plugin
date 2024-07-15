@@ -2,7 +2,8 @@ import { FC, useReducer, useState } from 'react';
 import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from './AddBroker.component';
-import { AMQBrokerModel, BrokerCR } from '../../k8s';
+import { AMQBrokerModel } from '../../k8s/models';
+import { BrokerCR } from '../../k8s/types';
 import {
   BrokerCreationFormState,
   BrokerCreationFormDispatch,

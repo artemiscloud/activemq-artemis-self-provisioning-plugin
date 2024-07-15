@@ -12,7 +12,7 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n/i18n';
-import { AMQBrokerModel } from '../../k8s';
+import { AMQBrokerModel } from '../../k8s/models';
 import {
   K8sResourceKind,
   k8sGet,

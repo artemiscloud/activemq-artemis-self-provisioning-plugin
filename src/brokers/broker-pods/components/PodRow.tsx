@@ -5,7 +5,7 @@ import {
   TableColumn,
   Timestamp,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { BrokerCR } from '../../../k8s';
+import { BrokerCR } from '../../../k8s/types';
 import { Link } from 'react-router-dom-v5-compat';
 
 export type PodRowProps = RowProps<BrokerCR> & {

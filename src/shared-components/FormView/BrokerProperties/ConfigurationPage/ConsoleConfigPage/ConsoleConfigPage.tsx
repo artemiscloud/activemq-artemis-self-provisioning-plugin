@@ -18,7 +18,7 @@ import {
   Switch,
 } from '@patternfly/react-core';
 import { FC, useContext, useState } from 'react';
-import { BrokerCR } from '../../../../../k8s';
+import { BrokerCR } from '../../../../../k8s/types';
 import { ConfigType } from '../ConfigurationPage';
 import { CertSecretSelector } from '../CertSecretSelector/CertSecretSelector';
 

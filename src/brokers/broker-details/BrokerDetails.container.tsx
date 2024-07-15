@@ -23,7 +23,8 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n/i18n';
-import { AMQBrokerModel, BrokerCR } from '../../k8s';
+import { AMQBrokerModel } from '../../k8s/models';
+import { BrokerCR } from '../../k8s/types';
 import {
   AuthContext,
   useGetApiServerBaseUrl,

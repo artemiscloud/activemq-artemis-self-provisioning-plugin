@@ -6,7 +6,6 @@ import {
   Page,
   ActionGroup,
   Button,
-  ButtonVariant,
 } from '@patternfly/react-core';
 import {
   CodeEditor,
@@ -48,11 +47,16 @@ const BrokerActionGroup: FC<BrokerActionGroupProps> = ({
   const { t } = useTranslation();
 
   return (
-    <ActionGroup>
-      <Button variant={ButtonVariant.primary} type="submit" onClick={onSubmit}>
+    <ActionGroup className="pf-u-mt-sm pf-u-mb-sm">
+      <Button
+        variant="primary"
+        type="submit"
+        onClick={onSubmit}
+        className="pf-u-ml-sm"
+      >
         {isUpdate ? t('apply') : t('create')}
       </Button>
-      <Button variant={ButtonVariant.secondary} onClick={onCancel}>
+      <Button variant="link" onClick={onCancel}>
         {t('cancel')}
       </Button>
     </ActionGroup>

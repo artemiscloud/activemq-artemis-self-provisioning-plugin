@@ -7,6 +7,7 @@ import {
   BrokerCreationFormState,
   EditorType,
 } from '../../reducers/7.12/reducer';
+import { useLocation } from 'react-router-dom-v5-compat';
 import { FormView } from '../../shared-components/FormView/FormView';
 import { YamlEditorView } from '../../shared-components/YamlEditorView/YamlEditorView';
 import { EditorToggle } from './components/EditorToggle/EditorToggle';
@@ -27,6 +28,9 @@ export const AddBroker: FC<AddBrokerProps> = ({
 }) => {
   const formValues = useContext(BrokerCreationFormState);
   const dispatch = useContext(BrokerCreationFormDispatch);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const returnUrl = params.get('returnUrl') || '/k8s/all-namespaces/brokers';
 
   const { editorType } = formValues;
 
@@ -47,6 +51,7 @@ export const AddBroker: FC<AddBrokerProps> = ({
           onCreateBroker={onCreateBroker}
           notification={notification}
           isUpdate={isUpdate}
+          returnUrl={returnUrl}
         />
       )}
       {editorType === EditorType.YAML && (
@@ -55,6 +60,7 @@ export const AddBroker: FC<AddBrokerProps> = ({
           initialResourceYAML={formValues.cr}
           notification={notification}
           isUpdate={isUpdate}
+          returnUrl={returnUrl}
         />
       )}
     </>

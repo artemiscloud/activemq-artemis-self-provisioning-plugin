@@ -31,6 +31,7 @@ export type YamlEditorViewProps = {
     variant: AlertVariant;
   };
   isUpdate: boolean;
+  returnUrl: string;
 };
 
 interface BrokerActionGroupProps {
@@ -67,6 +68,7 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
   onCreateBroker,
   notification,
   isUpdate,
+  returnUrl,
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -85,10 +87,11 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
   const onSave = () => {
     const yamlData: BrokerCR = fromState.cr;
     onCreateBroker(yamlData);
+    navigate(returnUrl);
   };
 
   const onCancel = () => {
-    navigate('/k8s/all-namespaces/brokers');
+    navigate(returnUrl);
   };
 
   //event: contains information of changes

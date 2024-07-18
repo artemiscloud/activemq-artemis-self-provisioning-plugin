@@ -39,12 +39,14 @@ type FormViewProps = {
     variant: AlertVariant;
   };
   isUpdate: boolean;
+  returnUrl: string;
 };
 
 export const FormView: FC<FormViewProps> = ({
   onCreateBroker,
   notification: serverNotification,
   isUpdate,
+  returnUrl,
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -82,12 +84,12 @@ export const FormView: FC<FormViewProps> = ({
     const isValid = validateFormFields(formState.cr);
     if (isValid) {
       onCreateBroker(formState.cr);
-      navigate('/k8s/all-namespaces/brokers');
+      navigate(returnUrl);
     }
   };
 
   const onCancel = () => {
-    navigate('/k8s/all-namespaces/brokers');
+    navigate(returnUrl);
   };
 
   const handleNameChange = (name: string) => {

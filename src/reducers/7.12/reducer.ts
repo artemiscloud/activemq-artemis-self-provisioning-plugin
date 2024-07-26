@@ -298,10 +298,18 @@ interface DeletePEMGenerationForAcceptorAction
 
 interface AddAcceptorAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.addAcceptor;
+  payload: {
+    name: string;
+    port: number;
+  };
 }
 
 interface AddConnectorAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.addConnector;
+  payload: {
+    name: string;
+    port: number;
+  };
 }
 
 interface DecrementReplicasAction extends ArtemisReducerActionBase {
@@ -1653,6 +1661,10 @@ export const getAcceptor = (cr: BrokerCR, name: string) => {
   return undefined;
 };
 
+export const getAllAcceptors = (brokerModel: BrokerCR) => {
+  return brokerModel.spec?.acceptors || [];
+};
+
 export const getAcceptorFromCertManagerResourceTemplate = (
   cr: BrokerCR,
   rt: ResourceTemplate,
@@ -1698,23 +1710,63 @@ export const getConnector = (cr: BrokerCR, name: string) => {
   return undefined;
 };
 
+export const getAllConnectors = (brokerModel: BrokerCR) => {
+  return brokerModel.spec?.connectors || [];
+};
+
+export const generatePortNumber = (usedPorts: number[]): number => {
+  let port = 5555;
+  while (usedPorts.includes(port)) {
+    port += 1;
+    //console.log('increament port', port);
+  }
+  return port;
+};
+
 export const getConfigPort = (
   brokerModel: BrokerCR,
   configType: ConfigType,
   configName: string,
 ): number => {
-  if (configType === ConfigType.connectors) {
-    const connector = getConnector(brokerModel, configName);
-    if (connector?.port) {
-      return connector.port;
-    }
-  }
   if (configType === ConfigType.acceptors) {
     const acceptor = getAcceptor(brokerModel, configName);
     if (acceptor?.port) {
+      //console.log(`Existing port for acceptor ${configName}: ${acceptor.port}`);
       return acceptor.port;
     }
+
+    const acceptors = getAllAcceptors(brokerModel);
+    const usedPorts: number[] = [];
+    acceptors.forEach((acceptor) => {
+      if (acceptor.port) {
+        usedPorts.push(acceptor.port);
+      }
+    });
+    const newPort = generatePortNumber(usedPorts);
+    //console.log(`Generated new port for acceptor ${configName}: ${newPort}`);
+    return newPort;
+  } else if (configType === ConfigType.connectors) {
+    const connector = getConnector(brokerModel, configName);
+    if (connector?.port) {
+      // console.log(
+      //   `Existing port for connector ${configName}: ${connector.port}`,
+      // );
+      return connector.port;
+    }
+
+    const connectors = getAllConnectors(brokerModel);
+    const usedPorts: number[] = [];
+    connectors.forEach((connector) => {
+      if (connector.port) {
+        usedPorts.push(connector.port);
+      }
+    });
+    const newPort = generatePortNumber(usedPorts);
+    //console.log(`Generated new port for connector ${configName}: ${newPort}`);
+    return newPort;
   }
+
+  //console.log(`default port 5555 for configName: ${configName}`);
   return 5555;
 };
 

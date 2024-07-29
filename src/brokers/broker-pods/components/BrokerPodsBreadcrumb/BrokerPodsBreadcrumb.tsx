@@ -34,7 +34,12 @@ const BrokerPodsBreadcrumb: FC<BrokerPodsBreadcrumbProps> = ({
   const redirectPath = `/k8s/ns/${namespace}/brokers`;
 
   const onClickEditBroker = () => {
-    navigate(`/k8s/ns/${namespace}/edit-broker/${name}`);
+    const currentPath = window.location.pathname;
+    navigate(
+      `/k8s/ns/${namespace}/edit-broker/${name}?returnUrl=${encodeURIComponent(
+        currentPath,
+      )}`,
+    );
   };
 
   const onClickDeleteBroker = () => {
@@ -70,6 +75,8 @@ const BrokerPodsBreadcrumb: FC<BrokerPodsBreadcrumbProps> = ({
   const onToggle = (isOpen: boolean) => {
     setIsOpen(isOpen);
   };
+
+  
 
   const onSelect = () => {
     setIsOpen(false);

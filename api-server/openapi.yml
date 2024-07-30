@@ -8,7 +8,7 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0
   version: 1.0.0-alpha
   description: |
-    This document contains a list of currently avaliable apis that
+    This document contains a list of currently available apis that
     can be used by the **activemq-artemis-self-provisioning plugin**
     to get access to the [management api](https://github.com/apache/activemq-artemis/blob/main/docs/user-manual/management.adoc#the-management-api) of a broker instance via 
     its [jolokia](https://jolokia.org/) endpoint.

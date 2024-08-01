@@ -34,7 +34,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OpenAPI as OpenAPIConfig } from '../../openapi/jolokia/requests/core/OpenAPI';
 import { ClientsContainer } from './components/Clients/Clients.container';
 import { AddressContainer } from './components/Addresses/Address.container';
-import { ConfigurationContainer } from './components/Configuration/Configuration.container';
 import { BrokerDetailsBreadcrumb } from './components/BrokerDetailsBreadcrumb/BrokerDetailsBreadcrumb';
 import {
   JolokiaAcceptorDetails,
@@ -181,15 +180,6 @@ export const BrokerDetailsPage: FC = () => {
               name={brokerName}
               namespace={namespace}
               cr={brokerDetails}
-              loading={loading}
-            />
-          </Tab>
-          <Tab
-            eventKey={'configuration'}
-            title={<TabTitleText>{t('configuration')}</TabTitleText>}
-          >
-            <ConfigurationContainer
-              configurationSettings={brokerDetails}
               loading={loading}
             />
           </Tab>

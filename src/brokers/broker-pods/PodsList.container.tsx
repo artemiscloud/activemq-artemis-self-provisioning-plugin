@@ -36,9 +36,10 @@ export const PodsContainer: FC = () => {
   });
 
   const filterBrokerPods = (pods: K8sResourceCommon[], brokerName: string) => {
+    const regex = new RegExp(`^${brokerName}-ss$`);
     return pods.filter((pod) =>
       pod.metadata?.ownerReferences?.some(
-        (ref) => ref.name.startsWith(brokerName) && ref.kind === 'StatefulSet',
+        (ref) => regex.test(ref.name) && ref.kind === 'StatefulSet',
       ),
     );
   };

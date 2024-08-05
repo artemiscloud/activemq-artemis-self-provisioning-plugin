@@ -6,7 +6,7 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { Address } from '../../../../openapi/jolokia/requests';
 import { useJolokiaServiceReadAddressAttributes } from '../../../../openapi/jolokia/queries';
-import { AuthContext } from '../../../../jolokia/customHooks';
+import { AuthContext } from '../../../../jolokia/context';
 import { Link } from 'react-router-dom-v5-compat';
 
 export type AddressRowProps = RowProps<Address> & {

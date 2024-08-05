@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { AddressDetails } from './AddressDetails.component';
 import { useJolokiaServiceReadAddressAttributes } from '../../openapi/jolokia/queries';
-import { AuthContext } from '../../jolokia/customHooks';
+import { AuthContext } from '../../jolokia/context';
 
 jest.mock('../../openapi/jolokia/queries', () => ({
   useJolokiaServiceReadAddressAttributes: jest.fn(),

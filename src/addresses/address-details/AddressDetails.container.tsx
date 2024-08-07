@@ -22,8 +22,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OpenAPI as OpenAPIConfig } from '../../openapi/jolokia/requests/core/OpenAPI';
 import { AddressDetails } from './AddressDetails.component';
 import { AddressDetailsBreadcrumb } from './AddressDetailsBreadcrumb/AddressDetailsBreadcrumb';
+import { AuthContext } from '../../jolokia/context';
 import {
-  AuthContext,
   useGetApiServerBaseUrl,
   useJolokiaLogin,
 } from '../../jolokia/customHooks';

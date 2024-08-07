@@ -8,9 +8,6 @@ import {
   K8sResourceCommon,
   K8sResourceKind,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { createContext, useState } from 'react';
-
-export const AuthContext = createContext<string>('');
 
 function getJolokiaProtocol(broker: K8sResourceKind): string {
   return broker.spec['console'].sslEnabled ? 'https' : 'http';

@@ -15,7 +15,7 @@ import {
 import { useTranslation } from '../../i18n/i18n';
 import { useJolokiaServiceReadAddressAttributes } from '../../openapi/jolokia/queries';
 import { AddressDetailsRow } from './AddressDetailsRow';
-import { AuthContext } from '../../jolokia/customHooks';
+import { AuthContext } from '../../jolokia/context';
 
 type AddressDetailsTableProps = {
   name: string;

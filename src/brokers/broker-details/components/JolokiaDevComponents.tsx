@@ -42,7 +42,7 @@ import {
 } from '../../../openapi/jolokia/requests';
 import { useQuery } from '@tanstack/react-query';
 import { Signatures } from '../../../openapi/jolokia/requests/models/Signatures';
-import { AuthContext } from '../../../jolokia/customHooks';
+import { AuthContext } from '../../../jolokia/context';
 
 function getApiHost(): string {
   return process.env.NODE_ENV === 'production'

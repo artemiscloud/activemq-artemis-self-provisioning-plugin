@@ -91,4 +91,29 @@ describe('PodsContainer', () => {
       expect(screen.getByText('PodsList Component')).toBeInTheDocument();
     });
   });
+
+  it('should filter broker pods that do not match', async () => {
+    const mockPods: K8sResourceCommon[] = [
+      {
+        metadata: {
+          name: 'test-2-ss-0',
+          ownerReferences: [
+            {
+              apiVersion: 'v1beta1',
+              name: 'test-2-ss',
+              kind: 'StatefulSet',
+              uid: 'abcd1235z',
+            },
+          ],
+        },
+      },
+    ];
+    mockUseK8sWatchResource.mockReturnValue([mockPods, true, null]);
+
+    render(<PodsContainer />);
+
+    await waitFor(() => {
+      expect(screen.getByText('No results match.')).toBeInTheDocument();
+    });
+  });
 });

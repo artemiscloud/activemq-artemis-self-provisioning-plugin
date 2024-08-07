@@ -1,33 +1,17 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import {
   Alert,
-  Button,
-  Modal,
-  ModalVariant,
   PageSection,
   PageSectionVariants,
-  Text,
-  TextContent,
-  TextVariants,
   Title,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../i18n/i18n';
-import { AMQBrokerModel } from '../../k8s/models';
-import {
-  K8sResourceKind,
-  k8sGet,
-  useK8sWatchResource,
-} from '@openshift-console/dynamic-plugin-sdk';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { OpenAPI as OpenAPIConfig } from '../../openapi/jolokia/requests/core/OpenAPI';
 import { AddressDetails } from './AddressDetails.component';
 import { AddressDetailsBreadcrumb } from './AddressDetailsBreadcrumb/AddressDetailsBreadcrumb';
-import {
-  AuthContext,
-  useGetApiServerBaseUrl,
-  useJolokiaLogin,
-} from '../../jolokia/customHooks';
+
 import { useParams } from 'react-router-dom-v5-compat';
+import { JolokiaAuthentication } from '../../jolokia/components/JolokiaAuthentication';
+import { UseGetBrokerCR } from '../../k8s/customHooks';
 
 export const AddressDetailsPage: FC = () => {
   const { t } = useTranslation();
@@ -42,93 +26,16 @@ export const AddressDetailsPage: FC = () => {
     brokerName?: string;
     podName?: string;
   }>();
-  const [brokerDetails, setBrokerDetails] = useState<K8sResourceKind>({});
-  const [_loading, setLoading] = useState<boolean>(true);
-  const [isFirstMount, setIsFirstMount] = useState(true);
-  const [error, setError] = useState<string>('');
-  const [isErrorModalOpen, setIsErrorModalOpen] = useState<boolean>(false);
-  const [routes] = useK8sWatchResource<K8sResourceKind[]>({
-    isList: true,
-    groupVersionKind: {
-      group: 'route.openshift.io',
-      kind: 'Route',
-      version: 'v1',
-    },
-    namespaced: true,
-  });
 
-  const k8sGetBroker = () => {
-    setLoading(true);
-    k8sGet({ model: AMQBrokerModel, name: brokerName, ns: namespace })
-      .then((broker: K8sResourceKind) => {
-        setBrokerDetails(broker);
-      })
-      .catch((e) => {
-        setError(e.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
-  const handleModalToggle = () => {
-    setIsErrorModalOpen(!isErrorModalOpen);
-  };
-
-  const handleTryAgain = () => {
-    setIsErrorModalOpen(false);
-    window.location.reload();
-  };
-
-  if (isFirstMount) {
-    k8sGetBroker();
-    setIsFirstMount(false);
-  }
+  const { brokerCr: brokerDetails, error: error } = UseGetBrokerCR(
+    brokerName,
+    namespace,
+  );
 
   const podOrdinal = parseInt(podName.replace(brokerName + '-ss-', ''));
 
-  const { token, isError, isLoading, source } = useJolokiaLogin(
-    brokerDetails,
-    routes,
-    podOrdinal,
-  );
-
-  const [prevIsLoading, setPrevIsLoading] = useState(isLoading);
-  const [notify, setNotify] = useState(false);
-  if (prevIsLoading !== isLoading) {
-    if (!isLoading && source === 'api') {
-      setNotify(true);
-    }
-    setPrevIsLoading(isLoading);
-  }
-  if (notify) {
-    if (isError) {
-      setIsErrorModalOpen(true);
-    }
-    setNotify(false);
-  }
-
   return (
-    <AuthContext.Provider value={token}>
-      <Modal
-        variant={ModalVariant.small}
-        title={t('login_failed')}
-        titleIconVariant="danger"
-        isOpen={isErrorModalOpen}
-        onClose={handleModalToggle}
-        actions={[
-          <Button key="confirm" variant="primary" onClick={handleTryAgain}>
-            {t('try_again')}
-          </Button>,
-          <Button key="cancel" variant="link" onClick={handleModalToggle}>
-            {t('cancel')}
-          </Button>,
-        ]}
-      >
-        <TextContent>
-          <Text component={TextVariants.h6}>{t('login_failed_message')}</Text>
-        </TextContent>
-      </Modal>
+    <JolokiaAuthentication brokerCR={brokerDetails} podOrdinal={podOrdinal}>
       <PageSection
         variant={PageSectionVariants.light}
         padding={{ default: 'noPadding' }}
@@ -148,16 +55,10 @@ export const AddressDetailsPage: FC = () => {
         {error && <Alert variant="danger" title={error} />}
         <AddressDetails name={name} />
       </PageSection>
-    </AuthContext.Provider>
+    </JolokiaAuthentication>
   );
 };
 
 export const App: FC = () => {
-  OpenAPIConfig.BASE = useGetApiServerBaseUrl();
-  const querClient = new QueryClient();
-  return (
-    <QueryClientProvider client={querClient}>
-      <AddressDetailsPage />
-    </QueryClientProvider>
-  );
+  return <AddressDetailsPage />;
 };

@@ -7,10 +7,10 @@ import {
 import {
   K8sResourceCommon,
   K8sResourceKind,
+  useK8sWatchResource,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { createContext, useState } from 'react';
-
-export const AuthContext = createContext<string>('');
+import { useState } from 'react';
+import { JolokiaLogin } from './context';
 
 function getJolokiaProtocol(broker: K8sResourceKind): string {
   return broker.spec['console'].sslEnabled ? 'https' : 'http';
@@ -112,15 +112,6 @@ const getJolokiaLoginParameters = (
   return requestBody;
 };
 
-type jolokiaLoginSource = 'api' | 'session';
-type JolokiaLogin = {
-  isSucces: boolean;
-  isLoading: boolean;
-  isError: boolean;
-  token: string;
-  source: jolokiaLoginSource;
-};
-
 /**
  * Use this hook at the top of your first page to get credentials to access the
  * jolokia api-server. This should be called before any other queries to the
@@ -142,10 +133,18 @@ type JolokiaLogin = {
  */
 export const useJolokiaLogin = (
   broker: K8sResourceKind,
-  brokerRoutes: K8sResourceKind[],
   ordinal: number,
 ): JolokiaLogin => {
-  const params = getJolokiaLoginParameters(broker, brokerRoutes, ordinal);
+  const [routes] = useK8sWatchResource<K8sResourceKind[]>({
+    isList: true,
+    groupVersionKind: {
+      group: 'route.openshift.io',
+      kind: 'Route',
+      version: 'v1',
+    },
+    namespaced: true,
+  });
+  const params = getJolokiaLoginParameters(broker, routes, ordinal);
   const paramsReady =
     params.port !== '' &&
     params.jolokiaHost !== '' &&
@@ -229,7 +228,7 @@ export const useJolokiaLogin = (
   // situation depending on the Idle state of the mutation itself.
   if (isLoginMutationIdle && !needToFetchToken) {
     return {
-      isSucces: isSuccessRequestApi,
+      isSuccess: isSuccessRequestApi,
       isLoading: isLoadingRequestApi,
       isError: isErrorRequestApi,
       token: token,
@@ -238,7 +237,7 @@ export const useJolokiaLogin = (
   }
   return {
     isError: isLoginMutationError,
-    isSucces: isLoginMutationSuccess,
+    isSuccess: isLoginMutationSuccess,
     isLoading: isLoginMutationLoading || isLoginMutationIdle,
     token: token,
     source: 'api',

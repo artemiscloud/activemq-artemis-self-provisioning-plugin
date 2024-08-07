@@ -42,7 +42,7 @@ import {
 } from '../../../openapi/jolokia/requests';
 import { useQuery } from '@tanstack/react-query';
 import { Signatures } from '../../../openapi/jolokia/requests/models/Signatures';
-import { AuthContext } from '../../../jolokia/customHooks';
+import { AuthContext } from '../../../jolokia/context';
 
 function getApiHost(): string {
   return process.env.NODE_ENV === 'production'
@@ -69,7 +69,7 @@ export const SignatureSubForm: FC<SignatureSubFormType> = ({
   name,
   signature,
 }) => {
-  const authToken = useContext(AuthContext);
+  const { token: authToken } = useContext(AuthContext);
   const [formValues, setFormvalues] = useState<Record<string, string>>({});
   const update = (name: string, value: string) => {
     const newFormValues = { ...formValues };
@@ -208,7 +208,7 @@ export const FetchAttr: FC<DisplayDetailsType> = ({
   acceptor,
   queue,
 }) => {
-  const authToken = useContext(AuthContext);
+  const { token: authToken } = useContext(AuthContext);
   const [formSelectValue, setFormSelectValue] = useState('');
 
   const onChange = (value: string) => {
@@ -299,7 +299,7 @@ export const FetchAttr: FC<DisplayDetailsType> = ({
 };
 
 export const JolokiaBrokerDetails: FC = () => {
-  const authToken = useContext(AuthContext);
+  const { token: authToken } = useContext(AuthContext);
 
   const { data: brokers, isSuccess: brokersSuccess } =
     useJolokiaServiceGetBrokers({ jolokiaSessionId: authToken });
@@ -327,7 +327,7 @@ export const JolokiaBrokerDetails: FC = () => {
 };
 
 export const JolokiaAddressDetails: FC = () => {
-  const authToken = useContext(AuthContext);
+  const { token: authToken } = useContext(AuthContext);
   const [selectedAddress, setSelectedAddress] = useState('');
 
   const { data: addresses, isSuccess: addressesSuccess } =
@@ -380,7 +380,7 @@ export const JolokiaAddressDetails: FC = () => {
 };
 
 export const JolokiaAcceptorDetails: FC = () => {
-  const authToken = useContext(AuthContext);
+  const { token: authToken } = useContext(AuthContext);
   const [selectedAcceptor, setSelectedAcceptor] = useState('');
 
   const { data: acceptors, isSuccess: isAcceptorsSuccess } =
@@ -433,7 +433,7 @@ export const JolokiaAcceptorDetails: FC = () => {
 };
 
 export const JolokiaQueueDetails: FC = () => {
-  const authToken = useContext(AuthContext);
+  const { token: authToken } = useContext(AuthContext);
   const [selectedQueue, setSelectesQueue] = useState('');
 
   const { data: queues, isSuccess: isQueueSuccess } =
@@ -489,7 +489,7 @@ const JolokiaTestPanel: FC = () => {
   const [jolokiaTestResult, setJolokiaTestResult] = useState('Result:');
   const [requestError, setRequestError] = useState(false);
 
-  const authToken = useContext(AuthContext);
+  const { token: authToken } = useContext(AuthContext);
 
   const setError = (error: string) => {
     setJolokiaTestResult(error);

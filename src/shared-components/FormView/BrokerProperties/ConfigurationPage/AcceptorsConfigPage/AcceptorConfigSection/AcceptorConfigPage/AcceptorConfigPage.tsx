@@ -22,7 +22,7 @@ import {
   getConfigProtocols,
   getConfigSSLEnabled,
 } from '../../../../../../../reducers/7.12/reducer';
-import { FC, useContext } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { ConfigType } from '../../../ConfigurationPage';
 import { useTranslation } from '../../../../../../../i18n/i18n';
 import { PresetAlertPopover } from './PresetAlertPopover/PresetAlertPopover';
@@ -45,7 +45,8 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
   const dispatch = useContext(BrokerCreationFormDispatch);
 
   const selectedClass = getConfigFactoryClass(cr, configType, configName);
-  const port = getConfigPort(cr, configType, configName);
+  const initialPort = getConfigPort(cr, configType, configName);
+  //console.log(`Port for ${configName}: `, initialPort);
   const host = getConfigHost(cr, configType, configName);
   const protocols = getConfigProtocols(cr, configType, configName);
   const isSSLEnabled = getConfigSSLEnabled(cr, configType, configName);
@@ -54,6 +55,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
     configType,
     configName,
   );
+  const [port, setPort] = useState(initialPort);
 
   const onChangeClass = (value: string) => {
     if (configType === ConfigType.acceptors) {
@@ -176,6 +178,10 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
   ];
 
   const { t } = useTranslation();
+  useEffect(() => {
+    setPort(initialPort);
+  }, [initialPort]);
+
   return (
     <>
       <FormFieldGroup

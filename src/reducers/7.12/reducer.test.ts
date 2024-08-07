@@ -19,6 +19,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const newState = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     expect(newState.cr.spec.acceptors).toHaveLength(1);
     expect(newState.cr.spec.acceptors[0].name).toBe('acceptors0');
@@ -34,6 +38,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const newState = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
+      payload: {
+        name: 'connectors0',
+        port: 5555,
+      },
     });
     expect(newState.cr.spec.connectors).toHaveLength(1);
     expect(newState.cr.spec.connectors[0].name).toBe('connectors0');
@@ -70,6 +78,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.deleteAcceptor,
@@ -85,6 +97,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Connector = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
+      payload: {
+        name: 'connectors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Connector, {
       operation: ArtemisReducerOperations.deleteConnector,
@@ -118,6 +134,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     expect(stateWith1Acceptor.cr.spec.acceptors[0].bindToAllInterfaces).toBe(
       undefined,
@@ -144,6 +164,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.setAcceptorName,
@@ -162,9 +186,17 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const stateWith2Acceptor = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const newState3 = artemisCrReducer(stateWith2Acceptor, {
       operation: ArtemisReducerOperations.setAcceptorName,
@@ -181,6 +213,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.setAcceptorOtherParams,
@@ -217,6 +253,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.setAcceptorPort,
@@ -232,6 +272,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.setAcceptorProtocols,
@@ -247,6 +291,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.setAcceptorSSLEnabled,
@@ -262,6 +310,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.setAcceptorSecret,
@@ -297,6 +349,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Connector = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
+      payload: {
+        name: 'connectors0',
+        port: 5555,
+      },
     });
     expect(stateWith1Connector.cr.spec.connectors[0].bindToAllInterfaces).toBe(
       undefined,
@@ -323,6 +379,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Connector = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
+      payload: {
+        name: 'connectors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Connector, {
       operation: ArtemisReducerOperations.setConnectorHost,
@@ -338,6 +398,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Connector = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
+      payload: {
+        name: 'connectors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Connector, {
       operation: ArtemisReducerOperations.setConnectorName,
@@ -356,9 +420,17 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Connector = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
+      payload: {
+        name: 'connectors0',
+        port: 5555,
+      },
     });
     const stateWith2Connector = artemisCrReducer(stateWith1Connector, {
       operation: ArtemisReducerOperations.addConnector,
+      payload: {
+        name: 'connectors0',
+        port: 5555,
+      },
     });
     const newState3 = artemisCrReducer(stateWith2Connector, {
       operation: ArtemisReducerOperations.setConnectorName,
@@ -375,6 +447,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Connector = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
+      payload: {
+        name: 'connectors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Connector, {
       operation: ArtemisReducerOperations.setConnectorOtherParams,
@@ -411,6 +487,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Connector = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
+      payload: {
+        name: 'connectors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Connector, {
       operation: ArtemisReducerOperations.setConnectorPort,
@@ -426,6 +506,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Connector = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
+      payload: {
+        name: 'connectors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Connector, {
       operation: ArtemisReducerOperations.setConnectorProtocols,
@@ -441,6 +525,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Connector = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
+      payload: {
+        name: 'connectors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Connector, {
       operation: ArtemisReducerOperations.setConnectorSSLEnabled,
@@ -456,6 +544,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Connector = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
+      payload: {
+        name: 'connectors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Connector, {
       operation: ArtemisReducerOperations.setConnectorSecret,
@@ -561,6 +653,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.updateAcceptorFactoryClass,
@@ -588,6 +684,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
+      payload: {
+        name: 'connectors0',
+        port: 5555,
+      },
     });
     const newState2 = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.updateConnectorFactoryClass,
@@ -615,6 +715,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const stateWithPEM = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.activatePEMGenerationForAcceptor,
@@ -743,6 +847,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const stateWithPEM = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.activatePEMGenerationForAcceptor,
@@ -764,6 +872,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const stateExposeModeIngress = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.setAcceptorExposeMode,
@@ -781,6 +893,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const stateExposeModeIngress = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.setAcceptorIngressHost,
@@ -798,6 +914,10 @@ describe('test the creation broker reducer', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
+      payload: {
+        name: 'acceptors0',
+        port: 5555,
+      },
     });
     const stateExposeModeIngress = artemisCrReducer(stateWith1Acceptor, {
       operation: ArtemisReducerOperations.setIsAcceptorExposed,

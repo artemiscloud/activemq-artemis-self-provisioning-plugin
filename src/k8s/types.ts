@@ -132,3 +132,14 @@ export type SecretResource = K8sResource & {
     'tls.key'?: string;
   };
 };
+
+export type Ingress = K8sResource & {
+  spec: {
+    domain: string;
+    loadBalancer: {
+      platform: {
+        type: string;
+      };
+    };
+  };
+};

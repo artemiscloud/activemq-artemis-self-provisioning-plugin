@@ -616,7 +616,11 @@ describe('test the creation broker reducer', () => {
     const stateWith1Acceptor = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addAcceptor,
     });
-    const stateWithPEM = artemisCrReducer(stateWith1Acceptor, {
+    const stateWithIngressDomain = artemisCrReducer(stateWith1Acceptor, {
+      operation: ArtemisReducerOperations.setIngressDomain,
+      payload: 'apps-crc.testing',
+    });
+    const stateWithPEM = artemisCrReducer(stateWithIngressDomain, {
       operation: ArtemisReducerOperations.activatePEMGenerationForAcceptor,
       payload: {
         acceptor: 'acceptors0',

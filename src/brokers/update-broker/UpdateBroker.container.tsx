@@ -5,6 +5,7 @@ import { AddBroker } from '../add-broker/AddBroker.component';
 import { Loading } from '../../shared-components/Loading/Loading';
 import { AMQBrokerModel } from '../../k8s/models';
 import { BrokerCR } from '../../k8s/types';
+import { UseGetIngressDomain } from '../../k8s/customHooks';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
@@ -20,7 +21,7 @@ export const UpdateBrokerPage: FC = () => {
 
   //states
   const [notification, setNotification] = useState(defaultNotification);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingBrokerCR, setLoading] = useState<boolean>(false);
 
   const crState = getArtemisCRState(name, namespace);
 
@@ -69,7 +70,18 @@ export const UpdateBrokerPage: FC = () => {
     if (name) k8sGetBroker();
   }, [name]);
 
-  if (loading && !notification.title) return <Loading />;
+  const { clusterDomain, isLoading: isLoadingClusterDomain } =
+    UseGetIngressDomain();
+  const [isDomainSet, setIsDomainSet] = useState(false);
+  if (!loadingBrokerCR && !isLoadingClusterDomain && !isDomainSet) {
+    dispatch({
+      operation: ArtemisReducerOperations.setIngressDomain,
+      payload: clusterDomain,
+    });
+    setIsDomainSet(true);
+  }
+
+  if (loadingBrokerCR && !notification.title) return <Loading />;
 
   if (!brokerModel.cr.spec?.deploymentPlan) {
     return <Loading />;

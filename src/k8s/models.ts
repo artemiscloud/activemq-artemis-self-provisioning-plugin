@@ -68,3 +68,14 @@ export const SecretModel: K8sModel = {
   namespaced: false,
   crd: true,
 };
+
+export const IngressDomainModel: K8sModel = {
+  apiGroup: 'config.openshift.io',
+  apiVersion: 'v1',
+  kind: 'Ingress',
+  label: 'ingress',
+  plural: 'ingresses',
+  labelPlural: 'ingresses',
+  abbr: 'I',
+  namespaced: false,
+};

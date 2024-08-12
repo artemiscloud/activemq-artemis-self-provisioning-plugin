@@ -183,20 +183,6 @@ export const FormView: FC<FormViewProps> = ({
                 plusBtnAriaLabel="plus"
               />
             </FormGroup>
-            <FormGroup label="ingressDomain" fieldId="horizontal-form-Domain">
-              <TextInput
-                label="Ingress Domain"
-                name={'ingressDomain'}
-                id={'ingressDomain'}
-                value={cr.spec?.ingressDomain}
-                onChange={(v) =>
-                  dispatch({
-                    operation: ArtemisReducerOperations.setIngressDomain,
-                    payload: v,
-                  })
-                }
-              />
-            </FormGroup>
             <FormGroup label="Broker Properties">
               <InputGroup>
                 <InputGroupText id="broker-version" className=".pf-u-w-initial">

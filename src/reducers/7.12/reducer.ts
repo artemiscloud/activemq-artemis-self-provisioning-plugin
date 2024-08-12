@@ -62,7 +62,7 @@ export const newArtemisCRState = (namespace: string): FormState => {
     spec: {
       adminUser: 'admin',
       adminPassword: 'admin',
-      ingressDomain: 'apps-crc.testing',
+      ingressDomain: '',
       console: {
         expose: true,
       },

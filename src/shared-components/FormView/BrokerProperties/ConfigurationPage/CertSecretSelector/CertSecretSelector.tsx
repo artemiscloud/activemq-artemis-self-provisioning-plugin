@@ -12,7 +12,7 @@ import {
   CertModel,
   SecretModel,
 } from '../../../../../k8s/models';
-import { K8sResourceKind } from '../../../../../k8s/types';
+import { K8sResourceCommonWithData } from '../../../../../k8s/types';
 import {
   k8sCreate,
   useK8sWatchResource,
@@ -129,8 +129,8 @@ const useCreateSecretOptions = ({
 
 type CreateSecretOptionsPropTypes = {
   customOptions?: string[];
-  certManagerSecrets: K8sResourceKind[];
-  legacySecrets: K8sResourceKind[];
+  certManagerSecrets: K8sResourceCommonWithData[];
+  legacySecrets: K8sResourceCommonWithData[];
   configType: ConfigType;
   configName: string;
   isCa: boolean;
@@ -153,7 +153,9 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   const { cr } = useContext(BrokerCreationFormState);
   const dispatch = useContext(BrokerCreationFormDispatch);
 
-  const [secrets, loaded, _loadError] = useK8sWatchResource<K8sResourceKind[]>({
+  const [secrets, loaded, _loadError] = useK8sWatchResource<
+    K8sResourceCommonWithData[]
+  >({
     isList: true,
     groupVersionKind: secretGroupVersionKind,
     namespaced: true,
@@ -246,7 +248,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
 
   //Cert_annotation_key   = "cert-manager.io/issuer-name"
   //Bundle_annotation_key = "trust.cert-manager.io/hash"
-  const isCertSecret = (secret: K8sResourceKind): boolean => {
+  const isCertSecret = (secret: K8sResourceCommonWithData): boolean => {
     if (!secret.metadata || !secret.metadata.annotations) {
       return false;
     }
@@ -273,7 +275,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     return false;
   };
 
-  const isLegacySecret = (secret: K8sResourceKind): boolean => {
+  const isLegacySecret = (secret: K8sResourceCommonWithData): boolean => {
     return (
       !(
         secret.metadata?.annotations &&
@@ -287,8 +289,8 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
   };
 
   const parseSecrets = (): {
-    certManagerSecrets: K8sResourceKind[];
-    legacySecrets: K8sResourceKind[];
+    certManagerSecrets: K8sResourceCommonWithData[];
+    legacySecrets: K8sResourceCommonWithData[];
   } => {
     const certSecrets = secrets.filter((x) => {
       return isCertSecret(x);
@@ -319,7 +321,9 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     setIsCertDetailsModalOpen(false);
   };
 
-  const [certManagerDeployments] = useK8sWatchResource<K8sResourceKind[]>({
+  const [certManagerDeployments] = useK8sWatchResource<
+    K8sResourceCommonWithData[]
+  >({
     isList: true,
     groupVersionKind: {
       group: 'apps',
@@ -330,7 +334,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     namespace: 'cert-manager',
   });
 
-  const [certIssuers] = useK8sWatchResource<K8sResourceKind[]>({
+  const [certIssuers] = useK8sWatchResource<K8sResourceCommonWithData[]>({
     isList: true,
     groupVersionKind: {
       group: 'cert-manager.io',
@@ -341,7 +345,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     namespace: namespace,
   });
 
-  const [certs] = useK8sWatchResource<K8sResourceKind[]>({
+  const [certs] = useK8sWatchResource<K8sResourceCommonWithData[]>({
     isList: true,
     groupVersionKind: {
       group: 'cert-manager.io',
@@ -452,8 +456,8 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     });
   };
 
-  const findSecret = (secName: string): K8sResourceKind => {
-    let result: K8sResourceKind = null;
+  const findSecret = (secName: string): K8sResourceCommonWithData => {
+    let result: K8sResourceCommonWithData = null;
     for (let i = 0; i < secrets.length; i++) {
       if (secrets[i].metadata.name === secName) {
         result = secrets[i];
@@ -467,7 +471,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     const tlsSecret = findSecret(caGenFromTlsSecret);
     if (tlsSecret !== null) {
       const caSecName = 'ca-' + caGenFromTlsSecret;
-      const caSecret: K8sResourceKind = {
+      const caSecret: K8sResourceCommonWithData = {
         apiVersion: 'v1',
         kind: 'Secret',
         metadata: {

@@ -1,10 +1,5 @@
 import { AddBrokerResourceValues as FormState } from './import-types';
-import {
-  K8sResourceKind,
-  BrokerCR,
-  Acceptor,
-  ResourceTemplate,
-} from '../../k8s/types';
+import { BrokerCR, Acceptor, ResourceTemplate } from '../../k8s/types';
 import { createContext } from 'react';
 import { SelectOptionObject } from '@patternfly/react-core';
 import { ConfigType } from '../../shared-components/FormView/BrokerProperties/ConfigurationPage/ConfigurationPage';
@@ -81,7 +76,7 @@ export const newArtemisCRState = (namespace: string): FormState => {
   };
 };
 
-export const convertYamlToForm = (yamlBroker: K8sResourceKind) => {
+export const convertYamlToForm = (yamlBroker: BrokerCR) => {
   const { metadata } = yamlBroker;
 
   const newFormData = {

@@ -1,5 +1,5 @@
 import { ExposeMode } from '../reducers/7.12/reducer';
-import { K8sResourceCommon as K8sResource } from '@openshift-console/dynamic-plugin-sdk';
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 
 export enum K8sResourceConditionStatus {
   True = 'True',
@@ -79,7 +79,7 @@ export type ResourceTemplate = {
   };
 };
 
-export type BrokerCR = K8sResource & {
+export type BrokerCR = K8sResourceCommon & {
   spec?: {
     ingressDomain?: string;
     connectors?: Connector[];
@@ -103,7 +103,7 @@ export type BrokerCR = K8sResource & {
   status?: { [key: string]: any };
 };
 
-export type K8sResourceKind = BrokerCR & {
+export type K8sResourceCommonWithData = K8sResourceCommon & {
   data?: { [key: string]: any };
 };
 
@@ -115,7 +115,7 @@ export enum BrokerConditionTypes {
   TriggerChannelReady = 'TriggerChannelReady',
 }
 
-export type IssuerResource = K8sResource & {
+export type IssuerResource = K8sResourceCommon & {
   kind: 'Issuer';
   spec?: {
     ca?: {
@@ -124,7 +124,7 @@ export type IssuerResource = K8sResource & {
   };
 };
 
-export type SecretResource = K8sResource & {
+export type SecretResource = K8sResourceCommon & {
   kind: 'Secret';
   data?: {
     'ca.crt'?: string;
@@ -133,7 +133,7 @@ export type SecretResource = K8sResource & {
   };
 };
 
-export type Ingress = K8sResource & {
+export type Ingress = K8sResourceCommon & {
   spec: {
     domain: string;
     loadBalancer: {

@@ -1,7 +1,7 @@
 import { useEffect, useState, FC } from 'react';
 import { k8sListItems, k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import { AMQBrokerModel } from '../../k8s/models';
-import { K8sResourceKind, BrokerCR } from '../../k8s/types';
+import { K8sResourceCommonWithData, BrokerCR } from '../../k8s/types';
 import { BrokersList } from './components/BrokersList/BrokersList';
 import { PreConfirmDeleteModal } from './components/PreConfirmDeleteModal/PreConfirmDeleteModal';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';
@@ -11,15 +11,16 @@ export const BrokersContainer: FC = () => {
   const { ns: namespace } = useParams<{ ns?: string }>();
 
   //states
-  const [brokers, setBrokers] = useState<K8sResourceKind[]>();
+  const [brokers, setBrokers] = useState<K8sResourceCommonWithData[]>();
   const [loading, setLoading] = useState<boolean>(true);
   const [loadError, setLoadError] = useState<any>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedBroker, setSelectedBroker] = useState<K8sResourceKind>();
+  const [selectedBroker, setSelectedBroker] =
+    useState<K8sResourceCommonWithData>();
 
   const fetchK8sListItems = () => {
     setLoading(false);
-    k8sListItems<K8sResourceKind>({
+    k8sListItems<K8sResourceCommonWithData>({
       model: AMQBrokerModel,
       queryParams: { ns: namespace },
     })

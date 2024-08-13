@@ -3,7 +3,7 @@ import {
   K8sResourceCommon,
   useK8sWatchResource,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { K8sResourceKind } from '../../k8s/types';
+import { K8sResourceCommonWithData } from '../../k8s/types';
 import { useTranslation } from '../../i18n/i18n';
 import { PodsList } from './components/PodList';
 import {
@@ -23,7 +23,7 @@ export const PodsContainer: FC = () => {
   //states
   const { t } = useTranslation();
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
-  const [brokerPods, setBrokerPods] = useState<K8sResourceKind[]>([]);
+  const [brokerPods, setBrokerPods] = useState<K8sResourceCommonWithData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [pods, loaded, loadError] = useK8sWatchResource<K8sResourceCommon[]>({
     groupVersionKind: {

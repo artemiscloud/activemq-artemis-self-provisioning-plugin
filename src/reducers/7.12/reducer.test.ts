@@ -743,6 +743,134 @@ describe('test the creation broker reducer', () => {
     ).toBe('ing.' + 'bob' + '.' + 'bro' + '-0.' + 'space' + '.' + 'tttt.com');
   });
 
+  it('test changing number of replicas while in the PEM preset gives the correct number of hosts', () => {
+    const initialState = newArtemisCRState('namespace');
+    const stateWith1Acceptor = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    const stateWithIngressDomain = artemisCrReducer(stateWith1Acceptor, {
+      operation: ArtemisReducerOperations.setIngressDomain,
+      payload: 'apps-crc.testing',
+    });
+    const stateWithPEM = artemisCrReducer(stateWithIngressDomain, {
+      operation: ArtemisReducerOperations.activatePEMGenerationForAcceptor,
+      payload: {
+        acceptor: 'acceptors0',
+        issuer: 'someIssuer',
+      },
+    });
+    expect(stateWithPEM.cr.spec.acceptors[0].sslEnabled).toBe(true);
+    expect(stateWithPEM.cr.spec.acceptors[0].exposeMode).toBe(
+      ExposeMode.ingress,
+    );
+    expect(stateWithPEM.cr.spec.acceptors[0].ingressHost).toBe(
+      'ing.$(ITEM_NAME).$(CR_NAME)-$(BROKER_ORDINAL).$(CR_NAMESPACE).$(INGRESS_DOMAIN)',
+    );
+    expect(stateWithPEM.cr.spec.acceptors[0].sslSecret).toBe(
+      'ex-aao-acceptors0-0-svc-ing-ptls',
+    );
+    expect(stateWithPEM.cr.spec.resourceTemplates).toHaveLength(1);
+    expect(stateWithPEM.cr.spec.resourceTemplates[0].selector.name).toBe(
+      'ex-aao' + '-' + 'acceptors0' + '-0-svc-ing',
+    );
+    expect(stateWithPEM.cr.spec.resourceTemplates[0].selector.name).toBe(
+      'ex-aao' + '-' + 'acceptors0' + '-0-svc-ing',
+    );
+    expect(
+      stateWithPEM.cr.spec.resourceTemplates[0].patch.spec.tls[0].hosts[0],
+    ).toBe(
+      'ing.' +
+        'acceptors0' +
+        '.' +
+        'ex-aao' +
+        '-0.' +
+        'namespace' +
+        '.' +
+        'apps-crc.testing',
+    );
+    const stateWith2Replicas = artemisCrReducer(stateWithPEM, {
+      operation: ArtemisReducerOperations.incrementReplicas,
+    });
+    expect(
+      stateWith2Replicas.cr.spec.resourceTemplates[0].patch.spec.tls[0]
+        .hosts[0],
+    ).toBe(
+      'ing.' +
+        'acceptors0' +
+        '.' +
+        'ex-aao' +
+        '-0.' +
+        'namespace' +
+        '.' +
+        'apps-crc.testing',
+    );
+    expect(
+      stateWith2Replicas.cr.spec.resourceTemplates[0].patch.spec.tls[0]
+        .hosts[1],
+    ).toBe(
+      'ing.' +
+        'acceptors0' +
+        '.' +
+        'ex-aao' +
+        '-1.' +
+        'namespace' +
+        '.' +
+        'apps-crc.testing',
+    );
+    expect(
+      stateWith2Replicas.cr.spec.resourceTemplates[0].patch.spec.tls[0].hosts,
+    ).toHaveLength(2);
+
+    const newNumber = 10;
+    const stateWith10Replicas = artemisCrReducer(stateWith2Replicas, {
+      operation: ArtemisReducerOperations.setReplicasNumber,
+      payload: newNumber,
+    });
+    expect(
+      stateWith10Replicas.cr.spec.resourceTemplates[0].patch.spec.tls[0].hosts,
+    ).toHaveLength(newNumber);
+    for (let i = 0; i < newNumber; i++) {
+      expect(
+        stateWith10Replicas.cr.spec.resourceTemplates[0].patch.spec.tls[0]
+          .hosts[i],
+      ).toBe(
+        'ing.' +
+          'acceptors0' +
+          '.' +
+          'ex-aao' +
+          '-' +
+          i +
+          '.' +
+          'namespace' +
+          '.' +
+          'apps-crc.testing',
+      );
+    }
+    const stateWith9Replicas = artemisCrReducer(stateWith10Replicas, {
+      operation: ArtemisReducerOperations.decrementReplicas,
+    });
+    expect(
+      stateWith9Replicas.cr.spec.resourceTemplates[0].patch.spec.tls[0].hosts,
+    ).toHaveLength(9);
+    for (let i = 0; i < 9; i++) {
+      expect(
+        stateWith10Replicas.cr.spec.resourceTemplates[0].patch.spec.tls[0]
+          .hosts[i],
+      ).toBe(
+        'ing.' +
+          'acceptors0' +
+          '.' +
+          'ex-aao' +
+          '-' +
+          i +
+          '.' +
+          'namespace' +
+          '.' +
+          'apps-crc.testing',
+      );
+    }
+  });
+
   it('test deletePEMGenerationForAcceptor', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {

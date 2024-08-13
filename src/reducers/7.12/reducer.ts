@@ -617,16 +617,19 @@ export const artemisCrReducer: React.Reducer<
       updateNamespace(formState.cr, action.payload);
       break;
     case ArtemisReducerOperations.setReplicasNumber:
-      formState.cr.spec.deploymentPlan.size = action.payload;
+      updateDeploymentSize(formState.cr, action.payload);
       break;
     case ArtemisReducerOperations.incrementReplicas:
-      formState.cr.spec.deploymentPlan.size += 1;
+      updateDeploymentSize(
+        formState.cr,
+        formState.cr.spec.deploymentPlan.size + 1,
+      );
       break;
     case ArtemisReducerOperations.decrementReplicas:
-      formState.cr.spec.deploymentPlan.size -= 1;
-      if (formState.cr.spec.deploymentPlan.size < 1) {
-        formState.cr.spec.deploymentPlan.size = 1;
-      }
+      updateDeploymentSize(
+        formState.cr,
+        formState.cr.spec.deploymentPlan.size - 1,
+      );
       break;
     case ArtemisReducerOperations.setBrokerName:
       updateBrokerName(formState.cr, action.payload);
@@ -884,7 +887,31 @@ const updateIngressDomain = (cr: BrokerCR, newName: string) => {
     if (!rt) {
       return;
     }
-    rt.patch.spec.tls[0].hosts = [certManagerTlsHost(cr, acceptor.name)];
+    rt.patch.spec.tls[0].hosts = certManagerTlsHosts(cr, acceptor.name);
+  });
+};
+
+const updateDeploymentSize = (cr: BrokerCR, newSize: number) => {
+  cr.spec.deploymentPlan.size = newSize;
+  if (cr.spec.deploymentPlan.size < 1) {
+    cr.spec.deploymentPlan.size = 1;
+  }
+  // when the size changes, some annotations will need an update to
+  // stay in sync
+  if (!cr.spec.acceptors) {
+    return;
+  }
+  if (!cr.spec.resourceTemplates) {
+    return;
+  }
+  cr.spec.acceptors.forEach((acceptor) => {
+    const rt = cr.spec.resourceTemplates.find(
+      (rt) => rt.selector.name === certManagerSelector(cr, acceptor.name),
+    );
+    if (!rt) {
+      return;
+    }
+    rt.patch.spec.tls[0].hosts = certManagerTlsHosts(cr, acceptor.name);
   });
 };
 
@@ -905,7 +932,7 @@ const updateNamespace = (cr: BrokerCR, newName: string) => {
     if (!rt) {
       return;
     }
-    rt.patch.spec.tls[0].hosts = [certManagerTlsHost(cr, acceptor.name)];
+    rt.patch.spec.tls[0].hosts = certManagerTlsHosts(cr, acceptor.name);
   });
 };
 
@@ -934,7 +961,7 @@ const updateBrokerName = (cr: BrokerCR, newName: string) => {
     }
     rt.selector.name = certManagerSelector(cr, acceptor.name);
     rt.patch.spec.tls[0] = {
-      hosts: [certManagerTlsHost(cr, acceptor.name)],
+      hosts: certManagerTlsHosts(cr, acceptor.name),
       secretName: acceptor.sslSecret,
     };
   });
@@ -991,16 +1018,25 @@ const setIssuerForAcceptor = (
   }
 };
 
-// TODO handle multiple ordinals
-const certManagerTlsHost = (cr: BrokerCR, acceptor: string) =>
-  'ing.' +
-  acceptor +
-  '.' +
-  cr.metadata.name +
-  '-0.' +
-  cr.metadata.namespace +
-  '.' +
-  cr.spec.ingressDomain;
+const certManagerTlsHosts = (cr: BrokerCR, acceptor: string): string[] => {
+  const ret: string[] = [];
+  for (let i = 0; i < cr.spec.deploymentPlan.size; i++) {
+    ret.push(
+      'ing.' +
+        acceptor +
+        '.' +
+        cr.metadata.name +
+        '-' +
+        i +
+        '.' +
+        cr.metadata.namespace +
+        '.' +
+        cr.spec.ingressDomain,
+    );
+  }
+
+  return ret;
+};
 
 const certManagerSelector = (cr: BrokerCR, acceptor: string) =>
   cr.metadata.name + '-' + acceptor + '-0-svc-ing';
@@ -1028,8 +1064,7 @@ const updateAcceptorNameInResourceTemplate = (
   // if there's a match update the required fields
   if (rt) {
     rt.selector.name = certManagerSelector(cr, newName);
-    // TODO support multiple ordinals
-    rt.patch.spec.tls[0].hosts = [certManagerTlsHost(cr, newName)];
+    rt.patch.spec.tls[0].hosts = certManagerTlsHosts(cr, newName);
     rt.patch.spec.tls[0].secretName = certManagerSecret(cr, newName);
   }
 };
@@ -1044,7 +1079,6 @@ const createCertManagerResourceTemplate = (
   acceptor: Acceptor,
   issuerName: string,
 ): ResourceTemplate => {
-  // TODO support multiple ordinals
   return {
     selector: {
       kind: 'Ingress',
@@ -1058,7 +1092,7 @@ const createCertManagerResourceTemplate = (
       spec: {
         tls: [
           {
-            hosts: [certManagerTlsHost(cr, acceptor.name)],
+            hosts: certManagerTlsHosts(cr, acceptor.name),
             secretName: acceptor.sslSecret,
           },
         ],
@@ -1880,6 +1914,7 @@ export const getIssuerForAcceptor = (cr: BrokerCR, acceptor: Acceptor) => {
 export const getIssuerIngressHostForAcceptor = (
   cr: BrokerCR,
   acceptor: Acceptor,
+  podOrdinal: number,
 ) => {
   if (!acceptor) {
     return '';
@@ -1894,7 +1929,7 @@ export const getIssuerIngressHostForAcceptor = (
     (rt) => rt.selector?.name === selector,
   );
   if (rt) {
-    return rt.patch.spec.tls[0].hosts[0];
+    return rt.patch.spec.tls[0].hosts[podOrdinal];
   }
   return '';
 };

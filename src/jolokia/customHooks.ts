@@ -233,6 +233,7 @@ export const useJolokiaLogin = (
       isError: isErrorRequestApi,
       token: token,
       source: 'session',
+      podOrdinal: ordinal,
     };
   }
   return {
@@ -241,6 +242,7 @@ export const useJolokiaLogin = (
     isLoading: isLoginMutationLoading || isLoginMutationIdle,
     token: token,
     source: 'api',
+    podOrdinal: ordinal,
   };
 };
 

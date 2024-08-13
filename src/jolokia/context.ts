@@ -8,6 +8,7 @@ export type JolokiaLogin = {
   isError: boolean;
   token: string;
   source: jolokiaLoginSource;
+  podOrdinal: number;
 };
 
 export const AuthContext = createContext<JolokiaLogin>({
@@ -16,4 +17,5 @@ export const AuthContext = createContext<JolokiaLogin>({
   isSuccess: false,
   isError: false,
   source: 'api',
+  podOrdinal: 0,
 });

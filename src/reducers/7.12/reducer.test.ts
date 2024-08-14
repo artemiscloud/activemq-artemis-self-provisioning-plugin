@@ -1104,4 +1104,40 @@ describe('test the creation broker reducer', () => {
     });
     expect(stateExposeModeIngress.cr.spec.acceptors[0].expose).toBe(true);
   });
+  it('test setYamlHasUnsavedChanges,', () => {
+    const initialState = newArtemisCRState('namespace');
+    const updatedState = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.setYamlHasUnsavedChanges,
+    });
+    expect(updatedState.yamlHasUnsavedChanges).toBe(true);
+    expect(updatedState.hasChanges).toBe(false);
+  });
+  it('test machine controlled model update resets the changed flags,', () => {
+    const initialState = newArtemisCRState('namespace');
+    const updatedState = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.setModel,
+      payload: {
+        model: initialState.cr,
+        isSetByUser: false,
+      },
+    });
+    expect(updatedState.yamlHasUnsavedChanges).toBe(false);
+    expect(updatedState.hasChanges).toBe(false);
+  });
+  it('test user controlled model update updates the flags correctly', () => {
+    const initialState = newArtemisCRState('namespace');
+    let updatedState = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.setYamlHasUnsavedChanges,
+    });
+    expect(updatedState.hasChanges).toBe(false);
+    updatedState = artemisCrReducer(updatedState, {
+      operation: ArtemisReducerOperations.setModel,
+      payload: {
+        model: initialState.cr,
+        isSetByUser: true,
+      },
+    });
+    expect(updatedState.yamlHasUnsavedChanges).toBe(false);
+    expect(updatedState.hasChanges).toBe(true);
+  });
 });

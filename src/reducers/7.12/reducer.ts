@@ -36,7 +36,10 @@ export const getArtemisCRState = (name: string, ns: string): FormState => {
   const key = name + ns;
   let formState = artemisCRStateMap.get(key);
   if (!formState) {
-    formState = {};
+    formState = {
+      yamlHasUnsavedChanges: false,
+      hasChanges: false,
+    };
     formState.shouldShowYAMLMessage = true;
     formState.editorType = EditorType.BROKER;
     artemisCRStateMap.set(key, formState);
@@ -73,6 +76,8 @@ export const newArtemisCRState = (namespace: string): FormState => {
     shouldShowYAMLMessage: true,
     editorType: EditorType.BROKER,
     cr: initialCr,
+    hasChanges: false,
+    yamlHasUnsavedChanges: false,
   };
 };
 
@@ -178,6 +183,11 @@ export enum ArtemisReducerOperations {
   setNamespace,
   /** update the total number of replicas */
   setReplicasNumber,
+  /**
+   * Tells that the yaml editor has unsaved changes, when the setModel is
+   * invoked, the flag is reset to false.
+   */
+  setYamlHasUnsavedChanges,
   /** Updates the configuration's factory Class */
   updateAcceptorFactoryClass,
   /** Update the issuer of an annotation */
@@ -229,10 +239,14 @@ type ArtemisReducerActions =
   | SetModelAction
   | SetNamespaceAction
   | SetReplicasNumberAction
+  | SetYamlHasUnsavedChanges
   | UpdateAcceptorFactoryClassAction
   | UpdateAnnotationIssuerAction
   | UpdateConnectorFactoryClassAction;
 
+interface SetYamlHasUnsavedChanges extends ArtemisReducerActionBase {
+  operation: ArtemisReducerOperations.setYamlHasUnsavedChanges;
+}
 interface UpdateAnnotationIssuerAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.updateAnnotationIssuer;
   payload: {
@@ -406,6 +420,9 @@ interface SetModelAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setModel;
   payload: {
     model: BrokerCR;
+    /** setting this to true means that form state will get considered as
+     * modified, setting to false reset that status.*/
+    isSetByUser?: boolean;
   };
 }
 
@@ -569,8 +586,16 @@ interface SetReplicasNumberAction extends ArtemisReducerActionBase {
 
 interface SetIngressDomainAction extends ArtemisReducerActionBase {
   operation: ArtemisReducerOperations.setIngressDomain;
-  // the domain of the cluster
-  payload: string;
+  /** the domain of the cluster. Only passing the string is equivalent as saying
+   * that the value is set by the user. Otherwise this value can be customized.
+   * Setting isSetByUser to false has for effect to state that the form doesn't
+   * have changes, since the change is done by the system instead of the user.*/
+  payload:
+    | string
+    | {
+        ingressUrl: string;
+        isSetByUser?: boolean;
+      };
 }
 /**
  *
@@ -584,9 +609,18 @@ export const artemisCrReducer: React.Reducer<
   ArtemisReducerActions
 > = (prevFormState, action) => {
   const formState = { ...prevFormState };
+  if (
+    action.operation !== ArtemisReducerOperations.setEditorType &&
+    action.operation !== ArtemisReducerOperations.setYamlHasUnsavedChanges
+  ) {
+    formState.hasChanges = true;
+  }
 
   // set the individual fields
   switch (action.operation) {
+    case ArtemisReducerOperations.setYamlHasUnsavedChanges:
+      formState.yamlHasUnsavedChanges = true;
+      break;
     case ArtemisReducerOperations.updateAnnotationIssuer:
       updateAnnotationIssuer(
         formState.cr,
@@ -612,6 +646,9 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setEditorType:
       formState.editorType = action.payload;
+      if (formState.editorType === EditorType.BROKER) {
+        formState.yamlHasUnsavedChanges = false;
+      }
       break;
     case ArtemisReducerOperations.setNamespace:
       updateNamespace(formState.cr, action.payload);
@@ -842,9 +879,16 @@ export const artemisCrReducer: React.Reducer<
       break;
     case ArtemisReducerOperations.setModel:
       setModel(formState, action.payload.model);
+      formState.yamlHasUnsavedChanges = false;
+      formState.hasChanges = action.payload.isSetByUser;
       break;
     case ArtemisReducerOperations.setIngressDomain:
-      updateIngressDomain(formState.cr, action.payload);
+      if (typeof action.payload === 'string') {
+        updateIngressDomain(formState.cr, action.payload);
+      } else {
+        updateIngressDomain(formState.cr, action.payload.ingressUrl);
+        formState.hasChanges = action.payload.isSetByUser;
+      }
       break;
     default:
       throw Error('Unknown action: ' + action);

@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, useReducer } from 'react';
 import { k8sGet, k8sUpdate } from '@openshift-console/dynamic-plugin-sdk';
-import { AlertVariant } from '@patternfly/react-core';
+import { Alert, AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from '../add-broker/AddBroker.component';
 import { Loading } from '../../shared-components/Loading/Loading';
 import { AMQBrokerModel } from '../../k8s/models';
@@ -13,20 +13,26 @@ import {
   artemisCrReducer,
   getArtemisCRState,
 } from '../../reducers/7.12/reducer';
-import { useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
 export const UpdateBrokerPage: FC = () => {
+  const navigate = useNavigate();
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
-  const defaultNotification = { title: '', variant: AlertVariant.info };
 
   //states
-  const [notification, setNotification] = useState(defaultNotification);
   const [loadingBrokerCR, setLoading] = useState<boolean>(false);
 
   const crState = getArtemisCRState(name, namespace);
 
   const [brokerModel, dispatch] = useReducer(artemisCrReducer, crState);
 
+  const [hasBrokerUpdated, setHasBrokerUpdated] = useState(false);
+  const [alert, setAlert] = useState('');
+  const params = new URLSearchParams(location.search);
+  const returnUrl = params.get('returnUrl') || '/k8s/all-namespaces/brokers';
+  const handleRedirect = () => {
+    navigate(returnUrl);
+  };
   const k8sUpdateBroker = (content: BrokerCR) => {
     k8sUpdate({
       model: AMQBrokerModel,
@@ -34,16 +40,17 @@ export const UpdateBrokerPage: FC = () => {
       ns: namespace,
       name: name,
     })
-      .then((response: BrokerCR) => {
-        const name = response.metadata.name;
-        const resourceVersion = response.metadata.resourceVersion;
-        setNotification({
-          title: `${name} has been updated to version ${resourceVersion}`,
-          variant: AlertVariant.success,
-        });
-      })
-      .catch((e) => {
-        setNotification({ title: e.message, variant: AlertVariant.danger });
+      .then(
+        () => {
+          setAlert('');
+          setHasBrokerUpdated(true);
+        },
+        (reason: Error) => {
+          setAlert(reason.message);
+        },
+      )
+      .catch((e: Error) => {
+        setAlert(e.message);
       });
   };
 
@@ -53,13 +60,11 @@ export const UpdateBrokerPage: FC = () => {
       .then((broker: BrokerCR) => {
         dispatch({
           operation: ArtemisReducerOperations.setModel,
-          payload: {
-            model: broker,
-          },
+          payload: { model: broker, isSetByUser: false },
         });
       })
       .catch((e) => {
-        setNotification({ title: e.message, variant: AlertVariant.danger });
+        setAlert(e.message);
       })
       .finally(() => {
         setLoading(false);
@@ -76,24 +81,41 @@ export const UpdateBrokerPage: FC = () => {
   if (!loadingBrokerCR && !isLoadingClusterDomain && !isDomainSet) {
     dispatch({
       operation: ArtemisReducerOperations.setIngressDomain,
-      payload: clusterDomain,
+      payload: {
+        ingressUrl: clusterDomain,
+        isSetByUser: false,
+      },
     });
     setIsDomainSet(true);
   }
 
-  if (loadingBrokerCR && !notification.title) return <Loading />;
+  if (loadingBrokerCR && !alert) return <Loading />;
 
   if (!brokerModel.cr.spec?.deploymentPlan) {
     return <Loading />;
   }
 
+  if (hasBrokerUpdated && alert === '') {
+    handleRedirect();
+  }
+
   return (
     <BrokerCreationFormState.Provider value={brokerModel}>
       <BrokerCreationFormDispatch.Provider value={dispatch}>
+        {alert !== '' && (
+          <Alert
+            title={alert}
+            variant={AlertVariant.danger}
+            isInline
+            actionClose
+            className="pf-u-mt-md pf-u-mx-md"
+          />
+        )}
         <AddBroker
-          notification={notification}
-          onCreateBroker={k8sUpdateBroker}
-          isUpdate={true}
+          onSubmit={() => k8sUpdateBroker(brokerModel.cr)}
+          onCancel={handleRedirect}
+          isUpdatingExisting
+          reloadExisting={k8sGetBroker}
         />
       </BrokerCreationFormDispatch.Provider>
     </BrokerCreationFormState.Provider>

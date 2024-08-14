@@ -1,6 +1,6 @@
 import { FC, useReducer, useState } from 'react';
 import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
-import { AlertVariant } from '@patternfly/react-core';
+import { Alert, AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from './AddBroker.component';
 import { AMQBrokerModel } from '../../k8s/models';
 import { BrokerCR } from '../../k8s/types';
@@ -23,26 +23,32 @@ export const AddBrokerPage: FC = () => {
   const navigate = useNavigate();
   const { ns: namespace } = useParams<{ ns?: string }>();
 
-  const defaultNotification = { title: '', variant: AlertVariant.info };
-
   const initialValues = newArtemisCRState(namespace);
 
   //states
   const [brokerModel, dispatch] = useReducer(artemisCrReducer, initialValues);
-  const [notification, setNotification] = useState(defaultNotification);
 
+  const params = new URLSearchParams(location.search);
+  const returnUrl = params.get('returnUrl') || '/k8s/all-namespaces/brokers';
   const handleRedirect = () => {
-    navigate('/k8s/all-namespaces/brokers');
+    navigate(returnUrl);
   };
 
+  const [hasBrokerUpdated, setHasBrokerUpdated] = useState(false);
+  const [alert, setAlert] = useState('');
   const k8sCreateBroker = (content: BrokerCR) => {
     k8sCreate({ model: AMQBrokerModel, data: content })
-      .then(() => {
-        setNotification(defaultNotification);
-        handleRedirect();
-      })
+      .then(
+        () => {
+          setAlert('');
+          setHasBrokerUpdated(true);
+        },
+        (reason: Error) => {
+          setAlert(reason.message);
+        },
+      )
       .catch((e) => {
-        setNotification({ title: e.message, variant: AlertVariant.danger });
+        setAlert(e.message);
       });
   };
 
@@ -60,18 +66,33 @@ export const AddBrokerPage: FC = () => {
   if (!isLoading && !isDomainSet) {
     dispatch({
       operation: ArtemisReducerOperations.setIngressDomain,
-      payload: clusterDomain,
+      payload: {
+        ingressUrl: clusterDomain,
+        isSetByUser: false,
+      },
     });
     setIsDomainSet(true);
+  }
+
+  if (hasBrokerUpdated && alert === '') {
+    handleRedirect();
   }
 
   return (
     <BrokerCreationFormState.Provider value={brokerModel}>
       <BrokerCreationFormDispatch.Provider value={dispatch}>
+        {alert !== '' && (
+          <Alert
+            title={alert}
+            variant={AlertVariant.danger}
+            isInline
+            actionClose
+            className="pf-u-mt-md pf-u-mx-md"
+          />
+        )}
         <AddBroker
-          notification={notification}
-          onCreateBroker={k8sCreateBroker}
-          isUpdate={false}
+          onSubmit={() => k8sCreateBroker(brokerModel.cr)}
+          onCancel={handleRedirect}
         />
       </BrokerCreationFormDispatch.Provider>
     </BrokerCreationFormState.Provider>

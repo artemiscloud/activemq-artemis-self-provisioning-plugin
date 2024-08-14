@@ -1,149 +1,194 @@
-import { FC, Suspense, useContext } from 'react';
+import { FC, Suspense, useContext, useState } from 'react';
 import {
   Alert,
-  AlertVariant,
+  AlertActionCloseButton,
   AlertGroup,
-  Page,
-  ActionGroup,
+  AlertProps,
+  AlertVariant,
   Button,
+  Hint,
+  HintBody,
+  Modal,
+  ModalVariant,
+  Page,
+  useInterval,
 } from '@patternfly/react-core';
-import {
-  CodeEditor,
-  useAccessReview,
-} from '@openshift-console/dynamic-plugin-sdk';
-import { AMQBrokerModel } from '../../k8s/models';
-import { BrokerCR } from '../../k8s/types';
+import { ResourceYAMLEditor } from '@openshift-console/dynamic-plugin-sdk';
 import { Loading } from '../../shared-components/Loading/Loading';
-import { useTranslation } from '../../i18n/i18n';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
 } from '../../reducers/7.12/reducer';
-import YAML from 'yaml';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import YAML, { YAMLParseError } from 'yaml';
+import './YamlEditorView.css';
 
-export type YamlEditorViewProps = {
-  onCreateBroker: (content: any) => void;
-  initialResourceYAML: BrokerCR;
-  notification: {
-    title: string;
-    variant: AlertVariant;
-  };
-  isUpdate: boolean;
-  returnUrl: string;
+type YamlEditorViewPropTypes = {
+  isAskingPermissionToClose: boolean;
+  permissionGranted: () => void;
+  permissionDenied: () => void;
 };
-
-interface BrokerActionGroupProps {
-  isUpdate: boolean;
-  onSubmit: () => void;
-  onCancel: () => void;
-}
-
-const BrokerActionGroup: FC<BrokerActionGroupProps> = ({
-  isUpdate,
-  onSubmit,
-  onCancel,
+export const YamlEditorView: FC<YamlEditorViewPropTypes> = ({
+  isAskingPermissionToClose,
+  permissionGranted: permissionGranted,
+  permissionDenied,
 }) => {
-  const { t } = useTranslation();
-
-  return (
-    <ActionGroup className="pf-u-mt-sm pf-u-mb-sm">
-      <Button
-        variant="primary"
-        type="submit"
-        onClick={onSubmit}
-        className="pf-u-ml-sm"
-      >
-        {isUpdate ? t('apply') : t('create')}
-      </Button>
-      <Button variant="link" onClick={onCancel}>
-        {t('cancel')}
-      </Button>
-    </ActionGroup>
-  );
-};
-
-const YamlEditorView: FC<YamlEditorViewProps> = ({
-  onCreateBroker,
-  notification,
-  isUpdate,
-  returnUrl,
-}) => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-
-  const fromState = useContext(BrokerCreationFormState);
-  const namespace = fromState.cr.metadata.namespace;
+  const formState = useContext(BrokerCreationFormState);
   const dispatch = useContext(BrokerCreationFormDispatch);
 
-  const [canCreateBroker, loadingAccessReview] = useAccessReview({
-    group: AMQBrokerModel.apiGroup,
-    resource: AMQBrokerModel.plural,
-    namespace,
-    verb: 'create',
-  });
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const onSave = () => {
-    const yamlData: BrokerCR = fromState.cr;
-    onCreateBroker(yamlData);
-    navigate(returnUrl);
+  const [prevIsAskingPermissionToClose, setPrevIsAskingPermissionToClose] =
+    useState(isAskingPermissionToClose);
+  if (isAskingPermissionToClose !== prevIsAskingPermissionToClose) {
+    if (isAskingPermissionToClose) {
+      if (formState.yamlHasUnsavedChanges) {
+        setIsModalVisible(true);
+      } else {
+        permissionGranted();
+      }
+    }
+    setPrevIsAskingPermissionToClose(isAskingPermissionToClose);
+  }
+
+  const [currentYaml, setCurrentYaml] = useState<string>();
+  const [yamlParseError, setYamlParserError] = useState<YAMLParseError>();
+
+  const getUniqueId = () => new Date().getTime();
+
+  const updateModel = (content: string) => {
+    try {
+      dispatch({
+        operation: ArtemisReducerOperations.setModel,
+        payload: { model: YAML.parse(content), isSetByUser: true },
+      });
+      setYamlParserError(undefined);
+      addAlert('changes saved', 'success', getUniqueId());
+      return true;
+    } catch (e) {
+      setYamlParserError(e as YAMLParseError);
+      return false;
+    }
   };
 
-  const onCancel = () => {
-    navigate(returnUrl);
+  const stringedFormState = YAML.stringify(formState.cr, null, '  ');
+  const [alerts, setAlerts] = useState<Partial<AlertProps>[]>([]);
+
+  const addAlert = (
+    title: string,
+    variant: AlertProps['variant'],
+    key: React.Key,
+  ) => {
+    setAlerts((prevAlerts) => [...prevAlerts, { title, variant, key }]);
   };
 
-  //event: contains information of changes
-  //value: contains full yaml model
-  const onChanges = (newValue: any, _event: any) => {
-    dispatch({
-      operation: ArtemisReducerOperations.setModel,
-      payload: { model: YAML.parse(newValue) },
-    });
+  const removeAlert = (key: React.Key) => {
+    const newAlerts = alerts.filter((alert) => alert.key !== key);
+    setAlerts(newAlerts);
   };
-
-  if (loadingAccessReview) return <Loading />;
-
+  const removeLastAlert = () => {
+    const newAlerts = alerts.filter(
+      (_alert, i, alerts) => i !== alerts.length - 1,
+    );
+    setAlerts(newAlerts);
+  };
+  useInterval(removeLastAlert, alerts.length > 0 ? 2000 : null);
   return (
     <>
-      {canCreateBroker ? (
-        <Page>
-          {notification.title && (
-            <AlertGroup>
-              <Alert
-                data-test="add-broker-notification-yaml-view"
-                title={notification.title}
-                variant={notification.variant}
-                isInline
-                actionClose
-                className="pf-u-mt-md pf-u-mx-md"
-              />
-            </AlertGroup>
-          )}
-          <Suspense fallback={<Loading />}>
-            <CodeEditor
-              value={YAML.stringify(fromState.cr, null, '  ')}
-              language="yaml"
-              onChange={onChanges}
-            />
-          </Suspense>
-          <BrokerActionGroup
-            isUpdate={isUpdate}
-            onSubmit={onSave}
-            onCancel={onCancel}
-          ></BrokerActionGroup>
-        </Page>
-      ) : (
-        <Alert
-          variant={AlertVariant.custom}
-          title={t('broker_can_not_be_created')}
-          isInline
+      <Page>
+        {yamlParseError !== undefined && (
+          <Alert
+            title={yamlParseError.message}
+            variant={AlertVariant.danger}
+            isInline
+            actionClose
+            className="pf-u-mt-md pf-u-mx-md"
+          />
+        )}
+        <Modal
+          variant={ModalVariant.small}
+          title="Unsaved changes"
+          isOpen={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+          actions={[
+            <Button
+              key="confirm"
+              variant="primary"
+              onClick={() => {
+                if (updateModel(currentYaml)) {
+                  permissionGranted();
+                } else {
+                  permissionDenied();
+                }
+                setIsModalVisible(false);
+              }}
+            >
+              Save and proceed
+            </Button>,
+            <Button
+              key="confirm"
+              variant="danger"
+              onClick={() => {
+                setIsModalVisible(false);
+                permissionGranted();
+              }}
+            >
+              Discard and proceed
+            </Button>,
+            <Button
+              key="cancel"
+              variant="link"
+              onClick={() => {
+                setIsModalVisible(false);
+                permissionDenied();
+              }}
+            >
+              Keep editing
+            </Button>,
+          ]}
         >
-          {t('you_do_not_have_write_access')}
-        </Alert>
-      )}
+          The YAML editor contains pending modifications, manual saving is
+          required.
+        </Modal>
+        {formState.yamlHasUnsavedChanges && (
+          <Hint>
+            <HintBody>
+              Any changes in the YAML view has to be manually saved to get taken
+              into consideration.
+            </HintBody>
+          </Hint>
+        )}
+        <AlertGroup isToast isLiveRegion>
+          {alerts.map(({ key, variant, title }) => (
+            <Alert
+              variant={AlertVariant[variant]}
+              title={title}
+              actionClose={
+                <AlertActionCloseButton
+                  title={title as string}
+                  variantLabel={`${variant} alert`}
+                  onClose={() => removeAlert(key)}
+                />
+              }
+              key={key}
+            />
+          ))}
+        </AlertGroup>
+        <Suspense fallback={<Loading />}>
+          <ResourceYAMLEditor
+            initialResource={YAML.stringify(formState.cr, null, '  ')}
+            onSave={updateModel}
+            onChange={(newContent: string) => {
+              setCurrentYaml(newContent);
+              if (stringedFormState !== newContent) {
+                dispatch({
+                  operation: ArtemisReducerOperations.setYamlHasUnsavedChanges,
+                });
+              }
+            }}
+          />
+        </Suspense>
+      </Page>
     </>
   );
 };
-export { YamlEditorView };

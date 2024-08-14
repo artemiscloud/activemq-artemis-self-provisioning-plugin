@@ -111,18 +111,20 @@ describe('BrokerPodsBreadcrumb', () => {
     );
   });
 
-  it('should navigate to the UpdateBrokerPage when onclick on Edit Broker button', async () => {
+  it('should navigate back to UpdateBrokerPage when onclick on Edit Broker button with the current path as returnUrl', async () => {
     const comp = render(
       <MemoryRouter>
         <BrokerPodsBreadcrumb name={name} namespace={namespace} />
       </MemoryRouter>,
     );
     await waitForI18n(comp);
-
     fireEvent.click(screen.getByTestId('broker-toggle-kebab'));
     fireEvent.click(screen.getByText('edit_broker'));
+
     expect(navigate).toHaveBeenCalledWith(
-      `/k8s/ns/${namespace}/edit-broker/${name}`,
+      `/k8s/ns/${namespace}/edit-broker/${name}?returnUrl=${encodeURIComponent(
+        window.location.pathname,
+      )}`,
     );
   });
 

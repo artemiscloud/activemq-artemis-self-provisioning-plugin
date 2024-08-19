@@ -3,6 +3,7 @@ import {
   ButtonVariant,
   Card,
   CardBody,
+  CardFooter,
   CardTitle,
   Form,
   FormFieldGroup,
@@ -24,6 +25,8 @@ import {
   getCertManagerResourceTemplateFromAcceptor,
 } from '../../../../../../../reducers/7.12/reducer';
 import { SelectIssuerDrawer } from '../SelectIssuerDrawer/SelectIssuerDrawer';
+import { useHasCertManager } from '../../../../../../../k8s/customHooks';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 type PreconfigurationButtonProps = {
   acceptor: Acceptor;
 };
@@ -79,6 +82,10 @@ const AddPresetModal: FC<AddIssuerAnnotationModalProps> = ({
     getCertManagerResourceTemplateFromAcceptor(cr, initialAcceptor) !==
     undefined;
   const [showCertManagerForm, setShowCertManagerForm] = useState(false);
+  const { hasCertManager, isLoading: isLoadingCertManagerAvailability } =
+    useHasCertManager();
+  const isCertMangerDependencySatisfied =
+    hasCertManager && !isLoadingCertManagerAvailability;
   return (
     <Modal
       variant={ModalVariant.medium}
@@ -114,19 +121,32 @@ const AddPresetModal: FC<AddIssuerAnnotationModalProps> = ({
           <Card
             id="selectable-first-card"
             onClick={() => {
+              if (!isCertMangerDependencySatisfied) {
+                return;
+              }
               if (hasACertManagerAnnotation) {
                 return;
               }
               setShowCertManagerForm(!showCertManagerForm);
             }}
-            isSelectableRaised
+            isSelectableRaised={isCertMangerDependencySatisfied}
             isSelected={showCertManagerForm}
             hasSelectableInput
             isCompact
             style={{ 'max-width': '100%' } as CSSProperties}
-            isDisabledRaised={hasACertManagerAnnotation}
+            isDisabledRaised={
+              hasACertManagerAnnotation || !isCertMangerDependencySatisfied
+            }
           >
-            <CardTitle>{t('Annotate_an_acceptor_with_an_issuer')}</CardTitle>
+            <CardTitle>{t('Annotate_an_acceptor_with_an_issuer')} </CardTitle>
+            {!isCertMangerDependencySatisfied && (
+              <CardFooter>
+                <>
+                  <ExclamationTriangleIcon />
+                  {' Preset disabled as CertManager is missing'}
+                </>
+              </CardFooter>
+            )}
             <br />
             <CardBody>
               <SimpleListGroup title="Effects:">

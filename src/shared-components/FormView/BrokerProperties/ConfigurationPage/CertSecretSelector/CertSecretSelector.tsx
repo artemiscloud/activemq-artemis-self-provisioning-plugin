@@ -43,6 +43,7 @@ import { InfoCircleIcon } from '@patternfly/react-icons';
 import { CertificateDetailsModal } from './CertificateDetailsModal/CertificateDetailsModal';
 import { PresetAlertPopover } from '../AcceptorsConfigPage/AcceptorConfigSection/AcceptorConfigPage/PresetAlertPopover/PresetAlertPopover';
 import { ConfigType } from '../ConfigurationPage';
+import { useHasCertManager } from '../../../../../k8s/customHooks';
 
 const secretGroupVersionKind = {
   group: 'core',
@@ -528,6 +529,10 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
     }
   };
 
+  const { hasCertManager, isLoading: isLoadingCertMgrPresence } =
+    useHasCertManager();
+  const certMgrFound = hasCertManager && !isLoadingCertMgrPresence;
+
   const onCreateTestCert = () => {
     setIsSecretGenerating(true);
 
@@ -541,13 +546,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
         'No cert-manager found\n' + 'please install cert-manager.',
       );
       return;
-    }
-    let certMgrFound = false;
-    for (let i = 0; i < certManagerDeployments?.length; i++) {
-      if (certManagerDeployments[i].metadata?.name === 'cert-manager') {
-        certMgrFound = true;
-        break;
-      }
     }
     if (!certMgrFound) {
       failedSecretGen(
@@ -723,14 +721,22 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
               >
                 <InfoCircleIcon size="sm" />
               </Button>
-              <Button
-                isDisabled={isSecretGenerating}
-                variant="secondary"
-                onClick={onCreateTestCert}
-                isLoading={isSecretGenerating}
-              >
-                {certGenMessage}
-              </Button>
+              {certMgrFound ? (
+                <Button
+                  isDisabled={isSecretGenerating}
+                  variant="secondary"
+                  onClick={onCreateTestCert}
+                  isLoading={isSecretGenerating}
+                >
+                  {certGenMessage}
+                </Button>
+              ) : (
+                <Tooltip content="Generation disabled: Install CertManager">
+                  <Button isAriaDisabled variant="secondary">
+                    {certGenMessage}
+                  </Button>
+                </Tooltip>
+              )}
             </InputGroup>
           </DrawerContentBody>
         </DrawerContent>

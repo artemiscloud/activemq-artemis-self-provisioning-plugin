@@ -13,7 +13,7 @@ import {
 } from '../../reducers/7.12/reducer';
 import { AddBrokerResourceValues } from '../../reducers/7.12/import-types';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';
-import { UseGetIngressDomain } from '../../k8s/customHooks';
+import { useGetIngressDomain } from '../../k8s/customHooks';
 
 export interface AddBrokerProps {
   initialValues: AddBrokerResourceValues;
@@ -55,7 +55,7 @@ export const AddBrokerPage: FC = () => {
     setPrevNamespace(namespace);
   }
 
-  const { clusterDomain, isLoading } = UseGetIngressDomain();
+  const { clusterDomain, isLoading } = useGetIngressDomain();
   const [isDomainSet, setIsDomainSet] = useState(false);
   if (!isLoading && !isDomainSet) {
     dispatch({

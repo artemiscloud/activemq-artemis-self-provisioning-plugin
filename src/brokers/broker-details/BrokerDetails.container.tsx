@@ -27,7 +27,7 @@ import {
   useParams,
 } from 'react-router-dom-v5-compat';
 import { JolokiaAuthentication } from '../../jolokia/components/JolokiaAuthentication';
-import { UseGetBrokerCR } from '../../k8s/customHooks';
+import { useGetBrokerCR } from '../../k8s/customHooks';
 import { AuthContext } from '../../jolokia/context';
 import { BrokerCR } from '../../k8s/types';
 import {
@@ -189,7 +189,7 @@ export const BrokerDetailsPage: FC = () => {
     podName?: string;
   }>();
 
-  const { brokerCr, isLoading, error } = UseGetBrokerCR(brokerName, namespace);
+  const { brokerCr, isLoading, error } = useGetBrokerCR(brokerName, namespace);
 
   const podOrdinal = parseInt(podName.replace(brokerName + '-ss-', ''));
 

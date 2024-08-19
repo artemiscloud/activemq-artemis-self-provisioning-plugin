@@ -2,7 +2,7 @@ import { render, screen, waitForI18n } from '../../test-utils';
 import { AddressDetailsPage } from './AddressDetails.container';
 import { useParams } from 'react-router-dom-v5-compat';
 import { JolokiaAuthentication } from '../../jolokia/components/JolokiaAuthentication';
-import { UseGetBrokerCR } from '../../k8s/customHooks';
+import { useGetBrokerCR } from '../../k8s/customHooks';
 import { useK8sWatchResource } from '@openshift-console/dynamic-plugin-sdk';
 
 jest.mock('@openshift-console/dynamic-plugin-sdk', () => ({
@@ -14,7 +14,7 @@ jest.mock('react-router-dom-v5-compat', () => ({
 }));
 
 jest.mock('../../k8s/customHooks', () => ({
-  UseGetBrokerCR: jest.fn(),
+  useGetBrokerCR: jest.fn(),
 }));
 
 jest.mock('./AddressDetails.component', () => ({
@@ -26,7 +26,7 @@ jest.mock('./AddressDetailsBreadcrumb/AddressDetailsBreadcrumb', () => ({
 }));
 
 const mockUseParams = useParams as jest.Mock;
-const mockUseGetBrokerCR = UseGetBrokerCR as jest.Mock;
+const mockUseGetBrokerCR = useGetBrokerCR as jest.Mock;
 const mockUseK8sWatchResource = useK8sWatchResource as jest.Mock;
 
 describe('AddressDetailsPage', () => {

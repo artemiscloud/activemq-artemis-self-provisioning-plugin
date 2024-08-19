@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { AMQBrokerModel, IngressDomainModel } from './models';
 import { BrokerCR, Ingress } from './types';
 
-export const UseGetIngressDomain = (): {
+export const useGetIngressDomain = (): {
   clusterDomain: string;
   isLoading: boolean;
   error: string;
@@ -35,7 +35,7 @@ export const UseGetIngressDomain = (): {
   return { clusterDomain: domain, isLoading: loading, error: error };
 };
 
-export const UseGetBrokerCR = (
+export const useGetBrokerCR = (
   brokerName: string,
   namespace: string,
 ): { brokerCr: BrokerCR; isLoading: boolean; error: string } => {

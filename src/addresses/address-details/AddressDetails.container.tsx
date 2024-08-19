@@ -11,7 +11,7 @@ import { AddressDetailsBreadcrumb } from './AddressDetailsBreadcrumb/AddressDeta
 
 import { useParams } from 'react-router-dom-v5-compat';
 import { JolokiaAuthentication } from '../../jolokia/components/JolokiaAuthentication';
-import { UseGetBrokerCR } from '../../k8s/customHooks';
+import { useGetBrokerCR } from '../../k8s/customHooks';
 
 export const AddressDetailsPage: FC = () => {
   const { t } = useTranslation();
@@ -27,7 +27,7 @@ export const AddressDetailsPage: FC = () => {
     podName?: string;
   }>();
 
-  const { brokerCr: brokerDetails, error: error } = UseGetBrokerCR(
+  const { brokerCr: brokerDetails, error: error } = useGetBrokerCR(
     brokerName,
     namespace,
   );

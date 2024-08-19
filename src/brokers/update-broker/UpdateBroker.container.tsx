@@ -5,7 +5,7 @@ import { AddBroker } from '../add-broker/AddBroker.component';
 import { Loading } from '../../shared-components/Loading/Loading';
 import { AMQBrokerModel } from '../../k8s/models';
 import { BrokerCR } from '../../k8s/types';
-import { UseGetIngressDomain } from '../../k8s/customHooks';
+import { useGetIngressDomain } from '../../k8s/customHooks';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
@@ -71,7 +71,7 @@ export const UpdateBrokerPage: FC = () => {
   }, [name]);
 
   const { clusterDomain, isLoading: isLoadingClusterDomain } =
-    UseGetIngressDomain();
+    useGetIngressDomain();
   const [isDomainSet, setIsDomainSet] = useState(false);
   if (!loadingBrokerCR && !isLoadingClusterDomain && !isDomainSet) {
     dispatch({

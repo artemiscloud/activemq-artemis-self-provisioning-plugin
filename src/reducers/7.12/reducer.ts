@@ -1125,6 +1125,42 @@ const generateUniqueName = (prefix: string, existing: Set<string>): string => {
   return newName;
 };
 
+const generateUniquePort = (cr: BrokerCR): number => {
+  const acceptorSet = listConfigs(
+    ConfigType.acceptors,
+    cr,
+    'set',
+  ) as Set<string>;
+  const connectorSet = listConfigs(
+    ConfigType.connectors,
+    cr,
+    'set',
+  ) as Set<string>;
+
+  const basePort = 5555;
+  if (acceptorSet.size === 0 && connectorSet.size === 0) {
+    return basePort;
+  }
+
+  let maxPort = basePort;
+
+  acceptorSet.forEach((name) => {
+    const port = getConfigPort(cr, ConfigType.acceptors, name);
+    if (port > maxPort) {
+      maxPort = port;
+    }
+  });
+
+  connectorSet.forEach((name) => {
+    const port = getConfigPort(cr, ConfigType.connectors, name);
+    if (port > maxPort) {
+      maxPort = port;
+    }
+  });
+
+  return maxPort + 1;
+};
+
 const addConfig = (cr: BrokerCR, configType: ConfigType) => {
   const acceptorSet = listConfigs(configType, cr, 'set') as Set<string>;
 
@@ -1135,7 +1171,7 @@ const addConfig = (cr: BrokerCR, configType: ConfigType) => {
       name: newName,
       protocols: 'ALL',
       host: 'localhost',
-      port: 5555,
+      port: generateUniquePort(cr),
     };
     if (!cr.spec.connectors) {
       cr.spec.connectors = [connector];
@@ -1146,7 +1182,7 @@ const addConfig = (cr: BrokerCR, configType: ConfigType) => {
     const acceptor = {
       name: newName,
       protocols: 'ALL',
-      port: 5555,
+      port: generateUniquePort(cr),
     };
     if (!cr.spec.acceptors) {
       cr.spec.acceptors = [acceptor];
@@ -1732,19 +1768,18 @@ export const getConfigPort = (
   configType: ConfigType,
   configName: string,
 ): number => {
-  if (configType === ConfigType.connectors) {
-    const connector = getConnector(brokerModel, configName);
-    if (connector?.port) {
-      return connector.port;
-    }
-  }
   if (configType === ConfigType.acceptors) {
     const acceptor = getAcceptor(brokerModel, configName);
     if (acceptor?.port) {
       return acceptor.port;
     }
+  } else if (configType === ConfigType.connectors) {
+    const connector = getConnector(brokerModel, configName);
+    if (connector?.port) {
+      return connector.port;
+    }
   }
-  return 5555;
+  return -1;
 };
 
 export const getConfigHost = (

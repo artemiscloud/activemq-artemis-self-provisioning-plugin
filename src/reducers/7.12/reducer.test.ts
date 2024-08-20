@@ -213,6 +213,28 @@ describe('test the creation broker reducer', () => {
     );
   });
 
+  it('should assigns unique ports to each new acceptor added', () => {
+    const initialState = newArtemisCRState('namespace');
+
+    // Add the first acceptor
+    let newState = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    expect(newState.cr.spec.acceptors[0].port).toBe(5555);
+
+    // Add a second acceptor
+    newState = artemisCrReducer(newState, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    expect(newState.cr.spec.acceptors[1].port).toBe(5556);
+
+    // Add a third acceptor
+    newState = artemisCrReducer(newState, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    expect(newState.cr.spec.acceptors[2].port).toBe(5557);
+  });
+
   it('test setAcceptorPort', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Acceptor = artemisCrReducer(initialState, {
@@ -226,6 +248,26 @@ describe('test the creation broker reducer', () => {
       },
     });
     expect(newState2.cr.spec.acceptors[0].port).toBe(6666);
+  });
+
+  it('should increments next acceptor port based on manually set port value', () => {
+    const initialState = newArtemisCRState('namespace');
+    const stateWith1Acceptor = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    let newState2 = artemisCrReducer(stateWith1Acceptor, {
+      operation: ArtemisReducerOperations.setAcceptorPort,
+      payload: {
+        name: 'acceptors0',
+        port: 6666,
+      },
+    });
+    expect(newState2.cr.spec.acceptors[0].port).toBe(6666);
+
+    newState2 = artemisCrReducer(newState2, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    expect(newState2.cr.spec.acceptors[1].port).toBe(6667);
   });
 
   it('test setAcceptorProtocols', () => {
@@ -407,6 +449,28 @@ describe('test the creation broker reducer', () => {
     );
   });
 
+  it('should assigns unique ports to each new connector added', () => {
+    const initialState = newArtemisCRState('namespace');
+
+    // Add the first connector
+    let newState = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addConnector,
+    });
+    expect(newState.cr.spec.connectors[0].port).toBe(5555);
+
+    // Add a second connector
+    newState = artemisCrReducer(newState, {
+      operation: ArtemisReducerOperations.addConnector,
+    });
+    expect(newState.cr.spec.connectors[1].port).toBe(5556);
+
+    // Add a third connector
+    newState = artemisCrReducer(newState, {
+      operation: ArtemisReducerOperations.addConnector,
+    });
+    expect(newState.cr.spec.connectors[2].port).toBe(5557);
+  });
+
   it('test setConnectorPort', () => {
     const initialState = newArtemisCRState('namespace');
     const stateWith1Connector = artemisCrReducer(initialState, {
@@ -420,6 +484,85 @@ describe('test the creation broker reducer', () => {
       },
     });
     expect(newState2.cr.spec.connectors[0].port).toBe(6666);
+  });
+
+  it('should increments next connector port based on manually set port value', () => {
+    const initialState = newArtemisCRState('namespace');
+    const stateWith1Connector = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addConnector,
+    });
+    let newState2 = artemisCrReducer(stateWith1Connector, {
+      operation: ArtemisReducerOperations.setConnectorPort,
+      payload: {
+        name: 'connectors0',
+        port: 6666,
+      },
+    });
+    expect(newState2.cr.spec.connectors[0].port).toBe(6666);
+
+    newState2 = artemisCrReducer(newState2, {
+      operation: ArtemisReducerOperations.addConnector,
+    });
+    expect(newState2.cr.spec.connectors[1].port).toBe(6667);
+  });
+
+  it('test unique port allocation by combining both new added acceptors/connectors and verify correct port incrementation after manual port modification', () => {
+    const initialState = newArtemisCRState('namespace');
+    //Add first acceptor
+    let newStateWithAcceptor = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    expect(newStateWithAcceptor.cr.spec.acceptors[0].port).toBe(5555);
+
+    //Add second acceptor
+    newStateWithAcceptor = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    expect(newStateWithAcceptor.cr.spec.acceptors[1].port).toBe(5556);
+
+    // Manually change the port of the second acceptor to 5557
+    newStateWithAcceptor = artemisCrReducer(newStateWithAcceptor, {
+      operation: ArtemisReducerOperations.setAcceptorPort,
+      payload: {
+        name: 'acceptors1',
+        port: 5557,
+      },
+    });
+    expect(newStateWithAcceptor.cr.spec.acceptors[1].port).toBe(5557);
+
+    //Add third acceptor
+    newStateWithAcceptor = artemisCrReducer(newStateWithAcceptor, {
+      operation: ArtemisReducerOperations.addAcceptor,
+    });
+    expect(newStateWithAcceptor.cr.spec.acceptors[2].port).toBe(5558);
+
+    //Add first connector
+    let newStateWithConnector = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addConnector,
+    });
+    expect(newStateWithConnector.cr.spec.connectors[0].port).toBe(5559);
+
+    //Add second connector
+    newStateWithConnector = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.addConnector,
+    });
+    expect(newStateWithConnector.cr.spec.connectors[1].port).toBe(5560);
+
+    // Manually change the port of the second connector to 5561
+    newStateWithConnector = artemisCrReducer(newStateWithConnector, {
+      operation: ArtemisReducerOperations.setConnectorPort,
+      payload: {
+        name: 'connectors1',
+        port: 5561,
+      },
+    });
+    expect(newStateWithConnector.cr.spec.connectors[1].port).toBe(5561);
+
+    //Add third connector
+    newStateWithConnector = artemisCrReducer(newStateWithConnector, {
+      operation: ArtemisReducerOperations.addConnector,
+    });
+    expect(newStateWithConnector.cr.spec.connectors[2].port).toBe(5562);
   });
 
   it('test setConnectorProtocols', () => {

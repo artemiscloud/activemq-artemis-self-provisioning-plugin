@@ -14,7 +14,8 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   Form,
-  Title,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from '@patternfly/react-core';
 import { CubesIcon } from '@patternfly/react-icons';
 import { AcceptorConfigSection } from './AcceptorConfigSection/AcceptorConfigSection';
@@ -48,18 +49,21 @@ export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
   const pronoun = configType === ConfigType.acceptors ? 'an' : 'a';
   if (configs.length === 0) {
     return (
-      <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={CubesIcon} />
-        <Title headingLevel="h4" size="lg">
-          No {name} configured
-        </Title>
+      <EmptyState variant={EmptyStateVariant.sm}>
+        <EmptyStateHeader
+          titleText={<>No{name}configured</>}
+          icon={<EmptyStateIcon icon={CubesIcon} />}
+          headingLevel="h4"
+        />
         <EmptyStateBody>
           There's no {name} in your configuration, to add one click on the
           button below.{' '}
         </EmptyStateBody>
-        <Button variant="primary" onClick={addNewConfig}>
-          Add {pronoun} {name}
-        </Button>
+        <EmptyStateFooter>
+          <Button variant="primary" onClick={addNewConfig}>
+            Add {pronoun} {name}
+          </Button>
+        </EmptyStateFooter>
       </EmptyState>
     );
   }

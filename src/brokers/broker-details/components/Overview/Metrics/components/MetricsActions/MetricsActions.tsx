@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Card, CardActions, CardHeader } from '@patternfly/react-core';
+import { Card, CardHeader } from '@patternfly/react-core';
 import { useTranslation } from '../../../../../../../i18n/i18n';
 import { MetricsType } from '../../utils/types';
 import {
@@ -193,34 +193,40 @@ export const MetricsActions: FC<MetricsActionsProps> = ({
 
   return (
     <Card isFullHeight>
-      <CardHeader>
-        <CardActions>
-          <DropdownWithToggle
-            id="metrics-list-dropdown"
-            toggleId="metrics-list-dropdowntoggle"
-            items={chartsDropdownItems}
-            value={metricsType}
-            onSelectOption={onSelectOptionChart}
-            isLabelAndValueNotSame={true}
-          />
-          <DropdownWithToggle
-            id="span-dropdown"
-            toggleId="span-dropdowntoggle"
-            items={spanDropdownItems}
-            value={span}
-            onSelectOption={onSelectOptionSpan}
-            isLabelAndValueNotSame={true}
-          />
-          <DropdownWithToggle
-            id="polling-dropdown"
-            toggleId="polling-dropdowntoggle"
-            items={pollingDropdownItems}
-            value={pollingTime}
-            onSelectOption={onSelectOptionPolling}
-            isLabelAndValueNotSame={true}
-          />
-        </CardActions>
-      </CardHeader>
+      <CardHeader
+        actions={{
+          actions: (
+            <>
+              <DropdownWithToggle
+                id="metrics-list-dropdown"
+                toggleId="metrics-list-dropdowntoggle"
+                items={chartsDropdownItems}
+                value={metricsType}
+                onSelectOption={onSelectOptionChart}
+                isLabelAndValueNotSame={true}
+              />
+              <DropdownWithToggle
+                id="span-dropdown"
+                toggleId="span-dropdowntoggle"
+                items={spanDropdownItems}
+                value={span}
+                onSelectOption={onSelectOptionSpan}
+                isLabelAndValueNotSame={true}
+              />
+              <DropdownWithToggle
+                id="polling-dropdown"
+                toggleId="polling-dropdowntoggle"
+                items={pollingDropdownItems}
+                value={pollingTime}
+                onSelectOption={onSelectOptionPolling}
+                isLabelAndValueNotSame={true}
+              />
+            </>
+          ),
+          hasNoOffset: false,
+          className: undefined,
+        }}
+      ></CardHeader>
     </Card>
   );
 };

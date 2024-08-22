@@ -23,7 +23,7 @@ export const AddBrokerPage: FC = () => {
   const navigate = useNavigate();
   const { ns: namespace } = useParams<{ ns?: string }>();
 
-  const defaultNotification = { title: '', variant: AlertVariant.default };
+  const defaultNotification = { title: '', variant: AlertVariant.info };
 
   const initialValues = newArtemisCRState(namespace);
 

@@ -1,7 +1,8 @@
 import { render, screen } from '../../test-utils';
 import { AddressDetailsRow } from './AddressDetailsRow';
 import { ComponentAttribute } from '../../openapi/jolokia/requests';
-import { Table, Tbody } from '@patternfly/react-table';
+import { Tbody } from '@patternfly/react-table';
+import { Table } from '@patternfly/react-table/deprecated';
 
 const mockAttribute: ComponentAttribute = {
   request: {

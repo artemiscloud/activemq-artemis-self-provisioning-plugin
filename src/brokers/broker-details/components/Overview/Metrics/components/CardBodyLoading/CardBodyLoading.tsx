@@ -4,7 +4,7 @@ import type { FunctionComponent } from 'react';
 export const CardBodyLoading: FunctionComponent = () => (
   <CardBody>
     <Bullseye>
-      <Spinner isSVG data-chromatic="ignore" data-testid="spinner" />
+      <Spinner data-chromatic="ignore" data-testid="spinner" />
     </Bullseye>
   </CardBody>
 );

@@ -4,12 +4,12 @@ import { FC, useState } from 'react';
 import { useTranslation } from '../../../../../../../../i18n/i18n';
 import { PresetAlertPopover } from '../PresetAlertPopover/PresetAlertPopover';
 import { ExposeMode } from '../../../../../../../../reducers/7.12/reducer';
+import { FormGroup } from '@patternfly/react-core';
 import {
-  FormGroup,
   Select,
   SelectOption,
   SelectVariant,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 
 type SelectExposeModeProps = {
   selectedExposeMode: string;

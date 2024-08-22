@@ -94,7 +94,7 @@ export const SignatureSubForm: FC<SignatureSubFormType> = ({
           <FormGroup label={arg.name + ' ' + arg.type} key={item}>
             <TextInput
               value={formValues ? formValues[arg.name] : ''}
-              onChange={(value) => update(arg.name, value)}
+              onChange={(_event, value) => update(arg.name, value)}
               aria-label={arg.name}
             />
           </FormGroup>
@@ -173,7 +173,7 @@ export const ExecOpr: FC<ExecOprType> = ({ op }) => {
       <Form>
         <FormSelect
           value={formSelectValue}
-          onChange={onChange}
+          onChange={(_event, value: string) => onChange(value)}
           aria-label="FormSelect Input"
         >
           {!formSelectValue && (
@@ -268,7 +268,7 @@ export const FetchAttr: FC<DisplayDetailsType> = ({
       <Form>
         <FormSelect
           value={formSelectValue}
-          onChange={onChange}
+          onChange={(_event, value: string) => onChange(value)}
           aria-label="FormSelect Input"
         >
           {!formSelectValue && (
@@ -287,7 +287,7 @@ export const FetchAttr: FC<DisplayDetailsType> = ({
               <TextInput
                 id="settype"
                 value={attr[formSelectValue].rw ? param : attributeValue}
-                onChange={handleParamChange}
+                onChange={(_event, param: string) => handleParamChange(param)}
                 isDisabled={!attr[formSelectValue].rw}
               />
             </FormGroup>
@@ -357,7 +357,7 @@ export const JolokiaAddressDetails: FC = () => {
       {addressesSuccess && (
         <FormSelect
           value={selectedAddress}
-          onChange={onChange}
+          onChange={(_event, value: string) => onChange(value)}
           aria-label="FormSelect Input"
         >
           {!selectedAddress && (
@@ -410,7 +410,7 @@ export const JolokiaAcceptorDetails: FC = () => {
       {isAcceptorsSuccess && (
         <FormSelect
           value={selectedAcceptor}
-          onChange={onChange}
+          onChange={(_event, value: string) => onChange(value)}
           aria-label="FormSelect Input"
         >
           {!selectedAcceptor && (
@@ -466,7 +466,7 @@ export const JolokiaQueueDetails: FC = () => {
       {isQueueSuccess && (
         <FormSelect
           value={selectedQueue}
-          onChange={onChange}
+          onChange={(_event, value: string) => onChange(value)}
           aria-label="FormSelect Input"
         >
           {!selectedQueue && (
@@ -579,7 +579,7 @@ const JolokiaTestPanel: FC = () => {
       <TextInput
         value={testUrl}
         type="text"
-        onChange={(value, _event) => setTestUrl(value)}
+        onChange={(_event, value) => setTestUrl(value)}
         aria-label="text input example"
         placeholder={
           'input jolokia url here, example: https://' +

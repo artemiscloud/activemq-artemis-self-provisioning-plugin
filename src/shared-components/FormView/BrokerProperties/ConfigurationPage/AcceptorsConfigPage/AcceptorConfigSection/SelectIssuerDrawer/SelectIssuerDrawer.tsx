@@ -21,12 +21,16 @@ import {
   DrawerPanelContent,
   FormGroup,
   InputGroup,
+  Spinner,
+  TextInput,
+  InputGroupItem,
+  FormHelperText,
+} from '@patternfly/react-core';
+import {
   Select,
   SelectOption,
   SelectVariant,
-  Spinner,
-  TextInput,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { FC, useContext, useState } from 'react';
 
 const createChainOftrust = async (
@@ -181,22 +185,25 @@ export const SelectIssuerDrawer: FC<SelectIssuerDrawerProps> = ({
           panelContent={
             <DrawerPanelContent>
               <DrawerHead>
-                <FormGroup
-                  label={t('new_chain_of_trust')}
-                  helperText={t('new_chain_of_trust_helper')}
-                  isRequired
-                >
+                <FormGroup label={t('new_chain_of_trust')} isRequired>
+                  <FormHelperText>
+                    {t('new_chain_of_trust_helper')}
+                  </FormHelperText>
                   <InputGroup>
-                    <TextInput
-                      value={newIssuer}
-                      onChange={(v) => {
-                        setAlertIssuer(undefined);
-                        setNewIssuer(v);
-                      }}
-                    />
-                    <Button onClick={triggerChainOfTrustCreation}>
-                      {t('create')}
-                    </Button>
+                    <InputGroupItem isFill>
+                      <TextInput
+                        value={newIssuer}
+                        onChange={(_event, v) => {
+                          setAlertIssuer(undefined);
+                          setNewIssuer(v);
+                        }}
+                      />
+                    </InputGroupItem>
+                    <InputGroupItem>
+                      <Button onClick={triggerChainOfTrustCreation}>
+                        {t('create')}
+                      </Button>
+                    </InputGroupItem>
                   </InputGroup>
                 </FormGroup>
                 {alertIssuer && (
@@ -213,27 +220,31 @@ export const SelectIssuerDrawer: FC<SelectIssuerDrawerProps> = ({
         >
           <DrawerContentBody>
             <InputGroup>
-              <Select
-                variant={SelectVariant.typeahead}
-                typeAheadAriaLabel={t('select_an_issuer')}
-                onToggle={() => setIsOpen(!isOpen)}
-                onSelect={onSelect}
-                onClear={clearSelection}
-                onFilter={filterMatchingOptions}
-                selections={selectedIssuer}
-                isOpen={isOpen}
-                aria-labelledby={titleId}
-                placeholderText={t('select_an_issuer')}
-                menuAppendTo="parent"
-              >
-                {options}
-              </Select>
-              <Button
-                variant={ButtonVariant.primary}
-                onClick={() => setIsExpanded(true)}
-              >
-                {t('create_new_chain_of_trust')}
-              </Button>
+              <InputGroupItem>
+                <Select
+                  variant={SelectVariant.typeahead}
+                  typeAheadAriaLabel={t('select_an_issuer')}
+                  onToggle={() => setIsOpen(!isOpen)}
+                  onSelect={onSelect}
+                  onClear={clearSelection}
+                  onFilter={filterMatchingOptions}
+                  selections={selectedIssuer}
+                  isOpen={isOpen}
+                  aria-labelledby={titleId}
+                  placeholderText={t('select_an_issuer')}
+                  menuAppendTo="parent"
+                >
+                  {options}
+                </Select>
+              </InputGroupItem>
+              <InputGroupItem>
+                <Button
+                  variant={ButtonVariant.primary}
+                  onClick={() => setIsExpanded(true)}
+                >
+                  {t('create_new_chain_of_trust')}
+                </Button>
+              </InputGroupItem>
             </InputGroup>
           </DrawerContentBody>
         </DrawerContent>

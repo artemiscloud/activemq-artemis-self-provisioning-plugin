@@ -114,21 +114,17 @@ describe('AddressDetails', () => {
   });
 
   it('should update the current page when pagination controls are used', () => {
-    const { container } = render(
+    render(
       <JolokiaAuthentication brokerCR={{ spec: {} }} podOrdinal={0}>
         <AddressDetails name="DLQ" />
       </JolokiaAuthentication>,
     );
-    const initialTextInput = container.querySelector(
-      '#pagination-options-menu-top-top-pagination > nav > div:nth-child(3) > input',
-    );
+    const initialTextInput = screen.getAllByDisplayValue(/1/i)[0];
     expect(initialTextInput).toHaveValue(1);
     fireEvent.click(
       screen.getAllByRole('button', { name: /go to next page/i })[0],
     );
-    const updateTextInput = container.querySelector(
-      '#pagination-options-menu-top-top-pagination > nav > div:nth-child(3) > input',
-    );
+    const updateTextInput = screen.getAllByDisplayValue(/2/i)[0];
     expect(updateTextInput).toHaveValue(2);
   });
 

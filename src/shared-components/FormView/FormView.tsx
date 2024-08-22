@@ -18,6 +18,7 @@ import {
   NumberInput,
   Switch,
   TextInput,
+  InputGroupItem,
 } from '@patternfly/react-core';
 import { FC, useContext, useEffect, useState } from 'react';
 import { useTranslation } from '../../i18n/i18n';
@@ -50,7 +51,7 @@ export const FormView: FC<FormViewProps> = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const defaultNotification = { title: '', variant: AlertVariant.default };
+  const defaultNotification = { title: '', variant: AlertVariant.custom };
 
   //states
   const [notification, setNotification] = useState(defaultNotification);
@@ -149,7 +150,7 @@ export const FormView: FC<FormViewProps> = ({
                 id="horizontal-form-name"
                 aria-describedby="horizontal-form-name-helper"
                 name="horizontal-form-name"
-                onChange={handleNameChange}
+                onChange={(_event, name: string) => handleNameChange(name)}
               />
             </FormGroup>
             <FormGroup
@@ -188,20 +189,22 @@ export const FormView: FC<FormViewProps> = ({
                 <InputGroupText id="broker-version" className=".pf-u-w-initial">
                   Version:
                 </InputGroupText>
-                <FormSelect
-                  value={selectedVersion}
-                  onChange={onChangeVersion}
-                  aria-label="FormSelect Input"
-                >
-                  {options.map((option, index) => (
-                    <FormSelectOption
-                      isDisabled={option.disabled}
-                      key={index}
-                      value={option.value}
-                      label={option.label}
-                    />
-                  ))}
-                </FormSelect>
+                <InputGroupItem>
+                  <FormSelect
+                    value={selectedVersion}
+                    onChange={(_event, value: string) => onChangeVersion(value)}
+                    aria-label="FormSelect Input"
+                  >
+                    {options.map((option, index) => (
+                      <FormSelectOption
+                        isDisabled={option.disabled}
+                        key={index}
+                        value={option.value}
+                        label={option.label}
+                      />
+                    ))}
+                  </FormSelect>
+                </InputGroupItem>
               </InputGroup>
             </FormGroup>
             <FormGroup label="Per broker config">
@@ -210,7 +213,9 @@ export const FormView: FC<FormViewProps> = ({
                 label="enabled"
                 labelOff="disabled"
                 isChecked={isPerBrokerConfig}
-                onChange={handleChange}
+                onChange={(_event, checked: boolean) =>
+                  handleChange(checked, _event)
+                }
                 ouiaId="BasicSwitch"
                 isDisabled={replicas <= 1}
               />
@@ -219,7 +224,7 @@ export const FormView: FC<FormViewProps> = ({
         </FormFieldGroup>
       </Form>
       <Form isHorizontal>
-        <Banner variant={'info'}>
+        <Banner variant={'blue'}>
           <b>{crName}</b>
           {' in namespace '}
           <b>{targetNs}</b>

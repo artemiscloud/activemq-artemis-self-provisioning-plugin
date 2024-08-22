@@ -6,7 +6,7 @@ import {
   getCertManagerResourceTemplateFromAcceptor,
 } from '../../../../../../../../reducers/7.12/reducer';
 import { useTranslation } from '../../../../../../../../i18n/i18n';
-import { Alert, Popover } from '@patternfly/react-core';
+import { Alert, Icon, Popover } from '@patternfly/react-core';
 import { BellIcon, WarningTriangleIcon } from '@patternfly/react-icons';
 
 type PresetCautionProps = {
@@ -40,7 +40,7 @@ export const PresetAlertPopover: FC<PresetCautionProps> = ({
         <>
           {kind === 'caution' ? (
             <Alert
-              variant="default"
+              variant="custom"
               title={t('preset_caution')}
               isPlain
               isInline
@@ -65,11 +65,9 @@ export const PresetAlertPopover: FC<PresetCautionProps> = ({
         className="pf-c-form__group-label-help"
       >
         <>
-          {kind === 'caution' ? (
-            <BellIcon noVerticalAlign />
-          ) : (
-            <WarningTriangleIcon noVerticalAlign />
-          )}
+          <Icon isInline>
+            {kind === 'caution' ? <BellIcon /> : <WarningTriangleIcon />}
+          </Icon>
         </>
       </button>
     </Popover>

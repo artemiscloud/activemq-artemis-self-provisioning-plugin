@@ -17,7 +17,7 @@ import { useParams } from 'react-router-dom-v5-compat';
 
 export const UpdateBrokerPage: FC = () => {
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
-  const defaultNotification = { title: '', variant: AlertVariant.default };
+  const defaultNotification = { title: '', variant: AlertVariant.info };
 
   //states
   const [notification, setNotification] = useState(defaultNotification);

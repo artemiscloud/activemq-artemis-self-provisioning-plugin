@@ -10,6 +10,7 @@ import {
   InputGroup,
   InputGroupText,
   TextInput,
+  InputGroupItem,
 } from '@patternfly/react-core';
 import { TrashIcon } from '@patternfly/react-icons';
 import { ConfigType } from '../../../../ConfigurationPage';
@@ -64,26 +65,34 @@ const Param: FC<ParamProps> = ({
   const [newValue, setNewValue] = useState(value);
   return (
     <InputGroup>
-      <TextInput value={newKey} onChange={(v) => setNewKey(v)} />
+      <InputGroupItem isFill>
+        <TextInput value={newKey} onChange={(_event, v) => setNewKey(v)} />
+      </InputGroupItem>
       <InputGroupText>=</InputGroupText>
-      <TextInput value={newValue} onChange={(v) => setNewValue(v)} />
-      <Button
-        onClick={() => updateOtherParams(key, newKey, newValue)}
-        isDisabled={
-          newKey === '' ||
-          newValue === '' ||
-          (newKey === key && newValue === value)
-        }
-      >
-        update
-      </Button>
-      <Button
-        variant="plain"
-        aria-label="Remove"
-        onClick={() => deleteOtherParam(key)}
-      >
-        <TrashIcon />
-      </Button>
+      <InputGroupItem isFill>
+        <TextInput value={newValue} onChange={(_event, v) => setNewValue(v)} />
+      </InputGroupItem>
+      <InputGroupItem>
+        <Button
+          onClick={() => updateOtherParams(key, newKey, newValue)}
+          isDisabled={
+            newKey === '' ||
+            newValue === '' ||
+            (newKey === key && newValue === value)
+          }
+        >
+          update
+        </Button>
+      </InputGroupItem>
+      <InputGroupItem>
+        <Button
+          variant="plain"
+          aria-label="Remove"
+          onClick={() => deleteOtherParam(key)}
+        >
+          <TrashIcon />
+        </Button>
+      </InputGroupItem>
     </InputGroup>
   );
 };

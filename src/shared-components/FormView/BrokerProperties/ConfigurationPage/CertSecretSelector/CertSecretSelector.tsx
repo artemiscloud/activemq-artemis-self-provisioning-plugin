@@ -30,13 +30,17 @@ import {
   DrawerPanelContent,
   FormGroup,
   InputGroup,
+  Tooltip,
+  InputGroupItem,
+  Icon,
+} from '@patternfly/react-core';
+import {
   Select,
   SelectGroup,
   SelectOption,
   SelectOptionObject,
   SelectVariant,
-  Tooltip,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { t } from 'i18next';
 import base64 from 'base-64';
 import { InfoCircleIcon } from '@patternfly/react-icons';
@@ -688,43 +692,51 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
             )}
           </>
         }
-        reference={showCertTooltipRef}
+        triggerRef={showCertTooltipRef}
       />
       <Drawer isExpanded={isDrawerExpanded} onExpand={onDrawerExpand}>
         <DrawerContent panelContent={panelContent}>
           <DrawerContentBody>
             <InputGroup>
-              <Select
-                id={'select-secrets' + isCa + configType + configName}
-                key={'key-select-secrets' + isCa + configType + configName}
-                variant={SelectVariant.typeahead}
-                typeAheadAriaLabel="Select a secret"
-                onToggle={onToggle}
-                onSelect={onSelect}
-                onClear={clearSelection}
-                selections={selectedSecret}
-                isOpen={isOpen}
-                aria-labelledby={'grouped-typeahead-select-id'}
-                placeholderText="Select a Secret"
-                isGrouped
-                menuAppendTo="parent"
-                isCreatable={canSetCustomNames}
-                createText="override with custom name:"
-                onCreateOption={(v) => setCustomOptions([...customOptions, v])}
-              >
-                {secretOptions}
-              </Select>
-              <Button
-                variant="secondary"
-                aria-label="View cert"
-                onClick={showCertInfo}
-                ref={showCertTooltipRef}
-                isDisabled={
-                  stringSelectedSecret === '' || !isSelectCertSecret()
-                }
-              >
-                <InfoCircleIcon size="sm" />
-              </Button>
+              <InputGroupItem>
+                <Select
+                  id={'select-secrets' + isCa + configType + configName}
+                  key={'key-select-secrets' + isCa + configType + configName}
+                  variant={SelectVariant.typeahead}
+                  typeAheadAriaLabel="Select a secret"
+                  onToggle={(_event, isOpen: boolean) => onToggle(isOpen)}
+                  onSelect={onSelect}
+                  onClear={clearSelection}
+                  selections={selectedSecret}
+                  isOpen={isOpen}
+                  aria-labelledby={'grouped-typeahead-select-id'}
+                  placeholderText="Select a Secret"
+                  isGrouped
+                  menuAppendTo="parent"
+                  isCreatable={canSetCustomNames}
+                  createText="override with custom name:"
+                  onCreateOption={(v) =>
+                    setCustomOptions([...customOptions, v])
+                  }
+                >
+                  {secretOptions}
+                </Select>
+              </InputGroupItem>
+              <InputGroupItem>
+                <Button
+                  variant="secondary"
+                  aria-label="View cert"
+                  onClick={showCertInfo}
+                  ref={showCertTooltipRef}
+                  isDisabled={
+                    stringSelectedSecret === '' || !isSelectCertSecret()
+                  }
+                >
+                  <Icon size="sm">
+                    <InfoCircleIcon />
+                  </Icon>
+                </Button>
+              </InputGroupItem>
               {certMgrFound ? (
                 <Button
                   isDisabled={isSecretGenerating}

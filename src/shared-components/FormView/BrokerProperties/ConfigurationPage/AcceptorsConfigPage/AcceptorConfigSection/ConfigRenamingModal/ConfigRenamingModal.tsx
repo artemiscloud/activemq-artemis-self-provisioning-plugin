@@ -92,7 +92,7 @@ export const ConfigRenamingModal: FC<ConfigRenamingModalProps> = ({
       >
         <TextInput
           value={newName}
-          onChange={validateName}
+          onChange={(_event, value: string) => validateName(value)}
           isRequired
           validated={validateStatus}
           type="text"

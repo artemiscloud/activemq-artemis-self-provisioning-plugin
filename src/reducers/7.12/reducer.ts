@@ -1,7 +1,7 @@
 import { AddBrokerResourceValues as FormState } from './import-types';
 import { BrokerCR, Acceptor, ResourceTemplate } from '../../k8s/types';
 import { createContext } from 'react';
-import { SelectOptionObject } from '@patternfly/react-core';
+import { SelectOptionObject } from '@patternfly/react-core/deprecated';
 import { ConfigType } from '../../shared-components/FormView/BrokerProperties/ConfigurationPage/ConfigurationPage';
 
 export enum EditorType {

@@ -14,6 +14,7 @@ import {
   PageSectionVariants,
   Spinner,
   Title,
+  EmptyStateHeader,
 } from '@patternfly/react-core';
 import { ErrorCircleOIcon, SearchIcon } from '@patternfly/react-icons';
 import { BrokerPodsBreadcrumb } from './components/BrokerPodsBreadcrumb/BrokerPodsBreadcrumb';
@@ -67,27 +68,30 @@ export const PodsContainer: FC = () => {
         </div>
         {loadError && (
           <EmptyState>
-            <EmptyStateIcon icon={ErrorCircleOIcon} />
-            <Title size="lg" headingLevel="h4">
-              Error while retrieving the pods list.
-            </Title>
+            <EmptyStateHeader
+              titleText="Error while retrieving the pods list."
+              icon={<EmptyStateIcon icon={ErrorCircleOIcon} />}
+              headingLevel="h4"
+            />
             <EmptyStateBody>No results match.</EmptyStateBody>
           </EmptyState>
         )}
         {loading && !loadError && (
           <EmptyState>
-            <EmptyStateIcon variant="container" component={Spinner} />
-            <Title size="lg" headingLevel="h4">
-              Loading
-            </Title>
+            <EmptyStateHeader
+              titleText="Loading"
+              icon={<EmptyStateIcon icon={Spinner} />}
+              headingLevel="h4"
+            />
           </EmptyState>
         )}
         {!loading && !loadError && brokerPods.length === 0 && (
           <EmptyState>
-            <EmptyStateIcon icon={SearchIcon} />
-            <Title size="lg" headingLevel="h4">
-              No results found. Check the status of the deployment.
-            </Title>
+            <EmptyStateHeader
+              titleText="No results found. Check the status of the deployment."
+              icon={<EmptyStateIcon icon={SearchIcon} />}
+              headingLevel="h4"
+            />
             <EmptyStateBody>No results match.</EmptyStateBody>
           </EmptyState>
         )}

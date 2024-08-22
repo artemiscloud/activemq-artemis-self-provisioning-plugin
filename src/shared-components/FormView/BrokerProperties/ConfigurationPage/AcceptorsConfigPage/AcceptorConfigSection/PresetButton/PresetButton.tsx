@@ -9,6 +9,7 @@ import {
   FormFieldGroup,
   FormFieldGroupHeader,
   FormGroup,
+  FormHelperText,
   Modal,
   ModalVariant,
   SimpleList,
@@ -129,14 +130,13 @@ const AddPresetModal: FC<AddIssuerAnnotationModalProps> = ({
               }
               setShowCertManagerForm(!showCertManagerForm);
             }}
-            isSelectableRaised={isCertMangerDependencySatisfied}
+            isSelectable
             isSelected={showCertManagerForm}
             hasSelectableInput
             isCompact
             style={{ 'max-width': '100%' } as CSSProperties}
-            isDisabledRaised={
-              hasACertManagerAnnotation || !isCertMangerDependencySatisfied
-            }
+            isDisabled
+            tabIndex={0}
           >
             <CardTitle>{t('Annotate_an_acceptor_with_an_issuer')} </CardTitle>
             {!isCertMangerDependencySatisfied && (
@@ -180,11 +180,8 @@ const AddPresetModal: FC<AddIssuerAnnotationModalProps> = ({
               />
             }
           >
-            <FormGroup
-              label={t('select_issuer')}
-              helperText={t('select_an_issuer_help')}
-              isRequired
-            >
+            <FormGroup label={t('select_issuer')} isRequired>
+              <FormHelperText>{t('select_an_issuer_help')}</FormHelperText>
               <SelectIssuerDrawer
                 selectedIssuer={selectedIssuer}
                 setSelectedIssuer={setSelectedIssuer}

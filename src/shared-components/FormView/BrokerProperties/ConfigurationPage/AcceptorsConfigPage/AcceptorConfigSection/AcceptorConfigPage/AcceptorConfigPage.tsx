@@ -199,7 +199,9 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
                 isChecked={bindToAllInterfaces}
                 name={'check-bindToAllInterfaces' + configType + configName}
                 id={'check-bindToAllInterfaces' + configType + configName}
-                onChange={onBindToAllInterfacesChange}
+                onChange={(_event, checked: boolean) =>
+                  onBindToAllInterfacesChange(checked)
+                }
               />
             </FormGroup>
           )}
@@ -219,7 +221,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               label="SSL Enabled"
               labelOff="SSL disabled"
               isChecked={isSSLEnabled}
-              onChange={handleSSLEnabled}
+              onChange={(_event, value: boolean) => handleSSLEnabled(value)}
               ouiaId="BasicSwitch"
             />
           </FormGroup>
@@ -244,7 +246,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
                 }
                 name={'check-expose' + configType + configName}
                 id={'check-expose' + configType + configName}
-                onChange={(v) =>
+                onChange={(_event, v) =>
                   dispatch({
                     operation: ArtemisReducerOperations.setIsAcceptorExposed,
                     payload: {
@@ -293,7 +295,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
             <FormSelect
               label="acceptorFactoryClass"
               value={selectedClass}
-              onChange={onChangeClass}
+              onChange={(_event, value: string) => onChangeClass(value)}
               aria-label="FormSelect Input"
             >
               {options.map((option, index) => (
@@ -320,7 +322,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
                 id={'horizontal-form-host-' + configType + configName}
                 aria-describedby="horizontal-form-host-helper"
                 name={'horizontal-form-host' + configType + configName}
-                onChange={onHostChange}
+                onChange={(_event, host: string) => onHostChange(host)}
               />
             </FormGroup>
           )}
@@ -346,7 +348,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
                     ? getAcceptor(cr, configName).ingressHost
                     : ''
                 }
-                onChange={(v) =>
+                onChange={(_event, v) =>
                   dispatch({
                     operation: ArtemisReducerOperations.setAcceptorIngressHost,
                     payload: {
@@ -371,7 +373,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               id={'horizontal-form-port-' + configType + configName}
               aria-describedby="horizontal-form-port-helper"
               name="horizontal-form-port"
-              onChange={onPortChange}
+              onChange={(_event, port: string) => onPortChange(port)}
             />
           </FormGroup>
           <FormGroup
@@ -386,7 +388,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               id="horizontal-form-protocols"
               aria-describedby="horizontal-form-protocols-helper"
               name="horizontal-form-protocols"
-              onChange={onProtocolsChange}
+              onChange={(_event, prot: string) => onProtocolsChange(prot)}
             />
           </FormGroup>
         </Grid>

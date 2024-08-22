@@ -121,7 +121,7 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
                 isChecked={exposeConsole}
                 name={'check-console-expose'}
                 id={'check-expose-console'}
-                onChange={setConsoleExpose}
+                onChange={(_event, value: boolean) => setConsoleExpose(value)}
               />
             </FormGroup>
             <FormGroup
@@ -131,7 +131,9 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
               <FormSelect
                 label="console expose mode"
                 value={exposeMode}
-                onChange={setConsoleExposeMode}
+                onChange={(_event, value: ExposeMode) =>
+                  setConsoleExposeMode(value)
+                }
                 aria-label="formselect-expose-mode-aria-label"
               >
                 {exposeModes.map((mode, index) => (
@@ -148,7 +150,7 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
               label="SSL Enabled for console"
               labelOff="SSL disabled for console"
               isChecked={isSSLEnabled}
-              onChange={handleSSLEnabled}
+              onChange={(_event, value: boolean) => handleSSLEnabled(value)}
               ouiaId="BasicSwitch-console-ssl"
             />
           </FormFieldGroup>

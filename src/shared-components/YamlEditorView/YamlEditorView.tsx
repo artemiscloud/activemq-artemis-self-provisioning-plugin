@@ -136,7 +136,7 @@ const YamlEditorView: FC<YamlEditorViewProps> = ({
         </Page>
       ) : (
         <Alert
-          variant={AlertVariant.default}
+          variant={AlertVariant.custom}
           title={t('broker_can_not_be_created')}
           isInline
         >

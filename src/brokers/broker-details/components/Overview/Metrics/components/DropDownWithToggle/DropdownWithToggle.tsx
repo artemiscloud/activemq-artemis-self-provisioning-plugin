@@ -1,7 +1,11 @@
 import type React from 'react';
 import { useState } from 'react';
-import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core';
-import type { DropdownProps } from '@patternfly/react-core/dist/js';
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+} from '@patternfly/react-core/deprecated';
+import type { DropdownProps } from '@patternfly/react-core/deprecated';
 
 export interface IDropdownWithToggleProps {
   id: string;
@@ -71,7 +75,7 @@ export const DropdownWithToggle: React.FC<IDropdownWithToggleProps> = ({
   const dropdownToggle = (
     <DropdownToggle
       id={toggleId}
-      onToggle={onToggle}
+      onToggle={(_event, isOpen: boolean) => onToggle(isOpen)}
       data-testid="dropdown-toggle"
     >
       {getSelectedValue()}

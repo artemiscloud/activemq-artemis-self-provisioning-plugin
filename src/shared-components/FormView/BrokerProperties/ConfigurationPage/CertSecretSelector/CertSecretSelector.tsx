@@ -712,7 +712,7 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
                   aria-labelledby={'grouped-typeahead-select-id'}
                   placeholderText="Select a Secret"
                   isGrouped
-                  menuAppendTo="parent"
+                  menuAppendTo={() => document.body}
                   isCreatable={canSetCustomNames}
                   createText="override with custom name:"
                   onCreateOption={(v) =>

@@ -232,7 +232,7 @@ export const SelectIssuerDrawer: FC<SelectIssuerDrawerProps> = ({
                   isOpen={isOpen}
                   aria-labelledby={titleId}
                   placeholderText={t('select_an_issuer')}
-                  menuAppendTo="parent"
+                  menuAppendTo={() => document.body}
                 >
                   {options}
                 </Select>

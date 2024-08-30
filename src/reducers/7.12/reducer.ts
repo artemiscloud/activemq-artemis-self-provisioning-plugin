@@ -1125,20 +1125,15 @@ const generateUniqueName = (prefix: string, existing: Set<string>): string => {
   return newName;
 };
 
-const generateUniquePort = (cr: BrokerCR): number => {
+const generateUniqueAcceptorPort = (cr: BrokerCR): number => {
   const acceptorSet = listConfigs(
     ConfigType.acceptors,
     cr,
     'set',
   ) as Set<string>;
-  const connectorSet = listConfigs(
-    ConfigType.connectors,
-    cr,
-    'set',
-  ) as Set<string>;
 
   const basePort = 5555;
-  if (acceptorSet.size === 0 && connectorSet.size === 0) {
+  if (acceptorSet.size === 0) {
     return basePort;
   }
 
@@ -1150,6 +1145,23 @@ const generateUniquePort = (cr: BrokerCR): number => {
       maxPort = port;
     }
   });
+
+  return maxPort + 1;
+};
+
+const generateUniqueConnectorPort = (cr: BrokerCR): number => {
+  const connectorSet = listConfigs(
+    ConfigType.connectors,
+    cr,
+    'set',
+  ) as Set<string>;
+
+  const basePort = 5555;
+  if (connectorSet.size === 0) {
+    return basePort;
+  }
+
+  let maxPort = basePort;
 
   connectorSet.forEach((name) => {
     const port = getConfigPort(cr, ConfigType.connectors, name);
@@ -1171,7 +1183,7 @@ const addConfig = (cr: BrokerCR, configType: ConfigType) => {
       name: newName,
       protocols: 'ALL',
       host: 'localhost',
-      port: generateUniquePort(cr),
+      port: generateUniqueConnectorPort(cr),
     };
     if (!cr.spec.connectors) {
       cr.spec.connectors = [connector];
@@ -1182,7 +1194,7 @@ const addConfig = (cr: BrokerCR, configType: ConfigType) => {
     const acceptor = {
       name: newName,
       protocols: 'ALL',
-      port: generateUniquePort(cr),
+      port: generateUniqueAcceptorPort(cr),
     };
     if (!cr.spec.acceptors) {
       cr.spec.acceptors = [acceptor];

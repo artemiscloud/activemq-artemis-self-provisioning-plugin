@@ -540,29 +540,29 @@ describe('test the creation broker reducer', () => {
     let newStateWithConnector = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
     });
-    expect(newStateWithConnector.cr.spec.connectors[0].port).toBe(5559);
+    expect(newStateWithConnector.cr.spec.connectors[0].port).toBe(5555);
 
     //Add second connector
     newStateWithConnector = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.addConnector,
     });
-    expect(newStateWithConnector.cr.spec.connectors[1].port).toBe(5560);
+    expect(newStateWithConnector.cr.spec.connectors[1].port).toBe(5556);
 
-    // Manually change the port of the second connector to 5561
+    // Manually change the port of the second connector to 5557
     newStateWithConnector = artemisCrReducer(newStateWithConnector, {
       operation: ArtemisReducerOperations.setConnectorPort,
       payload: {
         name: 'connectors1',
-        port: 5561,
+        port: 5557,
       },
     });
-    expect(newStateWithConnector.cr.spec.connectors[1].port).toBe(5561);
+    expect(newStateWithConnector.cr.spec.connectors[1].port).toBe(5557);
 
     //Add third connector
     newStateWithConnector = artemisCrReducer(newStateWithConnector, {
       operation: ArtemisReducerOperations.addConnector,
     });
-    expect(newStateWithConnector.cr.spec.connectors[2].port).toBe(5562);
+    expect(newStateWithConnector.cr.spec.connectors[2].port).toBe(5558);
   });
 
   it('test setConnectorProtocols', () => {

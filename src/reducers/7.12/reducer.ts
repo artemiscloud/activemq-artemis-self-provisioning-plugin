@@ -894,7 +894,7 @@ const updateIngressDomain = (cr: BrokerCR, newName: string) => {
 const updateDeploymentSize = (cr: BrokerCR, newSize: number) => {
   cr.spec.deploymentPlan.size = newSize;
   if (cr.spec.deploymentPlan.size < 1) {
-    cr.spec.deploymentPlan.size = 1;
+    cr.spec.deploymentPlan.size = 0;
   }
   // when the size changes, some annotations will need an update to
   // stay in sync

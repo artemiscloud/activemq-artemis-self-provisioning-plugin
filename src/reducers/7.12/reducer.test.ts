@@ -50,8 +50,8 @@ describe('test the creation broker reducer', () => {
     const newState = artemisCrReducer(initialState, {
       operation: ArtemisReducerOperations.decrementReplicas,
     });
-    // default size is 1 decrementing should result of a size of 1
-    expect(newState.cr.spec.deploymentPlan.size).toBe(1);
+    // default size is 1 decrementing should result of a size of 0
+    expect(newState.cr.spec.deploymentPlan.size).toBe(0);
     // set the number of replicas to 10 before decrementing so that the total
     // number should be 9
     const newState2 = artemisCrReducer(
@@ -64,6 +64,27 @@ describe('test the creation broker reducer', () => {
       },
     );
     expect(newState2.cr.spec.deploymentPlan.size).toBe(9);
+  });
+
+  it('tests that the deployment replicas value cannot be decremented below 0', () => {
+    const initialState = newArtemisCRState('namespace');
+    const newState = artemisCrReducer(initialState, {
+      operation: ArtemisReducerOperations.decrementReplicas,
+    });
+    // default size is 1 decrementing should result of a size of 0
+    expect(newState.cr.spec.deploymentPlan.size).toBe(0);
+    // Set the number of replicas to -1 and verify that the deployment replicas value cannot be decremented below 0.
+    // The number should be set to 0.
+    const newState2 = artemisCrReducer(
+      artemisCrReducer(newState, {
+        operation: ArtemisReducerOperations.setReplicasNumber,
+        payload: -1,
+      }),
+      {
+        operation: ArtemisReducerOperations.decrementReplicas,
+      },
+    );
+    expect(newState2.cr.spec.deploymentPlan.size).toBe(0);
   });
 
   it('test deleteAcceptor', () => {

@@ -160,7 +160,7 @@ export const FormView: FC<FormViewProps> = ({
             >
               <NumberInput
                 value={replicas}
-                min={1}
+                min={0}
                 max={1024}
                 onMinus={() =>
                   dispatch({

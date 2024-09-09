@@ -181,7 +181,7 @@ const ConnectivityHelper: FC<IssuerSecretsDownloaderProps> = ({ cr }) => {
         .map((acceptor) =>
           acceptor.sslSecret ? acceptor.sslSecret.endsWith('-ptls') : false,
         )
-        .reduce((acc, hasGeneratedSecrets) => acc || hasGeneratedSecrets)
+        .reduce((acc, hasGeneratedSecrets) => acc || hasGeneratedSecrets, false)
     : false;
   if (!oneAcceptorHasGeneratedSecrets) {
     return <></>;

@@ -7,6 +7,7 @@ module.exports = {
   ],
   moduleNameMapper: {
     '^.+\\.(css|sass|scss)$': '<rootDir>/styleMock.js',
+    '^@app(.*)$': '<rootDir>/src/$1',
     '@console/*': '<rootDir>/__mocks__/dynamic-plugin-sdk.ts',
     '@openshift-console/*': '<rootDir>/__mocks__/dynamic-plugin-sdk.ts',
     'react-i18next': '<rootDir>/__mocks__/react-i18next.ts',

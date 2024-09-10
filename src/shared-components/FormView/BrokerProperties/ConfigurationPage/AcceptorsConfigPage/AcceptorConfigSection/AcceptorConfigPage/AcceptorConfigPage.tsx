@@ -21,10 +21,10 @@ import {
   getConfigPort,
   getConfigProtocols,
   getConfigSSLEnabled,
-} from '../../../../../../../reducers/7.12/reducer';
+} from '@app/reducers/7.12/reducer';
 import { FC, useContext } from 'react';
 import { ConfigType } from '../../../ConfigurationPage';
-import { useTranslation } from '../../../../../../../i18n/i18n';
+import { useTranslation } from '@app/i18n/i18n';
 import { PresetAlertPopover } from './PresetAlertPopover/PresetAlertPopover';
 import { SelectExposeMode } from './SelectExposeMode/SelectExposeMode';
 import { OtherParameters } from './OtherParameters/OtherParameters';

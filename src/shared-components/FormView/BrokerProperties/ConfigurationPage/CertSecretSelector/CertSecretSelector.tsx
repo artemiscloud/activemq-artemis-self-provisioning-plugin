@@ -6,13 +6,9 @@ import {
   getAcceptor,
   getCertManagerResourceTemplateFromAcceptor,
   getConfigSecret,
-} from '../../../../../reducers/7.12/reducer';
-import {
-  CertIssuerModel,
-  CertModel,
-  SecretModel,
-} from '../../../../../k8s/models';
-import { K8sResourceCommonWithData } from '../../../../../k8s/types';
+} from '@app/reducers/7.12/reducer';
+import { CertIssuerModel, CertModel, SecretModel } from '@app/k8s/models';
+import { K8sResourceCommonWithData } from '@app/k8s/types';
 import {
   k8sCreate,
   useK8sWatchResource,

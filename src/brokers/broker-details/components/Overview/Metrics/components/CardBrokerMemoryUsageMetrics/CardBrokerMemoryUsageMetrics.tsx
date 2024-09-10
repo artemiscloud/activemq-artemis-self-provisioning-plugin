@@ -4,7 +4,7 @@ import {
   ChartMemoryUsage,
   ChartMemoryUsageProps,
 } from '../ChartMemoryUsage/ChartMemoryUsage';
-import { useTranslation } from '../../../../../../../i18n/i18n';
+import { useTranslation } from '@app/i18n/i18n';
 import { CardBodyLoading } from '../CardBodyLoading/CardBodyLoading';
 import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData/EmptyStateNoMetricsData';
 import { ChartTitle } from '../ChartTitle/ChartTitle';

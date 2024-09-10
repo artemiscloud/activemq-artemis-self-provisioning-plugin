@@ -9,8 +9,8 @@ import {
   ListPageCreateLink,
 } from '@openshift-console/dynamic-plugin-sdk';
 import { BrokerRow, BrokerRowProps } from './BrokerRow';
-import { useTranslation } from '../../../../i18n/i18n';
-import { BrokerCR } from '../../../../k8s/types';
+import { useTranslation } from '@app/i18n/i18n';
+import { BrokerCR } from '@app/k8s/types';
 
 type BrokersTableProps = Pick<
   BrokerRowProps,

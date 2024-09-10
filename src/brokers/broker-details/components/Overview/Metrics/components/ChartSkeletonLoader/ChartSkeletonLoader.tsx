@@ -1,10 +1,7 @@
 import { Flex, FlexItem, Skeleton } from '@patternfly/react-core';
 import type { VoidFunctionComponent } from 'react';
-import {
-  chartHeight,
-  chartPadding,
-} from '../../../../../../../constants/constants';
-import { useTranslation } from '../../../../../../../i18n/i18n';
+import { chartHeight, chartPadding } from '@app/constants/constants';
+import { useTranslation } from '@app/i18n/i18n';
 
 export const ChartSkeletonLoader: VoidFunctionComponent = () => {
   const { t } = useTranslation();

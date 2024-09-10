@@ -1,4 +1,4 @@
-import { render, screen } from '../../../test-utils';
+import { render, screen } from '@app/test-utils';
 import { PodsList, PodsListProps } from './PodList';
 import { useListPageFilter } from '@openshift-console/dynamic-plugin-sdk';
 

@@ -2,17 +2,17 @@ import { FC, useState, useEffect, useReducer } from 'react';
 import { k8sGet, k8sUpdate } from '@openshift-console/dynamic-plugin-sdk';
 import { Alert, AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from '../add-broker/AddBroker.component';
-import { Loading } from '../../shared-components/Loading/Loading';
-import { AMQBrokerModel } from '../../k8s/models';
-import { BrokerCR } from '../../k8s/types';
-import { useGetIngressDomain } from '../../k8s/customHooks';
+import { Loading } from '@app/shared-components/Loading/Loading';
+import { AMQBrokerModel } from '@app/k8s/models';
+import { BrokerCR } from '@app/k8s/types';
+import { useGetIngressDomain } from '@app/k8s/customHooks';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
   artemisCrReducer,
   getArtemisCRState,
-} from '../../reducers/7.12/reducer';
+} from '@app/reducers/7.12/reducer';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
 export const UpdateBrokerPage: FC = () => {

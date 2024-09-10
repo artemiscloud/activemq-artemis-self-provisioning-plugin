@@ -17,16 +17,16 @@ import {
 } from '@patternfly/react-core';
 import { CSSProperties, FC, useContext, useState } from 'react';
 
-import { useTranslation } from '../../../../../../../i18n/i18n';
-import { Acceptor } from '../../../../../../../k8s/types';
+import { useTranslation } from '@app/i18n/i18n';
+import { Acceptor } from '@app/k8s/types';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
   getCertManagerResourceTemplateFromAcceptor,
-} from '../../../../../../../reducers/7.12/reducer';
+} from '@app/reducers/7.12/reducer';
 import { SelectIssuerDrawer } from '../SelectIssuerDrawer/SelectIssuerDrawer';
-import { useHasCertManager } from '../../../../../../../k8s/customHooks';
+import { useHasCertManager } from '@app/k8s/customHooks';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 type PreconfigurationButtonProps = {
   acceptor: Acceptor;

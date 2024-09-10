@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '../../../../../../../test-utils';
+import { fireEvent, render, screen } from '@app/test-utils';
 import { MetricsActions } from './MetricsActions';
 
 describe('MetricsActions', () => {

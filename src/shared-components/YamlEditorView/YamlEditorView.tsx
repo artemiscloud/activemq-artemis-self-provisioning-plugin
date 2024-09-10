@@ -13,8 +13,8 @@ import {
   Page,
   useInterval,
 } from '@patternfly/react-core';
-import { ResourceYAMLEditor } from '@openshift-console/dynamic-plugin-sdk';
-import { Loading } from '../../shared-components/Loading/Loading';
+
+import { Loading } from '@app/shared-components/Loading/Loading';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
@@ -22,6 +22,7 @@ import {
 } from '../../reducers/7.12/reducer';
 import YAML, { YAMLParseError } from 'yaml';
 import './YamlEditorView.css';
+import { ResourceYAMLEditor } from '@openshift-console/dynamic-plugin-sdk';
 
 type YamlEditorViewPropTypes = {
   isAskingPermissionToClose: boolean;

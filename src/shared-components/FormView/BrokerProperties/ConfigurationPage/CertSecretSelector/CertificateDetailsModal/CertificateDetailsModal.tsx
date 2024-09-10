@@ -8,7 +8,7 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../../../../../i18n/i18n';
+import { useTranslation } from '@app/i18n/i18n';
 import x509, { TextConverter, TextObject } from '@peculiar/x509';
 import { FC, useEffect, useState } from 'react';
 import { AsnConvert } from '@peculiar/asn1-schema';

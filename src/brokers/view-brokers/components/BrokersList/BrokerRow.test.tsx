@@ -1,7 +1,7 @@
-import { render, screen } from '../../../../test-utils';
+import { render, screen } from '@app/test-utils';
 import { MemoryRouter } from 'react-router-dom-v5-compat';
 import { BrokerRow, BrokerRowProps } from './BrokerRow';
-import { BrokerCR } from '../../../../k8s/types';
+import { BrokerCR } from '@app/k8s/types';
 import { TableColumn } from '@openshift-console/dynamic-plugin-sdk';
 
 jest.mock('@openshift-console/dynamic-plugin-sdk', () => ({

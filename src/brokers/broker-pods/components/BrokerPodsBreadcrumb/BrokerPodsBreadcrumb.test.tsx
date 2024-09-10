@@ -5,11 +5,11 @@ import {
   render,
   waitForI18n,
   waitFor,
-} from '../../../../test-utils';
+} from '@app/test-utils';
 import { BrokerPodsBreadcrumb } from './BrokerPodsBreadcrumb';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
-import { AMQBrokerModel } from '../../../../k8s/models';
+import { AMQBrokerModel } from '@app/k8s/models';
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),

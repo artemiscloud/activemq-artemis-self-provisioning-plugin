@@ -1,8 +1,8 @@
-import { fireEvent, render, screen } from '../../test-utils';
+import { fireEvent, render, screen } from '@app/test-utils';
 import { AddressDetails } from './AddressDetails.component';
-import { JolokiaAuthentication } from '../../jolokia/components/JolokiaAuthentication';
-import { useJolokiaServiceReadAddressAttributes } from '../../openapi/jolokia/queries';
-import { useJolokiaLogin } from '../../jolokia/customHooks';
+import { JolokiaAuthentication } from '@app/jolokia/components/JolokiaAuthentication';
+import { useJolokiaServiceReadAddressAttributes } from '@app/openapi/jolokia/queries';
+import { useJolokiaLogin } from '@app/jolokia/customHooks';
 
 jest.mock('../../openapi/jolokia/queries', () => ({
   useJolokiaServiceReadAddressAttributes: jest.fn(),

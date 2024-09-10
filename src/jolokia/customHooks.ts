@@ -1,9 +1,9 @@
-import { JolokiaService, LoginResponse } from '../openapi/jolokia/requests';
+import { JolokiaService, LoginResponse } from '@app/openapi/jolokia/requests';
 import { useQuery } from '@tanstack/react-query';
 import {
   useJolokiaServiceCheckCredentialsKey,
   useSecurityServiceLogin,
-} from '../openapi/jolokia/queries';
+} from '@app/openapi/jolokia/queries';
 import {
   K8sResourceCommon,
   K8sResourceKind,

@@ -1,12 +1,12 @@
 import { FC, useState } from 'react';
-import { OpenAPI as OpenAPIConfig } from '../../openapi/jolokia/requests/core/OpenAPI';
+import { OpenAPI as OpenAPIConfig } from '@app/openapi/jolokia/requests/core/OpenAPI';
 import {
   useGetApiServerBaseUrl,
   useJolokiaLogin,
-} from '../../jolokia/customHooks';
+} from '@app/jolokia/customHooks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthContext } from '../context';
-import { BrokerCR } from '../../k8s/types';
+import { BrokerCR } from '@app/k8s/types';
 import {
   Button,
   Modal,
@@ -15,7 +15,7 @@ import {
   TextContent,
   TextVariants,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../i18n/i18n';
+import { useTranslation } from '@app/i18n/i18n';
 
 type JolokiaPropTypes = {
   brokerCR: BrokerCR;

@@ -18,7 +18,7 @@ import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
-} from '../../reducers/7.12/reducer';
+} from '@app/reducers/7.12/reducer';
 import {
   BrokerProperties,
   BrokerPropertiesList,

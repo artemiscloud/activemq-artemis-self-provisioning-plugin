@@ -1,9 +1,9 @@
 import { ConfigType } from '../../../../ConfigurationPage';
 
 import { FC, useState } from 'react';
-import { useTranslation } from '../../../../../../../../i18n/i18n';
+import { useTranslation } from '@app/i18n/i18n';
 import { PresetAlertPopover } from '../PresetAlertPopover/PresetAlertPopover';
-import { ExposeMode } from '../../../../../../../../reducers/7.12/reducer';
+import { ExposeMode } from '@app/reducers/7.12/reducer';
 import { FormGroup } from '@patternfly/react-core';
 import {
   Select,

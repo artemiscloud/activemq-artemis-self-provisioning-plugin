@@ -1,8 +1,4 @@
-import {
-  fireEvent,
-  render,
-  waitForI18n,
-} from '../../../../../../../test-utils';
+import { fireEvent, render, waitForI18n } from '@app/test-utils';
 import { DropdownWithToggle } from './DropdownWithToggle';
 
 describe('PreConfirmDeleteModal', () => {

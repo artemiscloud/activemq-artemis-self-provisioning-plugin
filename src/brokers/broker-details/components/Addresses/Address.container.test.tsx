@@ -1,6 +1,6 @@
-import { render, screen } from '../../../../test-utils';
+import { render, screen } from '@app/test-utils';
 import { AddressContainer } from './Address.container';
-import { useJolokiaServiceGetAddresses } from '../../../../openapi/jolokia/queries';
+import { useJolokiaServiceGetAddresses } from '@app/openapi/jolokia/queries';
 
 jest.mock('../../../../openapi/jolokia/queries', () => ({
   useJolokiaServiceGetAddresses: jest.fn(),

@@ -5,13 +5,13 @@ import {
   PageSectionVariants,
   Title,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../i18n/i18n';
+import { useTranslation } from '@app/i18n/i18n';
 import { AddressDetails } from './AddressDetails.component';
 import { AddressDetailsBreadcrumb } from './AddressDetailsBreadcrumb/AddressDetailsBreadcrumb';
 
 import { useParams } from 'react-router-dom-v5-compat';
-import { JolokiaAuthentication } from '../../jolokia/components/JolokiaAuthentication';
-import { useGetBrokerCR } from '../../k8s/customHooks';
+import { JolokiaAuthentication } from '@app/jolokia/components/JolokiaAuthentication';
+import { useGetBrokerCR } from '@app/k8s/customHooks';
 
 export const AddressDetailsPage: FC = () => {
   const { t } = useTranslation();

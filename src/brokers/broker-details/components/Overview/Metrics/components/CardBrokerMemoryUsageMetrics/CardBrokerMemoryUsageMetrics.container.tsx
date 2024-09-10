@@ -5,7 +5,7 @@ import { humanizeBinaryBytes } from '../../utils/units';
 import { ByteDataTypes, GraphSeries } from '../../utils/types';
 import { processFrame } from '../../utils/data-utils';
 import { useFetchMemoryUsageMetrics } from '../../hooks/useFetchMemoryUsageMetrics';
-import { useTranslation } from '../../../../../../../i18n/i18n';
+import { useTranslation } from '@app/i18n/i18n';
 import { CardQueryBrowser } from '../CardQueryBrowser/CardQueryBrowser';
 
 export type CardBrokerMemoryUsageMetricsContainerProps = {

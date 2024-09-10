@@ -1,7 +1,7 @@
-import { render, screen } from '../../../../test-utils';
+import { render, screen } from '@app/test-utils';
 import { AddressRow, AddressRowProps } from './AddressRow';
 import { TableColumn } from '@openshift-console/dynamic-plugin-sdk';
-import { useJolokiaServiceReadAddressAttributes } from '../../../../openapi/jolokia/queries';
+import { useJolokiaServiceReadAddressAttributes } from '@app/openapi/jolokia/queries';
 import { MemoryRouter } from 'react-router-dom-v5-compat';
 
 jest.mock('@openshift-console/dynamic-plugin-sdk', () => ({

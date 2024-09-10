@@ -9,7 +9,7 @@ import {
   Alert,
   Spinner,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../i18n/i18n';
+import { useTranslation } from '@app/i18n/i18n';
 import { ClientsContainer } from './components/Clients/Clients.container';
 import { AddressContainer } from './components/Addresses/Address.container';
 import { BrokerDetailsBreadcrumb } from './components/BrokerDetailsBreadcrumb/BrokerDetailsBreadcrumb';
@@ -26,10 +26,10 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom-v5-compat';
-import { JolokiaAuthentication } from '../../jolokia/components/JolokiaAuthentication';
-import { useGetBrokerCR } from '../../k8s/customHooks';
-import { AuthContext } from '../../jolokia/context';
-import { BrokerCR } from '../../k8s/types';
+import { JolokiaAuthentication } from '@app/jolokia/components/JolokiaAuthentication';
+import { useGetBrokerCR } from '@app/k8s/customHooks';
+import { AuthContext } from '@app/jolokia/context';
+import { BrokerCR } from '@app/k8s/types';
 import {
   GreenCheckCircleIcon,
   RedExclamationCircleIcon,

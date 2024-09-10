@@ -1,6 +1,6 @@
-import { render, screen } from '../../test-utils';
+import { render, screen } from '@app/test-utils';
 import { AddressDetailsRow } from './AddressDetailsRow';
-import { ComponentAttribute } from '../../openapi/jolokia/requests';
+import { ComponentAttribute } from '@app/openapi/jolokia/requests';
 import { Tbody } from '@patternfly/react-table';
 import { Table } from '@patternfly/react-table/deprecated';
 

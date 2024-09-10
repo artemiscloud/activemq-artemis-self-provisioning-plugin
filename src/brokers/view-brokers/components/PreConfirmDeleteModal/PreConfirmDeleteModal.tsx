@@ -7,7 +7,7 @@ import {
   Text,
   TextVariants,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../../../i18n/i18n';
+import { useTranslation } from '@app/i18n/i18n';
 import { Trans } from 'react-i18next';
 
 interface PreConfirmDeleteModalProps {

@@ -1,4 +1,4 @@
-import { render, screen } from '../../../../test-utils';
+import { render, screen } from '@app/test-utils';
 import { Addresses, AddressProps } from './Address.component';
 
 jest.mock('@openshift-console/dynamic-plugin-sdk', () => ({

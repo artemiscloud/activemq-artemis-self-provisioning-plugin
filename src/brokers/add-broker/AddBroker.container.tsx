@@ -2,18 +2,18 @@ import { FC, useReducer, useState } from 'react';
 import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
 import { Alert, AlertVariant } from '@patternfly/react-core';
 import { AddBroker } from './AddBroker.component';
-import { AMQBrokerModel } from '../../k8s/models';
-import { BrokerCR } from '../../k8s/types';
+import { AMQBrokerModel } from '@app/k8s/models';
+import { BrokerCR } from '@app/k8s/types';
 import {
   BrokerCreationFormState,
   BrokerCreationFormDispatch,
   newArtemisCRState,
   artemisCrReducer,
   ArtemisReducerOperations,
-} from '../../reducers/7.12/reducer';
-import { AddBrokerResourceValues } from '../../reducers/7.12/import-types';
+} from '@app/reducers/7.12/reducer';
+import { AddBrokerResourceValues } from '@app/reducers/7.12/import-types';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';
-import { useGetIngressDomain } from '../../k8s/customHooks';
+import { useGetIngressDomain } from '@app/k8s/customHooks';
 
 export interface AddBrokerProps {
   initialValues: AddBrokerResourceValues;

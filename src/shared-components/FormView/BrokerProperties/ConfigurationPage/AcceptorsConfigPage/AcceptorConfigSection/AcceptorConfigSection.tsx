@@ -5,7 +5,7 @@ import {
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
   getAcceptor,
-} from '../../../../../../reducers/7.12/reducer';
+} from '@app/reducers/7.12/reducer';
 import {
   FormFieldGroupExpandable,
   FormFieldGroupHeader,

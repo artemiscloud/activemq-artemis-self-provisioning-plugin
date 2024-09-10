@@ -1,5 +1,5 @@
-import { render, screen, waitFor } from '../../test-utils';
-import { AMQBrokerModel } from '../../k8s/models';
+import { render, screen, waitFor } from '@app/test-utils';
+import { AMQBrokerModel } from '@app/k8s/models';
 import { BrokersContainer } from './BrokersList.container';
 import { useParams, useNavigate } from 'react-router-dom-v5-compat';
 import { k8sListItems } from '@openshift-console/dynamic-plugin-sdk';

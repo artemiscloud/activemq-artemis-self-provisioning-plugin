@@ -1,4 +1,4 @@
-import { render, screen } from '../../../../test-utils';
+import { render, screen } from '@app/test-utils';
 import { BrokersList, BrokersListProps } from './BrokersList';
 import { useListPageFilter } from '@openshift-console/dynamic-plugin-sdk';
 

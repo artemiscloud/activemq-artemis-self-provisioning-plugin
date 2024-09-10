@@ -3,8 +3,8 @@ import {
   K8sResourceCommon,
   useK8sWatchResource,
 } from '@openshift-console/dynamic-plugin-sdk';
-import { K8sResourceCommonWithData } from '../../k8s/types';
-import { useTranslation } from '../../i18n/i18n';
+import { K8sResourceCommonWithData } from '@app/k8s/types';
+import { useTranslation } from '@app/i18n/i18n';
 import { PodsList } from './components/PodList';
 import {
   EmptyState,

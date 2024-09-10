@@ -10,8 +10,8 @@ import {
   BrokerCR,
   BrokerConditionTypes,
   K8sResourceConditionStatus,
-} from '../../../../k8s/types';
-import { useTranslation } from '../../../../i18n/i18n';
+} from '@app/k8s/types';
+import { useTranslation } from '@app/i18n/i18n';
 import {
   Button,
   DescriptionList,

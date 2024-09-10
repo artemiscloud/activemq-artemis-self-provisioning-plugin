@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '../../test-utils';
+import { render, screen, waitFor } from '@app/test-utils';
 import { PodsContainer } from './PodsList.container';
 import { useK8sWatchResource } from '@openshift-console/dynamic-plugin-sdk';
 import { useParams } from 'react-router-dom-v5-compat';

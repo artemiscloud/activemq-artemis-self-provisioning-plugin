@@ -1,4 +1,4 @@
-import { BrokerCR } from '../../k8s/types';
+import { BrokerCR } from '@app/k8s/types';
 import { EditorType } from './reducer';
 
 export interface AddBrokerResourceValues {

@@ -17,12 +17,9 @@ import {
 } from '@openshift-console/dynamic-plugin-sdk';
 import { ChartSkeletonLoader } from '../ChartSkeletonLoader/ChartSkeletonLoader';
 import { EmptyStateNoMetricsData } from '../EmptyStateNoMetricsData/EmptyStateNoMetricsData';
-import {
-  chartHeight,
-  chartPadding,
-} from '../../../../../../../constants/constants';
+import { chartHeight, chartPadding } from '@app/constants/constants';
 import { useChartWidth } from '../../hooks/useChartWidth';
-import { useTranslation } from '../../../../../../../i18n/i18n';
+import { useTranslation } from '@app/i18n/i18n';
 import { chartTheme } from '../../utils/chart-theme';
 import { formatSeriesValues, xAxisTickFormat } from '../../utils/format';
 import { humanizeBinaryBytes } from '../../utils/units';

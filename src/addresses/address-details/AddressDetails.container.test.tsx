@@ -1,8 +1,8 @@
-import { render, screen, waitForI18n } from '../../test-utils';
+import { render, screen, waitForI18n } from '@app/test-utils';
 import { AddressDetailsPage } from './AddressDetails.container';
 import { useParams } from 'react-router-dom-v5-compat';
-import { JolokiaAuthentication } from '../../jolokia/components/JolokiaAuthentication';
-import { useGetBrokerCR } from '../../k8s/customHooks';
+import { JolokiaAuthentication } from '@app/jolokia/components/JolokiaAuthentication';
+import { useGetBrokerCR } from '@app/k8s/customHooks';
 import { useK8sWatchResource } from '@openshift-console/dynamic-plugin-sdk';
 
 jest.mock('@openshift-console/dynamic-plugin-sdk', () => ({

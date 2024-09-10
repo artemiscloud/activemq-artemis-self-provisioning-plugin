@@ -1,4 +1,4 @@
-import { render, waitForI18n } from '../../../../../../../test-utils';
+import { render, waitForI18n } from '@app/test-utils';
 import { ChartTitle } from '../ChartTitle/ChartTitle';
 
 describe('ChartTitle', () => {

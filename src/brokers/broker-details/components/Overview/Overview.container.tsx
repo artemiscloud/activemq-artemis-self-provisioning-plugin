@@ -23,16 +23,16 @@ import { FC, useContext, useState } from 'react';
 import {
   getIssuerForAcceptor,
   getIssuerIngressHostForAcceptor,
-} from '../../../../reducers/7.12/reducer';
-import { Loading } from '../../../../shared-components/Loading/Loading';
+} from '@app/reducers/7.12/reducer';
+import { Loading } from '@app/shared-components/Loading/Loading';
 import {
   Acceptor,
   IssuerResource,
   BrokerCR,
   SecretResource,
-} from '../../../../k8s/types';
+} from '@app/k8s/types';
 import { Metrics } from './Metrics/Metrics';
-import { AuthContext } from '../../../../jolokia/context';
+import { AuthContext } from '@app/jolokia/context';
 
 const useGetIssuerCa = (
   cr: BrokerCR,

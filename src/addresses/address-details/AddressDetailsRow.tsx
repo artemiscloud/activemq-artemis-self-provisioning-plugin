@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Tr, Td } from '@patternfly/react-table';
-import { ComponentAttribute } from '../../openapi/jolokia/requests';
+import { ComponentAttribute } from '@app/openapi/jolokia/requests';
 
 type AddressDetailsRowProps = {
   attribute: ComponentAttribute;

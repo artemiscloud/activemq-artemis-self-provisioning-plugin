@@ -4,16 +4,16 @@ import {
   FormGroup,
 } from '@patternfly/react-core';
 import { FC, useContext } from 'react';
-import { useTranslation } from '../../../../../../../../i18n/i18n';
-import { Acceptor } from '../../../../../../../../k8s/types';
+import { useTranslation } from '@app/i18n/i18n';
+import { Acceptor } from '@app/k8s/types';
 import {
   ArtemisReducerOperations,
   BrokerCreationFormDispatch,
   BrokerCreationFormState,
   getAcceptorFromCertManagerResourceTemplate,
   getCertManagerResourceTemplateFromAcceptor,
-} from '../../../../../../../../reducers/7.12/reducer';
-import { ResourceTemplate } from '../../../../../../../../k8s/types';
+} from '@app/reducers/7.12/reducer';
+import { ResourceTemplate } from '@app/k8s/types';
 import { SelectIssuerDrawer } from '../../SelectIssuerDrawer/SelectIssuerDrawer';
 import { ConfirmDeleteModal } from '../../ConfirmDeleteModal/ConfirmDeleteModal';
 type ResourceTemplateProps = {

@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { parsePrometheusDuration } from '../../../../Overview/Metrics/utils/prometheus';
 import { getMaxSamplesForSpan, valueFormatter } from '../../utils/format';
 import { useFetchCpuUsageMetrics } from '../../hooks/useFetchCpuUsageMetrics';
-import { useTranslation } from '../../../../../../../i18n/i18n';
+import { useTranslation } from '@app/i18n/i18n';
 import { CardQueryBrowser } from '../CardQueryBrowser/CardQueryBrowser';
 
 export type CardBrokerCPUUsageMetricsContainerProps = {

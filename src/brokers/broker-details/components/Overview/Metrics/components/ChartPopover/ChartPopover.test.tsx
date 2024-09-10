@@ -1,4 +1,4 @@
-import { render, screen, waitForI18n } from '../../../../../../../test-utils';
+import { render, screen, waitForI18n } from '@app/test-utils';
 import { ChartPopover } from '../ChartPopover/ChartPopover';
 
 describe('ChartPopover', () => {

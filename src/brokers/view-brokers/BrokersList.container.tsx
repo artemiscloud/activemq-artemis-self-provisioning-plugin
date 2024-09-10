@@ -1,7 +1,7 @@
 import { useEffect, useState, FC } from 'react';
 import { k8sListItems, k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
-import { AMQBrokerModel } from '../../k8s/models';
-import { K8sResourceCommonWithData, BrokerCR } from '../../k8s/types';
+import { AMQBrokerModel } from '@app/k8s/models';
+import { K8sResourceCommonWithData, BrokerCR } from '@app/k8s/types';
 import { BrokersList } from './components/BrokersList/BrokersList';
 import { PreConfirmDeleteModal } from './components/PreConfirmDeleteModal/PreConfirmDeleteModal';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';

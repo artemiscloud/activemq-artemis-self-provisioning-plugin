@@ -4,7 +4,7 @@ import {
   screen,
   waitFor,
   waitForI18n,
-} from '../../../../test-utils';
+} from '@app/test-utils';
 import { PreConfirmDeleteModal } from '../PreConfirmDeleteModal/PreConfirmDeleteModal';
 
 describe('PreConfirmDeleteModal', () => {

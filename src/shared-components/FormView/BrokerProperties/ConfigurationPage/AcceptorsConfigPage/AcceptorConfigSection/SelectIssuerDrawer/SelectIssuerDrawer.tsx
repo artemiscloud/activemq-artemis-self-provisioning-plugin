@@ -1,7 +1,7 @@
-import { useTranslation } from '../../../../../../../i18n/i18n';
-import { BrokerCreationFormState } from '../../../../../../../reducers/7.12/reducer';
-import { CertIssuerModel, CertModel } from '../../../../../../../k8s/models';
-import { IssuerResource } from '../../../../../../../k8s/types';
+import { useTranslation } from '@app/i18n/i18n';
+import { BrokerCreationFormState } from '@app/reducers/7.12/reducer';
+import { CertIssuerModel, CertModel } from '@app/k8s/models';
+import { IssuerResource } from '@app/k8s/types';
 import {
   RedExclamationCircleIcon,
   k8sCreate,

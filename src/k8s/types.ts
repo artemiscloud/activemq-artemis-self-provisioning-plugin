@@ -1,4 +1,4 @@
-import { ExposeMode } from '../reducers/7.12/reducer';
+import { ExposeMode } from '@app/reducers/7.12/reducer';
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 
 export enum K8sResourceConditionStatus {

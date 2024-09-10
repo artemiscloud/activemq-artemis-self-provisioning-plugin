@@ -13,10 +13,10 @@ import {
   Toolbar,
   ToolbarItem,
 } from '@patternfly/react-core';
-import { useTranslation } from '../../i18n/i18n';
-import { useJolokiaServiceReadAddressAttributes } from '../../openapi/jolokia/queries';
+import { useTranslation } from '@app/i18n/i18n';
+import { useJolokiaServiceReadAddressAttributes } from '@app/openapi/jolokia/queries';
 import { AddressDetailsRow } from './AddressDetailsRow';
-import { AuthContext } from '../../jolokia/context';
+import { AuthContext } from '@app/jolokia/context';
 
 type AddressDetailsTableProps = {
   name: string;

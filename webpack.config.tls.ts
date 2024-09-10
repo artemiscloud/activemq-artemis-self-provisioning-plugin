@@ -28,6 +28,9 @@ const config: Configuration = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    alias: {
+      '@app': path.resolve('src'),
+    },
   },
   module: {
     rules: [

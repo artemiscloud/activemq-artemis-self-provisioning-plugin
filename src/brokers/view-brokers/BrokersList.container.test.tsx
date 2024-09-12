@@ -2,10 +2,10 @@ import { render, screen, waitFor } from '@app/test-utils';
 import { AMQBrokerModel } from '@app/k8s/models';
 import { BrokersContainer } from './BrokersList.container';
 import { useParams, useNavigate } from 'react-router-dom-v5-compat';
-import { k8sListItems } from '@openshift-console/dynamic-plugin-sdk';
+import { useK8sWatchResource } from '@openshift-console/dynamic-plugin-sdk';
 
 jest.mock('@openshift-console/dynamic-plugin-sdk', () => ({
-  k8sListItems: jest.fn(),
+  useK8sWatchResource: jest.fn(),
   k8sDelete: jest.fn(),
 }));
 
@@ -45,12 +45,12 @@ describe('BrokersContainer', () => {
   const mockUseNavigate = useNavigate as jest.Mock;
   const mockUseParams = useParams as jest.Mock;
   const mockNamespace = 'test-namespace';
-  const mockK8sListItems = k8sListItems as jest.Mock;
+  const mockK8sWatchResource = useK8sWatchResource as jest.Mock;
 
   beforeEach(() => {
     mockUseNavigate.mockReturnValue(jest.fn());
     mockUseParams.mockReturnValue({ ns: mockNamespace });
-    mockK8sListItems.mockResolvedValue([]);
+    mockK8sWatchResource.mockReturnValue([[], true, null]);
   });
 
   afterEach(() => {
@@ -61,9 +61,14 @@ describe('BrokersContainer', () => {
     render(<BrokersContainer />);
 
     await waitFor(() => {
-      expect(k8sListItems).toHaveBeenCalledWith({
-        model: AMQBrokerModel,
-        queryParams: { ns: mockNamespace },
+      expect(useK8sWatchResource).toHaveBeenCalledWith({
+        namespace: mockNamespace,
+        groupVersionKind: {
+          kind: AMQBrokerModel.kind,
+          version: AMQBrokerModel.apiVersion,
+          group: AMQBrokerModel.apiGroup,
+        },
+        isList: true,
       });
     });
     expect(screen.getByText('BrokersList Component')).toBeInTheDocument();
@@ -72,9 +77,10 @@ describe('BrokersContainer', () => {
     ).toBeInTheDocument();
   });
 
-  it('should handle API error on fetchK8sListItems', async () => {
+  it('should handle API error on fetching the ListItems', async () => {
     const errorMessage = 'Failed to load brokers';
-    mockK8sListItems.mockRejectedValue(new Error(errorMessage));
+
+    mockK8sWatchResource.mockReturnValue([[], false, errorMessage]);
 
     render(<BrokersContainer />);
 

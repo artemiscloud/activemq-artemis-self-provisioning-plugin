@@ -12,7 +12,7 @@ import {
 export const AMQBrokerModel: K8sModel = {
   apiGroup: AMQ_BROKER_APIGROUP,
   apiVersion: API_VERSION,
-  kind: 'ActiveMQArtemisList',
+  kind: 'ActiveMQArtemis',
   label: 'Broker',
   labelKey: 'Brokers',
   labelPlural: 'Brokers',

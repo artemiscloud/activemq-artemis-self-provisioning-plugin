@@ -545,12 +545,6 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
       'cert mgr pods: ' + certManagerDeployments.length.toString(),
     );
 
-    if (certManagerDeployments.length === 0) {
-      failedSecretGen(
-        'No cert-manager found\n' + 'please install cert-manager.',
-      );
-      return;
-    }
     if (!certMgrFound) {
       failedSecretGen(
         'No cert-manager found\n' + 'please install cert-manager.',

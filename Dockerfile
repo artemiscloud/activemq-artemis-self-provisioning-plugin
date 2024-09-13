@@ -20,7 +20,7 @@ RUN mkdir -p /usr/src/
 RUN cp -r $REMOTE_SOURCES_DIR/activemq-artemis-self-provisioning-plugin/app /usr/src/
 WORKDIR /usr/src/app
 
-RUN yarn install && yarn build
+RUN yarn install --network-timeout 1000000 && yarn build
 
 FROM registry.access.redhat.com/ubi8/nginx-120:latest
 

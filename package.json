@@ -1,6 +1,6 @@
 {
   "name": "activemq-artemis-self-provisioning-plugin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "homepage": "https://github.com/artemiscloud/activemq-artemis-self-provisioning-plugin#readme",
   "bugs": {
@@ -106,7 +106,7 @@
   },
   "consolePlugin": {
     "name": "activemq-artemis-self-provisioning-plugin",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "displayName": "Artemis Self Provisioning Plugin",
     "description": "Artemis Self Provisioning Plugin",
     "exposedModules": {
@@ -122,5 +122,5 @@
     }
   },
   "readme": "README.md",
-  "_id": "activemq-artemis-self-provisioning-plugin@0.1.0"
+  "_id": "activemq-artemis-self-provisioning-plugin@0.2.0"
 }

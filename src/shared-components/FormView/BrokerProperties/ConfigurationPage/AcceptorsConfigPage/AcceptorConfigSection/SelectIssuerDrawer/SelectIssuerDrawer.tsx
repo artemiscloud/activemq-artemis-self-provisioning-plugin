@@ -128,7 +128,7 @@ export const SelectIssuerDrawer: FC<SelectIssuerDrawerProps> = ({
   if (loadError) {
     return (
       <>
-        {t('cant-fetch-issuers')}
+        {t('cant fetch issuers')}
         <RedExclamationCircleIcon />
       </>
     );
@@ -185,9 +185,11 @@ export const SelectIssuerDrawer: FC<SelectIssuerDrawerProps> = ({
           panelContent={
             <DrawerPanelContent>
               <DrawerHead>
-                <FormGroup label={t('new_chain_of_trust')} isRequired>
+                <FormGroup label={t('Name of the issuer')} isRequired>
                   <FormHelperText>
-                    {t('new_chain_of_trust_helper')}
+                    {t(
+                      'Clicking on create will trigger the creation of 3 elements, a root issuer, a certificate signed by the root issuer, and an issuer using the certificate. The name of the issuer will correspond to the later.',
+                    )}
                   </FormHelperText>
                   <InputGroup>
                     <InputGroupItem isFill>
@@ -201,7 +203,7 @@ export const SelectIssuerDrawer: FC<SelectIssuerDrawerProps> = ({
                     </InputGroupItem>
                     <InputGroupItem>
                       <Button onClick={triggerChainOfTrustCreation}>
-                        {t('create')}
+                        {t('Create')}
                       </Button>
                     </InputGroupItem>
                   </InputGroup>
@@ -223,7 +225,7 @@ export const SelectIssuerDrawer: FC<SelectIssuerDrawerProps> = ({
               <InputGroupItem>
                 <Select
                   variant={SelectVariant.typeahead}
-                  typeAheadAriaLabel={t('select_an_issuer')}
+                  typeAheadAriaLabel={t('Select an issuer')}
                   onToggle={() => setIsOpen(!isOpen)}
                   onSelect={onSelect}
                   onClear={clearSelection}
@@ -231,7 +233,7 @@ export const SelectIssuerDrawer: FC<SelectIssuerDrawerProps> = ({
                   selections={selectedIssuer}
                   isOpen={isOpen}
                   aria-labelledby={titleId}
-                  placeholderText={t('select_an_issuer')}
+                  placeholderText={t('Select an issuer')}
                   menuAppendTo={() => document.body}
                 >
                   {options}
@@ -242,7 +244,7 @@ export const SelectIssuerDrawer: FC<SelectIssuerDrawerProps> = ({
                   variant={ButtonVariant.primary}
                   onClick={() => setIsExpanded(true)}
                 >
-                  {t('create_new_chain_of_trust')}
+                  {t('Create a new chain of trust')}
                 </Button>
               </InputGroupItem>
             </InputGroup>

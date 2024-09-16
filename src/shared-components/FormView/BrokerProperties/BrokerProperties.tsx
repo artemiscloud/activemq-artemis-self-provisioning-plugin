@@ -13,6 +13,7 @@ import {
   ConfigType,
   GetConfigurationPage,
 } from './ConfigurationPage/ConfigurationPage';
+import { useTranslation } from '@app/i18n/i18n';
 
 export type BrokerIDProp = {
   brokerId: number;
@@ -84,6 +85,7 @@ export const BrokerProperties: FC<BrokerIDProp> = ({
   brokerId,
   perBrokerProperties,
 }) => {
+  const { t } = useTranslation();
   const [currentConfigItem, setCurrentConfigItem] = useState<ConfigType>(
     ConfigType.acceptors,
   );
@@ -101,7 +103,7 @@ export const BrokerProperties: FC<BrokerIDProp> = ({
               } as CSSProperties
             }
           >
-            Acceptors
+            {t('Acceptors')}
           </JumpLinksItem>
           <JumpLinksItem
             onClick={() => setCurrentConfigItem(ConfigType.connectors)}
@@ -112,7 +114,7 @@ export const BrokerProperties: FC<BrokerIDProp> = ({
               } as CSSProperties
             }
           >
-            Connectors
+            {t('Connectors')}
           </JumpLinksItem>
           <JumpLinksItem
             onClick={() => setCurrentConfigItem(ConfigType.console)}
@@ -123,7 +125,7 @@ export const BrokerProperties: FC<BrokerIDProp> = ({
               } as CSSProperties
             }
           >
-            Console
+            {t('Console')}
           </JumpLinksItem>
         </JumpLinks>
       </SplitItem>

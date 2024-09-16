@@ -23,8 +23,10 @@ import {
   BrokerProperties,
   BrokerPropertiesList,
 } from './BrokerProperties/BrokerProperties';
+import { useTranslation } from '@app/i18n/i18n';
 
 export const FormView: FC = () => {
+  const { t } = useTranslation();
   const formState = useContext(BrokerCreationFormState);
   const { cr } = useContext(BrokerCreationFormState);
   const targetNs = cr.metadata.namespace;
@@ -65,7 +67,7 @@ export const FormView: FC = () => {
         <FormFieldGroup>
           <Grid hasGutter md={6}>
             <FormGroup
-              label="CR Name"
+              label={t('CR Name')}
               isRequired
               fieldId="horizontal-form-name"
             >
@@ -80,7 +82,7 @@ export const FormView: FC = () => {
               />
             </FormGroup>
             <FormGroup
-              label="Replicas"
+              label={t('Replicas')}
               isRequired
               fieldId="horizontal-form-name"
             >
@@ -110,10 +112,10 @@ export const FormView: FC = () => {
                 plusBtnAriaLabel="plus"
               />
             </FormGroup>
-            <FormGroup label="Broker Properties">
+            <FormGroup label={t('Broker Properties')}>
               <InputGroup>
                 <InputGroupText id="broker-version" className=".pf-u-w-initial">
-                  Version:
+                  {t('Version:')}
                 </InputGroupText>
                 <InputGroupItem>
                   <FormSelect
@@ -133,7 +135,7 @@ export const FormView: FC = () => {
                 </InputGroupItem>
               </InputGroup>
             </FormGroup>
-            <FormGroup label="Per broker config">
+            <FormGroup label={t('Per broker config')}>
               <Switch
                 id="simple-switch"
                 label="enabled"
@@ -152,7 +154,7 @@ export const FormView: FC = () => {
       <Form isHorizontal>
         <Banner variant={'blue'}>
           <b>{crName}</b>
-          {' in namespace '}
+          {t(' in namespace ')}
           <b>{targetNs}</b>
         </Banner>
         <FormFieldGroup>

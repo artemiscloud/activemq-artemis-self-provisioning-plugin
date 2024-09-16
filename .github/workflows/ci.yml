@@ -92,6 +92,9 @@ jobs:
 
       - name: Get cache and install dependencies
         uses: ./.github/actions/cache-restore
+      
+      - name: Extract translations
+        run: yarn i18n && git diff --exit-code locales/en/plugin__activemq-artemis-self-provisioning-plugin.json
 
       - name: Build project
         run: yarn run build

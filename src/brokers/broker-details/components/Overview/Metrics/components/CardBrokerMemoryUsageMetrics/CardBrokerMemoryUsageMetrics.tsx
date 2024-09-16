@@ -44,8 +44,8 @@ export const CardBrokerMemoryUsageMetrics: FC<
             return (
               <>
                 <ChartTitle
-                  title={t('memory_usage')}
-                  helperText={t('memory_usage_help_text')}
+                  title={t('Memory Usage')}
+                  helperText={t('Memory Usage')}
                 />
                 <CardBody>
                   <ChartMemoryUsage

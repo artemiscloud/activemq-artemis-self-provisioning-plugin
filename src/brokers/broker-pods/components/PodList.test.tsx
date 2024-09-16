@@ -57,7 +57,7 @@ describe('PodsList', () => {
 
   it('should render the PodsList component', () => {
     render(<PodsList {...mockPodsListProps} />);
-    expect(screen.getByText('pods')).toBeInTheDocument();
+    expect(screen.getByText('Pods')).toBeInTheDocument();
   });
 
   it('should render the ListPageFilter', () => {

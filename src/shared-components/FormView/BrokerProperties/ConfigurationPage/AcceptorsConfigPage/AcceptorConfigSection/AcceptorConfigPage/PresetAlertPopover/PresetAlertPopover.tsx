@@ -41,14 +41,18 @@ export const PresetAlertPopover: FC<PresetCautionProps> = ({
           {kind === 'caution' ? (
             <Alert
               variant="custom"
-              title={t('preset_caution')}
+              title={t(
+                'This setting is linked to a preset, proceed with caution',
+              )}
               isPlain
               isInline
             />
           ) : (
             <Alert
               variant="warning"
-              title={t('preset_warning')}
+              title={t(
+                'This setting is linked to a preset, updating the value will result in the preset to be removed',
+              )}
               isPlain
               isInline
             />

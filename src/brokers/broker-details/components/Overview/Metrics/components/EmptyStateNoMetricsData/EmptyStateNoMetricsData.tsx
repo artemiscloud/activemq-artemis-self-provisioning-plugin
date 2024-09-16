@@ -13,7 +13,7 @@ export const EmptyStateNoMetricsData: FunctionComponent = () => {
   return (
     <EmptyState variant={EmptyStateVariant.xs}>
       <EmptyStateHeader
-        titleText={<>{t('metric_not_available')}</>}
+        titleText={<>{t('Data unavailable')}</>}
         icon={
           <EmptyStateIcon
             icon={ExclamationTriangleIcon}

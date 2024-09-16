@@ -27,7 +27,7 @@ export const GetConfigurationPage: FC<BrokerConfigProps> = ({
 }) => {
   const { t } = useTranslation();
   if (isPerBrokerConfig) {
-    return <Text>{t('broker_config_disabled')}</Text>;
+    return <Text>{t('Per Broker Config is disabled for now.')}</Text>;
   }
 
   const configType: ConfigType = target;
@@ -43,5 +43,9 @@ export const GetConfigurationPage: FC<BrokerConfigProps> = ({
       </ConfigTypeContext.Provider>
     );
   }
-  return <Text>{t('broker_configuration_page')}</Text>;
+  return (
+    <Text>
+      {t('This is the broker configuration page. Select one item on the left')}
+    </Text>
+  );
 };

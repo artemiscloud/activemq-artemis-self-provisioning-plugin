@@ -138,7 +138,7 @@ export const ChartCPUUsage: FC<ChartCPUUsageProps> = ({
 
             return (
               <Chart
-                ariaTitle={t('memory_usage')}
+                ariaTitle={t('Memory Usage')}
                 // containerComponent={graphContainer}
                 containerComponent={
                   <ChartVoronoiContainer
@@ -158,7 +158,7 @@ export const ChartCPUUsage: FC<ChartCPUUsageProps> = ({
                 themeColor={ChartThemeColor.multiUnordered}
               >
                 <ChartAxis
-                  label={'\n' + t('axis_label_time')}
+                  label={'\n' + t('Time')}
                   tickCount={xAxisTickCount}
                   tickFormat={xTickFormat}
                 />

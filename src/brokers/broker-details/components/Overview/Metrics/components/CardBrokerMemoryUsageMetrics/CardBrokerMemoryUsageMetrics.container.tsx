@@ -84,13 +84,13 @@ export const CardBrokerMemoryUsageMetricsContainer: FC<
       fixedXDomain={xDomain}
       samples={samples}
       formatSeriesTitle={(labels) => labels.pod}
-      title={t('memory_usage')}
-      helperText={t('memory_usage_help_text')}
+      title={t('Memory Usage')}
+      helperText={t('Memory usage')}
       dataTestId={'metrics-broker-memory-usage'}
       yTickFormat={yTickFormat}
       processedData={processedData}
-      label={'\n\n\n\n' + t('axis_label_bytes')}
-      ariaTitle={t('memory_usage')}
+      label={'\n\n\n\n' + t('Bytes')}
+      ariaTitle={t('Memory Usage')}
     />
   );
 };

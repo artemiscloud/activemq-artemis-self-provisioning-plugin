@@ -99,10 +99,10 @@ export const AddBroker: FC<AddBrokerPropTypes> = ({
     return (
       <Alert
         variant={AlertVariant.custom}
-        title={t('broker_can_not_be_created')}
+        title={t('Broker cannot be created')}
         isInline
       >
-        {t('you_do_not_have_write_access')}
+        {t('You do not have write access in this project.')}
       </Alert>
     );
   }
@@ -110,46 +110,46 @@ export const AddBroker: FC<AddBrokerPropTypes> = ({
     <>
       <Modal
         variant={ModalVariant.small}
-        title="Unsaved changes"
+        title={t('Unsaved changes')}
         isOpen={userWantsToQuit}
         onClose={() => setUserWantsToQuit(false)}
         actions={[
           <Button key="confirm" variant="primary" onClick={doQuit}>
-            Confirm
+            {t('Confirm')}
           </Button>,
           <Button
             key="cancel"
             variant="link"
             onClick={() => setUserWantsToQuit(false)}
           >
-            Cancel
+            {'Cancel'}
           </Button>,
         ]}
       >
-        You are about to quit the editor,{' '}
+        {t('You are about to quit the editor,')}{' '}
         {isUpdatingExisting
-          ? 'configuration that is not applied will be lost'
-          : "the broker won't get created"}
+          ? t('configuration that is not applied will be lost')
+          : t('the broker wont get created')}
       </Modal>
       <Modal
         variant={ModalVariant.small}
-        title="Unsaved changes"
+        title={t('Unsaved changes')}
         isOpen={userWantsToReload}
         onClose={() => setUserWantsToReload(false)}
         actions={[
           <Button key="confirm" variant="primary" onClick={reloadExisting}>
-            Confirm
+            {t('Confirm')}
           </Button>,
           <Button
             key="cancel"
             variant="link"
             onClick={() => setUserWantsToReload(false)}
           >
-            Cancel
+            {t('Cancel')}
           </Button>,
         ]}
       >
-        Upon reloading, these modifications will be lost.
+        {t('Upon reloading, these modifications will be lost.')}
       </Modal>
       <Divider />
       <EditorToggle value={editorType} onChange={onSelectEditorType} />
@@ -176,7 +176,7 @@ export const AddBroker: FC<AddBrokerPropTypes> = ({
                 }
               }}
             >
-              {isUpdatingExisting ? 'Apply' : 'Create'}
+              {isUpdatingExisting ? t('Apply') : t('Create')}
             </Button>
             {isUpdatingExisting && (
               <Button
@@ -189,7 +189,7 @@ export const AddBroker: FC<AddBrokerPropTypes> = ({
                   }
                 }}
               >
-                Reload
+                {t('Reload')}
               </Button>
             )}
             <Button
@@ -202,7 +202,7 @@ export const AddBroker: FC<AddBrokerPropTypes> = ({
                 }
               }}
             >
-              Cancel
+              {t('Cancel')}
             </Button>
           </ActionGroup>
         </FormFieldGroup>

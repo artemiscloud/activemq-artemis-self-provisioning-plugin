@@ -36,7 +36,7 @@ const AddressDetailsBreadcrumb: FC<AddressBreadcrumbProps> = ({
         <Breadcrumb className="pf-u-mb-md">
           <BreadcrumbItem>
             <Button variant="link" onClick={() => navigate(redirectBrokerPath)}>
-              {t('brokers')}
+              {t('Brokers')}
             </Button>
           </BreadcrumbItem>
           <BreadcrumbItem>
@@ -44,7 +44,7 @@ const AddressDetailsBreadcrumb: FC<AddressBreadcrumbProps> = ({
               variant="link"
               onClick={() => navigate(redirectBrokerPodsPath)}
             >
-              {t('broker')} {brokerName}
+              {t('Broker')} {brokerName}
             </Button>
           </BreadcrumbItem>
           <BreadcrumbItem>

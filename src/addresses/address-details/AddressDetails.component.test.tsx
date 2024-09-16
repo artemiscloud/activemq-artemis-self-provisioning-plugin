@@ -70,7 +70,7 @@ describe('AddressDetails', () => {
         <AddressDetails name="DLQ" />
       </JolokiaAuthentication>,
     );
-    expect(screen.getByText('attributes')).toBeInTheDocument();
+    expect(screen.getByText('Attributes')).toBeInTheDocument();
   });
 
   it('should filters the data based on search input', () => {
@@ -80,7 +80,9 @@ describe('AddressDetails', () => {
       </JolokiaAuthentication>,
     );
 
-    const searchInput = screen.getByPlaceholderText('search');
+    const searchInput = screen.getByPlaceholderText(
+      'Search by attribute name...',
+    );
     fireEvent.change(searchInput, { target: { value: 'Message' } });
 
     expect(screen.getByText('MessageCount')).toBeInTheDocument();
@@ -100,7 +102,9 @@ describe('AddressDetails', () => {
     expect(screen.getByText('MessageCount')).toBeInTheDocument();
     expect(screen.getByText('RoutingTypes')).toBeInTheDocument();
 
-    const searchInput = screen.getByPlaceholderText('search');
+    const searchInput = screen.getByPlaceholderText(
+      'Search by attribute name...',
+    );
     fireEvent.change(searchInput, { target: { value: 'Message' } });
 
     fireEvent.change(searchInput, { target: { value: '' } });
@@ -139,6 +143,8 @@ describe('AddressDetails', () => {
         <AddressDetails name="DLQ" />
       </JolokiaAuthentication>,
     );
-    expect(screen.getByText('error_loading')).toBeInTheDocument();
+    expect(
+      screen.getByText('Error loading address details...'),
+    ).toBeInTheDocument();
   });
 });

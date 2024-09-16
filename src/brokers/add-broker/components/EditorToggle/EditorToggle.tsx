@@ -27,12 +27,12 @@ export const EditorToggle: React.FC<EditorToggleProps> = ({
         role="radiogroup"
         aria-labelledby="radio-group-title-editor-toggle"
       >
-        <label id="radio-group-title-editor-toggle">{t('configure_via')}</label>
+        <label id="radio-group-title-editor-toggle">{t('Configure Via')}</label>
         <Radio
           isChecked={value === EditorType.BROKER}
           name={EditorType.BROKER}
           onChange={(event, _checked: boolean) => handleChange(_checked, event)}
-          label={t('broker_view')}
+          label={t('Broker View')}
           id={EditorType.BROKER}
           value={EditorType.BROKER}
         />
@@ -40,7 +40,7 @@ export const EditorToggle: React.FC<EditorToggleProps> = ({
           isChecked={value === EditorType.YAML}
           name={EditorType.YAML}
           onChange={(event, _checked: boolean) => handleChange(_checked, event)}
-          label={t('yaml_view')}
+          label={t('Yaml View')}
           id={EditorType.YAML}
           value={EditorType.YAML}
           data-test={`${EditorType.YAML}-view-input`}

@@ -70,10 +70,10 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
 
   const dropdownItems = [
     <DropdownItem key="edit-broker" onClick={onClickEditBroker}>
-      {t('edit_broker')}
+      {t('Edit Broker')}
     </DropdownItem>,
     <DropdownItem key="delete-broker" onClick={onClickDeleteBroker}>
-      {t('delete_broker')}
+      {t('Delete Broker')}
     </DropdownItem>,
   ];
 
@@ -95,7 +95,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
                 variant="link"
                 onClick={() => navigate(redirectBrokerPath)}
               >
-                {t('brokers')}
+                {t('Brokers')}
               </Button>
             </BreadcrumbItem>
             <BreadcrumbItem>
@@ -103,7 +103,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
                 variant="link"
                 onClick={() => navigate(redirectBrokerPodsPath)}
               >
-                {t('broker')} {name}
+                {t('Broker')} {name}
               </Button>
             </BreadcrumbItem>
             <BreadcrumbItem isActive>{podName}</BreadcrumbItem>

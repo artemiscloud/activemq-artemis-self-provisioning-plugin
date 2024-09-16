@@ -26,7 +26,7 @@ describe('PreConfirmDeleteModal', () => {
       />,
     );
     await waitForI18n(comp);
-    expect(screen.getByText('delete_modal_instance_title')).toBeInTheDocument();
+    expect(screen.getByText('Delete instance ?')).toBeInTheDocument();
   });
 
   it('should not render the modal when isModalOpen is false', async () => {
@@ -39,9 +39,7 @@ describe('PreConfirmDeleteModal', () => {
       />,
     );
     await waitForI18n(comp);
-    expect(
-      screen.queryByText('delete_modal_instance_title'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Delete instance ?')).not.toBeInTheDocument();
   });
 
   it('should delete the instance by clicking on the delete button', async () => {
@@ -55,7 +53,7 @@ describe('PreConfirmDeleteModal', () => {
     );
     await waitForI18n(comp);
 
-    const deleteBtn = comp.getByText('delete');
+    const deleteBtn = comp.getByText('Delete');
     await waitFor(() => {
       fireEvent.click(deleteBtn);
     });
@@ -73,7 +71,7 @@ describe('PreConfirmDeleteModal', () => {
     );
     await waitForI18n(comp);
 
-    const cancelBtn = screen.getByText('cancel');
+    const cancelBtn = screen.getByText('Cancel');
     fireEvent.click(cancelBtn);
     expect(onOpenModal).toHaveBeenCalled();
   });

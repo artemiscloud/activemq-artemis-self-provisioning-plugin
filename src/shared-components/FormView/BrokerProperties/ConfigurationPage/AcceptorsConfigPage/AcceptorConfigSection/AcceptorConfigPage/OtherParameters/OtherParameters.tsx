@@ -14,6 +14,7 @@ import {
 } from '@patternfly/react-core';
 import { TrashIcon } from '@patternfly/react-icons';
 import { ConfigType } from '../../../../ConfigurationPage';
+import { useTranslation } from '@app/i18n/i18n';
 
 type ParamProps = {
   paramKey: string;
@@ -106,6 +107,7 @@ export const OtherParameters: FC<OtherParametersProps> = ({
   configType,
   configName,
 }) => {
+  const { t } = useTranslation();
   const { cr } = useContext(BrokerCreationFormState);
   const otherParams = getConfigOtherParams(cr, configType, configName);
   let newParamSuffix = 0;
@@ -153,7 +155,7 @@ export const OtherParameters: FC<OtherParametersProps> = ({
           addNewParam(newParamBaseName + newParamSuffix, 'placeholder')
         }
       >
-        Add an extra parameter
+        {t('Add an extra parameter')}
       </Button>
     </>
   );

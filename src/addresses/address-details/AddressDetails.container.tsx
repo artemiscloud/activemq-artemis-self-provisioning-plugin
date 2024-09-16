@@ -49,7 +49,7 @@ export const AddressDetailsPage: FC = () => {
             podName={podName}
           />
           <Title headingLevel="h2">
-            {t('address')} {name}
+            {t('Address')} {name}
           </Title>
         </div>
         {error && <Alert variant="danger" title={error} />}

@@ -132,7 +132,7 @@ const CertInfo: FC<CertInfoProps> = ({ cert, order }) => {
       <DescriptionList isHorizontal key={'dl-cert-info' + order}>
         <DescriptionListGroup key={'version' + order}>
           <DescriptionListTerm>
-            <b>{t('version')}</b>
+            <b>{t('Version:')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             {getCertVersion(tbsCert)}
@@ -141,14 +141,14 @@ const CertInfo: FC<CertInfoProps> = ({ cert, order }) => {
 
         <DescriptionListGroup key={'selfSigned' + order}>
           <DescriptionListTerm>
-            <b>{t('self_signed')}</b>
+            <b>{t('Self Signed:')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>{selfSigned}</DescriptionListDescription>
         </DescriptionListGroup>
 
         <DescriptionListGroup key={'serialNumber' + order}>
           <DescriptionListTerm>
-            <b>{t('serial_number')}</b>
+            <b>{t('SerialNumber:')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <code>{tbsCert.serialNumber}</code>
@@ -157,7 +157,7 @@ const CertInfo: FC<CertInfoProps> = ({ cert, order }) => {
 
         <DescriptionListGroup key={'sigAlgorithm' + order}>
           <DescriptionListTerm>
-            <b>{t('sig_algorithm')}</b>
+            <b>{t('Signature Algorithm:')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <code>{formatSignatureAlgorighm(tbsCert.signature)}</code>
@@ -166,7 +166,7 @@ const CertInfo: FC<CertInfoProps> = ({ cert, order }) => {
 
         <DescriptionListGroup key={'siginfo' + order}>
           <DescriptionListTerm>
-            <b>{t('sig_hash')}</b>
+            <b>{t('Signature Hash:')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <CodeBlockCode id="hash-code-content">
@@ -177,20 +177,20 @@ const CertInfo: FC<CertInfoProps> = ({ cert, order }) => {
 
         <DescriptionListGroup key={'validity' + order}>
           <DescriptionListTerm>
-            <b>{t('validity')}</b>
+            <b>{t('Validity:')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
-            <b>{t('not_before')} </b>
+            <b>{t('NotBefore:')} </b>
             <code>{tbsCert.validity.notBefore.getTime().toUTCString()}</code>
             <p />
-            <b>{t('not_after')} </b>
+            <b>{t('NotAfter:')} </b>
             <code>{tbsCert.validity.notAfter.getTime().toUTCString()}</code>
           </DescriptionListDescription>
         </DescriptionListGroup>
 
         <DescriptionListGroup key={'issuer' + order}>
           <DescriptionListTerm>
-            <b>{t('issuer')}</b>
+            <b>{t('Issuer:')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <code>{cert.issuer}</code>
@@ -199,7 +199,7 @@ const CertInfo: FC<CertInfoProps> = ({ cert, order }) => {
 
         <DescriptionListGroup key={'subject' + order}>
           <DescriptionListTerm>
-            <b>{t('subject')}</b>
+            <b>{t('Subject:')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <code>{cert.subject}</code>
@@ -208,7 +208,7 @@ const CertInfo: FC<CertInfoProps> = ({ cert, order }) => {
 
         <DescriptionListGroup key={'publickey' + order}>
           <DescriptionListTerm>
-            <b>{t('publickey_info')}</b>
+            <b>{t('Publickey Info:')}</b>
           </DescriptionListTerm>
           <DescriptionListDescription>
             <CodeBlockCode id="keydata-code-content">
@@ -220,7 +220,7 @@ const CertInfo: FC<CertInfoProps> = ({ cert, order }) => {
         {tbsCert.issuerUniqueID && (
           <DescriptionListGroup key={'issuerId' + order}>
             <DescriptionListTerm>
-              <b>{t('issuer_unique_id')}</b>
+              <b>{t('Issuer unique ID:')}</b>
             </DescriptionListTerm>
             <DescriptionListDescription>
               <code>{tbsCert.issuerUniqueID}</code>
@@ -230,7 +230,7 @@ const CertInfo: FC<CertInfoProps> = ({ cert, order }) => {
         {tbsCert.subjectUniqueID && (
           <DescriptionListGroup key={'subjectId' + order}>
             <DescriptionListTerm>
-              <b>{t('subject_unique_id')}</b>
+              <b>{t('Subject unique ID:')}</b>
             </DescriptionListTerm>
             <DescriptionListDescription>
               <code>{tbsCert.subjectUniqueID}</code>
@@ -241,7 +241,7 @@ const CertInfo: FC<CertInfoProps> = ({ cert, order }) => {
         <DescriptionListGroup key={'extensions' + order}>
           <DescriptionListTerm>
             <b>
-              {t('extensions')}({cert.extensions?.length})
+              {t('Extensions')}({cert.extensions?.length})
             </b>
             :
           </DescriptionListTerm>
@@ -286,8 +286,8 @@ export const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
   return (
     <Modal
       width="50%"
-      title={t('certification_details')}
-      description={t('from_secret') + secretName}
+      title={t('Certification Details')}
+      description={t('from secret') + secretName}
       isOpen={isModalOpen}
       onClose={onCloseModal}
     >
@@ -297,7 +297,7 @@ export const CertificateDetailsModal: FC<CertificateDetailsModalProps> = ({
           <DescriptionList isHorizontal key={'dl-pem'}>
             <DescriptionListGroup key={'dl-group-pem-key'}>
               <DescriptionListTerm>
-                <b>{t('pem')}</b>
+                <b>{t('PEM:')}</b>
               </DescriptionListTerm>
               <DescriptionListDescription>
                 <CodeBlockCode id="pem-code-content">{pem}</CodeBlockCode>

@@ -182,7 +182,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
         header={
           <FormFieldGroupHeader
             titleText={{
-              text: 'Global configuration',
+              text: t('Global configuration'),
               id: 'field-group-configuration' + configName,
             }}
           />
@@ -191,11 +191,11 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
         <Grid hasGutter md={6}>
           {configType === ConfigType.acceptors && (
             <FormGroup
-              label="BindToAllInterfaces"
+              label={t('BindToAllInterfaces')}
               fieldId="horizontal-form-bindToAllInterfaces"
             >
               <Checkbox
-                label="Bind to all interfaces"
+                label={t('Bind to all interfaces')}
                 isChecked={bindToAllInterfaces}
                 name={'check-bindToAllInterfaces' + configType + configName}
                 id={'check-bindToAllInterfaces' + configType + configName}
@@ -206,7 +206,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
             </FormGroup>
           )}
           <FormGroup
-            label="Encryption"
+            label={t('Encryption')}
             fieldId="horizontal-form-Enicryption"
             labelIcon={
               <PresetAlertPopover
@@ -218,7 +218,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
           >
             <Switch
               id={'ssl-switch' + configType + configName}
-              label="SSL Enabled"
+              label={t('SSL Enabled')}
               labelOff="SSL disabled"
               isChecked={isSSLEnabled}
               onChange={(_event, value: boolean) => handleSSLEnabled(value)}
@@ -227,7 +227,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
           </FormGroup>
           {configType === ConfigType.acceptors && (
             <FormGroup
-              label="Expose"
+              label={t('Expose')}
               fieldId="horizontal-form-expose"
               labelIcon={
                 <PresetAlertPopover
@@ -238,7 +238,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
               }
             >
               <Checkbox
-                label="Expose"
+                label={t('Expose')}
                 isChecked={
                   getAcceptor(cr, configName)
                     ? getAcceptor(cr, configName).expose
@@ -288,12 +288,12 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
             />
           )}
           <FormGroup
-            label="Factory Class"
+            label={t('Factory Class')}
             isRequired
             fieldId={'horizontal-form-factory-' + configType + configName}
           >
             <FormSelect
-              label="acceptorFactoryClass"
+              label={t('acceptorFactoryClass')}
               value={selectedClass}
               onChange={(_event, value: string) => onChangeClass(value)}
               aria-label="FormSelect Input"
@@ -310,7 +310,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
           </FormGroup>
           {configType === ConfigType.connectors && (
             <FormGroup
-              label="Host"
+              label={t('Host')}
               isRequired
               fieldId={'horizontal-form-host-' + configType + configName}
             >
@@ -361,7 +361,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
             </FormGroup>
           )}
           <FormGroup
-            label="Port"
+            label={t('Port')}
             isRequired
             fieldId={'horizontal-form-port-' + configType + configName}
           >
@@ -377,7 +377,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
             />
           </FormGroup>
           <FormGroup
-            label="Protocols"
+            label={t('Protocols')}
             isRequired
             fieldId="horizontal-form-protocols"
           >
@@ -397,7 +397,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
         header={
           <FormFieldGroupHeader
             titleText={{
-              text: 'Other parameters',
+              text: t('Other parameters'),
               id: 'field-group-configuration' + configName,
             }}
           />
@@ -410,7 +410,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
           header={
             <FormFieldGroupHeader
               titleText={{
-                text: 'SSL configuration',
+                text: t('SSL configuration'),
                 id: 'field-group-configuration-ssl' + configName,
               }}
             />
@@ -436,7 +436,7 @@ export const AcceptorConfigPage: FC<AcceptorProps> = ({
           header={
             <FormFieldGroupHeader
               titleText={{
-                text: 'Presets',
+                text: t('Presets'),
                 id: 'field-group-configuration-annotations' + configName,
               }}
             />

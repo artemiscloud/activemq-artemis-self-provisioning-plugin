@@ -35,10 +35,10 @@ const CertManagerPreset: FC<ResourceTemplateProps> = ({ resourceTemplate }) => {
       header={
         <FormFieldGroupHeader
           titleText={{
-            text: 'Cert-Manager issuer & Ingress exposure',
+            text: t('Cert-Manager issuer & Ingress exposure'),
             id: 'nested-field-cert-manager-annotation-id' + acceptor.name,
           }}
-          titleDescription="Configuration items for the preset"
+          titleDescription={t('Configuration items for the preset')}
           actions={
             <ConfirmDeleteModal
               subject="preset"
@@ -54,7 +54,7 @@ const CertManagerPreset: FC<ResourceTemplateProps> = ({ resourceTemplate }) => {
         />
       }
     >
-      <FormGroup label={t('select_issuer')} isRequired>
+      <FormGroup label={t('Issuer')} isRequired>
         <SelectIssuerDrawer
           selectedIssuer={
             resourceTemplate.annotations['cert-manager.io/issuer']

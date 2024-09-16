@@ -19,12 +19,14 @@ import {
 } from '@patternfly/react-core';
 import { CubesIcon } from '@patternfly/react-icons';
 import { AcceptorConfigSection } from './AcceptorConfigSection/AcceptorConfigSection';
+import { useTranslation } from '@app/i18n/i18n';
 
 type AcceptorsConfigProps = {
   brokerId: number;
 };
 
 export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
+  const { t } = useTranslation();
   const { cr } = useContext(BrokerCreationFormState);
   const configType = useContext(ConfigTypeContext);
   const configs = listConfigs(configType, cr) as {
@@ -45,23 +47,31 @@ export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
     }
   };
 
-  const name = configType === ConfigType.acceptors ? 'acceptor' : 'connector';
+  const name =
+    configType === ConfigType.acceptors ? t('acceptor') : t('connector');
   const pronoun = configType === ConfigType.acceptors ? 'an' : 'a';
   if (configs.length === 0) {
     return (
       <EmptyState variant={EmptyStateVariant.sm}>
         <EmptyStateHeader
-          titleText={<>No{name}configured</>}
+          titleText={
+            <>
+              {t('No')}
+              {name}
+              {t('configured')}
+            </>
+          }
           icon={<EmptyStateIcon icon={CubesIcon} />}
           headingLevel="h4"
         />
         <EmptyStateBody>
-          There's no {name} in your configuration, to add one click on the
-          button below.{' '}
+          {t(
+            'There is no {name} in your configuration, to add one click on the button below.',
+          )}{' '}
         </EmptyStateBody>
         <EmptyStateFooter>
           <Button variant="primary" onClick={addNewConfig}>
-            Add {pronoun} {name}
+            {t('Add')} {pronoun} {name}
           </Button>
         </EmptyStateFooter>
       </EmptyState>
@@ -81,7 +91,7 @@ export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
       })}
       <ActionGroup>
         <Button variant="primary" onClick={addNewConfig}>
-          Add {pronoun} {name}
+          {t('Add')} {pronoun} {name}
         </Button>
       </ActionGroup>
     </Form>

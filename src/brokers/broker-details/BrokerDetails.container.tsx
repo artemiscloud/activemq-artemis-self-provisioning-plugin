@@ -78,14 +78,14 @@ const AuthenticatedPageContent: FC<AuthenticatedPageContentPropType> = ({
           podName={podName}
         />
         <Title headingLevel="h2" className="pf-u-ml-md">
-          {t('broker')} {brokerName} {t('/')} {podName}
+          {t('Broker')} {brokerName} {t('/')} {podName}
         </Title>
       </div>
       {errorBrokerCr && <Alert variant="danger" title={errorBrokerCr} />}
       <Tabs activeKey={activeTabKey} onSelect={handleTabSelect}>
         <Tab
           eventKey={'overview'}
-          title={<TabTitleText>{t('overview')}</TabTitleText>}
+          title={<TabTitleText>{t('Overview')}</TabTitleText>}
         >
           <OverviewContainer
             name={brokerName}
@@ -96,13 +96,13 @@ const AuthenticatedPageContent: FC<AuthenticatedPageContentPropType> = ({
         </Tab>
         <Tab
           eventKey={'clients'}
-          title={<TabTitleText>{t('clients')}</TabTitleText>}
+          title={<TabTitleText>{t('Clients')}</TabTitleText>}
         >
           <ClientsContainer />
         </Tab>
         <Tab
           eventKey={'addresses'}
-          title={<TabTitleText>{t('addresses')}</TabTitleText>}
+          title={<TabTitleText>{t('Addresses')}</TabTitleText>}
         >
           <AddressContainer />
         </Tab>
@@ -113,13 +113,15 @@ const AuthenticatedPageContent: FC<AuthenticatedPageContentPropType> = ({
               <TabTitleText>
                 {t('check-jolokia ')}
                 {isLoadingToken && (
-                  <Spinner size="sm" aria-label="connecting to jolokia" />
+                  <Spinner size="sm" aria-label={t('connecting to jolokia')} />
                 )}
                 {isSuccessToken && (
-                  <GreenCheckCircleIcon title="Jolokia connected" />
+                  <GreenCheckCircleIcon title={t('Jolokia connected')} />
                 )}
                 {isErrorToken && (
-                  <RedExclamationCircleIcon title="Jolokia connection failed" />
+                  <RedExclamationCircleIcon
+                    title={t('Jolokia connection failed')}
+                  />
                 )}
               </TabTitleText>
             }
@@ -135,13 +137,15 @@ const AuthenticatedPageContent: FC<AuthenticatedPageContentPropType> = ({
               <TabTitleText>
                 {t('jolokia-details')}
                 {isLoadingToken && (
-                  <Spinner size="sm" aria-label="connecting to jolokia" />
+                  <Spinner size="sm" aria-label={t('connecting to jolokia')} />
                 )}
                 {isSuccessToken && (
-                  <GreenCheckCircleIcon title="Jolokia connected" />
+                  <GreenCheckCircleIcon title={t('Jolokia connected')} />
                 )}
                 {isErrorToken && (
-                  <RedExclamationCircleIcon title="Jolokia connection failed" />
+                  <RedExclamationCircleIcon
+                    title={t('Jolokia connection failed')}
+                  />
                 )}
               </TabTitleText>
             }

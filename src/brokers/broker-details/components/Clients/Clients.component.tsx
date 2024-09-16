@@ -27,19 +27,19 @@ const Clients: React.FC<ClientProps> = ({
 
   const columns: TableColumn<Client>[] = [
     {
-      title: t('name'),
+      title: t('Name'),
       id: 'name',
     },
     {
-      title: t('connections'),
+      title: t('Connections'),
       id: 'connections',
     },
     {
-      title: t('expires'),
+      title: t('Expires'),
       id: 'expires',
     },
     {
-      title: t('created'),
+      title: t('Created'),
       id: 'created',
     },
   ];

@@ -69,11 +69,11 @@ export const CardBrokerCPUUsageMetricsContainer: FC<
       fixedXDomain={xDomain}
       samples={samples}
       formatSeriesTitle={(labels) => labels.pod}
-      title={t('cpu_usage')}
-      helperText={t('cpu_usage_help_text')}
+      title={t('CPU Usage')}
+      helperText={t('CPU Usage')}
       dataTestId={'metrics-broker-cpu-usage'}
       yTickFormat={yTickFormat}
-      ariaTitle={t('cpu_usage')}
+      ariaTitle={t('CPU Usage')}
       // data={data}
     />
   );

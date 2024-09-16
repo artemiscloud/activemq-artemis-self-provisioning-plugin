@@ -108,7 +108,7 @@ const AddressDetails: FC<AddressDetailsTableProps> = ({ name }) => {
 
   const searchInput = (
     <SearchInput
-      placeholder={t('search')}
+      placeholder={t('Search by attribute name...')}
       value={searchvalue}
       onChange={(_event, value) => handleSearchChange(value)}
       onClear={() => handleSearchChange('')}
@@ -139,7 +139,7 @@ const AddressDetails: FC<AddressDetailsTableProps> = ({ name }) => {
   return (
     <>
       <Title headingLevel="h2" className="pf-u-mt-md pf-u-ml-md pf-u-mb-md">
-        {t('attributes')}
+        {t('Attributes')}
       </Title>
       {isSuccess ? (
         <>
@@ -168,7 +168,7 @@ const AddressDetails: FC<AddressDetailsTableProps> = ({ name }) => {
           />
         </>
       ) : error ? (
-        <Alert variant="danger" title={t('error_loading')}>
+        <Alert variant="danger" title={t('Error loading address details...')}>
           {(error as Error).message}
         </Alert>
       ) : (

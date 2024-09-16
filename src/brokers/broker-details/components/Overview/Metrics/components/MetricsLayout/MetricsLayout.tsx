@@ -1,6 +1,7 @@
 import { FC, ReactElement } from 'react';
 import { Grid, GridItem, PageSection, Title } from '@patternfly/react-core';
 import { MetricsType } from '../../utils/types';
+import { useTranslation } from '@app/i18n/i18n';
 
 export type MetricsLayoutProps = {
   metricsMemoryUsage?: ReactElement;
@@ -15,6 +16,7 @@ export const MetricsLayout: FC<MetricsLayoutProps> = ({
   metricsActions,
   metricsType,
 }) => {
+  const { t } = useTranslation();
   return (
     <PageSection
       hasOverflowScroll={true}
@@ -25,7 +27,7 @@ export const MetricsLayout: FC<MetricsLayoutProps> = ({
       }
     >
       <Title headingLevel="h2" className="pf-u-ml-sm pf-u-mb-md">
-        Metrics
+        {t('Metrics')}
       </Title>
       <Grid hasGutter>
         <GridItem>{metricsActions}</GridItem>

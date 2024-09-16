@@ -28,23 +28,26 @@ const PreConfirmDeleteModal: FC<PreConfirmDeleteModalProps> = ({
   return (
     <Modal
       variant={ModalVariant.small}
-      title={t('delete_modal_instance_title')}
+      title={t('Delete instance ?')}
       titleIconVariant="warning"
       isOpen={isModalOpen}
       onClose={onOpenModal}
       actions={[
         <Button key="delete" variant="danger" onClick={onDeleteButtonClick}>
-          {t('delete')}
+          {t('Delete')}
         </Button>,
         <Button key="cancel" variant="link" onClick={onOpenModal}>
-          {t('cancel')}
+          {t('Cancel')}
         </Button>,
       ]}
     >
       <TextContent>
         <Text component={TextVariants.h6}>
           <Trans
-            i18nKey={t('preconfirm_delete_broker_message', { name })}
+            i18nKey={t(
+              'The <strong>{{name}}</strong> instance will be deleted. Applications will no longer have access in this instance.',
+              { name },
+            )}
           ></Trans>
         </Text>
       </TextContent>

@@ -5,8 +5,6 @@ describe('ChartSkeletonLoader', () => {
   it('should renders ChartSkeletonLoader correctly', async () => {
     const comp = render(<ChartSkeletonLoader />);
     await waitForI18n(comp);
-    expect(
-      comp.getByText('skeleton_loader_screenreader_text'),
-    ).toBeInTheDocument();
+    expect(comp.getByText('Metrics data is loading')).toBeInTheDocument();
   });
 });

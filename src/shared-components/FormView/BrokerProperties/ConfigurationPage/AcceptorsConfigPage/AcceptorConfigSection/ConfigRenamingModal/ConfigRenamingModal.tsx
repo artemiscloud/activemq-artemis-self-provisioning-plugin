@@ -55,16 +55,16 @@ export const ConfigRenamingModal: FC<ConfigRenamingModalProps> = ({
     setNewName(value);
     if (value === '') {
       setValidateStatus(ValidatedOptions.error);
-      setTooltip(t('name_not_empty'));
+      setTooltip(t('Name should not be empty'));
       return false;
     }
     if (uniqueSet?.has(value)) {
       setValidateStatus(ValidatedOptions.error);
-      setTooltip(t('name_already_exists'));
+      setTooltip(t('Name already exists'));
       return false;
     }
     setValidateStatus(ValidatedOptions.success);
-    setTooltip(t('name_available'));
+    setTooltip(t('Name available'));
     return true;
   };
 
@@ -83,10 +83,10 @@ export const ConfigRenamingModal: FC<ConfigRenamingModalProps> = ({
             onClick={handleNewName}
             isDisabled={validateStatus !== ValidatedOptions.success}
           >
-            {t('confirm')}
+            {t('Confirm')}
           </Button>,
           <Button key="cancel" variant="link" onClick={() => setIsOpen(false)}>
-            {t('cancel')}
+            {t('Cancel')}
           </Button>,
         ]}
       >
@@ -101,7 +101,7 @@ export const ConfigRenamingModal: FC<ConfigRenamingModalProps> = ({
         <p>{toolTip}</p>
       </Modal>
       <Button variant="plain" onClick={() => setIsOpen(true)}>
-        {t('rename')}
+        {t('Rename')}
       </Button>
     </>
   );

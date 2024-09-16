@@ -78,7 +78,7 @@ const PodsList: FC<PodsListProps> = ({ brokerPods, loaded, loadError }) => {
 
   return (
     <>
-      <ListPageHeader title={t('pods')} />
+      <ListPageHeader title={t('Pods')} />
       <ListPageBody>
         <ListPageFilter
           data={data}

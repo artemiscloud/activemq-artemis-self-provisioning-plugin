@@ -63,7 +63,7 @@ describe('AddressDetailsPage', () => {
       </JolokiaAuthentication>,
     );
     await waitForI18n(comp);
-    expect(screen.getByText('address DLQ')).toBeInTheDocument();
+    expect(screen.getByText('Address DLQ')).toBeInTheDocument();
     expect(
       screen.getByText('Mocked AddressDetailsBreadcrumb'),
     ).toBeInTheDocument();

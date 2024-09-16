@@ -94,12 +94,12 @@ describe('BrokerDetailsPage', () => {
     expect(
       screen.getByText('Mocked BrokerDetailsBreadcrumb'),
     ).toBeInTheDocument();
-    expect(screen.getByText('broker test-1 / test-1-ss-0'));
-    expect(screen.getByText('overview')).toBeInTheDocument();
+    expect(screen.getByText('Broker test-1 / test-1-ss-0'));
+    expect(screen.getByText('Overview')).toBeInTheDocument();
     expect(screen.getByText('OverviewContainer component')).toBeInTheDocument();
-    expect(screen.getByText('clients')).toBeInTheDocument();
+    expect(screen.getByText('Clients')).toBeInTheDocument();
     expect(screen.getByText('ClientsContainer component')).toBeInTheDocument();
-    expect(screen.getByText('addresses')).toBeInTheDocument();
+    expect(screen.getByText('Addresses')).toBeInTheDocument();
     expect(screen.getByText('AddressContainer component')).toBeInTheDocument();
   });
 
@@ -134,7 +134,7 @@ describe('BrokerDetailsPage', () => {
     await waitForI18n(comp);
 
     // Click on the overview tab
-    const overviewTab = screen.getByText('overview');
+    const overviewTab = screen.getByText('Overview');
     overviewTab.click();
 
     expect(mockNavigate).toHaveBeenCalled();

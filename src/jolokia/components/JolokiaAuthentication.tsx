@@ -48,21 +48,23 @@ const Authentication: FC<JolokiaPropTypes> = ({
     <AuthContext.Provider value={jolokiaLogin}>
       <Modal
         variant={ModalVariant.small}
-        title={t('login_failed')}
+        title={t('Login Failed')}
         titleIconVariant="danger"
         isOpen={isErrorModalOpen}
         onClose={handleModalToggle}
         actions={[
           <Button key="confirm" variant="primary" onClick={handleTryAgain}>
-            {t('try_again')}
+            {t('Try again')}
           </Button>,
           <Button key="cancel" variant="link" onClick={handleModalToggle}>
-            {t('cancel')}
+            {t('Cancel')}
           </Button>,
         ]}
       >
         <TextContent>
-          <Text component={TextVariants.h6}>{t('login_failed_message')}</Text>
+          <Text component={TextVariants.h6}>
+            {t('Token invalid. Please check your credentials and try again.')}
+          </Text>
         </TextContent>
       </Modal>
       {children}

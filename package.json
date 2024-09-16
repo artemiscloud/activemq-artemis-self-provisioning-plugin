@@ -74,7 +74,7 @@
     "eslint-plugin-unused-imports": "^3.2.0",
     "husky": "8.0.0",
     "i18next": "^23.11.5",
-    "i18next-parser": "^3.11.0",
+    "i18next-parser": "^8.9.0",
     "jest": "27.5.1",
     "jest-environment-jsdom": "27.5.1",
     "lint-staged": "13.1.0",

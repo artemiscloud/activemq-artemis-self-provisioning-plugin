@@ -25,7 +25,7 @@ export const ConfirmDeleteModal: FC<ConfirmDeleteProps> = ({
     <>
       <Modal
         variant={ModalVariant.small}
-        title={t('delete_instance_title', { subject })}
+        title={t('Permanently delete the {{subject}}', { subject })}
         titleIconVariant="warning"
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -41,20 +41,20 @@ export const ConfirmDeleteModal: FC<ConfirmDeleteProps> = ({
               }
             }}
           >
-            {t('delete')}
+            {t('Delete')}
           </Button>,
           <Button
             key="cancel"
             variant="link"
             onClick={() => setIsModalOpen(false)}
           >
-            {t('cancel')}
+            {t('Cancel')}
           </Button>,
         ]}
       >
         <TextContent>
           <Text component={TextVariants.h6}>
-            {t('preconfirm_delete_acceptor_message')}
+            {t('The associated configuration will be lost.')}
           </Text>
         </TextContent>
       </Modal>

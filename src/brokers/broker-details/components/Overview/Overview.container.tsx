@@ -33,6 +33,7 @@ import {
 } from '@app/k8s/types';
 import { Metrics } from './Metrics/Metrics';
 import { AuthContext } from '@app/jolokia/context';
+import { useTranslation } from '@app/i18n/i18n';
 
 const useGetIssuerCa = (
   cr: BrokerCR,
@@ -107,6 +108,7 @@ const HelpConnectAcceptor: FC<HelperConnectAcceptorProps> = ({
   cr,
   acceptor,
 }) => {
+  const { t } = useTranslation();
   const { podOrdinal } = useContext(AuthContext);
   const secret = useGetTlsSecret(cr, acceptor);
   const ingressHost = getIssuerIngressHostForAcceptor(cr, acceptor, podOrdinal);
@@ -137,22 +139,22 @@ const HelpConnectAcceptor: FC<HelperConnectAcceptorProps> = ({
   return (
     <DescriptionListGroup>
       <DescriptionListTerm>
-        Test the connection to {acceptor.name}
+        {t('Test the connection to')} {acceptor.name}
       </DescriptionListTerm>
       <DescriptionListDescription>
         <List>
           <ListItem>
-            Download the secret: <SecretDownloadLink secret={secret} />
+            {t('Download the secret:')} <SecretDownloadLink secret={secret} />
           </ListItem>
           <ListItem>
-            Run the command with the secret (here in /tmp)
+            {t('Run the command with the secret')} (here in /tmp)
             <CodeBlock
               actions={
                 <CodeBlockAction>
                   <ClipboardCopyButton
                     id="basic-copy-button"
                     textId="code-content"
-                    aria-label="Copy to clipboard"
+                    aria-label={t('Copy to clipboard')}
                     onClick={(e) => onClick(e, code)}
                     exitDelay={copied ? 1500 : 600}
                     maxWidth="110px"
@@ -160,8 +162,8 @@ const HelpConnectAcceptor: FC<HelperConnectAcceptorProps> = ({
                     onTooltipHidden={() => setCopied(false)}
                   >
                     {copied
-                      ? 'Successfully copied to clipboard!'
-                      : 'Copy to clipboard'}
+                      ? t('Successfully copied to clipboard!')
+                      : t('Copy to clipboard')}
                   </ClipboardCopyButton>
                 </CodeBlockAction>
               }
@@ -176,6 +178,7 @@ const HelpConnectAcceptor: FC<HelperConnectAcceptorProps> = ({
 };
 
 const ConnectivityHelper: FC<IssuerSecretsDownloaderProps> = ({ cr }) => {
+  const { t } = useTranslation();
   const oneAcceptorHasGeneratedSecrets = cr.spec?.acceptors
     ? cr.spec.acceptors
         .map((acceptor) =>
@@ -196,21 +199,22 @@ const ConnectivityHelper: FC<IssuerSecretsDownloaderProps> = ({ cr }) => {
           'pf-u-px-lg-on-xl pf-u-pt-sm-on-xl pf-u-pb-lg-on-xl pf-u-px-md pf-u-pb-md'
         }
       >
-        <Title headingLevel="h2">Connectivity</Title>
+        <Title headingLevel="h2">{t('Connectivity')}</Title>
         <Card>
           <>
-            <CardTitle>Connect using Artemis</CardTitle>
+            <CardTitle>{t('Connect using Artemis')}</CardTitle>
             <CardBody>
               <DescriptionList>
                 <DescriptionListGroup>
-                  <DescriptionListTerm>Get Artemis</DescriptionListTerm>
+                  <DescriptionListTerm>{t('Get Artemis')}</DescriptionListTerm>
                   <DescriptionListDescription>
-                    Download the{' '}
+                    {t('Download the')}{' '}
                     <a href="https://activemq.apache.org/components/artemis/download/">
-                      latest release
+                      {t('latest release')}
                     </a>{' '}
-                    of ActiveMQ Artemis, decompress the tarball and locate the
-                    artemis executable.
+                    {t(
+                      'of ActiveMQ Artemis, decompress the tarball and locate the artemis executable.',
+                    )}
                   </DescriptionListDescription>
                 </DescriptionListGroup>
                 {cr.spec.acceptors.map((acceptor) => (

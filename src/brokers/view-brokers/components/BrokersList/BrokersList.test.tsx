@@ -102,7 +102,7 @@ describe('BrokersList', () => {
 
   it('should render the BrokersList component correctly', () => {
     render(<BrokersList {...mockBrokersListProps} />);
-    expect(screen.getByText('brokers')).toBeInTheDocument();
+    expect(screen.getByText('Brokers')).toBeInTheDocument();
   });
 
   it('should render the ListPageFilter', () => {

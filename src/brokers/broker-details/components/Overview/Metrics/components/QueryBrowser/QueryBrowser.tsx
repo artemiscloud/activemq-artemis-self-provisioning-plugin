@@ -179,7 +179,7 @@ export const QueryBrowser: FC<QueryBrowserProps> = ({
                 themeColor={ChartThemeColor.multiUnordered}
               >
                 <ChartAxis
-                  label={'\n' + t('axis_label_time')}
+                  label={'\n' + t('Time')}
                   tickCount={xAxisTickCount}
                   tickFormat={xTickFormat}
                 />

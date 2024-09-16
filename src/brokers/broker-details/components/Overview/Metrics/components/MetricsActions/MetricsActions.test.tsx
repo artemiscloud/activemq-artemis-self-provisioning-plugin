@@ -19,9 +19,9 @@ describe('MetricsActions', () => {
         onSelectOptionChart={onSelectOptionChart}
       />,
     );
-    expect(screen.getByText(/last_30_minutes/i)).toBeInTheDocument();
+    expect(screen.getByText(/Last 30 minutes/i)).toBeInTheDocument();
 
-    const last30MinutesItem = screen.getAllByText(/last_30_minutes/i)[0];
+    const last30MinutesItem = screen.getAllByText(/Last 30 minutes/i)[0];
     const spanDropdownItemsClickable = fireEvent.click(last30MinutesItem);
     expect(spanDropdownItemsClickable).toBe(true);
   });
@@ -37,9 +37,9 @@ describe('MetricsActions', () => {
         onSelectOptionChart={onSelectOptionChart}
       />,
     );
-    expect(screen.getByText(/5_minutes/i)).toBeInTheDocument();
+    expect(screen.getByText(/5 minutes/i)).toBeInTheDocument();
 
-    const fiveMinutesItem = screen.getAllByText(/5_minutes/i)[0];
+    const fiveMinutesItem = screen.getAllByText(/5 minutes/i)[0];
     const pollingDropdownItemsClickable = fireEvent.click(fiveMinutesItem);
     expect(pollingDropdownItemsClickable).toBe(true);
   });

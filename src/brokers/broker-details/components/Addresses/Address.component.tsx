@@ -27,18 +27,18 @@ const Addresses: React.FC<AddressProps> = ({
 
   const columns: TableColumn<Address>[] = [
     {
-      title: t('name'),
+      title: t('Name'),
       id: 'name',
     },
     {
-      title: t('routing_type'),
+      title: t('Routing Type'),
       id: 'routing_type',
     },
   ];
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light}>
-        <Title headingLevel="h1">{t('addresses')}</Title>
+        <Title headingLevel="h1">{t('Addresses')}</Title>
       </PageSection>
       <VirtualizedTable<Address>
         data={addressData}

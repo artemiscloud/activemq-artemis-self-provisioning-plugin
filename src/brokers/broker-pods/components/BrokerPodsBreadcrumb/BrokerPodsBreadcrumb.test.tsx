@@ -47,8 +47,8 @@ describe('BrokerPodsBreadcrumb', () => {
       </MemoryRouter>,
     );
     await waitForI18n(comp);
-    expect(comp.getByText('brokers')).toBeInTheDocument();
-    expect(comp.getByText(`broker ${name}`)).toBeInTheDocument();
+    expect(comp.getByText('Brokers')).toBeInTheDocument();
+    expect(comp.getByText(`Broker ${name}`)).toBeInTheDocument();
   });
 
   it('should navigate back to BrokerList page when click on Brokers BreadcrumbItem', async () => {
@@ -59,7 +59,7 @@ describe('BrokerPodsBreadcrumb', () => {
     );
     await waitForI18n(comp);
 
-    fireEvent.click(screen.getByText('brokers'));
+    fireEvent.click(screen.getByText('Brokers'));
     expect(navigate).toHaveBeenCalledWith(`/k8s/ns/${namespace}/brokers`);
   });
 
@@ -100,14 +100,12 @@ describe('BrokerPodsBreadcrumb', () => {
     await waitForI18n(comp);
 
     fireEvent.click(screen.getByTestId('broker-toggle-kebab'));
-    fireEvent.click(screen.getByText('delete_broker'));
-    expect(screen.getByText('delete_modal_instance_title')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Delete Broker'));
+    expect(screen.getByText('Delete instance ?')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('cancel'));
+    fireEvent.click(screen.getByText('Cancel'));
     await waitFor(() =>
-      expect(
-        screen.queryByText('delete_modal_instance_title'),
-      ).not.toBeInTheDocument(),
+      expect(screen.queryByText('Delete instance ?')).not.toBeInTheDocument(),
     );
   });
 
@@ -119,7 +117,7 @@ describe('BrokerPodsBreadcrumb', () => {
     );
     await waitForI18n(comp);
     fireEvent.click(screen.getByTestId('broker-toggle-kebab'));
-    fireEvent.click(screen.getByText('edit_broker'));
+    fireEvent.click(screen.getByText('Edit Broker'));
 
     expect(navigate).toHaveBeenCalledWith(
       `/k8s/ns/${namespace}/edit-broker/${name}?returnUrl=${encodeURIComponent(
@@ -138,9 +136,9 @@ describe('BrokerPodsBreadcrumb', () => {
     await waitForI18n(comp);
 
     fireEvent.click(screen.getByTestId('broker-toggle-kebab'));
-    fireEvent.click(screen.getByText('delete_broker'));
-    await waitFor(() => screen.getByText('delete'));
-    fireEvent.click(screen.getByText('delete'));
+    fireEvent.click(screen.getByText('Delete Broker'));
+    await waitFor(() => screen.getByText('Delete'));
+    fireEvent.click(screen.getByText('Delete'));
 
     await waitFor(() => {
       expect(k8sDelete).toHaveBeenCalledWith({

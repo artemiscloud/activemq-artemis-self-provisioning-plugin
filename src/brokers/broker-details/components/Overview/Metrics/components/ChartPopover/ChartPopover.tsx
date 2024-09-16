@@ -18,7 +18,7 @@ export const ChartPopover: FC<ChartPopoverProps> = ({ title, description }) => {
       bodyContent={<div>{description}</div>}
     >
       <OutlinedQuestionCircleIcon
-        aria-label={t('chart_popover_icon_screenreader_text', {
+        aria-label={t('Information about {{title}}', {
           title,
         })}
       />

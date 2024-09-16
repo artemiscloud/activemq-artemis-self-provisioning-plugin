@@ -57,7 +57,7 @@ export const SelectExposeMode: FC<SelectExposeModeProps> = ({
   const titleId = 'typeahead-select-issuer';
   return (
     <FormGroup
-      label={t('select_expose_mode')}
+      label={t('Expose Mode')}
       labelIcon={
         <PresetAlertPopover
           configName={configName}
@@ -68,7 +68,7 @@ export const SelectExposeMode: FC<SelectExposeModeProps> = ({
     >
       <Select
         variant={SelectVariant.typeahead}
-        typeAheadAriaLabel={t('select_expose_mode')}
+        typeAheadAriaLabel={t('Expose Mode')}
         onToggle={() => setIsOpen(!isOpen)}
         onSelect={onSelect}
         onClear={clearSelection}

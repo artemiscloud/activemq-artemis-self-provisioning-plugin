@@ -40,7 +40,7 @@ describe('Addresses', () => {
 
   it('should render the PodsList component', () => {
     render(<Addresses {...mockAddressProps} />);
-    expect(screen.getByText('addresses')).toBeInTheDocument();
+    expect(screen.getByText('Addresses')).toBeInTheDocument();
   });
 
   it('should render PodRow components within the VirtualizedTable', () => {

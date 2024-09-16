@@ -144,7 +144,7 @@ export const ChartMemoryUsage: FC<ChartMemoryUsageProps> = ({
 
             return (
               <Chart
-                ariaTitle={t('memory_usage')}
+                ariaTitle={t('Memory Usage')}
                 // containerComponent={graphContainer}
                 containerComponent={
                   <ChartVoronoiContainer
@@ -164,12 +164,12 @@ export const ChartMemoryUsage: FC<ChartMemoryUsageProps> = ({
                 themeColor={ChartThemeColor.multiUnordered}
               >
                 <ChartAxis
-                  label={'\n' + t('axis_label_time')}
+                  label={'\n' + t('Time')}
                   tickCount={xAxisTickCount}
                   tickFormat={xTickFormat}
                 />
                 <ChartAxis
-                  label={'\n\n\n\n' + t('axis_label_bytes')}
+                  label={'\n\n\n\n' + t('Bytes')}
                   crossAxis={false}
                   tickCount={6}
                   dependentAxis

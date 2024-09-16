@@ -34,23 +34,23 @@ const BrokersTable: FC<BrokersTableProps> = ({
 
   const columns: TableColumn<BrokerCR>[] = [
     {
-      title: t('name'),
+      title: t('Name'),
       id: 'name',
     },
     {
-      title: t('ready'),
+      title: t('Ready'),
       id: 'ready',
     },
     {
-      title: t('conditions'),
+      title: t('Conditions'),
       id: 'conditions',
     },
     {
-      title: t('size'),
+      title: t('Size'),
       id: 'Size',
     },
     {
-      title: t('create'),
+      title: t('Create'),
       id: 'created',
     },
     {
@@ -103,9 +103,9 @@ const BrokersList: FC<BrokersListProps> = ({
 
   return (
     <>
-      <ListPageHeader title={t('brokers')}>
+      <ListPageHeader title={t('Brokers')}>
         <ListPageCreateLink to={`/k8s/ns/${namespace || 'default'}/add-broker`}>
-          {t('create_broker')}
+          {t('Create Broker')}
         </ListPageCreateLink>
       </ListPageHeader>
       <ListPageBody>

@@ -21,12 +21,14 @@ import { FC, useContext, useState } from 'react';
 import { BrokerCR } from '@app/k8s/types';
 import { ConfigType } from '../ConfigurationPage';
 import { CertSecretSelector } from '../CertSecretSelector/CertSecretSelector';
+import { useTranslation } from '@app/i18n/i18n';
 
 export type ConsoleConfigProps = {
   brokerId: number;
 };
 
 export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
+  const { t } = useTranslation();
   const { cr } = useContext(BrokerCreationFormState);
   const dispatch = useContext(BrokerCreationFormDispatch);
 
@@ -103,7 +105,7 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
         header={
           <FormFieldGroupHeader
             titleText={{
-              text: 'Console configuration',
+              text: t('Console configuration'),
               id: 'field-group-consoleconfig' + 'console',
             }}
           />
@@ -112,12 +114,12 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
         <Grid hasGutter md={6}>
           <FormFieldGroup>
             <FormGroup
-              label="Expose"
+              label={t('Expose')}
               fieldId={'console-config-expose-formgroup'}
               isRequired
             >
               <Checkbox
-                label="Expose Console"
+                label={t('Expose Console')}
                 isChecked={exposeConsole}
                 name={'check-console-expose'}
                 id={'check-expose-console'}
@@ -125,11 +127,11 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
               />
             </FormGroup>
             <FormGroup
-              label="ExposeMode"
+              label={t('ExposeMode')}
               fieldId={'console-config-exposemode-formgroup'}
             >
               <FormSelect
-                label="console expose mode"
+                label={t('console expose mode')}
                 value={exposeMode}
                 onChange={(_event, value: ExposeMode) =>
                   setConsoleExposeMode(value)
@@ -147,7 +149,7 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
             </FormGroup>
             <Switch
               id={'id-switch-console-sslEnabled'}
-              label="SSL Enabled for console"
+              label={t('SSL Enabled for console')}
               labelOff="SSL disabled for console"
               isChecked={isSSLEnabled}
               onChange={(_event, value: boolean) => handleSSLEnabled(value)}
@@ -161,7 +163,7 @@ export const ConsoleConfigPage: FC<ConsoleConfigProps> = ({ brokerId }) => {
           header={
             <FormFieldGroupHeader
               titleText={{
-                text: 'SSL configuration',
+                text: t('SSL configuration'),
                 id: 'field-group-configuration-ssl' + 'console',
               }}
             />

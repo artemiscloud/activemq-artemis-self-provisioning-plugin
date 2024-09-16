@@ -73,7 +73,7 @@ const useCreateSecretOptions = ({
   return [
     filteredCustomOptions.length > 0 && (
       <SelectGroup
-        label="Custom secret name"
+        label={t('Custom secret name"')}
         key={'customOptions' + configType + configName + isCa}
       >
         {filteredCustomOptions.map((secret, index) => (
@@ -83,7 +83,7 @@ const useCreateSecretOptions = ({
     ),
     nonptlsSecrets.length > 0 && (
       <SelectGroup
-        label="Cert manager certs"
+        label={t('Cert manager certs')}
         key={'cert-manager-certs' + configType + configName + isCa}
       >
         {nonptlsSecrets.map((secret, index) => (
@@ -97,7 +97,7 @@ const useCreateSecretOptions = ({
     ),
     legacySecrets.length > 0 && (
       <SelectGroup
-        label="Legacy certs"
+        label={t('Legacy certs')}
         key={'legacy-certs' + configType + configName + isCa}
       >
         {legacySecrets.map((secret, index) => (
@@ -111,7 +111,7 @@ const useCreateSecretOptions = ({
     ),
     ptlsSecrets.length > 0 && (
       <SelectGroup
-        label="Reserved -plts secrets"
+        label={t('Reserved -plts secrets')}
         key={'reserved-certs' + configType + configName + isCa}
       >
         {ptlsSecrets.map((secret, index) => (
@@ -622,7 +622,10 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
       return value.metadata.name === selectedSecret.toString();
     });
     if (theSecret.length !== 1) {
-      <Alert variant="info" title={t('show_cert_info')} />;
+      <Alert
+        variant="info"
+        title={t('only support tls format secret from cert-manager')}
+      />;
     }
     let pem: string;
     try {
@@ -676,9 +679,11 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
         content={
           <>
             {stringSelectedSecret ? (
-              <div>Show cert details of {stringSelectedSecret}</div>
+              <div>
+                {t('Show cert details of')} {stringSelectedSecret}
+              </div>
             ) : (
-              <div>Select a secret to see its details</div>
+              <div>{t('Select a secret to see its details')}</div>
             )}
           </>
         }
@@ -737,7 +742,9 @@ export const CertSecretSelector: FC<CertSecretSelectorProps> = ({
                   {certGenMessage}
                 </Button>
               ) : (
-                <Tooltip content="Generation disabled: Install CertManager">
+                <Tooltip
+                  content={t('Generation disabled: Install CertManager')}
+                >
                   <Button isAriaDisabled variant="secondary">
                     {certGenMessage}
                   </Button>

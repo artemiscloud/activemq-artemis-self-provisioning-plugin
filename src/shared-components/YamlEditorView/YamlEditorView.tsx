@@ -13,7 +13,6 @@ import {
   Page,
   useInterval,
 } from '@patternfly/react-core';
-
 import { Loading } from '@app/shared-components/Loading/Loading';
 import {
   ArtemisReducerOperations,
@@ -23,6 +22,7 @@ import {
 import YAML, { YAMLParseError } from 'yaml';
 import './YamlEditorView.css';
 import { ResourceYAMLEditor } from '@openshift-console/dynamic-plugin-sdk';
+import { useTranslation } from '@app/i18n/i18n';
 
 type YamlEditorViewPropTypes = {
   isAskingPermissionToClose: boolean;
@@ -34,6 +34,7 @@ export const YamlEditorView: FC<YamlEditorViewPropTypes> = ({
   permissionGranted: permissionGranted,
   permissionDenied,
 }) => {
+  const { t } = useTranslation();
   const formState = useContext(BrokerCreationFormState);
   const dispatch = useContext(BrokerCreationFormDispatch);
 
@@ -108,7 +109,7 @@ export const YamlEditorView: FC<YamlEditorViewPropTypes> = ({
         )}
         <Modal
           variant={ModalVariant.small}
-          title="Unsaved changes"
+          title={t('Unsaved changes')}
           isOpen={isModalVisible}
           onClose={() => setIsModalVisible(false)}
           actions={[
@@ -124,7 +125,7 @@ export const YamlEditorView: FC<YamlEditorViewPropTypes> = ({
                 setIsModalVisible(false);
               }}
             >
-              Save and proceed
+              {t('Save and proceed')}
             </Button>,
             <Button
               key="confirm"
@@ -134,7 +135,7 @@ export const YamlEditorView: FC<YamlEditorViewPropTypes> = ({
                 permissionGranted();
               }}
             >
-              Discard and proceed
+              {t('Discard and proceed')}
             </Button>,
             <Button
               key="cancel"
@@ -144,18 +145,20 @@ export const YamlEditorView: FC<YamlEditorViewPropTypes> = ({
                 permissionDenied();
               }}
             >
-              Keep editing
+              {t('Keep editing')}
             </Button>,
           ]}
         >
-          The YAML editor contains pending modifications, manual saving is
-          required.
+          {t(
+            'The YAML editor contains pending modifications, manual saving is required.',
+          )}
         </Modal>
         {formState.yamlHasUnsavedChanges && (
           <Hint>
             <HintBody>
-              Any changes in the YAML view has to be manually saved to get taken
-              into consideration.
+              {t(
+                'Any changes in the YAML view has to be manually saved to get taken into consideration.',
+              )}
             </HintBody>
           </Hint>
         )}

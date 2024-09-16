@@ -68,16 +68,16 @@ describe('create broker', () => {
   it('clicking on cancel after making some changes displays a warning', async () => {
     render(<SimplifiedCreaterBrokerPage />);
     fireEvent.click(screen.getByRole('button', { name: /plus/i }));
-    fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Cancel/i }));
     expect(
       screen.getByText(
-        "You are about to quit the editor, the broker won't get created",
+        'You are about to quit the editor, the broker wont get created',
       ),
     ).toBeInTheDocument();
   });
   it("clicking on cancel immediately after opening the editor shouldn't display a warning", async () => {
     render(<SimplifiedCreaterBrokerPage />);
-    fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Cancel/i }));
     expect(
       screen.queryByText(
         "You are about to quit the editor, the broker won't get created",
@@ -95,7 +95,7 @@ describe('update broker', () => {
   it('clicking on cancel after making some changes displays a warning', async () => {
     render(<SimplifiedUpdateBrokerPage />);
     fireEvent.click(screen.getByRole('button', { name: /plus/i }));
-    fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Cancel/i }));
     expect(
       screen.queryByText(
         'You are about to quit the editor, configuration that is not applied will be lost',
@@ -104,7 +104,7 @@ describe('update broker', () => {
   });
   it("clicking on cancel immediately after opening the editor shouldn't display a warning", async () => {
     render(<SimplifiedUpdateBrokerPage />);
-    fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Cancel/i }));
     expect(
       screen.queryByText(
         'You are about to quit the editor, configuration that is not applied will be lost',
@@ -114,14 +114,14 @@ describe('update broker', () => {
   it('clicking on reload after making some changes displays a warning', async () => {
     render(<SimplifiedUpdateBrokerPage />);
     fireEvent.click(screen.getByRole('button', { name: /plus/i }));
-    fireEvent.click(screen.getByRole('button', { name: /reload/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Reload/i }));
     expect(
       screen.queryByText('Upon reloading, these modifications will be lost.'),
     ).toBeInTheDocument();
   });
   it("clicking on reload immediately after opening the editor shouldn't display a warning", async () => {
     render(<SimplifiedUpdateBrokerPage />);
-    fireEvent.click(screen.getByRole('button', { name: /reload/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Reload/i }));
     expect(
       screen.queryByText('Upon reloading, these modifications will be lost.'),
     ).not.toBeInTheDocument();

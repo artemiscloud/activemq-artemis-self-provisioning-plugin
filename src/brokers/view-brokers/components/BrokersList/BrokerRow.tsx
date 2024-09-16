@@ -36,6 +36,7 @@ type ConditionModalProps = {
 };
 
 const ConditionModal: FC<ConditionModalProps> = ({ status }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const conditions = status?.conditions
     ? (status.conditions as K8sResourceCondition[])
@@ -64,7 +65,7 @@ const ConditionModal: FC<ConditionModalProps> = ({ status }) => {
               >
                 {index > 0 && <Divider />}
                 <DescriptionListTerm>
-                  Condition at {condition.lastTransitionTime}
+                  {t('Condition at')} {condition.lastTransitionTime}
                 </DescriptionListTerm>
                 <DescriptionListDescription>
                   <DescriptionList columnModifier={{ lg: '2Col' }}>
@@ -128,11 +129,11 @@ export const BrokerRow: FC<BrokerRowProps> = ({
 
   const rowActions: IAction[] = [
     {
-      title: t('edit_broker'),
+      title: t('Edit Broker'),
       onClick: () => onEditBroker(obj),
     },
     {
-      title: t('delete_broker'),
+      title: t('Delete Broker'),
       onClick: () => onOpenModal(obj),
     },
   ];

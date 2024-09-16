@@ -63,23 +63,23 @@ export const PodsContainer: FC = () => {
         <div className="pf-u-mt-md pf-u-mb-md">
           <BrokerPodsBreadcrumb name={name} namespace={namespace} />
           <Title headingLevel="h2" className="pf-u-ml-md">
-            {t('broker')} {name}
+            {t('Broker')} {name}
           </Title>
         </div>
         {loadError && (
           <EmptyState>
             <EmptyStateHeader
-              titleText="Error while retrieving the pods list."
+              titleText={t('Error while retrieving the pods list.')}
               icon={<EmptyStateIcon icon={ErrorCircleOIcon} />}
               headingLevel="h4"
             />
-            <EmptyStateBody>No results match.</EmptyStateBody>
+            <EmptyStateBody>{t('No results match.')}</EmptyStateBody>
           </EmptyState>
         )}
         {loading && !loadError && (
           <EmptyState>
             <EmptyStateHeader
-              titleText="Loading"
+              titleText={t('Loading')}
               icon={<EmptyStateIcon icon={Spinner} />}
               headingLevel="h4"
             />
@@ -88,11 +88,13 @@ export const PodsContainer: FC = () => {
         {!loading && !loadError && brokerPods.length === 0 && (
           <EmptyState>
             <EmptyStateHeader
-              titleText="No results found. Check the status of the deployment."
+              titleText={t(
+                'No results found. Check the status of the deployment.',
+              )}
               icon={<EmptyStateIcon icon={SearchIcon} />}
               headingLevel="h4"
             />
-            <EmptyStateBody>No results match.</EmptyStateBody>
+            <EmptyStateBody>{t('No results match.')}</EmptyStateBody>
           </EmptyState>
         )}
         {!loading && !loadError && brokerPods.length > 0 && (

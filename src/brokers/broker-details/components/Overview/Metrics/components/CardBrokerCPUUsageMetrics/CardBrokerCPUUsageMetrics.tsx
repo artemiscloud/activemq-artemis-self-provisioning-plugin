@@ -42,8 +42,8 @@ export const CardBrokerCPUUsageMetrics: FC<CardBrokerCPUUsageMetricsProps> = ({
             return (
               <>
                 <ChartTitle
-                  title={t('cpu_usage')}
-                  helperText={t('cpu_usage_help_text')}
+                  title={t('CPU Usage')}
+                  helperText={t('CPU Usage')}
                 />
                 <CardBody>
                   <ChartCPUUsage

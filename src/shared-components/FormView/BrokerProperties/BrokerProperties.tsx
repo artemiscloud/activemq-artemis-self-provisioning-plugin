@@ -97,7 +97,7 @@ export const BrokerProperties: FC<BrokerIDProp> = ({
             isActive={currentConfigItem === ConfigType.acceptors}
             style={
               {
-                'list-style': 'none' /* reset to patternfly default value*/,
+                listStyle: 'none' /* reset to patternfly default value*/,
               } as CSSProperties
             }
           >
@@ -108,7 +108,7 @@ export const BrokerProperties: FC<BrokerIDProp> = ({
             isActive={currentConfigItem === ConfigType.connectors}
             style={
               {
-                'list-style': 'none' /* reset to patternfly default value*/,
+                listStyle: 'none' /* reset to patternfly default value*/,
               } as CSSProperties
             }
           >
@@ -119,7 +119,7 @@ export const BrokerProperties: FC<BrokerIDProp> = ({
             isActive={currentConfigItem === ConfigType.console}
             style={
               {
-                'list-style': 'none' /* reset to patternfly default value*/,
+                listStyle: 'none' /* reset to patternfly default value*/,
               } as CSSProperties
             }
           >

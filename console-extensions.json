@@ -60,22 +60,13 @@
     }
   },
   {
-    "type": "console.navigation/section",
-    "properties": {
-      "id": "activemq",
-      "perspective": "admin",
-      "name": "ActiveMQ Artemis",
-      "dataAttributes": { "data-quickstart-id": "qs-nav-home" }
-    }
-  },
-  {
     "type": "console.navigation/href",
     "properties": {
       "id": "brokers",
-      "name": "ActiveMQ Artemis Self Provisioning",
+      "name": "Brokers",
       "href": "/k8s/all-namespaces/brokers",
       "perspective": "admin",
-      "section": "activemq"
+      "section": "workloads"
     }
   }
 ]

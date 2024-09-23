@@ -119,6 +119,8 @@ This will run the OpenShift console in a container connected to the cluster
 you've logged into. The plugin HTTP server runs on port 9001 with CORS enabled.
 Navigate to <http://localhost:9000> to see the running plugin.
 
+To view our plugin on OpenShift, navigate to the Workloads section. The plugin will be listed as **Brokers**.
+
 If you want the console to run in `https` mode, run:
 
 `yarn run start-console-tls`

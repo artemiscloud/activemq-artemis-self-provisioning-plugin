@@ -68,5 +68,16 @@
       "perspective": "admin",
       "section": "workloads"
     }
+  },
+  {
+    "type": "console.resource/create",
+    "properties": {
+      "model": {
+        "group": "broker.amq.io",
+        "version": "v1beta1",
+        "kind": "ActiveMQArtemis"
+      },
+      "component":  { "$codeRef": "AddBrokerContainer.AddBrokerPage" }
+    }
   }
 ]

@@ -54,19 +54,14 @@ export const AcceptorsConfigPage: FC<AcceptorsConfigProps> = ({ brokerId }) => {
     return (
       <EmptyState variant={EmptyStateVariant.sm}>
         <EmptyStateHeader
-          titleText={
-            <>
-              {t('No')}
-              {name}
-              {t('configured')}
-            </>
-          }
+          titleText={t('No {{name}} configured', { name })}
           icon={<EmptyStateIcon icon={CubesIcon} />}
           headingLevel="h4"
         />
         <EmptyStateBody>
           {t(
-            'There is no {name} in your configuration, to add one click on the button below.',
+            'There is no {{name}} in your configuration, to add one click on the button below.',
+            { name },
           )}{' '}
         </EmptyStateBody>
         <EmptyStateFooter>

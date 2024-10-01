@@ -65,6 +65,7 @@
       "id": "brokers",
       "name": "Brokers",
       "href": "/k8s/all-namespaces/brokers",
+      "insertAfter": "statefulsets",
       "perspective": "admin",
       "section": "workloads"
     }

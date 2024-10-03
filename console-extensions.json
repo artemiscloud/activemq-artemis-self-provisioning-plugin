@@ -49,12 +49,27 @@
     }
   },
   {
+    "type": "console.tab/horizontalNav",
+    "properties": {
+      "page": {
+        "name": "Addresses",
+        "href": "addresses"
+      },
+      "model": {
+        "group": "core",
+        "version": "v1",
+        "kind": "Pod"
+      },
+      "component": { "$codeRef": "AddressesContainer.App" }
+    }
+  },
+  {
     "type": "console.page/route",
     "properties": {
       "exact": true,
       "path": [
-        "/k8s/ns/:ns/brokers/:brokerName/:podName/address/:name",
-        "/k8s/all-namespaces/brokers/:brokerName/:podName/address/:name"
+        "/k8s/ns/:ns/pods/:podName/addresses/address/:name",
+        "/k8s/all-namespaces/pods/:podName/addresses/address/:name"
       ],
       "component": { "$codeRef": "AddressDetailsContainer.App" }
     }
@@ -78,7 +93,7 @@
         "version": "v1beta1",
         "kind": "ActiveMQArtemis"
       },
-      "component":  { "$codeRef": "AddBrokerContainer.AddBrokerPage" }
+      "component": { "$codeRef": "AddBrokerContainer.AddBrokerPage" }
     }
   }
 ]

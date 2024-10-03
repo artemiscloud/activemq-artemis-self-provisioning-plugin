@@ -19,15 +19,13 @@ export type AddressBreadcrumbProps = {
 const AddressDetailsBreadcrumb: FC<AddressBreadcrumbProps> = ({
   name,
   namespace,
-  brokerName,
   podName,
 }) => {
   const { t } = useTranslation();
 
-  const redirectBrokerPath = `/k8s/ns/${namespace}/brokers`;
-  const redirectBrokerPodsPath = `/k8s/ns/${namespace}/brokers/${brokerName}`;
-  const redirectBrokerDetailsPath = `/k8s/ns/${namespace}/brokers/${brokerName}/${podName}`;
-  const redirectAddressPath = `/k8s/ns/${namespace}/brokers/${brokerName}/${podName}?tab=addresses`;
+  const redirectBrokerPodsPath = `/k8s/ns/${namespace}/pods`;
+  const redirectPodsDetailsPath = `/k8s/ns/${namespace}/pods/${podName}`;
+  const redirectAddressPath = `/k8s/ns/${namespace}/pods/${podName}/addresses`;
   const navigate = useNavigate();
 
   return (
@@ -35,24 +33,19 @@ const AddressDetailsBreadcrumb: FC<AddressBreadcrumbProps> = ({
       <LevelItem>
         <Breadcrumb className="pf-u-mb-md">
           <BreadcrumbItem>
-            <Button variant="link" onClick={() => navigate(redirectBrokerPath)}>
-              {t('Brokers')}
-            </Button>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
             <Button
               variant="link"
               onClick={() => navigate(redirectBrokerPodsPath)}
             >
-              {t('Broker')} {brokerName}
+              {t('Pods')}
             </Button>
           </BreadcrumbItem>
           <BreadcrumbItem>
             <Button
               variant="link"
-              onClick={() => navigate(redirectBrokerDetailsPath)}
+              onClick={() => navigate(redirectPodsDetailsPath)}
             >
-              {podName}
+              {t('Pod details')}
             </Button>
           </BreadcrumbItem>
           <BreadcrumbItem>

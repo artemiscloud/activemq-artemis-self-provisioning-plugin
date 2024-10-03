@@ -11,7 +11,6 @@ import {
 } from '@patternfly/react-core';
 import { useTranslation } from '@app/i18n/i18n';
 import { ClientsContainer } from './components/Clients/Clients.container';
-import { AddressContainer } from './components/Addresses/Address.container';
 import { BrokerDetailsBreadcrumb } from './components/BrokerDetailsBreadcrumb/BrokerDetailsBreadcrumb';
 import {
   JolokiaAcceptorDetails,
@@ -99,12 +98,6 @@ const AuthenticatedPageContent: FC<AuthenticatedPageContentPropType> = ({
           title={<TabTitleText>{t('Clients')}</TabTitleText>}
         >
           <ClientsContainer />
-        </Tab>
-        <Tab
-          eventKey={'addresses'}
-          title={<TabTitleText>{t('Addresses')}</TabTitleText>}
-        >
-          <AddressContainer />
         </Tab>
         {process.env.NODE_ENV === 'development' && (
           <Tab
@@ -198,16 +191,18 @@ export const BrokerDetailsPage: FC = () => {
   const podOrdinal = parseInt(podName.replace(brokerName + '-ss-', ''));
 
   return (
-    <JolokiaAuthentication brokerCR={brokerCr} podOrdinal={podOrdinal}>
-      <AuthenticatedPageContent
-        brokerCr={brokerCr}
-        brokerName={brokerName}
-        podName={podName}
-        namespace={namespace}
-        loading={isLoading}
-        error={error}
-      />
-    </JolokiaAuthentication>
+    <>
+      <JolokiaAuthentication brokerCR={brokerCr} podOrdinal={podOrdinal}>
+        <AuthenticatedPageContent
+          brokerCr={brokerCr}
+          brokerName={brokerName}
+          podName={podName}
+          namespace={namespace}
+          loading={isLoading}
+          error={error}
+        />
+      </JolokiaAuthentication>
+    </>
   );
 };
 

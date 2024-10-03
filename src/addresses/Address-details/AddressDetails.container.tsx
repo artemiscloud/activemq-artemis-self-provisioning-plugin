@@ -8,24 +8,24 @@ import {
 import { useTranslation } from '@app/i18n/i18n';
 import { AddressDetails } from './AddressDetails.component';
 import { AddressDetailsBreadcrumb } from './AddressDetailsBreadcrumb/AddressDetailsBreadcrumb';
-
 import { useParams } from 'react-router-dom-v5-compat';
 import { JolokiaAuthentication } from '@app/jolokia/components/JolokiaAuthentication';
 import { useGetBrokerCR } from '@app/k8s/customHooks';
 
 export const AddressDetailsPage: FC = () => {
   const { t } = useTranslation();
+
   const {
     name,
     ns: namespace,
-    brokerName,
-    podName,
+    podName: podName,
   } = useParams<{
-    name?: string;
     ns?: string;
-    brokerName?: string;
+    name?: string;
     podName?: string;
   }>();
+
+  const brokerName = podName?.match(/(.*)-ss-\d+/)?.[1] ?? '';
 
   const { brokerCr: brokerDetails, error: error } = useGetBrokerCR(
     brokerName,

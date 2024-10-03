@@ -23,7 +23,7 @@ jest.mock('@openshift-console/dynamic-plugin-sdk', () => ({
   ),
 }));
 
-jest.mock('../../../../openapi/jolokia/queries', () => ({
+jest.mock('@app/openapi/jolokia/queries', () => ({
   useJolokiaServiceReadAddressAttributes: jest.fn(),
 }));
 

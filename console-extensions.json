@@ -18,12 +18,10 @@
   {
     "type": "console.page/route",
     "properties": {
-      "exact": false,
+      "exact": true,
       "path": [
         "/k8s/ns/:ns/edit-broker/:name",
-        "/k8s/all-namespaces/edit-broker/:name",
-        "/k8s/ns/:ns/broker.amq.io~v1beta1~ActiveMQArtemis/:name",
-        "/k8s/ns/:ns/clusterserviceversions/:operator/broker.amq.io~v1beta1~ActiveMQArtemis/:name"
+        "/k8s/all-namespaces/edit-broker/:name"
       ],
       "component": { "$codeRef": "UpdateBrokerContainer.UpdateBrokerPage" }
     }

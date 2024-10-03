@@ -1,5 +1,5 @@
 import { render, screen } from '@app/test-utils';
-import { Addresses, AddressProps } from './Address.component';
+import { Addresses } from './Address.component';
 
 jest.mock('@openshift-console/dynamic-plugin-sdk', () => ({
   VirtualizedTable: jest.fn(({ Row, data, columns }) => (
@@ -21,32 +21,17 @@ jest.mock('./AddressRow', () => ({
 }));
 
 describe('Addresses', () => {
-  const mockAddressProps: AddressProps = {
-    addressData: [
-      {
-        name: 'DLQ',
-        broker: {
-          name: 'test-1',
-        },
-      },
-    ],
-    isLoaded: true,
-    loadError: null,
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should render the PodsList component', () => {
-    render(<Addresses {...mockAddressProps} />);
+  it('should render the Addresses component', () => {
+    render(<Addresses isBrokerPod={true} />);
     expect(screen.getByText('Addresses')).toBeInTheDocument();
   });
 
-  it('should render PodRow components within the VirtualizedTable', () => {
-    render(<Addresses {...mockAddressProps} />);
-
-    const addressRowElements = screen.getAllByText('AddressRow Component');
-    expect(addressRowElements.length).toBe(mockAddressProps.addressData.length);
+  it('should render AddressRow component within the VirtualizedTable', () => {
+    render(<Addresses isBrokerPod={true} />);
+    expect(screen.getByText('AddressRow Component')).toBeInTheDocument();
   });
 });

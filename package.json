@@ -115,7 +115,8 @@
       "UpdateBrokerContainer": "./brokers/update-broker/UpdateBroker.container",
       "PodsListContainer": "./brokers/broker-pods/PodsList.container",
       "BrokerDetailsContainer": "./brokers/broker-details/BrokerDetails.container",
-      "AddressDetailsContainer": "./addresses/address-details/AddressDetails.container"
+      "AddressesContainer": "./addresses/Addresses/Address.container",
+      "AddressDetailsContainer": "./addresses/Address-details/AddressDetails.container"
     },
     "dependencies": {
       "@console/pluginAPI": "*"

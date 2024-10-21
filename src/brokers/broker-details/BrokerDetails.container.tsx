@@ -20,6 +20,7 @@ import {
   JolokiaTestPanel,
 } from './components/JolokiaDevComponents';
 import { OverviewContainer } from './components/Overview/Overview.container';
+import { PodsContainer } from '@app/brokers/broker-details/components/broker-pods/PodsList.container';
 import {
   useLocation,
   useNavigate,
@@ -36,17 +37,15 @@ import {
 
 type AuthenticatedPageContentPropType = {
   brokerCr: BrokerCR;
-  brokerName: string;
-  podName: string;
+  name: string;
   namespace: string;
   loading: boolean;
   error: string;
 };
 const AuthenticatedPageContent: FC<AuthenticatedPageContentPropType> = ({
   brokerCr,
-  brokerName,
+  name,
   namespace,
-  podName,
   loading: loadingBrokerCr,
   error: errorBrokerCr,
 }) => {
@@ -71,13 +70,9 @@ const AuthenticatedPageContent: FC<AuthenticatedPageContentPropType> = ({
       className="pf-c-page__main-tabs"
     >
       <div className="pf-u-mt-md pf-u-mb-md">
-        <BrokerDetailsBreadcrumb
-          name={brokerName}
-          namespace={namespace}
-          podName={podName}
-        />
+        <BrokerDetailsBreadcrumb name={name} namespace={namespace} />
         <Title headingLevel="h2" className="pf-u-ml-md">
-          {t('Broker')} {brokerName} {t('/')} {podName}
+          {t('Broker')} {name}
         </Title>
       </div>
       {errorBrokerCr && <Alert variant="danger" title={errorBrokerCr} />}
@@ -87,7 +82,7 @@ const AuthenticatedPageContent: FC<AuthenticatedPageContentPropType> = ({
           title={<TabTitleText>{t('Overview')}</TabTitleText>}
         >
           <OverviewContainer
-            name={brokerName}
+            name={name}
             namespace={namespace}
             cr={brokerCr}
             loading={loadingBrokerCr}
@@ -98,6 +93,9 @@ const AuthenticatedPageContent: FC<AuthenticatedPageContentPropType> = ({
           title={<TabTitleText>{t('Clients')}</TabTitleText>}
         >
           <ClientsContainer />
+        </Tab>
+        <Tab eventKey={'pods'} title={<TabTitleText>{t('Pods')}</TabTitleText>}>
+          <PodsContainer />
         </Tab>
         {process.env.NODE_ENV === 'development' && (
           <Tab
@@ -175,28 +173,18 @@ const AuthenticatedPageContent: FC<AuthenticatedPageContentPropType> = ({
     </PageSection>
   );
 };
+
 export const BrokerDetailsPage: FC = () => {
-  const {
-    ns: namespace,
-    brokerName,
-    podName,
-  } = useParams<{
-    ns?: string;
-    brokerName?: string;
-    podName?: string;
-  }>();
+  const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
 
-  const { brokerCr, isLoading, error } = useGetBrokerCR(brokerName, namespace);
-
-  const podOrdinal = parseInt(podName.replace(brokerName + '-ss-', ''));
+  const { brokerCr, isLoading, error } = useGetBrokerCR(name, namespace);
 
   return (
     <>
-      <JolokiaAuthentication brokerCR={brokerCr} podOrdinal={podOrdinal}>
+      <JolokiaAuthentication brokerCR={brokerCr} podOrdinal={0}>
         <AuthenticatedPageContent
           brokerCr={brokerCr}
-          brokerName={brokerName}
-          podName={podName}
+          name={name}
           namespace={namespace}
           loading={isLoading}
           error={error}

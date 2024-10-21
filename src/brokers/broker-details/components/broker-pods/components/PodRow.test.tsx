@@ -37,7 +37,11 @@ const mockColumns: TableColumn<BrokerCR>[] = [
 const mockObj: BrokerCR = {
   apiVersion: 'v1',
   kind: 'Pod',
-  metadata: { name: 'test-1-ss-0', creationTimestamp: '2024-08-08T07:23:00Z' },
+  metadata: {
+    name: 'test-1-ss-0',
+    creationTimestamp: '2024-08-08T07:23:00Z',
+    namespace: 'test-namespace',
+  },
   status: {
     phase: 'Running',
     containerStatuses: [
@@ -70,7 +74,7 @@ describe('PodRow', () => {
     expect(screen.getByText('test-1-ss-0')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /test-1-ss-0/i })).toHaveAttribute(
       'href',
-      '/test-1-ss-0',
+      '/k8s/ns/test-namespace/pods/test-1-ss-0',
     );
   });
 

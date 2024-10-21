@@ -34,17 +34,6 @@
         "/k8s/ns/:ns/brokers/:name",
         "/k8s/all-namespaces/brokers/:name"
       ],
-      "component": { "$codeRef": "PodsListContainer.PodsContainer" }
-    }
-  },
-  {
-    "type": "console.page/route",
-    "properties": {
-      "exact": true,
-      "path": [
-        "/k8s/ns/:ns/brokers/:brokerName/:podName",
-        "/k8s/all-namespaces/brokers/:brokerName/:podName"
-      ],
       "component": { "$codeRef": "BrokerDetailsContainer.App" }
     }
   },

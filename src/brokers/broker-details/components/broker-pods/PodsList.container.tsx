@@ -13,11 +13,9 @@ import {
   PageSection,
   PageSectionVariants,
   Spinner,
-  Title,
   EmptyStateHeader,
 } from '@patternfly/react-core';
 import { ErrorCircleOIcon, SearchIcon } from '@patternfly/react-icons';
-import { BrokerPodsBreadcrumb } from './components/BrokerPodsBreadcrumb/BrokerPodsBreadcrumb';
 import { useParams } from 'react-router-dom-v5-compat';
 
 export const PodsContainer: FC = () => {
@@ -60,12 +58,6 @@ export const PodsContainer: FC = () => {
         padding={{ default: 'noPadding' }}
         className="pf-c-page__main-tabs"
       >
-        <div className="pf-u-mt-md pf-u-mb-md">
-          <BrokerPodsBreadcrumb name={name} namespace={namespace} />
-          <Title headingLevel="h2" className="pf-u-ml-md">
-            {t('Broker')} {name}
-          </Title>
-        </div>
         {loadError && (
           <EmptyState>
             <EmptyStateHeader

@@ -12,22 +12,20 @@ import {
   DropdownPosition,
   KebabToggle,
 } from '@patternfly/react-core/deprecated';
+import { PreConfirmDeleteModal } from '../../../view-brokers/components/PreConfirmDeleteModal/PreConfirmDeleteModal';
 import { useTranslation } from '@app/i18n/i18n';
 import { k8sDelete } from '@openshift-console/dynamic-plugin-sdk';
 import { AMQBrokerModel } from '@app/k8s/models';
-import { PreConfirmDeleteModal } from '../../../view-brokers/components/PreConfirmDeleteModal/PreConfirmDeleteModal';
 import { useNavigate } from 'react-router-dom-v5-compat';
 
 export type BrokerDetailsBreadcrumbProps = {
   name: string;
   namespace: string;
-  podName: string;
 };
 
 const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   name,
   namespace,
-  podName,
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -35,8 +33,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
   const [_loadError, setLoadError] = useState<any>();
   const navigate = useNavigate();
 
-  const redirectBrokerPath = `/k8s/ns/${namespace}/brokers`;
-  const redirectBrokerPodsPath = `/k8s/ns/${namespace}/brokers/${name}`;
+  const redirectPath = `/k8s/ns/${namespace}/brokers`;
 
   const onClickEditBroker = () => {
     const currentPath = window.location.pathname;
@@ -61,7 +58,7 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
       resource: { metadata: { name, namespace: namespace } },
     })
       .then(() => {
-        navigate(redirectBrokerPath);
+        navigate(redirectPath);
       })
       .catch((e) => {
         setLoadError(e.message);
@@ -91,22 +88,13 @@ const BrokerDetailsBreadcrumb: FC<BrokerDetailsBreadcrumbProps> = ({
         <LevelItem>
           <Breadcrumb className="pf-u-mb-md">
             <BreadcrumbItem>
-              <Button
-                variant="link"
-                onClick={() => navigate(redirectBrokerPath)}
-              >
+              <Button variant="link" onClick={() => navigate(redirectPath)}>
                 {t('Brokers')}
               </Button>
             </BreadcrumbItem>
-            <BreadcrumbItem>
-              <Button
-                variant="link"
-                onClick={() => navigate(redirectBrokerPodsPath)}
-              >
-                {t('Broker')} {name}
-              </Button>
+            <BreadcrumbItem isActive>
+              {t('Broker')} {name}
             </BreadcrumbItem>
-            <BreadcrumbItem isActive>{podName}</BreadcrumbItem>
           </Breadcrumb>
         </LevelItem>
         <LevelItem>

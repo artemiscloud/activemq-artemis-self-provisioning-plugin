@@ -22,7 +22,6 @@ jest.mock('@openshift-console/dynamic-plugin-sdk', () => ({
 describe('BrokerDetailsBreadcrumb', () => {
   const name = 'test-1';
   const namespace = 'test';
-  const podName = 'test-1-ss-0';
   const navigate = jest.fn();
 
   beforeEach(() => {
@@ -36,11 +35,7 @@ describe('BrokerDetailsBreadcrumb', () => {
   it('should render the component correctly', async () => {
     render(
       <MemoryRouter>
-        <BrokerDetailsBreadcrumb
-          name={name}
-          namespace={namespace}
-          podName={podName}
-        />
+        <BrokerDetailsBreadcrumb name={name} namespace={namespace} />
       </MemoryRouter>,
     );
   });
@@ -48,27 +43,18 @@ describe('BrokerDetailsBreadcrumb', () => {
   it('should displays correct breadcrumb items', async () => {
     const comp = render(
       <MemoryRouter>
-        <BrokerDetailsBreadcrumb
-          name={name}
-          namespace={namespace}
-          podName={podName}
-        />
+        <BrokerDetailsBreadcrumb name={name} namespace={namespace} />
       </MemoryRouter>,
     );
     await waitForI18n(comp);
     expect(comp.getByText('Brokers')).toBeInTheDocument();
     expect(comp.getByText(`Broker ${name}`)).toBeInTheDocument();
-    expect(comp.getByText(`${podName}`)).toBeInTheDocument();
   });
 
   it('should navigate back to BrokerList page when click on Brokers BreadcrumbItem', async () => {
     const comp = render(
       <MemoryRouter>
-        <BrokerDetailsBreadcrumb
-          name={name}
-          namespace={namespace}
-          podName={podName}
-        />
+        <BrokerDetailsBreadcrumb name={name} namespace={namespace} />
       </MemoryRouter>,
     );
     await waitForI18n(comp);
@@ -77,33 +63,11 @@ describe('BrokerDetailsBreadcrumb', () => {
     expect(navigate).toHaveBeenCalledWith(`/k8s/ns/${namespace}/brokers`);
   });
 
-  it('should navigate back to BrokerPodsList page when click on BrokerPods BreadcrumbItem', async () => {
-    const comp = render(
-      <MemoryRouter>
-        <BrokerDetailsBreadcrumb
-          name={name}
-          namespace={namespace}
-          podName={podName}
-        />
-      </MemoryRouter>,
-    );
-    await waitForI18n(comp);
-
-    fireEvent.click(screen.getByText(`Broker ${name}`));
-    expect(navigate).toHaveBeenCalledWith(
-      `/k8s/ns/${namespace}/brokers/${name}`,
-    );
-  });
-
   it('should redirect back to BrokerList page when namespace is all-namespaces', async () => {
     const namespace = 'all-namespaces';
     const comp = render(
       <MemoryRouter>
-        <BrokerDetailsBreadcrumb
-          name={name}
-          namespace={namespace}
-          podName={podName}
-        />
+        <BrokerDetailsBreadcrumb name={name} namespace={namespace} />
       </MemoryRouter>,
     );
     await waitForI18n(comp);
@@ -115,11 +79,7 @@ describe('BrokerDetailsBreadcrumb', () => {
   it('should onToggle toggle the isOpen state', async () => {
     const comp = render(
       <MemoryRouter>
-        <BrokerDetailsBreadcrumb
-          name={name}
-          namespace={namespace}
-          podName={podName}
-        />
+        <BrokerDetailsBreadcrumb name={name} namespace={namespace} />
       </MemoryRouter>,
     );
     await waitForI18n(comp);
@@ -133,11 +93,7 @@ describe('BrokerDetailsBreadcrumb', () => {
   it('should open and close the delete broker modal', async () => {
     const comp = render(
       <MemoryRouter>
-        <BrokerDetailsBreadcrumb
-          name={name}
-          namespace={namespace}
-          podName={podName}
-        />
+        <BrokerDetailsBreadcrumb name={name} namespace={namespace} />
       </MemoryRouter>,
     );
     await waitForI18n(comp);
@@ -155,11 +111,7 @@ describe('BrokerDetailsBreadcrumb', () => {
   it('should navigate back to UpdateBrokerPage when onclick on Edit Broker button with the current path as returnUrl', async () => {
     const comp = render(
       <MemoryRouter>
-        <BrokerDetailsBreadcrumb
-          name={name}
-          namespace={namespace}
-          podName={podName}
-        />
+        <BrokerDetailsBreadcrumb name={name} namespace={namespace} />
       </MemoryRouter>,
     );
     await waitForI18n(comp);
@@ -177,11 +129,7 @@ describe('BrokerDetailsBreadcrumb', () => {
     (k8sDelete as jest.Mock).mockResolvedValue({});
     const comp = render(
       <MemoryRouter>
-        <BrokerDetailsBreadcrumb
-          name={name}
-          namespace={namespace}
-          podName={podName}
-        />
+        <BrokerDetailsBreadcrumb name={name} namespace={namespace} />
       </MemoryRouter>,
     );
     await waitForI18n(comp);

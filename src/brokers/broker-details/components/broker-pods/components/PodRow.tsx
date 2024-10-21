@@ -14,7 +14,7 @@ export type PodRowProps = RowProps<BrokerCR> & {
 
 export const PodRow: FC<PodRowProps> = ({ obj, activeColumnIDs, columns }) => {
   const {
-    metadata: { name, creationTimestamp },
+    metadata: { name, creationTimestamp, namespace },
     status,
   } = obj;
 
@@ -32,7 +32,7 @@ export const PodRow: FC<PodRowProps> = ({ obj, activeColumnIDs, columns }) => {
   return (
     <>
       <TableData id={columns[0].id} activeColumnIDs={activeColumnIDs}>
-        <Link to={name}> {name} </Link>
+        <Link to={`/k8s/ns/${namespace}/pods/${name}`}> {name} </Link>
       </TableData>
       <TableData id={columns[1].id} activeColumnIDs={activeColumnIDs}>
         {status?.phase || '-'}

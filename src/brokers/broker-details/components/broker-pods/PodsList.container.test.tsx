@@ -16,12 +16,6 @@ jest.mock('./components/PodList', () => ({
   PodsList: jest.fn(() => <div>PodsList Component</div>),
 }));
 
-jest.mock('./components/BrokerPodsBreadcrumb/BrokerPodsBreadcrumb', () => ({
-  BrokerPodsBreadcrumb: jest.fn(() => (
-    <div>BrokerPodsBreadcrumb Component</div>
-  )),
-}));
-
 describe('PodsContainer', () => {
   const mockUseK8sWatchResource = useK8sWatchResource as jest.Mock;
   const mockUseParams = useParams as jest.Mock;

@@ -50,8 +50,7 @@ describe('BrokerDetailsPage', () => {
 
     mockUseParams.mockReturnValue({
       ns: 'test-namespace',
-      brokerName: 'test-1',
-      podName: 'test-1-ss-0',
+      name: 'test-1',
     });
 
     mockUseLocation.mockReturnValue({
@@ -90,7 +89,7 @@ describe('BrokerDetailsPage', () => {
     expect(
       screen.getByText('Mocked BrokerDetailsBreadcrumb'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Broker test-1 / test-1-ss-0'));
+    expect(screen.getByText('Broker test-1'));
     expect(screen.getByText('Overview')).toBeInTheDocument();
     expect(screen.getByText('OverviewContainer component')).toBeInTheDocument();
     expect(screen.getByText('Clients')).toBeInTheDocument();

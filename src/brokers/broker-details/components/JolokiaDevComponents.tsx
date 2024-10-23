@@ -6,9 +6,7 @@ import {
 import { FC, useContext, useState } from 'react';
 import {
   Button,
-  TextContent,
   TextInput,
-  TextArea,
   Title,
   Form,
   FormSelect,
@@ -16,6 +14,7 @@ import {
   FormGroup,
   ActionGroup,
   Spinner,
+  CodeBlockCode,
 } from '@patternfly/react-core';
 import {
   useDevelopmentServiceApiInfoKey,
@@ -522,7 +521,7 @@ const JolokiaTestPanel: FC = () => {
   const { mutate: performExecBrokerOperation } =
     useJolokiaServiceExecBrokerOperation({
       onSuccess: (data: any) => {
-        setJolokiaTestResult(JSON.stringify(data));
+        setJolokiaTestResult(JSON.stringify(data, null, 2));
       },
       onError: (error: any) => setError(error as string),
     });
@@ -622,15 +621,8 @@ const JolokiaTestPanel: FC = () => {
           Test Operation
         </Button>
       </div>
-      <TextContent>
-        <TextArea
-          aria-label="auto resize"
-          autoResize={true}
-          value={jolokiaTestResult}
-          resizeOrientation="vertical"
-          rows={20}
-        ></TextArea>
-      </TextContent>
+
+      <CodeBlockCode id="jolokia-result">{jolokiaTestResult}</CodeBlockCode>
     </>
   );
 };

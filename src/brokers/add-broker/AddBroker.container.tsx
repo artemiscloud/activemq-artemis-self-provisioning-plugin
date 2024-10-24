@@ -29,19 +29,26 @@ export const AddBrokerPage: FC = () => {
   const [brokerModel, dispatch] = useReducer(artemisCrReducer, initialValues);
 
   const params = new URLSearchParams(location.search);
-  const returnUrl = params.get('returnUrl') || '/k8s/all-namespaces/brokers';
+  const returnUrl = params.get('returnUrl');
+
   const handleRedirect = () => {
-    navigate(returnUrl);
+    if (returnUrl) {
+      navigate(returnUrl);
+    } else {
+      navigate(-1);
+    }
   };
 
-  const [hasBrokerUpdated, setHasBrokerUpdated] = useState(false);
+  const [_hasBrokerUpdated, setHasBrokerUpdated] = useState(false);
   const [alert, setAlert] = useState('');
+
   const k8sCreateBroker = (content: BrokerCR) => {
     k8sCreate({ model: AMQBrokerModel, data: content })
       .then(
         () => {
           setAlert('');
           setHasBrokerUpdated(true);
+          handleRedirect();
         },
         (reason: Error) => {
           setAlert(reason.message);
@@ -72,10 +79,6 @@ export const AddBrokerPage: FC = () => {
       },
     });
     setIsDomainSet(true);
-  }
-
-  if (hasBrokerUpdated && alert === '') {
-    handleRedirect();
   }
 
   return (

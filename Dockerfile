@@ -33,4 +33,4 @@ ENTRYPOINT ["nginx", "-g", "daemon off;"]
 LABEL name="artemiscloud/activemq-artemis-self-provisioning-plugin"
 LABEL description="ActiveMQ Artemis Self Provisioning Plugin"
 LABEL maintainer="Roderick Kieley <rkieley@redhat.com>"
-LABEL version="0.2.0"
+LABEL version="0.3.0"

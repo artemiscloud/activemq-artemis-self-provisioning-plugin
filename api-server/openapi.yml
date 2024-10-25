@@ -6,9 +6,9 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 1.0.0-alpha
+  version: 0.1.1
   description: |
-    This document contains a list of currently avaliable apis that
+    This document contains a list of currently available apis that
     can be used by the **activemq-artemis-self-provisioning plugin**
     to get access to the [management api](https://github.com/apache/activemq-artemis/blob/main/docs/user-manual/management.adoc#the-management-api) of a broker instance via 
     its [jolokia](https://jolokia.org/) endpoint.
@@ -483,6 +483,118 @@ paths:
               schema:
                 type: object
                 $ref: '#/components/schemas/FailureResponse'
+  /readClusterConnectionAttributes:
+    get:
+      summary: read cluster connection attributes
+      description: >
+        **Read values of cluster connection attributes**
+          The return value is a json array that contains
+          values of requested attributes of the cluster connection's mbean.
+
+          **Note**: to read multiple attributes, set it to **attrs** parameter
+          separated by commas, e.g. `NodeID, Topology`.
+      tags:
+        - jolokia
+      operationId: readClusterConnectionAttributes
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
+        - name: name
+          description: the cluster connection name
+          schema:
+            type: string
+          required: true
+          in: query
+        - name: attrs
+          description: attribute names separated by commas. If not speified read all attributes.
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ComponentAttribute'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+  /execClusterConnectionOperation:
+    post:
+      summary: execute a cluster connection operation
+      description: >
+        **Invoke an operation of the cluster connection mbean**
+
+          It receives a POST request where the body
+          should have the operation signature and its args.
+          The return value is a one element json array that contains
+          return values of invoked operation along with the request info.
+      tags:
+        - jolokia
+      operationId: execClusterConnectionOperation
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: name
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OperationRef'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExecResult'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+
   /checkCredentials:
     get:
       summary: Check the validity of the credentials
@@ -875,6 +987,90 @@ paths:
               schema:
                 type: object
                 $ref: '#/components/schemas/FailureResponse'
+  /clusterConnections:
+    get:
+      summary: list cluster connections
+      description: >
+        **Get all cluster connections in a broker**
+
+          It retrieves and returns a list of all cluster connection mbeans
+      tags:
+        - jolokia
+      operationId: getClusterConnections
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClusterConnection'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+  /clusterConnectionDetails:
+    get:
+      summary: retrieve cluster connection details
+      description: >
+        **Get details of a connection cluster**
+          The return value is a json object that contains
+          description of all the operations and attributes of a `cluster connection` mbean.
+
+          It is defined in [ClusterConnectionControl.java](https://github.com/apache/activemq-artemis/blob/2.33.0/artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/management/ClusterConnectionControl.java)
+      tags:
+        - jolokia
+      operationId: getClusterConnectionDetails
+      parameters:
+        - in: header
+          name: jolokia-session-id
+          schema:
+            type: string
+          required: true
+        - name: name
+          required: true
+          in: query
+          schema:
+            type: string
+            description: the cluster connection name
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComponentDetails'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailureResponse'
   /api-info:
     get:
       summary: the api info
@@ -1026,6 +1222,16 @@ components:
         broker:
           $ref: '#/components/schemas/Broker'
     Acceptor:
+      type: object
+      required:
+        - name
+        - broker
+      properties:
+        name:
+          type: string
+        broker:
+          $ref: '#/components/schemas/Broker'
+    ClusterConnection:
       type: object
       required:
         - name

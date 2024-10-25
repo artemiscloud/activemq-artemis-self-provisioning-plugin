@@ -226,6 +226,72 @@ export const useJolokiaServiceReadAcceptorAttributes = <
     () => JolokiaService.readAcceptorAttributes(jolokiaSessionId, name, attrs),
     options,
   );
+export const useJolokiaServiceReadClusterConnectionAttributesKey =
+  'JolokiaServiceReadClusterConnectionAttributes';
+export const useJolokiaServiceReadClusterConnectionAttributes = <
+  TQueryKey extends Array<unknown> = unknown[],
+>(
+  {
+    jolokiaSessionId,
+    name,
+    attrs,
+  }: {
+    jolokiaSessionId: string;
+    name: string;
+    attrs?: Array<string>;
+  },
+  queryKey?: TQueryKey,
+  options?: Omit<
+    UseQueryOptions<
+      Awaited<
+        ReturnType<typeof JolokiaService.readClusterConnectionAttributes>
+      >,
+      unknown,
+      Awaited<
+        ReturnType<typeof JolokiaService.readClusterConnectionAttributes>
+      >,
+      unknown[]
+    >,
+    'queryKey' | 'queryFn' | 'initialData'
+  >,
+) =>
+  useQuery(
+    [
+      useJolokiaServiceReadClusterConnectionAttributesKey,
+      ...(queryKey ?? [{ jolokiaSessionId, name, attrs }]),
+    ],
+    () =>
+      JolokiaService.readClusterConnectionAttributes(
+        jolokiaSessionId,
+        name,
+        attrs,
+      ),
+    options,
+  );
+export const useJolokiaServiceExecClusterConnectionOperation = (
+  options?: Omit<
+    UseMutationOptions<
+      Awaited<ReturnType<typeof JolokiaService.execClusterConnectionOperation>>,
+      unknown,
+      {
+        jolokiaSessionId: string;
+        name: string;
+        requestBody: OperationRef;
+      },
+      unknown
+    >,
+    'mutationFn'
+  >,
+) =>
+  useMutation(
+    ({ jolokiaSessionId, name, requestBody }) =>
+      JolokiaService.execClusterConnectionOperation(
+        jolokiaSessionId,
+        name,
+        requestBody,
+      ),
+    options,
+  );
 export const useJolokiaServiceCheckCredentialsKey =
   'JolokiaServiceCheckCredentials';
 export const useJolokiaServiceCheckCredentials = <
@@ -484,6 +550,66 @@ export const useJolokiaServiceGetAcceptorDetails = <
       ...(queryKey ?? [{ jolokiaSessionId, name }]),
     ],
     () => JolokiaService.getAcceptorDetails(jolokiaSessionId, name),
+    options,
+  );
+export const useJolokiaServiceGetClusterConnectionsKey =
+  'JolokiaServiceGetClusterConnections';
+export const useJolokiaServiceGetClusterConnections = <
+  TQueryKey extends Array<unknown> = unknown[],
+>(
+  {
+    jolokiaSessionId,
+  }: {
+    jolokiaSessionId: string;
+  },
+  queryKey?: TQueryKey,
+  options?: Omit<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof JolokiaService.getClusterConnections>>,
+      unknown,
+      Awaited<ReturnType<typeof JolokiaService.getClusterConnections>>,
+      unknown[]
+    >,
+    'queryKey' | 'queryFn' | 'initialData'
+  >,
+) =>
+  useQuery(
+    [
+      useJolokiaServiceGetClusterConnectionsKey,
+      ...(queryKey ?? [{ jolokiaSessionId }]),
+    ],
+    () => JolokiaService.getClusterConnections(jolokiaSessionId),
+    options,
+  );
+export const useJolokiaServiceGetClusterConnectionDetailsKey =
+  'JolokiaServiceGetClusterConnectionDetails';
+export const useJolokiaServiceGetClusterConnectionDetails = <
+  TQueryKey extends Array<unknown> = unknown[],
+>(
+  {
+    jolokiaSessionId,
+    name,
+  }: {
+    jolokiaSessionId: string;
+    name: string;
+  },
+  queryKey?: TQueryKey,
+  options?: Omit<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof JolokiaService.getClusterConnectionDetails>>,
+      unknown,
+      Awaited<ReturnType<typeof JolokiaService.getClusterConnectionDetails>>,
+      unknown[]
+    >,
+    'queryKey' | 'queryFn' | 'initialData'
+  >,
+) =>
+  useQuery(
+    [
+      useJolokiaServiceGetClusterConnectionDetailsKey,
+      ...(queryKey ?? [{ jolokiaSessionId, name }]),
+    ],
+    () => JolokiaService.getClusterConnectionDetails(jolokiaSessionId, name),
     options,
   );
 export const useDevelopmentServiceApiInfoKey = 'DevelopmentServiceApiInfo';

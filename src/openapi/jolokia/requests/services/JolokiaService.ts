@@ -4,6 +4,7 @@
 import type { Acceptor } from '../models/Acceptor';
 import type { Address } from '../models/Address';
 import type { Broker } from '../models/Broker';
+import type { ClusterConnection } from '../models/ClusterConnection';
 import type { ComponentAttribute } from '../models/ComponentAttribute';
 import type { ComponentDetails } from '../models/ComponentDetails';
 import type { DummyResponse } from '../models/DummyResponse';
@@ -213,6 +214,81 @@ export class JolokiaService {
         name: name,
         attrs: attrs,
       },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
+      },
+    });
+  }
+
+  /**
+   * read cluster connection attributes
+   * **Read values of cluster connection attributes**
+   * The return value is a json array that contains
+   * values of requested attributes of the cluster connection's mbean.
+   *
+   * **Note**: to read multiple attributes, set it to **attrs** parameter
+   * separated by commas, e.g. `NodeID, Topology`.
+   *
+   * @param jolokiaSessionId
+   * @param name the cluster connection name
+   * @param attrs attribute names separated by commas. If not speified read all attributes.
+   * @returns ComponentAttribute Success
+   * @throws ApiError
+   */
+  public static readClusterConnectionAttributes(
+    jolokiaSessionId: string,
+    name: string,
+    attrs?: Array<string>,
+  ): CancelablePromise<Array<ComponentAttribute>> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/readClusterConnectionAttributes',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
+      query: {
+        name: name,
+        attrs: attrs,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
+      },
+    });
+  }
+
+  /**
+   * execute a cluster connection operation
+   * **Invoke an operation of the cluster connection mbean**
+   *
+   * It receives a POST request where the body
+   * should have the operation signature and its args.
+   * The return value is a one element json array that contains
+   * return values of invoked operation along with the request info.
+   *
+   * @param jolokiaSessionId
+   * @param name
+   * @param requestBody
+   * @returns ExecResult Success
+   * @throws ApiError
+   */
+  public static execClusterConnectionOperation(
+    jolokiaSessionId: string,
+    name: string,
+    requestBody: OperationRef,
+  ): CancelablePromise<Array<ExecResult>> {
+    return __request(OpenAPI, {
+      method: 'POST',
+      url: '/execClusterConnectionOperation',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
+      query: {
+        name: name,
+      },
+      body: requestBody,
+      mediaType: 'application/json',
       errors: {
         401: `Invalid credentials`,
         500: `Internal server error`,
@@ -477,6 +553,65 @@ export class JolokiaService {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/acceptorDetails',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
+      query: {
+        name: name,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
+      },
+    });
+  }
+
+  /**
+   * list cluster connections
+   * **Get all cluster connections in a broker**
+   *
+   * It retrieves and returns a list of all cluster connection mbeans
+   *
+   * @param jolokiaSessionId
+   * @returns ClusterConnection Success
+   * @throws ApiError
+   */
+  public static getClusterConnections(
+    jolokiaSessionId: string,
+  ): CancelablePromise<Array<ClusterConnection>> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/clusterConnections',
+      headers: {
+        'jolokia-session-id': jolokiaSessionId,
+      },
+      errors: {
+        401: `Invalid credentials`,
+        500: `Internal server error`,
+      },
+    });
+  }
+
+  /**
+   * retrieve cluster connection details
+   * **Get details of a connection cluster**
+   * The return value is a json object that contains
+   * description of all the operations and attributes of a `cluster connection` mbean.
+   *
+   * It is defined in [ClusterConnectionControl.java](https://github.com/apache/activemq-artemis/blob/2.33.0/artemis-core-client/src/main/java/org/apache/activemq/artemis/api/core/management/ClusterConnectionControl.java)
+   *
+   * @param jolokiaSessionId
+   * @param name
+   * @returns ComponentDetails Success
+   * @throws ApiError
+   */
+  public static getClusterConnectionDetails(
+    jolokiaSessionId: string,
+    name: string,
+  ): CancelablePromise<ComponentDetails> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/clusterConnectionDetails',
       headers: {
         'jolokia-session-id': jolokiaSessionId,
       },

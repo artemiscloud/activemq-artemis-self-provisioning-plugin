@@ -12,6 +12,7 @@ export { ApiResponse } from './models/ApiResponse';
 export type { Argument } from './models/Argument';
 export type { Attr } from './models/Attr';
 export type { Broker } from './models/Broker';
+export type { ClusterConnection } from './models/ClusterConnection';
 export type { ComponentAttribute } from './models/ComponentAttribute';
 export type { ComponentDetails } from './models/ComponentDetails';
 export { DummyResponse } from './models/DummyResponse';

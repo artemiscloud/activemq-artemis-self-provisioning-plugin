@@ -29,10 +29,15 @@ export const UpdateBrokerPage: FC = () => {
   const [hasBrokerUpdated, setHasBrokerUpdated] = useState(false);
   const [alert, setAlert] = useState('');
   const params = new URLSearchParams(location.search);
-  const returnUrl = params.get('returnUrl') || '/k8s/all-namespaces/brokers';
+  const returnUrl = params.get('returnUrl');
   const handleRedirect = () => {
-    navigate(returnUrl);
+    if (returnUrl) {
+      navigate(returnUrl);
+    } else {
+      navigate(-1);
+    }
   };
+
   const k8sUpdateBroker = (content: BrokerCR) => {
     k8sUpdate({
       model: AMQBrokerModel,

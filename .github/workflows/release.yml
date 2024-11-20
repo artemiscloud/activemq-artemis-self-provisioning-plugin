@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Create release tag
         if: ${{ github.event_name == 'workflow_dispatch' }}
@@ -39,7 +39,7 @@ jobs:
          echo ${{ steps.vars.outputs.image_tag }}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Build the image
         id: build-image

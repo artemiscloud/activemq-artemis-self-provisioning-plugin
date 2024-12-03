@@ -31,8 +31,8 @@
     "properties": {
       "exact": true,
       "path": [
-        "/k8s/ns/:ns/brokers/:name",
-        "/k8s/all-namespaces/brokers/:name"
+        "/k8s/ns/:ns/brokers/:name/:tab?",
+        "/k8s/all-namespaces/brokers/:name/:tab?"
       ],
       "component": { "$codeRef": "BrokerDetailsContainer.App" }
     }

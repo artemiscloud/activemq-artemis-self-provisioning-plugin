@@ -49,4 +49,4 @@ else
   oc kustomize deploy/http | sed "s|image: .*|image: ${PLUGIN_IMAGE}|" | oc apply -f -
 fi
 
-oc patch consoles.operator.openshift.io cluster --patch '{ "spec": { "plugins": ["activemq-artemis-self-provisioning-plugin"] } }' --type=merge
+oc patch consoles.operator.openshift.io cluster --type=json --patch '[{ "op": "add", "path": "/spec/plugins/-", "value": "activemq-artemis-self-provisioning-plugin" }]'

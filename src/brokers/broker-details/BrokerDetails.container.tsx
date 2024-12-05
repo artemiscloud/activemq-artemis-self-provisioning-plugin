@@ -21,11 +21,7 @@ import {
 } from './components/JolokiaDevComponents';
 import { OverviewContainer } from './components/Overview/Overview.container';
 import { PodsContainer } from '@app/brokers/broker-details/components/broker-pods/PodsList.container';
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-} from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { JolokiaAuthentication } from '@app/jolokia/components/JolokiaAuthentication';
 import { useGetBrokerCR } from '@app/k8s/customHooks';
 import { AuthContext } from '@app/jolokia/context';
@@ -34,6 +30,7 @@ import {
   GreenCheckCircleIcon,
   RedExclamationCircleIcon,
 } from '@openshift-console/dynamic-plugin-sdk';
+import { YamlContainer } from './components/yaml/Yaml.container';
 
 type AuthenticatedPageContentPropType = {
   brokerCr: BrokerCR;
@@ -50,19 +47,19 @@ const AuthenticatedPageContent: FC<AuthenticatedPageContentPropType> = ({
   error: errorBrokerCr,
 }) => {
   const { t } = useTranslation();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const activeTabKey = searchParams.get('tab') || 'overview';
+  const { tab } = useParams<{ tab?: string }>();
+  const activeTabKey = tab || 'overview';
   const navigate = useNavigate();
   const handleTabSelect = (_event: any, eventKey: string | number) => {
-    searchParams.set('tab', eventKey.toString());
-    navigate({ search: searchParams.toString() });
+    navigate(`/k8s/ns/${namespace}/brokers/${name}/${eventKey}`);
   };
+
   const {
     isSuccess: isSuccessToken,
     isLoading: isLoadingToken,
     isError: isErrorToken,
   } = useContext(AuthContext);
+
   return (
     <PageSection
       variant={PageSectionVariants.light}
@@ -96,6 +93,13 @@ const AuthenticatedPageContent: FC<AuthenticatedPageContentPropType> = ({
         </Tab>
         <Tab eventKey={'pods'} title={<TabTitleText>{t('Pods')}</TabTitleText>}>
           <PodsContainer />
+        </Tab>
+        <Tab eventKey={'yaml'} title={<TabTitleText>{t('YAML')}</TabTitleText>}>
+          {loadingBrokerCr ? (
+            <Spinner size="md" />
+          ) : (
+            <YamlContainer brokerCr={brokerCr} />
+          )}
         </Tab>
         {process.env.NODE_ENV === 'development' && (
           <Tab
@@ -178,7 +182,6 @@ export const BrokerDetailsPage: FC = () => {
   const { ns: namespace, name } = useParams<{ ns?: string; name?: string }>();
 
   const { brokerCr, isLoading, error } = useGetBrokerCR(name, namespace);
-
   return (
     <>
       <JolokiaAuthentication brokerCR={brokerCr} podOrdinal={0}>

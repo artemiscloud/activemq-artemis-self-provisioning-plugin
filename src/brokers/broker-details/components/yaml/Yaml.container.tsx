@@ -2,7 +2,7 @@ import { FC, Suspense } from 'react';
 import { Loading } from '@app/shared-components/Loading/Loading';
 import { ResourceYAMLEditor } from '@openshift-console/dynamic-plugin-sdk';
 import YAML from 'yaml';
-import { Alert, AlertVariant, Button, Page } from '@patternfly/react-core';
+import { Alert, AlertVariant, Button } from '@patternfly/react-core';
 import { useTranslation } from '@app/i18n/i18n';
 import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 
@@ -24,12 +24,12 @@ const YamlContainer: FC<YamlViewProps> = ({ brokerCr }) => {
   };
 
   return (
-    <Page>
+    <>
       <Alert
         variant={AlertVariant.info}
         isInline
         title={t('This YAML view is in read-only mode.')}
-        className="pf-u-mt-md pf-u-ml-md pf-u-mr-md"
+        //className="pf-u-mt-md pf-u-ml-md pf-u-mr-md"
       >
         <Button variant="link" onClick={onClickEditYaml}>
           {t('Click here to update the deployment configuration in the YAML.')}
@@ -41,7 +41,7 @@ const YamlContainer: FC<YamlViewProps> = ({ brokerCr }) => {
           readOnly
         />
       </Suspense>
-    </Page>
+    </>
   );
 };
 

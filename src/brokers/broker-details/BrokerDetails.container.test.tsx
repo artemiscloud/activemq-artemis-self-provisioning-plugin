@@ -38,6 +38,10 @@ jest.mock('./components/Clients/Clients.container', () => ({
   ClientsContainer: () => <div>ClientsContainer component</div>,
 }));
 
+jest.mock('./components/yaml/Yaml.container', () => ({
+  YamlContainer: () => <div>YamlContainer component</div>,
+}));
+
 const mockUseParams = useParams as jest.Mock;
 const mockUseLocation = useLocation as jest.Mock;
 const mockUseNavigate = useNavigate as jest.Mock;
@@ -94,6 +98,7 @@ describe('BrokerDetailsPage', () => {
     expect(screen.getByText('OverviewContainer component')).toBeInTheDocument();
     expect(screen.getByText('Clients')).toBeInTheDocument();
     expect(screen.getByText('ClientsContainer component')).toBeInTheDocument();
+    expect(screen.getByText('YamlContainer component')).toBeInTheDocument();
   });
 
   it('should display an error message when useGetBrokerCR returns an error', async () => {

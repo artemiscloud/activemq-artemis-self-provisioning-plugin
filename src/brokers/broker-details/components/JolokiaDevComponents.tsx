@@ -50,13 +50,11 @@ function getApiHost(): string {
 }
 
 function getApiPort(): string {
-  return process.env.NODE_ENV === 'production' ? '443' : '9443';
+  return process.env.NODE_ENV === 'production' ? '443' : '9442';
 }
 
 function getProxyUrl(): string {
-  return process.env.NODE_ENV === 'production'
-    ? '/api/proxy/plugin/activemq-artemis-self-provisioning-plugin/api-server-service'
-    : '';
+  return '/api/proxy/plugin/activemq-artemis-self-provisioning-plugin/api-server-service';
 }
 
 type SignatureSubFormType = {

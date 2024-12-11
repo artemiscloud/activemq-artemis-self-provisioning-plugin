@@ -247,14 +247,12 @@ export const useJolokiaLogin = (
 };
 
 function getProxyUrl(): string {
-  return process.env.NODE_ENV === 'production'
-    ? '/api/proxy/plugin/activemq-artemis-self-provisioning-plugin/api-server-service'
-    : '';
+  return '/api/proxy/plugin/activemq-artemis-self-provisioning-plugin/api-server-service';
 }
 
 export const useGetApiServerBaseUrl = (): string => {
   let apiHost = 'localhost';
-  let apiPort = '9443';
+  let apiPort = '9442';
   if (process.env.NODE_ENV === 'production') {
     apiHost = location.hostname;
     apiPort = '443';

@@ -38,16 +38,21 @@ jest.mock('./components/Clients/Clients.container', () => ({
   ClientsContainer: () => <div>ClientsContainer component</div>,
 }));
 
-const mockUseParams = useParams as jest.Mock;
-const mockUseLocation = useLocation as jest.Mock;
-const mockUseNavigate = useNavigate as jest.Mock;
-const mockUseGetBrokerCR = useGetBrokerCR as jest.Mock;
-const mockUseK8sWatchResource = useK8sWatchResource as jest.Mock;
+jest.mock('./components/broker-pods/PodsList.container', () => ({
+  PodsContainer: () => <div>PodsContainer component</div>,
+}));
+
+jest.mock('./components/yaml/Yaml.container', () => ({
+  YamlContainer: () => <div>YamlContainer component</div>,
+}));
 
 describe('BrokerDetailsPage', () => {
+  const mockUseParams = useParams as jest.Mock;
+  const mockUseLocation = useLocation as jest.Mock;
+  const mockUseNavigate = useNavigate as jest.Mock;
+  const mockUseGetBrokerCR = useGetBrokerCR as jest.Mock;
+  const mockUseK8sWatchResource = useK8sWatchResource as jest.Mock;
   beforeEach(() => {
-    jest.clearAllMocks();
-
     mockUseParams.mockReturnValue({
       ns: 'test-namespace',
       name: 'test-1',
@@ -79,6 +84,10 @@ describe('BrokerDetailsPage', () => {
     });
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should render the BrokerDetailsPage and its components without crashing', async () => {
     const comp = render(
       <JolokiaAuthentication brokerCR={{ spec: {} }} podOrdinal={0}>
@@ -91,9 +100,90 @@ describe('BrokerDetailsPage', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('Broker test-1'));
     expect(screen.getByText('Overview')).toBeInTheDocument();
-    expect(screen.getByText('OverviewContainer component')).toBeInTheDocument();
     expect(screen.getByText('Clients')).toBeInTheDocument();
+    expect(screen.getByText('Pods')).toBeInTheDocument();
+    expect(screen.getByText('YAML')).toBeInTheDocument();
+  });
+
+  it('should render OverviewContainer by default', async () => {
+    mockUseGetBrokerCR.mockReturnValue({
+      brokerCr: { spec: {} },
+      isLoading: false,
+      error: null,
+    });
+
+    const comp = render(
+      <JolokiaAuthentication brokerCR={{ spec: {} }} podOrdinal={0}>
+        <BrokerDetailsPage />
+      </JolokiaAuthentication>,
+    );
+    await waitForI18n(comp);
+
+    expect(screen.getByText('OverviewContainer component')).toBeInTheDocument();
+  });
+
+  it('should render ClientsContainer when activeTab is clients', async () => {
+    mockUseParams.mockReturnValue({
+      ns: 'test-namespace',
+      name: 'test-1',
+      tab: 'clients',
+    });
+    mockUseGetBrokerCR.mockReturnValue({
+      brokerCr: { spec: {} },
+      isLoading: false,
+      error: null,
+    });
+
+    const comp = render(
+      <JolokiaAuthentication brokerCR={{ spec: {} }} podOrdinal={0}>
+        <BrokerDetailsPage />
+      </JolokiaAuthentication>,
+    );
+    await waitForI18n(comp);
+
     expect(screen.getByText('ClientsContainer component')).toBeInTheDocument();
+  });
+
+  it('should render PodsContainer when activeTab is pods', async () => {
+    mockUseParams.mockReturnValue({
+      ns: 'test-namespace',
+      name: 'test-1',
+      tab: 'pods',
+    });
+    mockUseGetBrokerCR.mockReturnValue({
+      brokerCr: { spec: {} },
+      isLoading: false,
+      error: null,
+    });
+
+    const comp = render(
+      <JolokiaAuthentication brokerCR={{ spec: {} }} podOrdinal={0}>
+        <BrokerDetailsPage />
+      </JolokiaAuthentication>,
+    );
+    await waitForI18n(comp);
+    expect(screen.getByText('PodsContainer component')).toBeInTheDocument();
+  });
+
+  it('should render YamlContainer when activeTab is yaml', async () => {
+    mockUseParams.mockReturnValue({
+      ns: 'test-namespace',
+      name: 'test-1',
+      tab: 'yaml',
+    });
+    mockUseGetBrokerCR.mockReturnValue({
+      brokerCr: { spec: {} },
+      isLoading: false,
+      error: null,
+    });
+
+    const comp = render(
+      <JolokiaAuthentication brokerCR={{ spec: {} }} podOrdinal={0}>
+        <BrokerDetailsPage />
+      </JolokiaAuthentication>,
+    );
+    await waitForI18n(comp);
+    expect(screen.getByText('YamlContainer component')).toBeInTheDocument();
   });
 
   it('should display an error message when useGetBrokerCR returns an error', async () => {
@@ -116,8 +206,8 @@ describe('BrokerDetailsPage', () => {
   });
 
   it('should call navigate when switching tabs', async () => {
-    const mockNavigate = jest.fn();
-    mockUseNavigate.mockReturnValue(mockNavigate);
+    const navigate = jest.fn();
+    (useNavigate as jest.Mock).mockReturnValue(navigate);
 
     const comp = render(
       <JolokiaAuthentication brokerCR={{ spec: {} }} podOrdinal={0}>
@@ -125,12 +215,12 @@ describe('BrokerDetailsPage', () => {
       </JolokiaAuthentication>,
     );
     await waitForI18n(comp);
+    const yamlTab = screen.getByText('YAML');
+    yamlTab.click();
 
-    // Click on the overview tab
-    const overviewTab = screen.getByText('Overview');
-    overviewTab.click();
-
-    expect(mockNavigate).toHaveBeenCalled();
+    expect(navigate).toHaveBeenCalledWith(
+      '/k8s/ns/test-namespace/brokers/test-1/yaml',
+    );
   });
 
   it('should render Jolokia components in development environment', async () => {

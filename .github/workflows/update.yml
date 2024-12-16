@@ -53,6 +53,8 @@ jobs:
           | ._id="activemq-artemis-self-provisioning-plugin@'$VERSION'"' package.json) \
           && echo -E "${PACKAGE_JSON_CONTENTS}" > package.json && unset PACKAGE_JSON_CONTENTS
           sed -i "s~^LABEL version=.*~LABEL version=\"${VERSION}\"~g" Dockerfile
+          sed -i "s~^  \"version\":.*\"~  \"version\": \"${VERSION}\"~g" package.json
+          sed -i "s~^version:.*~version: ${VERSION}~g" charts/openshift-console-plugin/Chart.yaml
           git commit --all --message "Update version to ${VERSION}" || echo "nothing to commit"
 
       - name: Push commits

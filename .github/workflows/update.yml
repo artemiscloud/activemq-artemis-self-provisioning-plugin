@@ -51,7 +51,7 @@ jobs:
           sed -i "s~^LABEL version=.*~LABEL version=\"${VERSION}\"~g" Dockerfile
           sed -i "s~^  \"version\":.*\"~  \"version\": \"${VERSION}\"~g" package.json
           sed -i "s~^    \"version\":.*\"~    \"version\": \"${VERSION}\"~g" package.json
-          sed -i "s~activemq-artemis-self-provisioning-plugin@.*~activemq-artemis-self-provisioning-plugin@${VERSION},~g" package.json
+          sed -i "s~activemq-artemis-self-provisioning-plugin@.*~activemq-artemis-self-provisioning-plugin@${VERSION}\",~g" package.json
           sed -i "s~^version:.*~version: ${VERSION}~g" charts/openshift-console-plugin/Chart.yaml
           git commit --all --message "Update version to ${VERSION}" || echo "nothing to commit"
 

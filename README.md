@@ -1,3 +1,7 @@
+#### :warning:This project is now part of the ArkMQ initiative. This repository has been archived as all activities are now happening in the [corresponding ArkMQ repository](https://github.com/arkmq-org/activemq-artemis-self-provisioning-plugin). See [here](https://artemiscloud.io/community/transition/) for the ArkMQ transition details.
+
+---
+
 # ActiveMQ Artemis Self Provisioning Plugin
 
 This project is a ActiveMQ Artemis Self Provisioning Plugin to the Administrator perspective in OpenShift console. It requires OpenShift `4.16` to use.
